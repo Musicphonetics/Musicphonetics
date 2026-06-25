@@ -10,6 +10,7 @@
 
 import { BRAND, FAQS, PACKAGES, AREAS_SERVED } from "./data";
 import { FOUNDER, FOUNDER_HIGHLIGHTS } from "./founder";
+import type { TeacherProfile, Region } from "./teachers";
 
 export const SITE_URL = "https://musicphonetics.com";
 
@@ -102,6 +103,53 @@ export function coursesJsonLd() {
         provider: { "@id": ORG_ID },
       },
     })),
+  };
+}
+
+/** A teacher as a Person + their teaching as a Service. */
+export function teacherJsonLd(t: TeacherProfile) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "@id": `${SITE_URL}/teachers/profile/${t.slug}#person`,
+    name: t.name,
+    jobTitle: "Music Teacher",
+    worksFor: { "@id": ORG_ID },
+    knowsAbout: t.instruments,
+    knowsLanguage: t.languages,
+    areaServed: t.cities.map((name) => ({ "@type": "Place", name })),
+    description: t.bio,
+    ...(t.rating > 0
+      ? {
+          aggregateRating: {
+            "@type": "AggregateRating",
+            ratingValue: t.rating,
+            bestRating: 5,
+            ratingCount: 1,
+          },
+        }
+      : {}),
+  };
+}
+
+/** A region as a CollectionPage of teachers — optimised for local search. */
+export function regionJsonLd(region: Region, teachers: TeacherProfile[]) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    "@id": `${SITE_URL}/teachers/${region.slug}#page`,
+    name: `Music teachers in ${region.name} · Musicphonetics`,
+    about: { "@id": ORG_ID },
+    mainEntity: {
+      "@type": "ItemList",
+      numberOfItems: teachers.length,
+      itemListElement: teachers.map((t, i) => ({
+        "@type": "ListItem",
+        position: i + 1,
+        url: `${SITE_URL}/teachers/profile/${t.slug}`,
+        name: t.name,
+      })),
+    },
   };
 }
 

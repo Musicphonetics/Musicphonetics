@@ -43,7 +43,7 @@ export function Ecosystem() {
   const [active, setActive] = useState<number | null>(null);
 
   return (
-    <section className="relative overflow-hidden bg-ink py-20 text-paper sm:py-28">
+    <section id="ecosystem" className="relative overflow-hidden bg-ink py-20 text-paper sm:py-28">
       <AuroraBackground />
       <div className="container-mp relative">
         <Reveal>

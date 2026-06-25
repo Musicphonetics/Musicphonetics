@@ -1,12 +1,12 @@
 import { Hero } from "@/components/sections/Hero";
 import { TrustStrip } from "@/components/sections/TrustStrip";
+import { Ecosystem } from "@/components/sections/Ecosystem";
 import { BrandPhilosophy } from "@/components/sections/BrandPhilosophy";
 import { FounderSection } from "@/components/sections/FounderSection";
 import { WhyUs } from "@/components/sections/WhyUs";
 import { MethodPreview } from "@/components/sections/MethodPreview";
 import { HowItWorks } from "@/components/sections/HowItWorks";
 import { Programs } from "@/components/sections/Programs";
-import { Ecosystem } from "@/components/sections/Ecosystem";
 import { GlobalVision } from "@/components/sections/GlobalVision";
 import { Reviews } from "@/components/sections/Reviews";
 import { Plans } from "@/components/sections/Plans";
@@ -21,17 +21,21 @@ export default function HomePage() {
   return (
     <>
       <JsonLd data={[faqJsonLd(), coursesJsonLd()]} />
+      {/* 1. Identity, trust, ambition — and the ecosystem — up front */}
       <Hero />
       <TrustStrip />
+      <Ecosystem />
       <BrandPhilosophy />
+      {/* 2. Trust & the people behind it */}
       <FounderSection />
       <WhyUs />
       <MethodPreview />
       <HowItWorks />
+      {/* 3. What you can do today */}
       <Programs />
-      <Ecosystem />
       <Reviews limit={6} />
       <Plans />
+      {/* 4. Where it's going */}
       <GlobalVision />
       <FutureArchitecture />
       <Gallery />
