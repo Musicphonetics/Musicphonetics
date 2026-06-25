@@ -1,0 +1,109 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ==========================================================================
+   Musicphonetics — Design System Base
+   Premium, composed, trusted. Charcoal ink + gold accent on warm paper.
+   ========================================================================== */
+
+@layer base {
+  :root {
+    color-scheme: light;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-paper text-ink font-body antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    @apply font-display;
+    letter-spacing: -0.01em;
+  }
+
+  /* Keyboard focus states for accessibility */
+  :focus-visible {
+    outline: 2px solid theme("colors.gold");
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+
+  ::selection {
+    background: theme("colors.gold");
+    color: theme("colors.ink");
+  }
+}
+
+@layer components {
+  /* Centered content container */
+  .container-mp {
+    @apply mx-auto w-full max-w-content px-5 sm:px-8;
+  }
+
+  /* Eyebrow / kicker label */
+  .eyebrow {
+    @apply text-xs font-semibold uppercase tracking-[0.18em] text-deep-gold;
+  }
+
+  /* Thin hairline divider */
+  .hairline {
+    @apply border-t border-hairline;
+  }
+}
+
+@layer utilities {
+  /* Fade-up on scroll — driven by IntersectionObserver via .reveal class */
+  .reveal {
+    opacity: 0;
+    transform: translateY(16px);
+    transition: opacity 0.7s ease-out, transform 0.7s ease-out;
+    will-change: opacity, transform;
+  }
+
+  .reveal.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* Subtle card hover lift */
+  .lift {
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+  }
+
+  .lift:hover {
+    transform: translateY(-4px);
+  }
+}
+
+/* Respect reduced-motion preferences across the board */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .reveal {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+
+  .lift:hover {
+    transform: none !important;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
