@@ -35,20 +35,23 @@ export const BRAND = {
   region: "Delhi NCR",
   founder: "Abhishek Kumar",
   yearsExperience: "10+",
-  studentsTaught: "1,000+",
+  studentsTaught: "1,100+",
 };
 
 // ---------------------------------------------------------------------------
 // Primary navigation
 // ---------------------------------------------------------------------------
 export const NAV_LINKS = [
-  { label: "Why us", href: "/#why-us" },
+  { label: "Founder", href: "/founder" },
   { label: "Method", href: "/method" },
   { label: "Programs", href: "/programs" },
   { label: "Teachers", href: "/teachers" },
   { label: "Reviews", href: "/reviews" },
   { label: "Teach with us", href: "/teach-with-us" },
 ];
+
+// Trust line shown under the hero and elsewhere.
+export const TRUST_LINE = `${BRAND.yearsExperience} years · ${BRAND.studentsTaught} students taught · Home, online, and future academy pathways`;
 
 // ---------------------------------------------------------------------------
 // Trust strip stats
