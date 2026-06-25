@@ -246,6 +246,17 @@ export const PACKAGES: Package[] = [
   },
 ];
 
+// Short, punchy lines for the floating hero review cards.
+// SAMPLE placeholders — clearly disclosed in the hero and Reviews section.
+// TODO(content): replace with verified parent testimonials before launch.
+export const HERO_REVIEWS: { quote: string; author: string }[] = [
+  { quote: "My daughter actually looks forward to practice now.", author: "Parent, South Delhi" },
+  { quote: "The structure changed everything for my son.", author: "Parent, Gurugram" },
+  { quote: "Serious learning, without the stress.", author: "Parent, Noida" },
+  { quote: "As an adult beginner, I never felt rushed.", author: "Adult learner, Delhi" },
+  { quote: "Every class had a clear purpose.", author: "Parent, Faridabad" },
+];
+
 export const PACKAGES_NOTE =
   "Every student follows a personalised pathway. Final teacher, slot, and confirmation are handled personally by the Musicphonetics team.";
 

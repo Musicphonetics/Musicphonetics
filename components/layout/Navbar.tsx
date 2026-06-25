@@ -32,8 +32,8 @@ export function Navbar() {
       className={cn(
         "fixed inset-x-0 top-0 z-50 transition-all duration-300",
         scrolled
-          ? "border-b border-hairline bg-paper/85 backdrop-blur-md"
-          : "border-b border-transparent bg-transparent"
+          ? "border-b border-hairline bg-paper/90 shadow-card backdrop-blur-md"
+          : "border-b border-transparent bg-paper/60 backdrop-blur-sm"
       )}
     >
       <nav className="container-mp flex h-16 items-center justify-between gap-4">

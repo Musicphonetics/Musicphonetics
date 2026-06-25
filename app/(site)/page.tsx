@@ -1,15 +1,18 @@
 import { Hero } from "@/components/sections/Hero";
-import { TrustStrip } from "@/components/sections/TrustStrip";
+import { NumbersStory } from "@/components/sections/NumbersStory";
 import { Ecosystem } from "@/components/sections/Ecosystem";
 import { BrandPhilosophy } from "@/components/sections/BrandPhilosophy";
 import { FounderSection } from "@/components/sections/FounderSection";
 import { WhyUs } from "@/components/sections/WhyUs";
 import { MethodPreview } from "@/components/sections/MethodPreview";
+import { MusicJourney } from "@/components/sections/MusicJourney";
+import { Compounding } from "@/components/sections/Compounding";
 import { HowItWorks } from "@/components/sections/HowItWorks";
 import { Programs } from "@/components/sections/Programs";
-import { GlobalVision } from "@/components/sections/GlobalVision";
 import { Reviews } from "@/components/sections/Reviews";
 import { Plans } from "@/components/sections/Plans";
+import { TeacherPipeline } from "@/components/sections/TeacherPipeline";
+import { GlobalVision } from "@/components/sections/GlobalVision";
 import { FutureArchitecture } from "@/components/sections/FutureArchitecture";
 import { Gallery } from "@/components/sections/Gallery";
 import { FAQ } from "@/components/sections/FAQ";
@@ -21,21 +24,27 @@ export default function HomePage() {
   return (
     <>
       <JsonLd data={[faqJsonLd(), coursesJsonLd()]} />
-      {/* 1. Identity, trust, ambition — and the ecosystem — up front */}
+      {/* Trailer hero → immediate music + ambition */}
       <Hero />
-      <TrustStrip />
+      <NumbersStory />
+      {/* Scale, up front */}
       <Ecosystem />
       <BrandPhilosophy />
-      {/* 2. Trust & the people behind it */}
+      {/* The people + belief */}
       <FounderSection />
       <WhyUs />
       <MethodPreview />
+      {/* The emotional learning story */}
+      <MusicJourney />
+      <Compounding />
       <HowItWorks />
-      {/* 3. What you can do today */}
+      {/* What you can do today */}
       <Programs />
       <Reviews limit={6} />
       <Plans />
-      {/* 4. Where it's going */}
+      {/* Visible trust */}
+      <TeacherPipeline />
+      {/* Where it's going */}
       <GlobalVision />
       <FutureArchitecture />
       <Gallery />
