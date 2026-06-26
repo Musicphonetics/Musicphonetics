@@ -12,6 +12,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/programs",
     "/teachers",
     "/founder",
+    "/trust",
     "/reviews",
     "/teach-with-us",
     "/contact",

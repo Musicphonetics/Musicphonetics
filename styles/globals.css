@@ -189,6 +189,19 @@
   border: 1px solid rgba(255, 255, 255, 0.12);
 }
 
+/* Animated blueprint grid (Trust Centre backdrops) */
+.mp-blueprint {
+  background-image:
+    linear-gradient(rgba(201, 162, 39, 0.07) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(201, 162, 39, 0.07) 1px, transparent 1px);
+  background-size: 44px 44px;
+  animation: mp-grid-drift 24s linear infinite;
+}
+@keyframes mp-grid-drift {
+  from { background-position: 0 0, 0 0; }
+  to { background-position: 44px 44px, 44px 44px; }
+}
+
 /* Animated gold underline / shimmer for headings */
 .mp-shimmer {
   background: linear-gradient(100deg, #C9A227 20%, #F6E7A8 40%, #C9A227 60%);
@@ -222,7 +235,8 @@
   .mp-note,
   .mp-shimmer,
   .mp-float,
-  .mp-stamp {
+  .mp-stamp,
+  .mp-blueprint {
     animation: none !important;
   }
 

@@ -15,6 +15,7 @@ const config: Config = {
         paper: "#F6F4EF",
         mist: "#ECE8DF",
         "feature-green": "#1F3D2F",
+        midnight: "#0B0F18",
       },
       borderColor: {
         hairline: "rgba(22,27,38,.14)",

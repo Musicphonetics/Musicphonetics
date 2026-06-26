@@ -3,6 +3,7 @@ import { TrustNumbers } from "@/components/sections/TrustNumbers";
 import { Problem } from "@/components/sections/Problem";
 import { TransformationPath } from "@/components/sections/TransformationPath";
 import { FounderFeature } from "@/components/sections/FounderFeature";
+import { TrustCentre } from "@/components/sections/TrustCentre";
 import { Roadmap } from "@/components/sections/Roadmap";
 import { ProgramsGrid } from "@/components/sections/ProgramsGrid";
 import { ParentConfidence } from "@/components/sections/ParentConfidence";
@@ -30,6 +31,8 @@ export default function HomePage() {
       <TransformationPath />
       {/* 5 — founder */}
       <FounderFeature />
+      {/* Trust Centre — entering the headquarters */}
+      <TrustCentre />
       {/* 6 — India to world roadmap */}
       <Roadmap />
       {/* 7 — programs */}

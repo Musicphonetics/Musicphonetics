@@ -55,8 +55,8 @@ export const NAV_LINKS = [
   { label: "Method", href: "/method" },
   { label: "Programs", href: "/programs" },
   { label: "Teachers", href: "/teachers" },
+  { label: "Trust", href: "/trust" },
   { label: "Reviews", href: "/reviews" },
-  { label: "Teach with us", href: "/teach-with-us" },
 ];
 
 // Trust line shown under the hero and elsewhere.
