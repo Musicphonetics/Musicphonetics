@@ -86,6 +86,20 @@ Set this in **Vercel → Project → Settings → Environment Variables** to ove
 the default. (This is a client-side gate for now — see "Adding real
 authentication" before storing real data.)
 
+### Deploying on Netlify instead
+
+Netlify needs the official Next.js runtime plugin — it's configured in
+`netlify.toml` (committed). When you import the repo into Netlify:
+
+1. Build command and publish dir are read from `netlify.toml`
+   (`npm run build`, `.next`).
+2. Netlify auto-installs `@netlify/plugin-nextjs` (declared in `netlify.toml`).
+3. Node 20 is pinned via `NODE_VERSION`.
+
+If a Netlify build was started **before** `netlify.toml` existed, trigger a new
+deploy (Deploys → Trigger deploy → Clear cache and deploy site) so it picks up
+the config. Vercel remains the most turnkey host for Next.js, but both work.
+
 ### Custom domain
 
 In **Vercel → Project → Settings → Domains**, add `musicphonetics.com` (or your

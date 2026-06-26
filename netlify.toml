@@ -1,0 +1,13 @@
+# Netlify configuration for the Musicphonetics Next.js (App Router) site.
+# The official Next.js runtime plugin is required — it provides serverless
+# functions for dynamic routes (OG image, sitemap, robots) and App Router SSR.
+
+[build]
+  command = "npm run build"
+  publish = ".next"
+
+[build.environment]
+  NODE_VERSION = "20"
+
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
