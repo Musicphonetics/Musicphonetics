@@ -4,7 +4,10 @@ import { cn } from "@/lib/utils";
 // a 1000×480 canvas. Used as a faint hero backdrop and as the global-network
 // map in the region section.
 
-const CONTINENTS = [
+export const MAP_W = 1000;
+export const MAP_H = 480;
+
+export const CONTINENTS = [
   // North America
   "M150 72 C210 56 276 72 291 112 C301 137 286 152 296 167 C271 177 256 167 251 152 C236 177 216 202 236 232 C211 242 186 222 181 197 C151 197 131 172 141 142 C121 122 126 92 150 72 Z",
   // South America
