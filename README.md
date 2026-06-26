@@ -51,6 +51,50 @@ npm run start
 
 ---
 
+## Deploy to Vercel (recommended)
+
+This project is **zero-config** on Vercel — Next.js is auto-detected and no
+environment variables are required (the owner-portal password has a built-in
+fallback).
+
+### Option A — Import the GitHub repo (easiest, auto-deploys on push)
+
+1. Go to <https://vercel.com/new> and sign in with GitHub.
+2. **Import** the `musicphonetics/musicphonetics` repository.
+3. Framework preset: **Next.js** (auto-detected). Leave build settings default
+   (`next build`, output handled automatically). Root directory: `./`.
+4. Click **Deploy**. First build takes ~1–2 minutes; you'll get a live
+   `*.vercel.app` URL.
+5. Every push to `main` now deploys automatically. Pull requests get preview
+   URLs.
+
+### Option B — Vercel CLI
+
+```bash
+npm i -g vercel
+vercel        # first run links the project and deploys a preview
+vercel --prod # promote to production
+```
+
+### Environment variables (optional)
+
+| Variable | Purpose | Default |
+| --- | --- | --- |
+| `NEXT_PUBLIC_OWNER_PASSWORD` | Owner portal (`/owner`) password | `Abhi@7276` |
+
+Set this in **Vercel → Project → Settings → Environment Variables** to override
+the default. (This is a client-side gate for now — see "Adding real
+authentication" before storing real data.)
+
+### Custom domain
+
+In **Vercel → Project → Settings → Domains**, add `musicphonetics.com` (or your
+domain) and follow the DNS instructions. `metadataBase` is already set to
+`https://musicphonetics.com` in `app/layout.tsx` — update it there if your final
+domain differs.
+
+---
+
 ## Project structure
 
 ```
