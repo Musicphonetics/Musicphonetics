@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { Logo } from "./Logo";
 import { Button } from "@/components/ui/Button";
-import { NAV_LINKS, BRAND, whatsappLink, AREAS_SERVED } from "@/lib/data";
+import { BRAND, whatsappTrialLink, FOOTER_NAV, AREAS_SERVED } from "@/lib/data";
 
 export function Footer() {
   return (
@@ -11,13 +11,13 @@ export function Footer() {
           {/* Brand */}
           <div>
             <Logo invert />
-            <p className="mt-4 max-w-xs text-sm leading-relaxed text-paper/70">
-              Structured, personal, director-led music education across{" "}
-              {BRAND.region}. Home, online, and future academy pathways.
+            <p className="mt-4 max-w-xs font-display text-lg text-paper/90">
+              {BRAND.tagline}
             </p>
+            <p className="mt-2 text-sm text-paper/60">Founded in India.</p>
             <div className="mt-6">
-              <Button href={whatsappLink()} external variant="light" size="md">
-                Enquire on WhatsApp
+              <Button href={whatsappTrialLink()} external variant="light" size="md">
+                Book a Trial
               </Button>
             </div>
           </div>
@@ -28,7 +28,7 @@ export function Footer() {
               Explore
             </h3>
             <ul className="mt-4 space-y-3">
-              {NAV_LINKS.map((link) => (
+              {FOOTER_NAV.map((link) => (
                 <li key={link.href}>
                   <Link
                     href={link.href}
@@ -38,21 +38,13 @@ export function Footer() {
                   </Link>
                 </li>
               ))}
-              <li>
-                <Link
-                  href="/contact"
-                  className="text-sm text-paper/75 transition-colors hover:text-paper"
-                >
-                  Contact
-                </Link>
-              </li>
             </ul>
           </nav>
 
           {/* Areas */}
           <div>
             <h3 className="text-xs font-semibold uppercase tracking-[0.18em] text-gold">
-              Areas served
+              Where we teach
             </h3>
             <ul className="mt-4 space-y-2">
               {AREAS_SERVED.map((area) => (
@@ -66,7 +58,7 @@ export function Footer() {
 
         <div className="mt-14 flex flex-col gap-4 border-t border-white/10 pt-6 text-sm text-paper/55 sm:flex-row sm:items-center sm:justify-between">
           <p>
-            © {new Date().getFullYear()} {BRAND.name}. Built by {BRAND.founder}.
+            © {new Date().getFullYear()} {BRAND.name}. {BRAND.tagline}
           </p>
           <div className="flex items-center gap-5">
             <Link href="/teach-with-us" className="hover:text-paper">

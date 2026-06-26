@@ -1,20 +1,16 @@
 import { Hero } from "@/components/sections/Hero";
-import { NumbersStory } from "@/components/sections/NumbersStory";
-import { Ecosystem } from "@/components/sections/Ecosystem";
-import { BrandPhilosophy } from "@/components/sections/BrandPhilosophy";
-import { FounderSection } from "@/components/sections/FounderSection";
-import { WhyUs } from "@/components/sections/WhyUs";
-import { MethodPreview } from "@/components/sections/MethodPreview";
-import { MusicJourney } from "@/components/sections/MusicJourney";
-import { Compounding } from "@/components/sections/Compounding";
-import { HowItWorks } from "@/components/sections/HowItWorks";
-import { Programs } from "@/components/sections/Programs";
-import { Reviews } from "@/components/sections/Reviews";
-import { Plans } from "@/components/sections/Plans";
+import { TrustNumbers } from "@/components/sections/TrustNumbers";
+import { Problem } from "@/components/sections/Problem";
+import { TransformationPath } from "@/components/sections/TransformationPath";
+import { FounderFeature } from "@/components/sections/FounderFeature";
+import { Roadmap } from "@/components/sections/Roadmap";
+import { ProgramsGrid } from "@/components/sections/ProgramsGrid";
+import { ParentConfidence } from "@/components/sections/ParentConfidence";
 import { TeacherPipeline } from "@/components/sections/TeacherPipeline";
-import { GlobalVision } from "@/components/sections/GlobalVision";
-import { FutureArchitecture } from "@/components/sections/FutureArchitecture";
-import { Gallery } from "@/components/sections/Gallery";
+import { ReviewsShowcase } from "@/components/sections/ReviewsShowcase";
+import { BrandArchitecture } from "@/components/sections/BrandArchitecture";
+import { ExamPathway } from "@/components/sections/ExamPathway";
+import { SeoContent } from "@/components/sections/SeoContent";
 import { FAQ } from "@/components/sections/FAQ";
 import { FinalCTA } from "@/components/sections/FinalCTA";
 import { JsonLd } from "@/components/seo/JsonLd";
@@ -24,31 +20,34 @@ export default function HomePage() {
   return (
     <>
       <JsonLd data={[faqJsonLd(), coursesJsonLd()]} />
-      {/* Trailer hero → immediate music + ambition */}
+      {/* 1 — cinematic India→global hero */}
       <Hero />
-      <NumbersStory />
-      {/* Scale, up front */}
-      <Ecosystem />
-      <BrandPhilosophy />
-      {/* The people + belief */}
-      <FounderSection />
-      <WhyUs />
-      <MethodPreview />
-      {/* The emotional learning story */}
-      <MusicJourney />
-      <Compounding />
-      <HowItWorks />
-      {/* What you can do today */}
-      <Programs />
-      <Reviews limit={6} />
-      <Plans />
-      {/* Visible trust */}
+      {/* 2 — trust numbers */}
+      <TrustNumbers />
+      {/* 3 — the problem */}
+      <Problem />
+      {/* 4 — the Musicphonetics way */}
+      <TransformationPath />
+      {/* 5 — founder */}
+      <FounderFeature />
+      {/* 6 — India to world roadmap */}
+      <Roadmap />
+      {/* 7 — programs */}
+      <ProgramsGrid />
+      {/* 8 — parent confidence */}
+      <ParentConfidence />
+      {/* visible trust — teacher quality */}
       <TeacherPipeline />
-      {/* Where it's going */}
-      <GlobalVision />
-      <FutureArchitecture />
-      <Gallery />
+      {/* 9 — reviews */}
+      <ReviewsShowcase />
+      {/* 10 — brand architecture */}
+      <BrandArchitecture />
+      {/* 11 — exam pathways */}
+      <ExamPathway />
+      {/* 12 — SEO/GEO content + FAQ */}
+      <SeoContent />
       <FAQ />
+      {/* 13 — final CTA */}
       <FinalCTA />
     </>
   );

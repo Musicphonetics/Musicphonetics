@@ -26,12 +26,21 @@ export function whatsappLink(text: string = WHATSAPP_DEFAULT_TEXT): string {
   return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(text)}`;
 }
 
+/** Prefilled "Book a Trial" WhatsApp link — used by the primary CTA. */
+export const WHATSAPP_TRIAL_TEXT =
+  "Hi Musicphonetics, I'd like to book a trial class.";
+export function whatsappTrialLink(): string {
+  return whatsappLink(WHATSAPP_TRIAL_TEXT);
+}
+
 // ---------------------------------------------------------------------------
 // Brand
 // ---------------------------------------------------------------------------
 export const BRAND = {
   name: "Musicphonetics",
-  tagline: "Structured music education",
+  tagline: "Teaching across cities. Expanding globally.",
+  positioning:
+    "An education-first music company founded in India, built for structured music learning across cities — and eventually across countries.",
   region: "Delhi NCR",
   founder: "Abhishek Kumar",
   yearsExperience: "10+",
@@ -52,6 +61,15 @@ export const NAV_LINKS = [
 
 // Trust line shown under the hero and elsewhere.
 export const TRUST_LINE = `${BRAND.yearsExperience} years · ${BRAND.studentsTaught} students taught · Home, online, and future academy pathways`;
+
+// Simplified footer navigation per go-live spec.
+export const FOOTER_NAV = [
+  { label: "Home", href: "/" },
+  { label: "Method", href: "/method" },
+  { label: "Programs", href: "/programs" },
+  { label: "Reviews", href: "/reviews" },
+  { label: "Contact", href: "/contact" },
+];
 
 // ---------------------------------------------------------------------------
 // Trust strip stats
@@ -178,38 +196,32 @@ export const PROGRAMS: ProgramCard[] = [
 export const REVIEWS: Review[] = [
   {
     quote:
-      "The biggest difference was structure. My child stopped jumping from song to song and started understanding music properly.",
-    author: "Parent, South Delhi",
+      "We had tried two teachers before this. The difference here was the structure. My daughter finally started practising without us pushing her every day.",
+    author: "Parent, Gurgaon",
     sample: true,
   },
   {
     quote:
-      "The teacher was patient, but the system behind the classes felt very professional.",
-    author: "Parent, Gurugram",
+      "Initially we only booked the trial class. Three months later, even I joined keyboard classes along with my son.",
+    author: "Working Parent, Mumbai",
     sample: true,
   },
   {
     quote:
-      "I wanted my son to learn seriously without making it stressful. Musicphonetics gave us that balance.",
+      "The teacher was punctual, polite, and gave proper feedback after every class. That professionalism made us continue.",
     author: "Parent, Delhi NCR",
     sample: true,
   },
   {
     quote:
-      "What stood out was the consistency. Every class had a purpose and built on the last one.",
-    author: "Parent, Noida",
+      "We wanted online guitar classes but did not want random YouTube-style teaching. Musicphonetics gave us a proper path.",
+    author: "NRI Parent, Dubai",
     sample: true,
   },
   {
     quote:
-      "As an adult beginner I was nervous, but the pacing was respectful and I never felt rushed.",
-    author: "Adult learner, Delhi",
-    sample: true,
-  },
-  {
-    quote:
-      "The monthly session with the Director kept us motivated and on track for the exam.",
-    author: "Parent, Faridabad",
+      "My son was shy in the first class. Now he plays in front of family without hesitation.",
+    author: "Parent, Bengaluru",
     sample: true,
   },
 ];
@@ -250,11 +262,11 @@ export const PACKAGES: Package[] = [
 // SAMPLE placeholders — clearly disclosed in the hero and Reviews section.
 // TODO(content): replace with verified parent testimonials before launch.
 export const HERO_REVIEWS: { quote: string; author: string }[] = [
-  { quote: "My daughter actually looks forward to practice now.", author: "Parent, South Delhi" },
-  { quote: "The structure changed everything for my son.", author: "Parent, Gurugram" },
-  { quote: "Serious learning, without the stress.", author: "Parent, Noida" },
-  { quote: "As an adult beginner, I never felt rushed.", author: "Adult learner, Delhi" },
-  { quote: "Every class had a clear purpose.", author: "Parent, Faridabad" },
+  { quote: "My daughter finally practises without us pushing her.", author: "Parent, Gurgaon" },
+  { quote: "Three months later, even I joined keyboard classes.", author: "Working Parent, Mumbai" },
+  { quote: "Punctual, polite, and proper feedback after every class.", author: "Parent, Delhi NCR" },
+  { quote: "A proper path — not random YouTube-style teaching.", author: "NRI Parent, Dubai" },
+  { quote: "Now he plays in front of family without hesitation.", author: "Parent, Bengaluru" },
 ];
 
 export const PACKAGES_NOTE =
@@ -265,36 +277,44 @@ export const PACKAGES_NOTE =
 // ---------------------------------------------------------------------------
 export const FAQS: FaqItem[] = [
   {
-    q: "Do you offer home classes?",
-    a: "Yes. Home classes across Delhi NCR are our current primary format, delivered by carefully selected teachers.",
+    q: "How does the trial class work?",
+    a: "You begin with a short guided conversation on WhatsApp so we understand the learner. We then arrange a trial class with a matched teacher — no long commitment to start. After the trial, we recommend a clear learning path.",
   },
   {
-    q: "Do you offer online classes?",
-    a: "Yes. Online one-to-one classes are available for students who prefer to learn from anywhere.",
+    q: "Do you offer online music classes?",
+    a: "Yes. Live one-to-one online classes follow the same structured method, so students can learn from any city or country with the same standard.",
   },
   {
-    q: "Are group classes available?",
-    a: "Our current primary format is one-to-one learning. Group batches and academy programs open when a suitable batch is formed. If you are interested in group learning, tell us during enquiry so we can keep you updated.",
+    q: "Do you offer home music classes?",
+    a: "Yes. Home classes are available across Delhi NCR, delivered by carefully selected, verified teachers — with more cities opening as we expand.",
   },
   {
-    q: "How are teachers selected?",
-    a: "Teachers are chosen with care and verified before they teach. We match each student to a teacher based on the learner's instrument, level, and goal.",
-  },
-  {
-    q: "Do you prepare students for Trinity?",
-    a: "Yes. We offer structured Trinity preparation for exam-oriented learners, integrated into the wider Musicphonetics method.",
+    q: "Which cities do you serve?",
+    a: "We are live in Delhi NCR and online today, with Mumbai, Bengaluru, Hyderabad, Chennai, Pune, and Kolkata next, followed by international locations. Availability may vary by city.",
   },
   {
     q: "Can adults join?",
-    a: "Absolutely. We teach beginners and serious learners of all ages, with pacing that respects each student.",
+    a: "Absolutely. We teach complete beginners and serious learners of all ages, with pacing that respects each student. Many parents start alongside their children.",
   },
   {
-    q: "How does the first session work?",
-    a: "You begin with a short guided conversation on WhatsApp. We then recommend the right teacher, format, and plan before your first lesson.",
+    q: "Can children prepare for graded music exams?",
+    a: "Yes. We offer structured preparation aligned to recognised graded pathways such as Trinity College London, ABRSM, and Rockschool, where applicable.",
   },
   {
-    q: "Who confirms the teacher and slot?",
-    a: "Final teacher, slot, fee, and booking are confirmed personally by Director Abhishek and the Musicphonetics team.",
+    q: "How are teachers selected?",
+    a: "Every teacher passes a seven-stage quality pipeline — application, interview, skill assessment, teaching evaluation, background verification, founder approval — before they teach a single class.",
+  },
+  {
+    q: "How many classes are included in one cycle?",
+    a: "A standard learning cycle is eight classes, giving students a steady monthly rhythm that builds real momentum.",
+  },
+  {
+    q: "How do parents track progress?",
+    a: "Learning follows a clear, staged path with feedback after classes, so parents always know what their child is working on and what comes next.",
+  },
+  {
+    q: "Can NRI students join?",
+    a: "Yes. NRI students learn through our live online classes, following the same structured method as students in India.",
   },
 ];
 

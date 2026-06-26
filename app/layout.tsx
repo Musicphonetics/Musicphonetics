@@ -21,24 +21,43 @@ const body = Hanken_Grotesk({
 export const metadata: Metadata = {
   metadataBase: new URL("https://musicphonetics.com"),
   title: {
-    default: "Musicphonetics — Structured music education in Delhi NCR",
+    default:
+      "Musicphonetics — Structured music classes in India, online & home",
     template: "%s · Musicphonetics",
   },
   description:
-    "Premium, director-led music education across Delhi NCR. Personal one-to-one home and online classes, with a structured method built for serious learners and families.",
+    "An education-first music company founded in India. Structured, director-led guitar, piano, keyboard, vocal and music-theory classes — home and online — across Delhi NCR and beyond, with Trinity, ABRSM and Rockschool exam preparation.",
   keywords: [
-    "music classes Delhi NCR",
-    "music education",
-    "guitar lessons",
-    "piano lessons",
-    "Trinity preparation",
+    "music classes in India",
+    "online music classes",
+    "home music classes",
+    "guitar classes",
+    "piano classes",
+    "keyboard classes",
+    "vocal classes",
+    "music classes for kids",
+    "music classes for adults",
+    "Trinity music exam preparation",
+    "ABRSM preparation",
+    "Rockschool preparation",
+    "music classes in Delhi NCR",
+    "global online music lessons",
     "Musicphonetics",
   ],
+  alternates: { canonical: "/" },
   openGraph: {
-    title: "Musicphonetics — Structured music education in Delhi NCR",
+    title: "Musicphonetics — Building the future of music education",
     description:
-      "Personal, director-led music education. Home, online, and future academy pathways.",
+      "Founded in India. Teaching across cities. Expanding globally. Structured, director-led music classes — home and online.",
     type: "website",
+    siteName: "Musicphonetics",
+    locale: "en_IN",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Musicphonetics — Building the future of music education",
+    description:
+      "Founded in India. Teaching across cities. Expanding globally.",
   },
 };
 

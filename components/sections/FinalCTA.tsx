@@ -1,7 +1,8 @@
 import { Section } from "@/components/ui/Section";
 import { Button } from "@/components/ui/Button";
+import { Magnetic } from "@/components/ui/Magnetic";
 import { Reveal } from "@/components/ui/Reveal";
-import { whatsappLink } from "@/lib/data";
+import { whatsappLink, whatsappTrialLink } from "@/lib/data";
 
 interface FinalCTAProps {
   headline?: string;
@@ -9,7 +10,7 @@ interface FinalCTAProps {
 }
 
 export function FinalCTA({
-  headline = "Begin your music journey with structure.",
+  headline = "Start with one trial. Continue with a clear path.",
   text = "Tell us what you are looking for. We will guide you toward the right path.",
 }: FinalCTAProps) {
   return (
@@ -22,10 +23,23 @@ export function FinalCTA({
           <p className="mx-auto mt-4 max-w-xl text-lg leading-relaxed text-paper/75">
             {text}
           </p>
-          <div className="mt-8 flex justify-center">
-            <Button href={whatsappLink()} external variant="light" size="lg">
-              Message Musicphonetics on WhatsApp
-            </Button>
+          <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
+            <Magnetic>
+              <Button href={whatsappTrialLink()} external variant="light" size="lg">
+                Book a Trial
+              </Button>
+            </Magnetic>
+            <Magnetic>
+              <Button
+                href={whatsappLink()}
+                external
+                variant="secondary"
+                size="lg"
+                className="border-white/25 text-paper hover:border-white"
+              >
+                Enquire on WhatsApp
+              </Button>
+            </Magnetic>
           </div>
         </div>
       </Reveal>

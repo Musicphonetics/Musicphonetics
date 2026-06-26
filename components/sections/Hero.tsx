@@ -3,160 +3,208 @@
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { Magnetic } from "@/components/ui/Magnetic";
-import { RotatingWords } from "@/components/ui/RotatingWords";
-import { CountUp } from "@/components/ui/CountUp";
-import { MusicScene } from "@/components/ui/MusicScene";
-import { FloatingReviews } from "@/components/sections/FloatingReviews";
+import { whatsappLink, whatsappTrialLink } from "@/lib/data";
+import { INDIA_CITIES, GLOBAL_CITIES } from "@/lib/geo";
 import { cn } from "@/lib/utils";
 
 /**
- * Hero 3.0 — a cinematic, living music environment with a film-trailer reveal:
- *   stage 0  the musical environment is alive
- *   stage 1  headline + founder vision fade in
- *   stage 2  CTAs
- *   stage 3  first verified review floats in
- *   stage 4  statistics count up
- * Under reduced-motion everything is shown at once (stage jumps to max).
+ * Hero — cinematic India→global sequence:
+ *   0  city lights rise from Indian cities (pulsing like sound waves)
+ *   1  thin golden staff lines connect the cities
+ *   2  a glowing "M" forms over the map
+ *   3  the "M" resolves into the Musicphonetics wordmark
+ *   4  the camera zooms out from India to a global map; new lights appear
+ *   5  hero text + CTAs
+ * Under reduced-motion the final state (5) is shown immediately.
  */
 export function Hero() {
-  const [stage, setStage] = useState(0);
+  const [phase, setPhase] = useState(0);
 
   useEffect(() => {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      setStage(4);
+      setPhase(5);
       return;
     }
     const timers = [
-      setTimeout(() => setStage(1), 900),
-      setTimeout(() => setStage(2), 1600),
-      setTimeout(() => setStage(3), 2600),
-      setTimeout(() => setStage(4), 3400),
+      setTimeout(() => setPhase(1), 1300),
+      setTimeout(() => setPhase(2), 2200),
+      setTimeout(() => setPhase(3), 3000),
+      setTimeout(() => setPhase(4), 3900),
+      setTimeout(() => setPhase(5), 4700),
     ];
     return () => timers.forEach(clearTimeout);
   }, []);
 
-  const cue = (need: number) => cn("mp-cue", stage >= need && "mp-cue-in");
+  // Connecting lines among Indian cities (suggesting musical staff lines).
+  const hub = INDIA_CITIES.find((c) => c.name === "Delhi")!;
 
   return (
     <section className="relative flex min-h-[640px] items-center overflow-hidden bg-ink text-paper lg:min-h-[calc(100vh-4rem)]">
-      {/* Background: living music scene */}
-      <MusicScene className="absolute inset-0 h-full w-full" />
-
-      {/* Ambient depth lighting */}
+      {/* Ambient depth */}
       <div aria-hidden="true" className="pointer-events-none absolute inset-0">
-        <div className="absolute -left-32 top-0 h-[480px] w-[480px] rounded-full bg-deep-gold/20 blur-3xl" />
-        <div className="absolute -right-24 bottom-0 h-[420px] w-[420px] rounded-full bg-feature-green/40 blur-3xl" />
-        <div className="absolute inset-0 bg-gradient-to-b from-ink/40 via-transparent to-ink" />
+        <div className="absolute left-1/3 top-0 h-[460px] w-[460px] rounded-full bg-deep-gold/15 blur-3xl" />
+        <div className="absolute -right-20 bottom-0 h-[420px] w-[420px] rounded-full bg-feature-green/40 blur-3xl" />
       </div>
 
-      {/* Floating verified reviews */}
-      <FloatingReviews visible={stage >= 3} />
+      {/* ===== Map stage ===== */}
+      <div aria-hidden="true" className="absolute inset-0 overflow-hidden">
+        {/* World layer (revealed on zoom-out) */}
+        <div
+          className={cn(
+            "absolute inset-0 transition-opacity duration-[1200ms]",
+            phase >= 4 ? "opacity-100" : "opacity-0"
+          )}
+          style={{
+            backgroundImage:
+              "radial-gradient(rgba(246,244,239,0.10) 1.2px, transparent 1.2px)",
+            backgroundSize: "26px 26px",
+          }}
+        >
+          {GLOBAL_CITIES.map((c, i) => (
+            <span
+              key={c.name}
+              className="absolute -translate-x-1/2 -translate-y-1/2"
+              style={{ left: `${c.x}%`, top: `${c.y}%`, transitionDelay: `${i * 120}ms` }}
+            >
+              <span className="relative flex h-2.5 w-2.5">
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-gold/60" />
+                <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-gold" />
+              </span>
+              <span className="absolute left-3 top-1/2 -translate-y-1/2 whitespace-nowrap text-[10px] text-paper/60">
+                {c.name}
+              </span>
+            </span>
+          ))}
+        </div>
 
-      {/* Foreground copy */}
+        {/* India layer (scales down + shifts on zoom-out) */}
+        <div
+          className="absolute inset-0 transition-transform duration-[1400ms] ease-in-out"
+          style={{
+            transform:
+              phase >= 4 ? "scale(0.4) translate(36%, 8%)" : "scale(1) translate(0,0)",
+          }}
+        >
+          {/* Staff lines */}
+          <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="absolute inset-0 h-full w-full">
+            {INDIA_CITIES.filter((c) => c.name !== "Delhi").map((c, i) => (
+              <line
+                key={c.name}
+                x1={hub.x}
+                y1={hub.y}
+                x2={c.x}
+                y2={c.y}
+                stroke="#C9A227"
+                strokeWidth="0.18"
+                pathLength={1}
+                style={{
+                  strokeDasharray: 1,
+                  strokeDashoffset: phase >= 1 ? 0 : 1,
+                  opacity: phase >= 1 ? 0.5 : 0,
+                  transition: `stroke-dashoffset 1s ease-out ${i * 60}ms, opacity 0.6s ease ${i * 60}ms`,
+                }}
+              />
+            ))}
+          </svg>
+
+          {/* City lights */}
+          {INDIA_CITIES.map((c, i) => (
+            <span
+              key={c.name}
+              className="absolute -translate-x-1/2 -translate-y-1/2"
+              style={{ left: `${c.x}%`, top: `${c.y}%` }}
+            >
+              <span
+                className="relative flex h-3 w-3"
+                style={{
+                  opacity: phase >= 0 ? 1 : 0,
+                  animation: `mp-rise 0.6s ease-out ${i * 90}ms both`,
+                }}
+              >
+                <span
+                  className="absolute inline-flex h-full w-full rounded-full bg-gold/50"
+                  style={{ animation: `mp-pulse 2.4s ease-in-out ${i * 120}ms infinite` }}
+                />
+                <span className="relative inline-flex h-3 w-3 rounded-full bg-gold shadow-[0_0_8px_rgba(201,162,39,0.8)]" />
+              </span>
+              <span
+                className="absolute left-3.5 top-1/2 -translate-y-1/2 whitespace-nowrap text-[10px] font-medium text-paper/70 transition-opacity duration-500"
+                style={{ opacity: phase >= 0 && phase < 4 ? 1 : 0 }}
+              >
+                {c.name}
+              </span>
+            </span>
+          ))}
+
+          {/* The forming "M" → wordmark */}
+          <div className="pointer-events-none absolute inset-0 grid place-items-center">
+            <span
+              className="font-display font-semibold text-gold transition-all duration-700"
+              style={{
+                fontSize: "min(34vw, 22rem)",
+                opacity: phase === 2 ? 0.92 : 0,
+                transform: phase >= 3 ? "scale(1.15)" : "scale(1)",
+                filter: "drop-shadow(0 0 30px rgba(201,162,39,0.45))",
+              }}
+            >
+              M
+            </span>
+          </div>
+        </div>
+
+        {/* Centered wordmark reveal (phase 3) */}
+        <div
+          className="pointer-events-none absolute inset-0 grid place-items-center transition-all duration-700"
+          style={{
+            opacity: phase === 3 ? 1 : 0,
+            transform: phase >= 4 ? "scale(0.9) translateY(-6%)" : "scale(1)",
+          }}
+        >
+          <span className="font-display text-4xl font-semibold tracking-tight text-gold sm:text-6xl">
+            Musicphonetics
+          </span>
+        </div>
+
+        {/* Vignette + bottom fade for text legibility */}
+        <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/30 to-ink/50" />
+      </div>
+
+      {/* ===== Foreground copy ===== */}
       <div className="container-mp relative z-10 py-20 sm:py-24">
-        <div className="max-w-3xl">
-          <p className={cn(cue(1), "eyebrow text-gold")}>
-            Delhi NCR · Founded in India, built for the world
-          </p>
-
-          <h1
-            className={cn(
-              cue(1),
-              "mt-5 text-[2.7rem] font-semibold leading-[1.02] text-paper sm:text-6xl lg:text-7xl"
-            )}
-            style={{ transitionDelay: "120ms" }}
-          >
+        <div
+          className="max-w-2xl transition-all duration-1000"
+          style={{
+            opacity: phase >= 5 ? 1 : 0,
+            transform: phase >= 5 ? "translateY(0)" : "translateY(16px)",
+          }}
+        >
+          <p className="eyebrow text-gold">Education-first music company</p>
+          <h1 className="mt-5 text-[2.6rem] font-semibold leading-[1.04] text-paper sm:text-6xl lg:text-7xl">
             Building the future of{" "}
             <span className="mp-shimmer">music education.</span>
           </h1>
-
-          <p
-            className={cn(cue(1), "relative mt-5 h-7 text-lg font-medium text-paper/80 sm:text-xl")}
-            style={{ transitionDelay: "240ms" }}
-          >
-            <RotatingWords
-              words={[
-                "One student at a time.",
-                "One structured method.",
-                "One trusted network.",
-                "One music movement.",
-              ]}
-              className="relative inline-block"
-            />
+          <p className="mt-5 text-lg text-paper/75 sm:text-xl">
+            Founded in India. Teaching across cities. Expanding globally.
           </p>
-
-          <p
-            className={cn(cue(1), "mt-6 max-w-xl text-base leading-relaxed text-paper/70 sm:text-lg")}
-            style={{ transitionDelay: "360ms" }}
-          >
-            Musicphonetics is an education-first music company. Structured,
-            director-led learning today — growing into a global ecosystem of
-            students, teachers, artists, and schools.
-          </p>
-
-          <div className={cn(cue(2), "mt-8 flex flex-col gap-3 sm:flex-row")}>
+          <div className="mt-8 flex flex-col gap-3 sm:flex-row">
             <Magnetic>
-              <Button href="/#pathways" size="lg" variant="light">
-                Discover your pathway
+              <Button href={whatsappTrialLink()} external size="lg" variant="light">
+                Book a Trial
               </Button>
             </Magnetic>
             <Magnetic>
               <Button
-                href="/#ecosystem"
+                href={whatsappLink()}
+                external
                 size="lg"
                 variant="secondary"
                 className="border-white/25 text-paper hover:border-white"
               >
-                Explore the ecosystem
+                Enquire on WhatsApp
               </Button>
             </Magnetic>
           </div>
-
-          {/* Animated statistics */}
-          <dl className={cn(cue(2), "mt-12 flex flex-wrap gap-x-10 gap-y-5")}>
-            <div>
-              <dt className="font-display text-3xl font-semibold text-gold">
-                <CountUp value={10} suffix="+" play={stage >= 4} />
-              </dt>
-              <dd className="text-xs uppercase tracking-wider text-paper/50">
-                Years teaching
-              </dd>
-            </div>
-            <div>
-              <dt className="font-display text-3xl font-semibold text-gold">
-                <CountUp value={1100} suffix="+" play={stage >= 4} />
-              </dt>
-              <dd className="text-xs uppercase tracking-wider text-paper/50">
-                Students taught
-              </dd>
-            </div>
-            <div>
-              <dt className="font-display text-3xl font-semibold text-gold">
-                Director-led
-              </dt>
-              <dd className="text-xs uppercase tracking-wider text-paper/50">
-                Method
-              </dd>
-            </div>
-          </dl>
-
-          <p className={cn(cue(3), "mt-6 text-xs text-paper/40")}>
-            Sample reviews shown · verified parent testimonials added at launch
-          </p>
         </div>
-      </div>
-
-      {/* Scroll cue */}
-      <div
-        aria-hidden="true"
-        className={cn(
-          cue(4),
-          "absolute bottom-6 left-1/2 -translate-x-1/2 text-paper/40"
-        )}
-      >
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" className="animate-bounce">
-          <path d="M12 5v14M6 13l6 6 6-6" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
-        </svg>
       </div>
     </section>
   );
