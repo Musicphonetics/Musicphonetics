@@ -48,8 +48,8 @@ export function SeoContent() {
               <strong className="font-semibold text-ink">music classes in Delhi NCR</strong>{" "}
               with home and online formats, and we are expanding to Mumbai,
               Bengaluru, Hyderabad, Chennai, Pune, and Kolkata — followed by{" "}
-              international locations including Dubai and Singapore. For families
-              abroad, our{" "}
+              international locations including Dubai, Singapore, and Malaysia.
+              For families abroad, our{" "}
               <strong className="font-semibold text-ink">global online music lessons</strong>{" "}
               bring the same structure to NRI students anywhere in the world.
             </p>

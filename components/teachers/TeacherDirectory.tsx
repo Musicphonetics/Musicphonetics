@@ -5,27 +5,26 @@ import { TeacherCard } from "./TeacherCard";
 import { Button } from "@/components/ui/Button";
 import { TEACHER_FACETS } from "@/lib/teachers";
 import type { TeacherProfile } from "@/lib/teachers";
-import { whatsappLink } from "@/lib/data";
-import { cn } from "@/lib/utils";
+import { whatsappTrialLink } from "@/lib/data";
 
 interface Filters {
   q: string;
-  instrument: string;
   city: string;
-  level: string;
-  language: string;
-  ageGroup: string;
+  country: string;
+  instrument: string;
   mode: string;
+  ageGroup: string;
+  exam: string;
 }
 
 const EMPTY: Filters = {
   q: "",
-  instrument: "",
   city: "",
-  level: "",
-  language: "",
-  ageGroup: "",
+  country: "",
+  instrument: "",
   mode: "",
+  ageGroup: "",
+  exam: "",
 };
 
 function Select({
@@ -58,16 +57,13 @@ function Select({
   );
 }
 
-/**
- * Scalable teacher discovery — search + facet filters over any teacher set.
- * Built to handle thousands of teachers without changing the UX.
- */
+/** Scalable teacher discovery — search + facet filters over any teacher set. */
 export function TeacherDirectory({
   teachers,
-  showCityFilter = true,
+  showCountryFilter = true,
 }: {
   teachers: TeacherProfile[];
-  showCityFilter?: boolean;
+  showCountryFilter?: boolean;
 }) {
   const [f, setF] = useState<Filters>(EMPTY);
   const set = (key: keyof Filters) => (v: string) =>
@@ -83,12 +79,12 @@ export function TeacherDirectory({
           .includes(q)
       )
         return false;
-      if (f.instrument && !t.instruments.includes(f.instrument)) return false;
       if (f.city && !t.cities.includes(f.city)) return false;
-      if (f.level && !t.levels.includes(f.level as never)) return false;
-      if (f.language && !t.languages.includes(f.language)) return false;
-      if (f.ageGroup && !t.ageGroups.includes(f.ageGroup as never)) return false;
+      if (f.country && t.country !== f.country) return false;
+      if (f.instrument && !t.instruments.includes(f.instrument)) return false;
       if (f.mode && !t.modes.includes(f.mode as never)) return false;
+      if (f.ageGroup && !t.ageGroups.includes(f.ageGroup as never)) return false;
+      if (f.exam && !t.examPathways.includes(f.exam as never)) return false;
       return true;
     });
   }, [teachers, f]);
@@ -97,7 +93,6 @@ export function TeacherDirectory({
 
   return (
     <div>
-      {/* Search */}
       <div className="rounded-2xl border border-hairline bg-paper p-4 shadow-card sm:p-5">
         <div className="relative">
           <svg
@@ -114,27 +109,21 @@ export function TeacherDirectory({
           <input
             value={f.q}
             onChange={(e) => set("q")(e.target.value)}
-            placeholder="Search by name, instrument, area…"
+            placeholder="Search by name, instrument, city…"
             aria-label="Search teachers"
             className="w-full rounded-xl border border-hairline bg-white py-3 pl-11 pr-4 text-sm text-ink placeholder:text-ink/40 focus:border-ink focus:outline-none"
           />
         </div>
 
-        {/* Facets */}
-        <div
-          className={cn(
-            "mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3",
-            showCityFilter ? "lg:grid-cols-6" : "lg:grid-cols-5"
+        <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
+          <Select label="City" value={f.city} options={TEACHER_FACETS.cities} onChange={set("city")} />
+          {showCountryFilter && (
+            <Select label="Country" value={f.country} options={TEACHER_FACETS.countries} onChange={set("country")} />
           )}
-        >
           <Select label="Instrument" value={f.instrument} options={TEACHER_FACETS.instruments} onChange={set("instrument")} />
-          {showCityFilter && (
-            <Select label="City / Area" value={f.city} options={TEACHER_FACETS.cities} onChange={set("city")} />
-          )}
-          <Select label="Level" value={f.level} options={TEACHER_FACETS.levels} onChange={set("level")} />
-          <Select label="Language" value={f.language} options={TEACHER_FACETS.languages} onChange={set("language")} />
+          <Select label="Home / Online" value={f.mode} options={TEACHER_FACETS.modes} onChange={set("mode")} />
           <Select label="Age group" value={f.ageGroup} options={TEACHER_FACETS.ageGroups} onChange={set("ageGroup")} />
-          <Select label="Mode" value={f.mode} options={TEACHER_FACETS.modes} onChange={set("mode")} />
+          <Select label="Exam pathway" value={f.exam} options={TEACHER_FACETS.examPathways} onChange={set("exam")} />
         </div>
 
         <div className="mt-4 flex items-center justify-between gap-3">
@@ -153,7 +142,6 @@ export function TeacherDirectory({
         </div>
       </div>
 
-      {/* Results */}
       {results.length > 0 ? (
         <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {results.map((t) => (
@@ -162,16 +150,13 @@ export function TeacherDirectory({
         </div>
       ) : (
         <div className="mt-8 rounded-2xl border border-hairline bg-white p-10 text-center">
-          <p className="text-ink/70">
-            No teachers match those filters yet.
-          </p>
+          <p className="text-ink/70">No teachers match those filters yet.</p>
           <p className="mt-1 text-sm text-ink/50">
-            Tell us what you&apos;re looking for and we&apos;ll match you
-            personally.
+            Tell us what you&apos;re looking for and we&apos;ll match you personally.
           </p>
           <div className="mt-5 flex justify-center">
-            <Button href={whatsappLink()} external variant="primary">
-              Enquire on WhatsApp
+            <Button href={whatsappTrialLink()} external variant="primary">
+              Book a Trial
             </Button>
           </div>
         </div>

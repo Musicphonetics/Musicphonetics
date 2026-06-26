@@ -85,7 +85,7 @@ export default function RegionPage({
 
       {live ? (
         <Section background="white" spacing="lg">
-          <TeacherDirectory teachers={teachers} showCityFilter />
+          <TeacherDirectory teachers={teachers} showCountryFilter={false} />
         </Section>
       ) : (
         <Section background="white" spacing="lg">

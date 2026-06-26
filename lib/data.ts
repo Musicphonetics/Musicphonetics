@@ -197,7 +197,7 @@ export const REVIEWS: Review[] = [
   {
     quote:
       "We had tried two teachers before this. The difference here was the structure. My daughter finally started practising without us pushing her every day.",
-    author: "Parent, Gurgaon",
+    author: "Ritu, Gurgaon",
     sample: true,
   },
   {

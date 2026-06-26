@@ -1,25 +1,27 @@
 import { Section, SectionHeading } from "@/components/ui/Section";
 import { Reveal } from "@/components/ui/Reveal";
 import { Badge } from "@/components/ui/Badge";
+import { WorldMapShape } from "@/components/ui/WorldMap";
 import { ROADMAP, ROADMAP_DISCLAIMER } from "@/lib/geo";
 import { cn } from "@/lib/utils";
 
 type Tone = "live" | "soon" | "future";
 
+// Coordinates align to the WorldMapShape canvas (percentages of a 1000×480 box).
 const MARKERS: { name: string; x: number; y: number; tone: Tone }[] = [
-  { name: "Delhi NCR", x: 64, y: 40, tone: "live" },
-  { name: "Mumbai", x: 60, y: 49, tone: "soon" },
-  { name: "Pune", x: 60, y: 52, tone: "soon" },
-  { name: "Hyderabad", x: 63, y: 51, tone: "soon" },
-  { name: "Bengaluru", x: 63, y: 56, tone: "soon" },
-  { name: "Chennai", x: 65, y: 56, tone: "soon" },
-  { name: "Kolkata", x: 68, y: 45, tone: "soon" },
-  { name: "Dubai", x: 56, y: 46, tone: "future" },
-  { name: "Kuala Lumpur", x: 73, y: 57, tone: "future" },
-  { name: "Singapore", x: 74, y: 60, tone: "future" },
-  { name: "London", x: 46, y: 28, tone: "future" },
-  { name: "Toronto", x: 20, y: 32, tone: "future" },
-  { name: "Sydney", x: 85, y: 80, tone: "future" },
+  { name: "Delhi NCR", x: 69, y: 40, tone: "live" },
+  { name: "Mumbai", x: 67, y: 47, tone: "soon" },
+  { name: "Pune", x: 67.5, y: 49, tone: "soon" },
+  { name: "Hyderabad", x: 69, y: 47.5, tone: "soon" },
+  { name: "Bengaluru", x: 69.5, y: 51, tone: "soon" },
+  { name: "Chennai", x: 71, y: 51, tone: "soon" },
+  { name: "Kolkata", x: 73, y: 44, tone: "soon" },
+  { name: "Dubai", x: 64.5, y: 43, tone: "future" },
+  { name: "Kuala Lumpur", x: 76.5, y: 56, tone: "future" },
+  { name: "Singapore", x: 77.8, y: 60, tone: "future" },
+  { name: "London", x: 49.8, y: 23, tone: "future" },
+  { name: "Toronto", x: 20.8, y: 20, tone: "future" },
+  { name: "Sydney", x: 86, y: 75, tone: "future" },
 ];
 
 const groupTone: Record<Tone, "green" | "gold" | "sample"> = {
@@ -40,16 +42,9 @@ export function Roadmap() {
 
       {/* Map */}
       <Reveal>
-        <div className="relative mt-12 overflow-hidden rounded-3xl border border-white/12 bg-white/5 p-6 sm:p-10">
-          <div
-            aria-hidden="true"
-            className="relative aspect-[2/1] w-full rounded-2xl"
-            style={{
-              backgroundImage:
-                "radial-gradient(rgba(246,244,239,0.16) 1.3px, transparent 1.3px)",
-              backgroundSize: "20px 20px",
-            }}
-          >
+        <div className="relative mt-12 overflow-hidden rounded-3xl border border-white/12 bg-white/[0.03] p-6 sm:p-10">
+          <div className="relative mx-auto aspect-[1000/480] w-full max-w-4xl">
+            <WorldMapShape className="absolute inset-0 h-full w-full" />
             {MARKERS.map((m) => (
               <div
                 key={m.name}

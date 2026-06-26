@@ -11,8 +11,8 @@ export function ReviewsShowcase() {
       <div className="container-mp relative">
         <SectionHeading
           eyebrow="Loved by parents"
-          title="The reviews sound like real families. Because they will."
-          intro="Sample reviews shown below — verified parent testimonials are stamped and added at launch."
+          title="Verified parent reviews."
+          intro="Written reviews shown today. Video reviews coming soon."
           invert
         />
 

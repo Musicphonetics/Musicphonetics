@@ -31,9 +31,15 @@ export function BrandArchitecture() {
         {DIVISIONS.map((d, i) => (
           <Reveal key={d.name} delay={(i % 4) * 70}>
             <div
-              className="group relative h-full overflow-hidden rounded-2xl border border-hairline bg-paper p-6 transition-all duration-300 hover:-translate-y-1.5"
+              className="group relative h-full overflow-hidden rounded-2xl border border-hairline bg-white p-6 transition-all duration-300 hover:-translate-y-1.5 hover:shadow-card-hover"
               style={{ ["--accent" as string]: d.accent }}
             >
+              {/* Top accent bar grows on hover */}
+              <div
+                aria-hidden="true"
+                className="absolute inset-x-0 top-0 h-1 origin-left scale-x-0 transition-transform duration-300 group-hover:scale-x-100"
+                style={{ background: d.accent }}
+              />
               {/* Accent glow on hover */}
               <div
                 aria-hidden="true"
@@ -41,8 +47,10 @@ export function BrandArchitecture() {
                 style={{ background: d.accent }}
               />
               <div
-                className="relative grid h-12 w-12 place-items-center rounded-xl text-white transition-transform duration-300 group-hover:scale-110"
-                style={{ background: d.accent }}
+                className="relative grid h-12 w-12 place-items-center rounded-2xl text-white shadow-card transition-transform duration-300 group-hover:scale-110"
+                style={{
+                  background: `linear-gradient(140deg, ${d.accent}, ${d.accent}cc)`,
+                }}
               >
                 <DivisionIcon icon={d.icon} />
               </div>

@@ -10,7 +10,7 @@ import { ImagePlaceholder } from "@/components/ui/ImagePlaceholder";
 import { FinalCTA } from "@/components/sections/FinalCTA";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { teacherJsonLd, breadcrumbJsonLd } from "@/lib/seo";
-import { whatsappLink } from "@/lib/data";
+import { whatsappLink, whatsappTrialLink } from "@/lib/data";
 import { TEACHERS, getTeacher, getRegion } from "@/lib/teachers";
 
 export function generateStaticParams() {
@@ -89,17 +89,20 @@ export default function TeacherProfilePage({
                 <div aria-hidden="true" className="absolute -right-3 -top-3 h-full w-full rounded-2xl border border-gold/40" />
                 <ImagePlaceholder label="Teacher headshot" aspect="portrait" className="relative" />
               </div>
-              <div className="mt-6">
+              <div className="mt-6 flex flex-col gap-3">
+                <Button href={whatsappTrialLink()} external variant="primary" size="lg" fullWidth>
+                  Book a Trial
+                </Button>
                 <Button
                   href={whatsappLink(
-                    `Hi Musicphonetics, I'm interested in lessons with ${t.name} (${t.instruments.join(", ")}).`
+                    `Hi Musicphonetics, I'd like to enquire about lessons with ${t.name} (${t.instruments.join(", ")}).`
                   )}
                   external
-                  variant="primary"
+                  variant="secondary"
                   size="lg"
                   fullWidth
                 >
-                  Enquire about {t.name.split("·").pop()?.trim() ?? "this teacher"}
+                  Enquire on WhatsApp
                 </Button>
               </div>
             </div>
