@@ -55,13 +55,12 @@ export const BRAND = {
 // Primary navigation
 // ---------------------------------------------------------------------------
 export const NAV_LINKS = [
-  { label: "Classes", href: "/#classes" },
-  { label: "How It Works", href: "/#how-we-do-it" },
-  { label: "Stories", href: "/#stories" },
-  { label: "Founder", href: "/founder" },
-  { label: "Reviews", href: "/reviews" },
+  { label: "Programs", href: "/#programs" },
+  { label: "Teachers", href: "/teachers" },
   { label: "Standards", href: "/standards" },
-  { label: "Partners", href: "/#partners" },
+  { label: "Stories", href: "/#stories" },
+  { label: "Reviews", href: "/reviews" },
+  { label: "Founder", href: "/founder" },
 ];
 
 // Trust line shown under the hero and elsewhere.

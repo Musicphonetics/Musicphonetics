@@ -27,11 +27,11 @@ export function ProgramsInteractive() {
   const [open, setOpen] = useState(0);
 
   return (
-    <Section id="classes" background="paper" spacing="lg">
+    <Section id="programs" background="paper" spacing="lg">
       <SectionHeading
         eyebrow="Programs"
-        title="Choose your instrument. See exactly what to expect."
-        intro="Every program follows the same structured, director-led method — with real outcomes, not vague promises."
+        title="What can you learn?"
+        intro="Every program follows the same structured, director-led method — with real outcomes, not vague promises. Tap any program to see exactly what to expect."
       />
       <div className="mx-auto mt-12 max-w-3xl space-y-3">
         {PROGRAMS.map((p, i) => {
@@ -67,8 +67,8 @@ export function ProgramsInteractive() {
                       <Detail label="Teacher availability" value={p.availability} />
                       <Detail label="Typical outcome" value={p.outcome} />
                     </dl>
-                    <a href="/start" className="mt-5 inline-flex min-h-[48px] items-center rounded-full bg-ink px-6 text-sm font-semibold text-paper transition-colors hover:bg-[#0f131c]">
-                      Book a Trial
+                    <a href={`/start?instrument=${encodeURIComponent(p.name)}`} className="mt-5 inline-flex min-h-[48px] items-center rounded-full bg-ink px-6 text-sm font-semibold text-paper transition-colors hover:bg-[#0f131c]">
+                      Start with {p.name}
                     </a>
                   </div>
                 </div>

@@ -1,5 +1,6 @@
 export type InstrumentKey =
-  | "guitar" | "piano" | "keyboard" | "vocals" | "drums" | "violin" | "ukulele";
+  | "guitar" | "piano" | "keyboard" | "vocals" | "drums" | "violin" | "ukulele"
+  | "bass" | "production" | "theory";
 
 /** Premium monochrome line icons for instruments (hero + onboarding). */
 export function InstrumentIcon({ name, size = 30 }: { name: InstrumentKey; size?: number }) {
@@ -23,5 +24,11 @@ export function InstrumentIcon({ name, size = 30 }: { name: InstrumentKey; size?
       return <svg {...p}><path d="M14 3l4 4-2 2 1 1-2 2a3.5 3.5 0 1 1-2-2l2-2-1-1 2-2z" /><path d="M9 12l3 3" /><circle cx="8" cy="16" r="3.2" /></svg>;
     case "ukulele":
       return <svg {...p}><circle cx="9" cy="15" r="4.5" /><path d="M12.5 11.5L19 5M17 3l3 3M9 11v8" /></svg>;
+    case "bass":
+      return <svg {...p}><path d="M16 3l4 4-2 2-7 7a3 3 0 1 1-2-2l7-7-2-2 2-2z" /><circle cx="9" cy="16" r="0.8" /></svg>;
+    case "production":
+      return <svg {...p}><path d="M6 4v16M12 4v16M18 4v16" /><circle cx="6" cy="9" r="1.6" /><circle cx="12" cy="14" r="1.6" /><circle cx="18" cy="8" r="1.6" /></svg>;
+    case "theory":
+      return <svg {...p}><path d="M9 18V5l11-2v12" /><circle cx="6" cy="18" r="3" /><circle cx="17" cy="15" r="3" /></svg>;
   }
 }

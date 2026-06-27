@@ -17,11 +17,14 @@ export interface InstrumentOption extends Option {
 export const INSTRUMENTS: InstrumentOption[] = [
   { value: "Guitar", label: "Guitar", icon: "guitar" },
   { value: "Piano", label: "Piano", icon: "piano" },
-  { value: "Keyboard", label: "Keyboard", icon: "keyboard" },
   { value: "Vocals", label: "Vocals", icon: "vocals" },
+  { value: "Keyboard", label: "Keyboard", icon: "keyboard" },
   { value: "Drums", label: "Drums", icon: "drums" },
   { value: "Violin", label: "Violin", icon: "violin" },
   { value: "Ukulele", label: "Ukulele", icon: "ukulele" },
+  { value: "Bass", label: "Bass", icon: "bass" },
+  { value: "Music Production", label: "Music Production", icon: "production" },
+  { value: "Theory", label: "Music Theory", icon: "theory" },
 ];
 
 export const INSTRUMENT_VALUES = INSTRUMENTS.map((i) => i.value);

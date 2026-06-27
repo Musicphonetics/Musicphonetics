@@ -26,10 +26,14 @@ export function FounderFeature() {
       <AuroraBackground />
       <div className="container-mp relative">
         <Reveal>
-          <p className="eyebrow text-center text-gold">The founder</p>
+          <p className="eyebrow text-center text-gold">Why Musicphonetics exists</p>
           <h2 className="mx-auto mt-4 max-w-3xl text-center text-3xl font-semibold leading-tight sm:text-5xl">
-            The pattern nobody else was seeing.
+            One guitar. One student. <span className="mp-shimmer">One conviction.</span>
           </h2>
+          <p className="mx-auto mt-5 max-w-xl text-center text-lg leading-relaxed text-paper/70">
+            After 1,100+ students, the founder saw what most miss: talent was
+            never the problem. The system was. So he built a better one.
+          </p>
         </Reveal>
 
         <div className="mt-16 grid items-center gap-12 lg:grid-cols-[0.9fr_1.1fr] lg:gap-16">

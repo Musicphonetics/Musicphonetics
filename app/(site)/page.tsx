@@ -1,12 +1,12 @@
 import { HeroConcierge } from "@/components/sections/HeroConcierge";
 import { MobileTabs } from "@/components/sections/MobileTabs";
+import { HowWeDoIt } from "@/components/sections/HowWeDoIt";
 import { ProgramsInteractive } from "@/components/sections/ProgramsInteractive";
+import { FounderFeature } from "@/components/sections/FounderFeature";
+import { TeacherShowcase } from "@/components/sections/TeacherShowcase";
+import { TrustAndStandards } from "@/components/sections/TrustAndStandards";
 import { Stories } from "@/components/sections/Stories";
 import { ReviewsShowcase } from "@/components/sections/ReviewsShowcase";
-import { MoreThanLessons } from "@/components/sections/MoreThanLessons";
-import { FounderFeature } from "@/components/sections/FounderFeature";
-import { HowWeDoIt } from "@/components/sections/HowWeDoIt";
-import { TrustAndStandards } from "@/components/sections/TrustAndStandards";
 import { Partners } from "@/components/sections/Partners";
 import { QuickContact } from "@/components/sections/QuickContact";
 import { SeoContent } from "@/components/sections/SeoContent";
@@ -16,23 +16,20 @@ import { JsonLd } from "@/components/seo/JsonLd";
 import { faqJsonLd, coursesJsonLd, reviewsJsonLd } from "@/lib/seo";
 
 export default function HomePage() {
+  // Each section answers one question — no repetition.
   return (
     <>
       <JsonLd data={[faqJsonLd(), coursesJsonLd(), reviewsJsonLd()]} />
-      {/* One question. One purpose. The instrument selector starts the journey. */}
-      <HeroConcierge />
+      <HeroConcierge />        {/* Who are you? Why continue? */}
       <MobileTabs />
-
-      {/* Trust + product, building the decision below the fold */}
-      <ProgramsInteractive />
-      <Stories />
-      <ReviewsShowcase />
-      <MoreThanLessons />
-      <FounderFeature />
-      <HowWeDoIt />
-      <TrustAndStandards />
+      <HowWeDoIt />            {/* How does Musicphonetics work? */}
+      <ProgramsInteractive />  {/* What can I learn? */}
+      <FounderFeature />       {/* Why does Musicphonetics exist? */}
+      <TeacherShowcase />      {/* Who will teach me? */}
+      <TrustAndStandards />    {/* Why should I trust the quality? */}
+      <Stories />              {/* What happens after joining? */}
+      <ReviewsShowcase />      {/* What do families say? */}
       <Partners />
-      {/* Relocated contact actions — supporting, not competing with, the hero */}
       <QuickContact />
       <SeoContent />
       <FAQ />

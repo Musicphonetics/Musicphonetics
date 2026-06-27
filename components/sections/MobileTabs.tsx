@@ -5,11 +5,11 @@ import { cn } from "@/lib/utils";
 
 const TABS = [
   { label: "Overview", id: "overview" },
-  { label: "Classes", id: "classes" },
+  { label: "Programs", id: "programs" },
+  { label: "Teachers", id: "teachers" },
+  { label: "Standards", id: "standards" },
   { label: "Stories", id: "stories" },
   { label: "Reviews", id: "reviews" },
-  { label: "Standards", id: "standards" },
-  { label: "Partners", id: "partners" },
 ];
 
 /** Sticky, scrollable in-page tabs. Mobile only. */

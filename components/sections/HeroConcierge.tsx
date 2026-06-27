@@ -1,9 +1,7 @@
-import Link from "next/link";
 import { Reveal } from "@/components/ui/Reveal";
 import { SoundWave } from "@/components/ui/SoundWave";
 import { ImagePlaceholder } from "@/components/ui/ImagePlaceholder";
-import { InstrumentIcon } from "@/components/ui/InstrumentIcon";
-import { INSTRUMENTS } from "@/lib/onboarding";
+import { InstrumentSearch } from "@/components/sections/InstrumentSearch";
 
 export function HeroConcierge() {
   return (
@@ -13,48 +11,48 @@ export function HeroConcierge() {
         <div className="absolute left-1/3 top-[-20%] h-[520px] w-[720px] -translate-x-1/2 rounded-full bg-deep-gold/10 blur-[130px]" />
       </div>
 
-      <div className="container-mp relative grid items-center gap-12 py-16 sm:py-20 lg:min-h-[82vh] lg:grid-cols-[1.05fr_0.95fr] lg:gap-16 lg:py-24">
-        {/* Left — the one question */}
+      <div className="container-mp relative grid items-center gap-12 py-16 sm:py-20 lg:min-h-[86vh] lg:grid-cols-[1.05fr_0.95fr] lg:gap-16 lg:py-24">
+        {/* Left — brand identity, then begin */}
         <div>
           <Reveal>
             <p className="text-xs font-semibold uppercase tracking-[0.22em] text-gold/80">
               Musicphonetics
             </p>
           </Reveal>
-          <Reveal delay={100}>
-            <h1 className="mt-5 font-display text-4xl font-semibold leading-[1.05] sm:text-6xl">
-              What would you like to learn?
+
+          <Reveal delay={90}>
+            <h1 className="mt-5 font-display text-4xl font-semibold leading-[1.06] sm:text-5xl lg:text-6xl">
+              Premium music education, for every stage of the journey.
             </h1>
           </Reveal>
-          <Reveal delay={180}>
-            <p className="mt-5 max-w-md text-base leading-relaxed text-paper/65 sm:text-lg">
-              Premium one-to-one music lessons. Choose an instrument to begin —
-              we&apos;ll match you with the right teacher.
-            </p>
+
+          {/* Bible verse — part of the identity, elegant and subtle */}
+          <Reveal delay={170}>
+            <figure className="mt-6 border-l-2 border-gold/40 pl-4">
+              <blockquote className="font-display text-base italic leading-relaxed text-paper/70 sm:text-lg">
+                “Sing to him a new song; play skillfully, and shout for joy.”
+              </blockquote>
+              <figcaption className="mt-1 text-xs uppercase tracking-[0.18em] text-gold/70">
+                Psalm 33:3
+              </figcaption>
+            </figure>
           </Reveal>
 
-          {/* Instrument selector = the primary CTA */}
-          <Reveal delay={260}>
-            <div className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-4 lg:max-w-xl">
-              {INSTRUMENTS.map((o) => (
-                <Link
-                  key={o.value}
-                  href={`/start?instrument=${encodeURIComponent(o.value)}`}
-                  className="group mp-glass flex min-h-[92px] flex-col items-center justify-center rounded-2xl p-3 text-center transition-all duration-200 hover:-translate-y-1 hover:border-gold/50 active:scale-95"
-                >
-                  <span className="text-gold transition-transform duration-200 group-hover:scale-110">
-                    <InstrumentIcon name={o.icon} size={28} />
-                  </span>
-                  <span className="mt-2 text-sm font-semibold text-paper">{o.label}</span>
-                </Link>
-              ))}
+          {/* The one action — search */}
+          <Reveal delay={250}>
+            <div className="mt-9">
+              <p className="mb-3 text-sm font-medium text-paper/70">
+                What would you like to learn?
+              </p>
+              <InstrumentSearch />
             </div>
           </Reveal>
 
-          {/* Small, quiet trust line — not buttons */}
-          <Reveal delay={340}>
-            <p className="mt-8 text-sm text-paper/45">
-              1,200+ students · 10+ years · 4.9★ parent rating · Verified teachers
+          {/* Small, quiet trust + breadth */}
+          <Reveal delay={330}>
+            <p className="mt-7 max-w-md text-sm leading-relaxed text-paper/45">
+              Home &amp; online · Group &amp; workshops · Trinity &amp; Rockschool
+              preparation · Verified teacher network · 1,200+ students
             </p>
           </Reveal>
         </div>
