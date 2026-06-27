@@ -36,20 +36,20 @@ export interface StoryChapter {
 export const FOUNDER_STORY: StoryChapter[] = [
   {
     key: "beginning",
-    label: "The beginning",
-    title: "It started at the ground level.",
+    label: "2015 · The beginning",
+    title: "One guitar. Three chords. One student.",
     body: [
-      "Abhishek Kumar didn't begin with a business plan. He began with an instrument, a handful of students, and a question that wouldn't go away: why does learning music feel so different from one student to the next?",
-      "For years he taught the way most do — one student, one room, one song at a time.",
+      "It began in 2015 with one guitar, three basic chords, one student, and one dream. No office. No company. Only a desire to teach well.",
+      "There was nothing impressive about the setup — just a conviction that a child given the right start could carry music for the rest of their life.",
     ],
   },
   {
-    key: "experience",
-    label: "The experience",
-    title: "A decade. Eleven hundred students.",
+    key: "faith",
+    label: "The foundation",
+    title: "Faith built this journey.",
     body: [
-      "Over ten-plus years, he taught more than 1,100 one-on-one students — children, teenagers, and adults. Beginners nervous to make their first sound, and serious learners chasing real mastery.",
-      "He was invited to judge at colleges across Delhi NCR, and trusted by accomplished students from every walk of life — including ministers, IAS officers, and high-profile professionals.",
+      "Every step was taken on faith long before there was proof it would work. The belief came first; the company followed.",
+      "“Commit your work to the Lord, and your plans will be established.” — Proverbs 16:3",
     ],
   },
   {
@@ -57,28 +57,37 @@ export const FOUNDER_STORY: StoryChapter[] = [
     label: "The realisation",
     title: "The problem was never the teachers.",
     body: [
-      "After 1,100 students, one pattern became impossible to ignore. Great music education wasn't limited by talented teachers.",
-      "It was limited by inconsistent systems. The same lesson could transform one student and lose another — not because of skill, but because of structure.",
+      "After more than 1,100 one-on-one students — children, teenagers, and adults — one pattern became impossible to ignore. Talent was not the problem.",
+      "It was the system. The same lesson could transform one student and lose another — not because of skill, but because of structure.",
     ],
   },
   {
-    key: "vision",
-    label: "The vision",
-    title: "So he built a better system.",
+    key: "today",
+    label: "Today",
+    title: "From one student to a company.",
     body: [
-      "Musicphonetics is that system — a structured, director-led methodology distilled from years of real teaching, designed so every student gets the same standard of clarity from day one.",
-      "Education is the heart of the company. Everything else grows from it.",
+      "Today, Musicphonetics is a growing education company — teaching across cities, expanding globally, and built on systems, standards, and documentation.",
+      "Faith first. Music second. Business third. In that order, deliberately.",
     ],
   },
   {
     key: "future",
     label: "The future",
-    title: "This is bigger than lessons.",
+    title: "Train up a child in the way he should go.",
     body: [
-      "The long-term vision is an ecosystem where students, teachers, artists, creators, schools, and music businesses all connect through one trusted platform.",
-      "Founded in India. Designed for global growth. This is the beginning of a company that wants to shape the future of music education.",
+      "The mission is bigger than lessons: to give every learner a teacher, a structure, and a path — and to build a company that still serves families decades from now.",
+      "“Train up a child in the way he should go; even when he is old he will not depart from it.” — Proverbs 22:6",
     ],
   },
+];
+
+// Founder social & professional links.
+// TODO(content): replace placeholder URLs with the founder's real profiles.
+export const FOUNDER_SOCIALS = [
+  { label: "LinkedIn", href: "#", handle: "Professional profile" },
+  { label: "Instagram", href: "#", handle: "@musicphonetics" },
+  { label: "Email", href: "mailto:guitaristabhishek07@gmail.com", handle: "guitaristabhishek07@gmail.com" },
+  { label: "Founder Website", href: "#", handle: "abhishekkumar.in" },
 ];
 
 // Founder / company timeline. Future items are flagged as roadmap.
@@ -91,9 +100,9 @@ export interface TimelineItem {
 
 export const FOUNDER_TIMELINE: TimelineItem[] = [
   {
-    period: "The early years",
-    title: "Teaching, one student at a time",
-    body: "Years spent teaching one-on-one across Delhi NCR — learning what actually helps a student grow.",
+    period: "2015",
+    title: "One guitar, one student",
+    body: "Three chords, one dream, and a desire to teach well — with no office and no company.",
   },
   {
     period: "Building the method",

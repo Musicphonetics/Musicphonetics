@@ -175,6 +175,16 @@
   50% { transform: scale(2.4); opacity: 0; }
 }
 
+/* Hero frequency lines — slow horizontal drift */
+.mp-wave path { fill: none; }
+.mp-wave-1 { animation: mp-wave-flow 22s linear infinite; }
+.mp-wave-2 { animation: mp-wave-flow 30s linear infinite; }
+.mp-wave-3 { animation: mp-wave-flow 38s linear infinite reverse; }
+@keyframes mp-wave-flow {
+  from { transform: translateX(0); }
+  to { transform: translateX(-1440px); }
+}
+
 /* Loader soundwave bars */
 @keyframes mp-wave {
   0%, 100% { transform: scaleY(0.3); }

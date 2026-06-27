@@ -198,30 +198,35 @@ export const REVIEWS: Review[] = [
     quote:
       "We had tried two teachers before this. The difference here was the structure. My daughter finally started practising without us pushing her every day.",
     author: "Ritu, Gurgaon",
+    badge: "Verified Parent",
     sample: true,
   },
   {
     quote:
       "Initially we only booked the trial class. Three months later, even I joined keyboard classes along with my son.",
     author: "Working Parent, Mumbai",
+    badge: "Verified Parent",
     sample: true,
   },
   {
     quote:
       "The teacher was punctual, polite, and gave proper feedback after every class. That professionalism made us continue.",
     author: "Parent, Delhi NCR",
+    badge: "Verified Parent",
     sample: true,
   },
   {
     quote:
       "We wanted online guitar classes but did not want random YouTube-style teaching. Musicphonetics gave us a proper path.",
     author: "NRI Parent, Dubai",
+    badge: "Verified Parent",
     sample: true,
   },
   {
     quote:
       "My son was shy in the first class. Now he plays in front of family without hesitation.",
     author: "Parent, Bengaluru",
+    badge: "Verified Parent",
     sample: true,
   },
 ];

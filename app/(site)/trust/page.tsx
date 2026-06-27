@@ -2,12 +2,11 @@ import type { Metadata } from "next";
 import { Reveal } from "@/components/ui/Reveal";
 import { Credentials } from "@/components/trust/Credentials";
 import { Operations } from "@/components/trust/Operations";
-import { StandardsDocs } from "@/components/trust/StandardsDocs";
-import { TransparencyLibrary } from "@/components/trust/TransparencyLibrary";
+import { Documentation } from "@/components/trust/Documentation";
 import { Recognition } from "@/components/trust/Recognition";
 import { CompanyTimeline } from "@/components/trust/CompanyTimeline";
 import { TrustDashboard } from "@/components/trust/TrustDashboard";
-import { FutureReady } from "@/components/trust/FutureReady";
+import { GlobalPresence } from "@/components/trust/GlobalPresence";
 import { FinalCTA } from "@/components/sections/FinalCTA";
 
 export const metadata: Metadata = {
@@ -41,12 +40,11 @@ export default function TrustPage() {
 
       <Credentials />
       <Operations />
-      <StandardsDocs />
-      <TransparencyLibrary />
+      <Documentation />
       <Recognition />
       <CompanyTimeline />
       <TrustDashboard />
-      <FutureReady />
+      <GlobalPresence />
 
       <FinalCTA
         headline="A company you can trust with your child's music."

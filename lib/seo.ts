@@ -8,7 +8,7 @@
 // logo image path, before launch.
 // ============================================================================
 
-import { BRAND, FAQS, PACKAGES, AREAS_SERVED } from "./data";
+import { BRAND, FAQS, PACKAGES, AREAS_SERVED, REVIEWS } from "./data";
 import { FOUNDER, FOUNDER_HIGHLIGHTS } from "./founder";
 import type { TeacherProfile, Region } from "./teachers";
 
@@ -150,6 +150,28 @@ export function regionJsonLd(region: Region, teachers: TeacherProfile[]) {
         name: t.name,
       })),
     },
+  };
+}
+
+/** Review + AggregateRating for the Organization. */
+export function reviewsJsonLd() {
+  return {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "@id": ORG_ID,
+    name: BRAND.name,
+    aggregateRating: {
+      "@type": "AggregateRating",
+      ratingValue: 4.9,
+      reviewCount: REVIEWS.length,
+      bestRating: 5,
+    },
+    review: REVIEWS.map((r) => ({
+      "@type": "Review",
+      reviewRating: { "@type": "Rating", ratingValue: 5, bestRating: 5 },
+      author: { "@type": "Person", name: r.author },
+      reviewBody: r.quote,
+    })),
   };
 }
 

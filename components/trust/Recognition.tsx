@@ -1,32 +1,63 @@
 import { TrustSubsection } from "./TrustSubsection";
 import { TrustIcon } from "./TrustIcon";
 import { Reveal } from "@/components/ui/Reveal";
-import { RECOGNITION, RECOGNITION_NOTE } from "@/lib/trust";
+import { RECOGNITION, PARTNERS } from "@/lib/trust";
 
 export function Recognition() {
   return (
     <TrustSubsection
       eyebrow="Section 05 · Public Recognition"
       title="Recognised beyond the classroom."
-      intro="Media, performances, and institutional work that build credibility — uploads in progress."
+      intro="Institutional achievements across media, performance, education, and public life. Confidential associations are referenced without disclosing identities."
     >
-      <ol className="flex gap-4 overflow-x-auto pb-4 [scrollbar-width:thin] snap-x">
-        {RECOGNITION.map((r, i) => (
-          <Reveal key={r.title} delay={(i % 3) * 70} as="li">
-            <div className="mp-glass flex w-[240px] shrink-0 snap-start flex-col rounded-2xl p-5 sm:w-[260px]">
-              <span className="grid h-11 w-11 place-items-center rounded-xl border border-gold/30 bg-gold/10 text-gold">
-                <TrustIcon icon={r.icon} />
-              </span>
-              <h3 className="mt-4 text-base font-semibold text-paper">{r.title}</h3>
-              <p className="mt-1.5 text-sm text-paper/55">{r.line}</p>
-              <span className="mt-4 w-fit rounded-full border border-white/12 bg-white/5 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-paper/45">
-                Uploads pending
-              </span>
+      <div className="grid gap-4 lg:grid-cols-2">
+        {RECOGNITION.map((g, i) => (
+          <Reveal key={g.title} delay={(i % 2) * 80}>
+            <div className="mp-glass h-full rounded-2xl p-6">
+              <div className="flex items-center gap-3">
+                <span className="grid h-11 w-11 place-items-center rounded-xl border border-gold/30 bg-gold/10 text-gold">
+                  <TrustIcon icon={g.icon} />
+                </span>
+                <h3 className="text-lg font-semibold text-paper">{g.title}</h3>
+                {g.confidential && (
+                  <span className="ml-auto rounded-full border border-white/12 bg-white/5 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-paper/50">
+                    Confidential
+                  </span>
+                )}
+              </div>
+              <ul className="mt-4 flex flex-wrap gap-2">
+                {g.items.map((it) => (
+                  <li key={it} className="rounded-lg border border-white/12 bg-white/5 px-3 py-1.5 text-sm text-paper/80">
+                    {it}
+                  </li>
+                ))}
+              </ul>
             </div>
           </Reveal>
         ))}
-      </ol>
-      <p className="mt-6 text-sm text-paper/50">{RECOGNITION_NOTE}</p>
+      </div>
+
+      {/* Industry network — partner wall */}
+      <Reveal>
+        <div className="mt-10">
+          <div className="flex items-end justify-between gap-4">
+            <div>
+              <h3 className="font-display text-xl font-semibold text-paper">Built through relationships. Growing through trust.</h3>
+              <p className="mt-1 text-sm text-paper/55">Industry network · reserved placeholders for partners and collaborators.</p>
+            </div>
+          </div>
+          <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
+            {PARTNERS.map((p) => (
+              <div key={p} className="mp-glass flex h-20 items-center justify-center rounded-xl px-3 text-center text-sm font-semibold text-paper/70 transition-colors hover:text-paper">
+                {p}
+              </div>
+            ))}
+            <div className="mp-glass flex h-20 items-center justify-center rounded-xl px-3 text-center text-xs text-paper/40">
+              + future collaborators
+            </div>
+          </div>
+        </div>
+      </Reveal>
     </TrustSubsection>
   );
 }

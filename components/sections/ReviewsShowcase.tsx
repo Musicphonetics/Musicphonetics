@@ -80,7 +80,7 @@ export function ReviewsShowcase() {
                       <svg width="10" height="10" viewBox="0 0 24 24" fill="none" aria-hidden="true">
                         <path d="M5 12l4 4 10-10" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
                       </svg>
-                      Verified
+                      {r.badge ?? "Verified"}
                     </span>
                   </div>
 

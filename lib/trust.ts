@@ -1,8 +1,8 @@
 // ============================================================================
 // Musicphonetics — Trust Centre content
-// Credentials, operations, standards, recognition, timeline, and dashboard.
-// Documents are placeholders until real certificates/PDFs are uploaded.
-// TODO(content): attach real PDFs (set `file`) and live values where noted.
+// Corporate-grade: credentials, operations, documentation, recognition,
+// timeline, dashboard. Only real or in-progress credentials are shown — future
+// certifications are clearly marked "Certification in Progress".
 // ============================================================================
 
 export type DocCategory =
@@ -11,32 +11,35 @@ export type DocCategory =
   | "Quality"
   | "Technology"
   | "Parents"
-  | "Teachers";
+  | "Teachers"
+  | "Safety";
 
 export interface Credential {
   name: string;
   status: string;
-  issued: string;
   category: DocCategory;
+  inProgress?: boolean;
   file?: string; // PDF path, added later
 }
 
+// Real (existing) verifications.
 export const CREDENTIALS: Credential[] = [
-  { name: "Udyam Registration", status: "On record", issued: "—", category: "Business" },
-  { name: "GST Registration", status: "On record", issued: "—", category: "Legal" },
-  { name: "Trademark™", status: "On record", issued: "—", category: "Legal" },
-  { name: "IEC Registration", status: "On record", issued: "—", category: "Business" },
-  { name: "ISO Certification", status: "On record", issued: "—", category: "Quality" },
-  { name: "DPIIT Startup Recognition", status: "On record", issued: "—", category: "Business" },
-  { name: "NSIC Registration", status: "On record", issued: "—", category: "Business" },
-  { name: "ZED Certification", status: "On record", issued: "—", category: "Quality" },
-  { name: "GeM Government Vendor", status: "On record", issued: "—", category: "Business" },
-  { name: "Google Business Verification", status: "Verified", issued: "—", category: "Technology" },
-  { name: "WhatsApp Business Verification", status: "Verified", issued: "—", category: "Technology" },
+  { name: "Udyam Registration", status: "Active", category: "Business" },
+  { name: "GST Registration", status: "Active", category: "Legal" },
+  { name: "Trademark™", status: "On record", category: "Legal" },
+  { name: "IEC Registration", status: "Active", category: "Business" },
+  { name: "Google Business Verification", status: "Verified", category: "Technology" },
+  { name: "WhatsApp Business Verification", status: "Verified", category: "Technology" },
+  // In progress — clearly marked, not claimed as received.
+  { name: "DPIIT Startup Recognition", status: "Certification in Progress", category: "Business", inProgress: true },
+  { name: "ISO Certification", status: "Certification in Progress", category: "Quality", inProgress: true },
+  { name: "NSIC Registration", status: "Certification in Progress", category: "Business", inProgress: true },
+  { name: "ZED Certification", status: "Certification in Progress", category: "Quality", inProgress: true },
+  { name: "GeM Government Vendor", status: "Certification in Progress", category: "Business", inProgress: true },
 ];
 
 export const CREDENTIALS_NOTE =
-  "Certificates are being added to this centre. Verification documents are available on request.";
+  "Verification documents are available on request. Certifications marked “in progress” are not yet claimed as received.";
 
 export interface OpModule {
   name: string;
@@ -57,68 +60,96 @@ export const OPERATIONS: OpModule[] = [
   { name: "Technology", line: "Systems that scale with the company.", icon: "tech" },
 ];
 
+// ---- Documentation (international-standard) ---------------------------------
 export interface DocItem {
   title: string;
   category: DocCategory;
-  type: "Certificate" | "Policy" | "Handbook" | "Framework" | "SOP" | "System";
   icon: TrustIconKey;
+  highlight?: boolean; // Child Safety / Safeguarding etc.
 }
 
-export const STANDARDS: DocItem[] = [
-  { title: "Teaching Standards", category: "Teachers", type: "Framework", icon: "standards" },
-  { title: "Teacher Handbook", category: "Teachers", type: "Handbook", icon: "handbook" },
-  { title: "Student Handbook", category: "Parents", type: "Handbook", icon: "handbook" },
-  { title: "Assessment Framework", category: "Quality", type: "Framework", icon: "assessment" },
-  { title: "Attendance Policy", category: "Quality", type: "Policy", icon: "attendance" },
-  { title: "Child Safety Policy", category: "Parents", type: "Policy", icon: "safety" },
-  { title: "Refund Policy", category: "Legal", type: "Policy", icon: "refund" },
-  { title: "Privacy Policy", category: "Legal", type: "Policy", icon: "privacy" },
-  { title: "Terms & Conditions", category: "Legal", type: "Policy", icon: "terms" },
-  { title: "Teacher Verification Process", category: "Teachers", type: "SOP", icon: "verify" },
-  { title: "Quality Assurance Manual", category: "Quality", type: "Handbook", icon: "quality" },
-  { title: "Progress Report System", category: "Parents", type: "System", icon: "reports" },
-  { title: "Internal SOPs", category: "Business", type: "SOP", icon: "sop" },
+export const DOCUMENTS: DocItem[] = [
+  { title: "Child Safety Policy", category: "Safety", icon: "safety", highlight: true },
+  { title: "Safeguarding Policy", category: "Safety", icon: "safety", highlight: true },
+  { title: "Teacher Handbook", category: "Teachers", icon: "handbook" },
+  { title: "Student Handbook", category: "Parents", icon: "handbook" },
+  { title: "Parent Handbook", category: "Parents", icon: "handbook" },
+  { title: "Teaching Standards Manual", category: "Teachers", icon: "standards" },
+  { title: "Assessment Framework", category: "Quality", icon: "assessment" },
+  { title: "Attendance Policy", category: "Quality", icon: "attendance" },
+  { title: "Refund Policy", category: "Legal", icon: "refund" },
+  { title: "Privacy Policy", category: "Legal", icon: "privacy" },
+  { title: "Terms & Conditions", category: "Legal", icon: "terms" },
+  { title: "Teacher Verification Process", category: "Teachers", icon: "verify" },
+  { title: "Background Verification Framework", category: "Safety", icon: "verify", highlight: true },
+  { title: "Performance Review System", category: "Quality", icon: "assessment" },
+  { title: "Progress Reporting Framework", category: "Parents", icon: "reports" },
+  { title: "Quality Assurance Manual", category: "Quality", icon: "quality" },
+  { title: "Internal SOPs", category: "Business", icon: "sop" },
+  { title: "Emergency Response SOP", category: "Safety", icon: "safety", highlight: true },
+  { title: "Complaint Resolution SOP", category: "Quality", icon: "sop" },
+  { title: "Code of Conduct", category: "Business", icon: "compliance" },
+  { title: "Data Protection Policy", category: "Technology", icon: "privacy" },
+  { title: "Musicphonetics Teaching Framework", category: "Teachers", icon: "standards" },
+  { title: "Risk Management Policy", category: "Business", icon: "compliance" },
+  { title: "Lesson Observation Framework", category: "Quality", icon: "assessment" },
+  { title: "Continuous Improvement Framework", category: "Quality", icon: "reports" },
 ];
 
-export const DOC_CATEGORIES: DocCategory[] = [
-  "Business",
-  "Parents",
-  "Teachers",
-  "Legal",
-  "Quality",
-  "Technology",
-];
+export const DOC_STATUS = ["Available on request", "Reviewed annually", "Version controlled"];
 
-// Combined library for the Transparency Centre search.
-export interface LibraryDoc {
-  title: string;
-  category: DocCategory;
-  kind: string;
-  icon: TrustIconKey;
-}
-
-export const LIBRARY: LibraryDoc[] = [
-  ...CREDENTIALS.map((c) => ({ title: c.name, category: c.category, kind: "Certificate", icon: "certificate" as TrustIconKey })),
-  ...STANDARDS.map((s) => ({ title: s.title, category: s.category, kind: s.type, icon: s.icon })),
-];
-
+// ---- Public recognition (institutional) ------------------------------------
 export interface RecognitionGroup {
   title: string;
-  line: string;
   icon: TrustIconKey;
+  items: string[];
+  confidential?: boolean;
 }
 
 export const RECOGNITION: RecognitionGroup[] = [
-  { title: "Media Features", line: "Newspaper and magazine coverage.", icon: "media" },
-  { title: "Public Talks", line: "Talks, panels, and guest sessions.", icon: "talk" },
-  { title: "Performances", line: "Recitals and live performances.", icon: "performance" },
-  { title: "Institutional Work", line: "Work with schools and institutions.", icon: "institution" },
-  { title: "Government Associations", line: "Recognised programmes and vendors.", icon: "gov" },
-  { title: "Industry Network", line: "Partnerships across the industry.", icon: "network" },
+  {
+    title: "Media Features",
+    icon: "media",
+    items: ["Newspapers", "College magazines", "University features", "Delhi-based publications", "Educational media"],
+  },
+  {
+    title: "Public Talks",
+    icon: "talk",
+    items: ["Chief Judge", "IP University", "Guest sessions", "Education panels"],
+  },
+  {
+    title: "Performances",
+    icon: "performance",
+    items: ["Lead Guitarist", "Acoustic Guitar", "Vocals", "Keyboard", "Live concerts", "Corporate shows", "Large stage performances"],
+  },
+  {
+    title: "Institutional Work",
+    icon: "institution",
+    items: ["CBSE schools", "Army Public School experience", "Institutional music education", "Training programmes"],
+  },
+  {
+    title: "Government Associations",
+    icon: "gov",
+    confidential: true,
+    items: [
+      "Worked with senior government institutions and public servants",
+      "Trusted by defence families",
+      "Worked with senior administrative professionals",
+    ],
+  },
 ];
 
-export const RECOGNITION_NOTE =
-  "Articles, photographs, certificates, institutional letters, and posters will be added here.";
+export const PARTNERS = [
+  "Raj Musicals",
+  "Bhatia Musicals",
+  "New Bharat Musicals",
+  "Furtados",
+  "Yamaha",
+  "Roland",
+  "Casio",
+  "Kadence",
+  "Vault",
+];
 
 export interface Milestone {
   year: string;
@@ -128,7 +159,7 @@ export interface Milestone {
 }
 
 export const COMPANY_TIMELINE: Milestone[] = [
-  { year: "2016", title: "The first students", body: "One-on-one teaching begins across Delhi NCR." },
+  { year: "2015", title: "One guitar, one student", body: "Three chords, one dream, and a desire to teach well." },
   { year: "2018", title: "A method takes shape", body: "Patterns from real teaching become a structured system." },
   { year: "2022", title: "1,100+ students", body: "A decade of teaching children, teenagers, and adults." },
   { year: "2025", title: "Musicphonetics launches", body: "The method becomes a company with systems and standards." },
@@ -142,7 +173,6 @@ export interface DashStat {
   status?: "ok";
 }
 
-// Illustrative values — connect to Google Sheets later.
 export const DASHBOARD: DashStat[] = [
   { label: "Students taught", value: "1,100+" },
   { label: "Cities (live + roadmap)", value: "1 + 12" },
@@ -158,19 +188,17 @@ export const DASHBOARD: DashStat[] = [
 export const DASHBOARD_NOTE =
   "Illustrative snapshot. These values connect to live data (Google Sheets / WATI) as the platform grows.";
 
-// The 8 Trust Centre pillars (used by the homepage gateway).
 export const TRUST_PILLARS: { title: string; line: string; icon: TrustIconKey }[] = [
   { title: "Company Credentials", line: "Registrations, certifications, and verifications.", icon: "certificate" },
   { title: "Business Operations", line: "Finance, compliance, support — organised to scale.", icon: "finance" },
-  { title: "Standards & Documentation", line: "Handbooks, policies, and frameworks.", icon: "standards" },
-  { title: "Transparency Centre", line: "A searchable library of every document.", icon: "library" },
+  { title: "Documentation", line: "International-standard policies and frameworks.", icon: "standards" },
+  { title: "Child Safety", line: "Safeguarding and verification at the core.", icon: "safety" },
   { title: "Public Recognition", line: "Media, performances, and institutional work.", icon: "media" },
-  { title: "Company Timeline", line: "From first students to global roadmap.", icon: "timeline" },
+  { title: "Company Timeline", line: "From one guitar to a global roadmap.", icon: "timeline" },
   { title: "Trust Dashboard", line: "Live operating metrics, transparently shown.", icon: "dashboard" },
-  { title: "Future Ready", line: "Built to operate internationally.", icon: "globe" },
+  { title: "Global Presence", line: "Built to operate internationally.", icon: "globe" },
 ];
 
-// Icon keys used by the custom monochrome line-icon set.
 export type TrustIconKey =
   | "finance" | "accounts" | "tax" | "student" | "teacher" | "quality"
   | "reports" | "compliance" | "support" | "tech" | "standards" | "handbook"

@@ -14,13 +14,14 @@ import {
   FOUNDER,
   FOUNDER_HIGHLIGHTS,
   FOUNDER_STORY,
+  FOUNDER_SOCIALS,
 } from "@/lib/founder";
 import { cn } from "@/lib/utils";
 
 export const metadata: Metadata = {
   title: "The Founder · Abhishek Kumar",
   description:
-    "After teaching 1,100+ one-on-one students over a decade, Abhishek Kumar built Musicphonetics to fix what limits music education: inconsistent systems, not talented teachers.",
+    "The story of Musicphonetics — a testimony that began in 2015 with one guitar, three chords, and one student. Faith first, music second, business third.",
 };
 
 export default function FounderPage() {
@@ -34,7 +35,7 @@ export default function FounderPage() {
         <div className="container-mp relative grid items-center gap-12 py-20 sm:py-28 lg:grid-cols-[1.1fr_0.9fr]">
           <div>
             <Reveal>
-              <p className="eyebrow text-gold">The founder</p>
+              <p className="eyebrow text-gold">A testimony · not a résumé</p>
             </Reveal>
             <Reveal delay={80}>
               <h1 className="mt-5 text-4xl font-semibold leading-[1.05] sm:text-5xl lg:text-6xl">
@@ -46,9 +47,9 @@ export default function FounderPage() {
             </Reveal>
             <Reveal delay={200}>
               <p className="mt-6 max-w-xl text-lg leading-relaxed text-paper/75">
-                Not someone selling music classes — someone who spent years
-                understanding music education from the ground level, then built a
-                better system from what he learned.
+                The story of Musicphonetics is, first, a testimony. Faith first,
+                music second, business third — a journey that began in 2015 with
+                one guitar, three chords, and one student.
               </p>
             </Reveal>
             <Reveal delay={280}>
@@ -150,6 +151,35 @@ export default function FounderPage() {
 
       {/* Timeline */}
       <FounderTimeline />
+
+      {/* Connect */}
+      <Section background="white" spacing="md">
+        <div className="rounded-3xl border border-hairline bg-paper p-8 sm:p-10">
+          <div className="grid gap-6 sm:grid-cols-[1fr_auto] sm:items-center">
+            <div>
+              <p className="eyebrow">Connect with the founder</p>
+              <h2 className="mt-2 text-2xl font-semibold text-ink">
+                {FOUNDER.name}
+              </h2>
+              <p className="mt-1 text-sm text-ink/60">{FOUNDER.role}</p>
+            </div>
+            <div className="flex flex-wrap gap-3">
+              {FOUNDER_SOCIALS.map((s) => (
+                <a
+                  key={s.label}
+                  href={s.href}
+                  target={s.href.startsWith("http") ? "_blank" : undefined}
+                  rel={s.href.startsWith("http") ? "noopener noreferrer" : undefined}
+                  className="rounded-xl border border-hairline bg-white px-4 py-2.5 text-sm font-semibold text-ink transition-colors hover:border-ink"
+                >
+                  {s.label}
+                  <span className="ml-2 font-normal text-ink/45">{s.handle}</span>
+                </a>
+              ))}
+            </div>
+          </div>
+        </div>
+      </Section>
 
       <FinalCTA
         headline={`Learn under the standard ${BRAND.founder} built.`}

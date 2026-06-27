@@ -166,6 +166,8 @@ export interface Review {
   quote: string;
   author: string;
   sample: boolean;
+  /** Verification badge, e.g. "Verified Parent", "Verified Teacher". */
+  badge?: string;
 }
 
 export interface FaqItem {
