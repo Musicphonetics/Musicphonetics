@@ -199,6 +199,35 @@
   border: 1px solid rgba(255, 255, 255, 0.12);
 }
 
+/* Standards reader — branded prose for injected document content */
+.standard-prose section { margin-top: 2.5rem; scroll-margin-top: 6rem; }
+.standard-prose section:first-child { margin-top: 0; }
+.standard-prose h2 {
+  display: flex;
+  align-items: baseline;
+  gap: 0.75rem;
+  font-family: var(--font-display), serif;
+  font-weight: 600;
+  font-size: 1.4rem;
+  line-height: 1.2;
+  color: theme("colors.ink");
+}
+.standard-prose .sec-num {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: theme("colors.deep-gold");
+  letter-spacing: 0.04em;
+}
+.standard-prose p {
+  margin-top: 0.85rem;
+  font-size: 1rem;
+  line-height: 1.75;
+  color: rgba(22, 27, 38, 0.72);
+}
+.standard-prose ul, .standard-prose ol { margin-top: 0.85rem; padding-left: 1.25rem; }
+.standard-prose li { margin-top: 0.4rem; line-height: 1.7; color: rgba(22, 27, 38, 0.72); }
+.standard-prose strong { color: theme("colors.ink"); font-weight: 600; }
+
 /* Animated blueprint grid (Trust Centre backdrops) */
 .mp-blueprint {
   background-image:

@@ -52,10 +52,9 @@ export const BRAND = {
 // ---------------------------------------------------------------------------
 export const NAV_LINKS = [
   { label: "Founder", href: "/founder" },
-  { label: "Method", href: "/method" },
   { label: "Programs", href: "/programs" },
   { label: "Teachers", href: "/teachers" },
-  { label: "Trust", href: "/trust" },
+  { label: "Standards", href: "/standards" },
   { label: "Reviews", href: "/reviews" },
 ];
 
@@ -65,8 +64,9 @@ export const TRUST_LINE = `${BRAND.yearsExperience} years · ${BRAND.studentsTau
 // Simplified footer navigation per go-live spec.
 export const FOOTER_NAV = [
   { label: "Home", href: "/" },
-  { label: "Method", href: "/method" },
   { label: "Programs", href: "/programs" },
+  { label: "Standards", href: "/standards" },
+  { label: "Trust Centre", href: "/trust" },
   { label: "Reviews", href: "/reviews" },
   { label: "Contact", href: "/contact" },
 ];

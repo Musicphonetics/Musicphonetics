@@ -42,7 +42,12 @@ export function Hero() {
         </Reveal>
 
         <Reveal delay={200}>
-          <p className="mx-auto mt-6 max-w-md text-base leading-relaxed text-paper/70 sm:text-lg">
+          <p className="mx-auto mt-6 max-w-lg text-base leading-relaxed text-paper/75 sm:text-lg">
+            Premium one-to-one music classes — guitar, piano, keyboard, and
+            vocals. Home &amp; online, with trained teachers and real student
+            growth.
+          </p>
+          <p className="mx-auto mt-3 text-sm text-paper/55">
             Founded in India. Teaching across cities. Expanding globally.
           </p>
         </Reveal>

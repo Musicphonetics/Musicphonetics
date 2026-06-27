@@ -1,5 +1,6 @@
 import type { MetadataRoute } from "next";
 import { REGIONS, TEACHERS } from "@/lib/teachers";
+import { STANDARDS } from "@/lib/standards-data";
 
 const SITE_URL = "https://musicphonetics.com";
 
@@ -13,6 +14,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/teachers",
     "/founder",
     "/trust",
+    "/standards",
     "/reviews",
     "/teach-with-us",
     "/contact",
@@ -32,6 +34,16 @@ export default function sitemap(): MetadataRoute.Sitemap {
       lastModified: now,
       changeFrequency: "monthly",
       priority: r.status === "active" ? 0.7 : 0.5,
+    });
+  }
+
+  // Standards documents
+  for (const s of STANDARDS) {
+    entries.push({
+      url: `${SITE_URL}/standards/${s.slug}`,
+      lastModified: now,
+      changeFrequency: "yearly",
+      priority: 0.6,
     });
   }
 

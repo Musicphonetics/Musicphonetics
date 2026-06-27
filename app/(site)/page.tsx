@@ -1,13 +1,11 @@
 import { Hero } from "@/components/sections/Hero";
-import { Mission } from "@/components/sections/Mission";
+import { WhatWeDo } from "@/components/sections/WhatWeDo";
 import { WhatMakesDifferent } from "@/components/sections/WhatMakesDifferent";
-import { MusicJourney } from "@/components/sections/MusicJourney";
-import { MoreThanLessons } from "@/components/sections/MoreThanLessons";
-import { Ecosystem } from "@/components/sections/Ecosystem";
-import { Community } from "@/components/sections/Community";
-import { ReviewsShowcase } from "@/components/sections/ReviewsShowcase";
-import { TrustCentre } from "@/components/sections/TrustCentre";
 import { FounderFeature } from "@/components/sections/FounderFeature";
+import { HowWeDoIt } from "@/components/sections/HowWeDoIt";
+import { MoreThanLessons } from "@/components/sections/MoreThanLessons";
+import { TrustAndStandards } from "@/components/sections/TrustAndStandards";
+import { ReviewsShowcase } from "@/components/sections/ReviewsShowcase";
 import { SeoContent } from "@/components/sections/SeoContent";
 import { FAQ } from "@/components/sections/FAQ";
 import { FinalCTA } from "@/components/sections/FinalCTA";
@@ -18,21 +16,22 @@ export default function HomePage() {
   return (
     <>
       <JsonLd data={[faqJsonLd(), coursesJsonLd(), reviewsJsonLd()]} />
-      {/* A story, told in order */}
+      {/* Music classes are the product — trust is the proof */}
       <Hero />
-      <Mission />
+      <WhatWeDo />
       <WhatMakesDifferent />
-      <MusicJourney />
-      <MoreThanLessons />
-      <Ecosystem />
-      <Community />
-      <ReviewsShowcase />
-      <TrustCentre />
       <FounderFeature />
+      <HowWeDoIt />
+      <MoreThanLessons />
+      <TrustAndStandards />
+      <ReviewsShowcase />
       {/* SEO / AI-readable content + FAQ schema */}
       <SeoContent />
       <FAQ />
-      <FinalCTA />
+      <FinalCTA
+        headline="Start your music journey with Musicphonetics."
+        text="Tell us what you're looking for and we'll guide you to the right teacher and path."
+      />
     </>
   );
 }
