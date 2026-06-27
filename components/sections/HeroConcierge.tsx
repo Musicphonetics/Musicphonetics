@@ -15,25 +15,20 @@ export function HeroConcierge() {
         {/* Left — brand identity, then begin */}
         <div>
           <Reveal>
-            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-gold/80">
-              Musicphonetics
-            </p>
-          </Reveal>
-
-          <Reveal delay={90}>
-            <h1 className="mt-5 font-display text-4xl font-semibold leading-[1.06] sm:text-5xl lg:text-6xl">
-              Premium music education, for every stage of the journey.
+            <h1 className="font-display text-4xl font-semibold leading-[1.06] sm:text-5xl lg:text-6xl">
+              Building the future of music education in India.
             </h1>
           </Reveal>
 
           {/* Bible verse — part of the identity, elegant and subtle */}
-          <Reveal delay={170}>
+          <Reveal delay={120}>
             <figure className="mt-6 border-l-2 border-gold/40 pl-4">
               <blockquote className="font-display text-base italic leading-relaxed text-paper/70 sm:text-lg">
-                “Sing to him a new song; play skillfully, and shout for joy.”
+                “Train up a child in the way he should go; even when he is old he
+                will not depart from it.”
               </blockquote>
               <figcaption className="mt-1 text-xs uppercase tracking-[0.18em] text-gold/70">
-                Psalm 33:3
+                Proverbs 22:6
               </figcaption>
             </figure>
           </Reveal>

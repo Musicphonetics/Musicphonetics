@@ -1,19 +1,17 @@
 import { NextResponse } from "next/server";
 import { buildLeadEmail, type LeadFields } from "@/lib/lead-email";
 
-// Lead submission handler (Phase 1).
-// On submit, sends a professionally formatted HTML email to the team. Delivery
-// path, in priority order:
-//   1. RESEND_API_KEY set  -> send via Resend (recommended).
-//   2. LEAD_WEBHOOK_URL set -> POST {subject, html, ...fields} to a Google
-//      Apps Script / automation endpoint that emails + writes to Sheets.
-//   3. Neither -> log the lead (so nothing is lost in dev).
+// Lead submission handler (Phase 1) — emails the team on every submission.
+// Delivery priority:
+//   1. RESEND_API_KEY      -> send via Resend (best for production / branded HTML).
+//   2. LEAD_WEBHOOK_URL    -> POST to a Google Apps Script / automation endpoint
+//                            (email + Google Sheets + WATI/Astra).
+//   3. Default (no config) -> FormSubmit.co, a free no-key email relay so leads
+//                            arrive out of the box. NOTE: the FIRST lead triggers
+//                            a one-time activation email from FormSubmit to the
+//                            recipient — click it once and all future leads flow.
 //
-// Env:
-//   RESEND_API_KEY     Resend API key
-//   LEAD_EMAIL_TO      recipient (default adm.musicphonetics@gmail.com)
-//   LEAD_EMAIL_FROM    verified sender (default Resend test sender)
-//   LEAD_WEBHOOK_URL   alternative/extra fan-out endpoint
+// Env: RESEND_API_KEY, LEAD_EMAIL_TO, LEAD_EMAIL_FROM, LEAD_WEBHOOK_URL.
 
 export const runtime = "nodejs";
 
@@ -36,10 +34,10 @@ export async function POST(req: Request) {
 
   const { subject, html, text } = buildLeadEmail(payload);
   let emailed = false;
+  let via = "none";
 
-  // 1) Resend
-  if (process.env.RESEND_API_KEY) {
-    try {
+  try {
+    if (process.env.RESEND_API_KEY) {
       const res = await fetch("https://api.resend.com/emails", {
         method: "POST",
         headers: {
@@ -50,31 +48,53 @@ export async function POST(req: Request) {
         signal: AbortSignal.timeout(8000),
       });
       emailed = res.ok;
+      via = "resend";
       if (!res.ok) console.error("Resend failed:", res.status, await res.text());
-    } catch (err) {
-      console.error("Resend error:", err);
-    }
-  }
-
-  // 2) Webhook (Apps Script / automation) — also good for Google Sheets logging
-  if (process.env.LEAD_WEBHOOK_URL) {
-    try {
-      await fetch(process.env.LEAD_WEBHOOK_URL, {
+    } else if (process.env.LEAD_WEBHOOK_URL) {
+      const res = await fetch(process.env.LEAD_WEBHOOK_URL, {
         method: "POST",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({ to: TO, subject, html, ...payload }),
         signal: AbortSignal.timeout(8000),
       });
-      emailed = true;
-    } catch (err) {
-      console.error("Lead webhook failed:", err);
+      emailed = res.ok;
+      via = "webhook";
+    } else {
+      // Zero-config default: FormSubmit.co (no API key required).
+      const fields: Record<string, string> = {
+        _subject: subject,
+        _template: "table",
+        "Full Name": payload.name ?? "—",
+        "Phone": payload.phone ?? "—",
+        "Email": payload.email ?? "—",
+        "Instrument": payload.instrument ?? "—",
+        "Class Mode": payload.mode ?? "—",
+        "Student Type": payload.who ?? "—",
+        "Age": payload.childAge ?? "—",
+        "Location": payload.location ?? "—",
+        "Experience": payload.experience ?? "—",
+        "Goal": payload.goal ?? "—",
+        "Preferred Timing": payload.timing ?? "—",
+        "Preferred Start": payload.begin ?? "—",
+        "Submitted": payload.receivedAt ?? "",
+        "Source": payload.source ?? "Website onboarding",
+      };
+      const res = await fetch(`https://formsubmit.co/ajax/${encodeURIComponent(TO)}`, {
+        method: "POST",
+        headers: { "content-type": "application/json", Accept: "application/json" },
+        body: JSON.stringify(fields),
+        signal: AbortSignal.timeout(8000),
+      });
+      emailed = res.ok;
+      via = "formsubmit";
+      if (!res.ok) console.error("FormSubmit failed:", res.status, await res.text());
     }
+  } catch (err) {
+    console.error("Lead delivery error:", err);
   }
 
-  // 3) Nothing configured — don't lose the lead in dev.
-  if (!process.env.RESEND_API_KEY && !process.env.LEAD_WEBHOOK_URL) {
-    console.info("LEAD (no delivery configured):", { subject, ...payload });
-  }
+  // Always log so a delivery hiccup never loses the lead.
+  console.info("LEAD", { via, emailed, subject, ...payload });
 
   return NextResponse.json({ ok: true, emailed });
 }

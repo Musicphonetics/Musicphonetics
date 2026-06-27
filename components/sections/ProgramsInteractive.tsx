@@ -16,11 +16,12 @@ interface Prog {
 }
 
 const PROGRAMS: Prog[] = [
-  { name: "Guitar", icon: "guitar", duration: "30–45 min · 2×/week", who: "Kids & adults, all levels", availability: "High · home & online", outcome: "Play full songs within months" },
-  { name: "Piano", icon: "piano", duration: "30–45 min · 2×/week", who: "Children & serious learners", availability: "High · home & online", outcome: "Read music & build technique" },
-  { name: "Vocals", icon: "vocals", duration: "45 min · 2×/week", who: "Teens & adults", availability: "Medium · online-friendly", outcome: "Confident, healthy singing" },
-  { name: "Keyboard", icon: "piano", duration: "30–45 min · 2×/week", who: "Beginners & kids", availability: "High · home & online", outcome: "Melody, chords & coordination" },
-  { name: "Ukulele", icon: "ukulele", duration: "30 min · 2×/week", who: "Young beginners", availability: "High · home & online", outcome: "A joyful first instrument" },
+  { name: "Guitar", icon: "guitar", duration: "45–60 min · 2×/week", who: "Kids & adults, all levels", availability: "High · home & online", outcome: "Play full songs within months" },
+  { name: "Piano", icon: "piano", duration: "45–60 min · 2×/week", who: "Children & serious learners", availability: "High · home & online", outcome: "Read music & build technique" },
+  { name: "Vocals", icon: "vocals", duration: "45–60 min · 2×/week", who: "Teens & adults", availability: "Medium · online-friendly", outcome: "Confident, healthy singing" },
+  { name: "Keyboard", icon: "piano", duration: "45–60 min · 2×/week", who: "Beginners & kids", availability: "High · home & online", outcome: "Melody, chords & coordination" },
+  { name: "Ukulele", icon: "ukulele", duration: "45–60 min · 2×/week", who: "Young beginners", availability: "High · home & online", outcome: "A joyful first instrument" },
+  { name: "Others", icon: "theory", duration: "45–60 min · 2×/week", who: "Drums, Violin, Bass, Production, Theory & more", availability: "By request · home & online", outcome: "Tell us — we'll match a specialist teacher" },
 ];
 
 export function ProgramsInteractive() {
@@ -67,8 +68,11 @@ export function ProgramsInteractive() {
                       <Detail label="Teacher availability" value={p.availability} />
                       <Detail label="Typical outcome" value={p.outcome} />
                     </dl>
-                    <a href={`/start?instrument=${encodeURIComponent(p.name)}`} className="mt-5 inline-flex min-h-[48px] items-center rounded-full bg-ink px-6 text-sm font-semibold text-paper transition-colors hover:bg-[#0f131c]">
-                      Start with {p.name}
+                    <a
+                      href={p.name === "Others" ? "/start" : `/start?instrument=${encodeURIComponent(p.name)}`}
+                      className="mt-5 inline-flex min-h-[48px] items-center rounded-full bg-ink px-6 text-sm font-semibold text-paper transition-colors hover:bg-[#0f131c]"
+                    >
+                      {p.name === "Others" ? "Explore other instruments" : `Start with ${p.name}`}
                     </a>
                   </div>
                 </div>

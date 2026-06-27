@@ -86,9 +86,14 @@ vercel --prod # promote to production
 | `LEAD_EMAIL_FROM` | Verified sender for Resend (use a verified domain in production). | Resend test sender |
 | `LEAD_WEBHOOK_URL` | Optional/extra fan-out: the `/start` funnel also POSTs `{subject, html, ...fields}` here (e.g. a Google Apps Script Web App that emails + writes to Google Sheets / triggers WATI/Astra). | _unset_ |
 
-> If neither `RESEND_API_KEY` nor `LEAD_WEBHOOK_URL` is set, the funnel still
-> completes and the lead is logged server-side — wire one of them before launch
-> so enquiries reach the team.
+> **Email works out of the box (no key needed):** if neither `RESEND_API_KEY`
+> nor `LEAD_WEBHOOK_URL` is set, leads are emailed via the free
+> [FormSubmit](https://formsubmit.co) relay to `LEAD_EMAIL_TO`. **One-time
+> activation:** the very first lead triggers a FormSubmit confirmation email to
+> `adm.musicphonetics@gmail.com` — click the activation link once, and every
+> future lead arrives automatically. (This only runs on the deployed site;
+> sandboxed/preview hosts may block the external relay.) Set `RESEND_API_KEY`
+> later for branded HTML emails and higher deliverability.
 
 Set this in **Vercel → Project → Settings → Environment Variables** to override
 the default. (This is a client-side gate for now — see "Adding real

@@ -6,7 +6,7 @@ import { InstrumentIcon } from "@/components/ui/InstrumentIcon";
 import { INSTRUMENTS } from "@/lib/onboarding";
 import { cn } from "@/lib/utils";
 
-const OTHERS = { value: "__others__", label: "Something else…", icon: null as null };
+const OTHERS = { value: "__others__", label: "Others — something else", icon: null as null };
 
 /**
  * Spotlight-style instrument search. Selecting an instrument immediately
@@ -75,17 +75,17 @@ export function InstrumentSearch() {
         <ul
           id={listId}
           role="listbox"
-          className="mp-glass absolute z-20 mt-2 max-h-80 w-full overflow-auto rounded-2xl p-1.5 shadow-card-hover"
+          className="absolute z-30 mt-2 max-h-80 w-full overflow-auto rounded-2xl border border-white/12 bg-[#11151f] p-1.5 shadow-card-hover"
         >
           {results.map((r, i) => (
             <li key={r.value} role="option" aria-selected={hi === i}>
               <button
                 type="button"
                 onMouseEnter={() => setHi(i)}
-                onClick={() => select(r.value)}
+                onMouseDown={(e) => { e.preventDefault(); select(r.value); }}
                 className={cn(
                   "flex w-full items-center gap-3 rounded-xl px-3.5 py-3 text-left transition-colors",
-                  hi === i ? "bg-gold/15 text-paper" : "text-paper/80"
+                  hi === i ? "bg-gold/15 text-paper" : "text-paper/80 hover:bg-white/5"
                 )}
               >
                 <span className="grid h-9 w-9 shrink-0 place-items-center rounded-lg border border-white/12 bg-white/5 text-gold">
