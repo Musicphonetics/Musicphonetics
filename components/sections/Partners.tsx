@@ -4,22 +4,17 @@ import { useMemo, useState } from "react";
 import { Section, SectionHeading } from "@/components/ui/Section";
 import { cn } from "@/lib/utils";
 
-type Cat = "Retailers" | "Brands" | "Studios" | "Collaborators";
+type Cat = "Retailers" | "Collaborators";
 
+// Genuine local relationships only — no brand logos we don't have formal deals with.
 const PARTNERS: { name: string; cat: Cat }[] = [
   { name: "Raj Musicals", cat: "Retailers" },
   { name: "Bhatia Musicals", cat: "Retailers" },
   { name: "New Bharat Musicals", cat: "Retailers" },
-  { name: "Furtados", cat: "Retailers" },
-  { name: "Yamaha", cat: "Brands" },
-  { name: "Roland", cat: "Brands" },
-  { name: "Casio", cat: "Brands" },
-  { name: "Kadence", cat: "Brands" },
-  { name: "Vault", cat: "Studios" },
   { name: "Future collaborators", cat: "Collaborators" },
 ];
 
-const CATS: Cat[] = ["Retailers", "Brands", "Studios", "Collaborators"];
+const CATS: Cat[] = ["Retailers", "Collaborators"];
 
 export function Partners() {
   const [cat, setCat] = useState<Cat | "">("");

@@ -209,7 +209,7 @@ export function OnboardingFlow({ initialInstrument }: { initialInstrument?: stri
         <SocialProof />
         <div className="relative grid grid-cols-2 gap-4">
           {[
-            { v: "1,200+", l: "Students" },
+            { v: "1,100+", l: "Students" },
             { v: "4.9★", l: "Parent rating" },
             { v: "10+ yrs", l: "Teaching" },
             { v: "126", l: "Active teachers" },

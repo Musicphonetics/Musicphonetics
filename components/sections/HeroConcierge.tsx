@@ -47,7 +47,7 @@ export function HeroConcierge() {
           <Reveal delay={330}>
             <p className="mt-7 max-w-md text-sm leading-relaxed text-paper/45">
               Home &amp; online · Group &amp; workshops · Trinity &amp; Rockschool
-              preparation · Verified teacher network · 1,200+ students
+              preparation · Verified teacher network · 1,100+ students
             </p>
           </Reveal>
         </div>

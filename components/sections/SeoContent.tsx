@@ -22,42 +22,26 @@ export function SeoContent() {
         <Reveal delay={120}>
           <div className="space-y-5 text-base leading-relaxed text-ink/70">
             <p>
-              Musicphonetics offers structured{" "}
-              <strong className="font-semibold text-ink">music classes in India</strong>,
-              delivered as personal home classes and live{" "}
-              <strong className="font-semibold text-ink">online music classes</strong>.
-              Whether you are looking for{" "}
-              guitar classes, piano and keyboard classes, vocal classes, or
-              ukulele and music theory, every student follows the same
-              director-led method — not scattered, YouTube-style lessons.
+              Musicphonetics teaches guitar, piano, keyboard, vocals, and more —
+              one student at a time, at home across Delhi NCR or live online.
+              What sets it apart isn&apos;t a longer list of instruments; it&apos;s
+              the structure behind every lesson. Each student follows a
+              director-led method with a clear path, rather than scattered,
+              one-off classes.
             </p>
             <p>
-              We teach both{" "}
-              <strong className="font-semibold text-ink">music classes for kids</strong>{" "}
-              and{" "}
-              <strong className="font-semibold text-ink">music classes for adults</strong>,
-              from playful first steps to serious{" "}
-              graded preparation. Students who want recognised milestones can
-              follow{" "}
-              <strong className="font-semibold text-ink">Trinity, ABRSM, and Rockschool exam preparation</strong>{" "}
-              pathways as learning references, integrated naturally into the
-              method.
+              We teach children taking their very first steps and adults
+              returning to an old dream alike. For families who want recognised
+              milestones, our teaching maps to graded pathways such as Trinity
+              and Rockschool — woven into the learning, never bolted on as
+              cramming.
             </p>
             <p>
-              Today we serve{" "}
-              <strong className="font-semibold text-ink">music classes in Delhi NCR</strong>{" "}
-              with home and online formats, and we are expanding to Mumbai,
-              Bengaluru, Hyderabad, Chennai, Pune, and Kolkata — followed by{" "}
-              international locations including Dubai, Singapore, and Malaysia.
-              For families abroad, our{" "}
-              <strong className="font-semibold text-ink">global online music lessons</strong>{" "}
-              bring the same structure to NRI students anywhere in the world.
-            </p>
-            <p>
-              If you have been searching for a reliable{" "}
-              <strong className="font-semibold text-ink">music teacher near you</strong>,
-              Musicphonetics gives you something most academies cannot: a system,
-              a standard, and a clear path from the very first trial class.
+              We&apos;re based in Delhi NCR today and growing thoughtfully, city
+              by city, with online classes that already reach students wherever
+              they are. If you&apos;ve struggled to find a teacher you can trust,
+              what we offer is simple: a method, a standard, and a real plan from
+              the very first trial.
             </p>
           </div>
         </Reveal>

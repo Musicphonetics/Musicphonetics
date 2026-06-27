@@ -64,9 +64,6 @@ export function Footer() {
             <Link href="/teach-with-us" className="hover:text-paper">
               Teach with us
             </Link>
-            <Link href="/admin" className="hover:text-paper">
-              Owner portal
-            </Link>
           </div>
         </div>
       </div>

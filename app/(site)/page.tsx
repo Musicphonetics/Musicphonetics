@@ -1,9 +1,10 @@
 import { HeroConcierge } from "@/components/sections/HeroConcierge";
+import { ProofStrip } from "@/components/sections/ProofStrip";
 import { MobileTabs } from "@/components/sections/MobileTabs";
 import { HowWeDoIt } from "@/components/sections/HowWeDoIt";
 import { ProgramsInteractive } from "@/components/sections/ProgramsInteractive";
 import { FounderFeature } from "@/components/sections/FounderFeature";
-import { TeacherShowcase } from "@/components/sections/TeacherShowcase";
+import { FacultySelection } from "@/components/sections/FacultySelection";
 import { TrustAndStandards } from "@/components/sections/TrustAndStandards";
 import { Stories } from "@/components/sections/Stories";
 import { ReviewsShowcase } from "@/components/sections/ReviewsShowcase";
@@ -21,11 +22,12 @@ export default function HomePage() {
     <>
       <JsonLd data={[faqJsonLd(), coursesJsonLd(), reviewsJsonLd()]} />
       <HeroConcierge />        {/* Who are you? Why continue? */}
+      <ProofStrip />           {/* At a glance — real quantities */}
       <MobileTabs />
       <HowWeDoIt />            {/* How does Musicphonetics work? */}
       <ProgramsInteractive />  {/* What can I learn? */}
       <FounderFeature />       {/* Why does Musicphonetics exist? */}
-      <TeacherShowcase />      {/* Who will teach me? */}
+      <FacultySelection />     {/* Who will teach me? — rigour, not faces */}
       <TrustAndStandards />    {/* Why should I trust the quality? */}
       <Stories />              {/* What happens after joining? */}
       <ReviewsShowcase />      {/* What do families say? */}
