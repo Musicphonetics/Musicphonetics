@@ -1,5 +1,4 @@
-import { MobileHero } from "@/components/sections/MobileHero";
-import { Hero } from "@/components/sections/Hero";
+import { HeroConcierge } from "@/components/sections/HeroConcierge";
 import { MobileTabs } from "@/components/sections/MobileTabs";
 import { ProgramsInteractive } from "@/components/sections/ProgramsInteractive";
 import { Stories } from "@/components/sections/Stories";
@@ -9,6 +8,7 @@ import { FounderFeature } from "@/components/sections/FounderFeature";
 import { HowWeDoIt } from "@/components/sections/HowWeDoIt";
 import { TrustAndStandards } from "@/components/sections/TrustAndStandards";
 import { Partners } from "@/components/sections/Partners";
+import { QuickContact } from "@/components/sections/QuickContact";
 import { SeoContent } from "@/components/sections/SeoContent";
 import { FAQ } from "@/components/sections/FAQ";
 import { FinalCTA } from "@/components/sections/FinalCTA";
@@ -19,28 +19,21 @@ export default function HomePage() {
   return (
     <>
       <JsonLd data={[faqJsonLd(), coursesJsonLd(), reviewsJsonLd()]} />
-      {/* Overview — dense listing on mobile, cinematic on desktop */}
-      <div id="overview">
-        <MobileHero />
-        <Hero />
-      </div>
+      {/* One question. One purpose. The instrument selector starts the journey. */}
+      <HeroConcierge />
       <MobileTabs />
 
-      {/* Classes are the product */}
+      {/* Trust + product, building the decision below the fold */}
       <ProgramsInteractive />
-      {/* Stories keep people engaged */}
       <Stories />
-      {/* Reviews early, near the top */}
       <ReviewsShowcase />
-      {/* Why it matters to a parent */}
       <MoreThanLessons />
       <FounderFeature />
       <HowWeDoIt />
-      {/* Standards as a trust strip only */}
       <TrustAndStandards />
-      {/* Partner ecosystem */}
       <Partners />
-      {/* SEO / AI + FAQ */}
+      {/* Relocated contact actions — supporting, not competing with, the hero */}
+      <QuickContact />
       <SeoContent />
       <FAQ />
       <FinalCTA

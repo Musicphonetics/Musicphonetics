@@ -2,19 +2,29 @@
 // Musicphonetics — Conversational onboarding (lead funnel) configuration
 // ============================================================================
 
+import type { InstrumentKey } from "@/components/ui/InstrumentIcon";
+
 export interface Option {
   value: string;
   label: string;
   hint?: string;
 }
 
-export const INSTRUMENTS: Option[] = [
-  { value: "Guitar", label: "Guitar" },
-  { value: "Piano", label: "Piano" },
-  { value: "Vocals", label: "Vocals" },
-  { value: "Keyboard", label: "Keyboard" },
-  { value: "Ukulele", label: "Ukulele" },
+export interface InstrumentOption extends Option {
+  icon: InstrumentKey;
+}
+
+export const INSTRUMENTS: InstrumentOption[] = [
+  { value: "Guitar", label: "Guitar", icon: "guitar" },
+  { value: "Piano", label: "Piano", icon: "piano" },
+  { value: "Keyboard", label: "Keyboard", icon: "keyboard" },
+  { value: "Vocals", label: "Vocals", icon: "vocals" },
+  { value: "Drums", label: "Drums", icon: "drums" },
+  { value: "Violin", label: "Violin", icon: "violin" },
+  { value: "Ukulele", label: "Ukulele", icon: "ukulele" },
 ];
+
+export const INSTRUMENT_VALUES = INSTRUMENTS.map((i) => i.value);
 
 export const WHO: Option[] = [
   { value: "Myself", label: "Myself" },

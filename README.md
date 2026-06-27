@@ -81,7 +81,14 @@ vercel --prod # promote to production
 | Variable | Purpose | Default |
 | --- | --- | --- |
 | `NEXT_PUBLIC_OWNER_PASSWORD` | Owner portal (`/owner`) password | `Abhi@7276` |
-| `LEAD_WEBHOOK_URL` | Where the `/start` onboarding funnel POSTs each lead (e.g. a Google Apps Script Web App / WATI / automation endpoint). Fan out to Sheets + owner email + WATI/Astra from there. If unset, the funnel still works and the user is routed to WhatsApp with a prefilled summary. | _unset_ |
+| `RESEND_API_KEY` | Send the lead notification email via [Resend](https://resend.com). When set, each completed onboarding emails the team a formatted HTML lead. | _unset_ |
+| `LEAD_EMAIL_TO` | Lead email recipient. | `adm.musicphonetics@gmail.com` |
+| `LEAD_EMAIL_FROM` | Verified sender for Resend (use a verified domain in production). | Resend test sender |
+| `LEAD_WEBHOOK_URL` | Optional/extra fan-out: the `/start` funnel also POSTs `{subject, html, ...fields}` here (e.g. a Google Apps Script Web App that emails + writes to Google Sheets / triggers WATI/Astra). | _unset_ |
+
+> If neither `RESEND_API_KEY` nor `LEAD_WEBHOOK_URL` is set, the funnel still
+> completes and the lead is logged server-side — wire one of them before launch
+> so enquiries reach the team.
 
 Set this in **Vercel → Project → Settings → Environment Variables** to override
 the default. (This is a client-side gate for now — see "Adding real

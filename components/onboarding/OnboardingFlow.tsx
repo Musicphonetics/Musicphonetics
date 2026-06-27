@@ -3,30 +3,29 @@
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { Logo } from "@/components/layout/Logo";
-import { ProgramIcon } from "@/components/ui/ProgramIcon";
+import { InstrumentIcon } from "@/components/ui/InstrumentIcon";
 import { whatsappLink } from "@/lib/data";
 import {
   INSTRUMENTS, WHO, AGES, MODES, EXPERIENCE, GOALS, TIMINGS, BEGIN, AREAS,
-  SOCIAL_PROOF, leadSummary, type LeadData,
+  SOCIAL_PROOF, type LeadData,
 } from "@/lib/onboarding";
-import type { IconKey } from "@/lib/programs";
 import { cn } from "@/lib/utils";
 
 type StepKey =
   | "intro" | "instrument" | "who" | "age" | "mode" | "location"
   | "experience" | "goal" | "timing" | "begin" | "contact" | "analyzing" | "success";
 
-const INSTRUMENT_ICON: Record<string, IconKey> = {
-  Guitar: "guitar", Piano: "piano", Vocals: "vocals", Keyboard: "piano", Ukulele: "ukulele",
-};
-
 function buzz() {
   if (typeof navigator !== "undefined" && "vibrate" in navigator) navigator.vibrate?.(8);
 }
 
-export function OnboardingFlow() {
-  const [answers, setAnswers] = useState<LeadData>({});
-  const [idx, setIdx] = useState(0);
+export function OnboardingFlow({ initialInstrument }: { initialInstrument?: string }) {
+  // Entering with an instrument already chosen (from the homepage hero) skips
+  // the intro + instrument steps and lands the user straight on "who".
+  const [answers, setAnswers] = useState<LeadData>(
+    initialInstrument ? { instrument: initialInstrument } : {}
+  );
+  const [idx, setIdx] = useState(initialInstrument ? 2 : 0);
 
   // Dynamic step list (age only for a child).
   const steps = useMemo<StepKey[]>(() => {
@@ -88,7 +87,7 @@ export function OnboardingFlow() {
                 <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
                   {INSTRUMENTS.map((o) => (
                     <CardOption key={o.value} selected={answers.instrument === o.value} onClick={() => choose("instrument", o.value)}>
-                      <span className="text-gold"><ProgramIcon icon={INSTRUMENT_ICON[o.value]} size={28} /></span>
+                      <span className="text-gold"><InstrumentIcon name={o.icon} size={28} /></span>
                       <span className="mt-2 text-sm font-semibold">{o.label}</span>
                     </CardOption>
                   ))}
@@ -395,15 +394,22 @@ function Success({ answers }: { answers: LeadData }) {
       <div className="mx-auto grid h-16 w-16 place-items-center rounded-full bg-gold text-ink">
         <svg width="32" height="32" viewBox="0 0 24 24" fill="none"><path d="M5 12l4 4 10-10" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" /></svg>
       </div>
-      <h2 className="mt-6 font-display text-3xl font-semibold">Congratulations{answers.name ? `, ${answers.name.split(" ")[0]}` : ""}.</h2>
-      <p className="mt-3 text-paper/70">We&apos;re matching you with a teacher. Expected callback within 15 minutes.</p>
+      <h2 className="mt-6 font-display text-3xl font-semibold">Enquiry received{answers.name ? `, ${answers.name.split(" ")[0]}` : ""}.</h2>
+      <p className="mt-3 text-paper/70">
+        Thank you — your details are with our team. A Musicphonetics advisor will
+        contact you shortly to confirm your trial and match you with the right
+        teacher.
+      </p>
       <div className="mt-8 flex flex-col gap-3">
-        <a href={whatsappLink(leadSummary(answers))} target="_blank" rel="noopener noreferrer" className="min-h-[56px] rounded-full bg-gold text-base font-semibold leading-[56px] text-ink transition-transform active:scale-95">
-          Continue to WhatsApp
-        </a>
-        <Link href="/teachers" className="min-h-[56px] rounded-full border border-white/25 text-base font-semibold leading-[56px] text-paper transition-colors hover:bg-white/5">
-          Browse Teachers
+        <Link href="/teachers" className="min-h-[56px] rounded-full bg-gold text-base font-semibold leading-[56px] text-ink transition-transform active:scale-95">
+          Meet Our Teachers
         </Link>
+        <Link href="/" className="min-h-[56px] rounded-full border border-white/25 text-base font-semibold leading-[56px] text-paper transition-colors hover:bg-white/5">
+          Continue Browsing
+        </Link>
+        <a href={whatsappLink()} target="_blank" rel="noopener noreferrer" className="mt-1 text-sm font-medium text-paper/55 hover:text-paper">
+          Prefer to chat now? Message us on WhatsApp →
+        </a>
       </div>
     </div>
   );

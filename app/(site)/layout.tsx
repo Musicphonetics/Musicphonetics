@@ -1,6 +1,5 @@
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
-import { MobileWhatsAppButton } from "@/components/layout/MobileWhatsAppButton";
 import { Loader } from "@/components/ui/Loader";
 import { CursorGlow } from "@/components/ui/CursorGlow";
 
@@ -25,7 +24,6 @@ export default function SiteLayout({
         {children}
       </main>
       <Footer />
-      <MobileWhatsAppButton />
     </>
   );
 }
