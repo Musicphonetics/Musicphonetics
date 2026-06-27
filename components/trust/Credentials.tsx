@@ -1,8 +1,12 @@
 import { TrustSubsection } from "./TrustSubsection";
 import { TrustIcon } from "./TrustIcon";
 import { Reveal } from "@/components/ui/Reveal";
-import { CREDENTIALS, CREDENTIALS_NOTE } from "@/lib/trust";
+import { CREDENTIALS } from "@/lib/trust";
 import { cn } from "@/lib/utils";
+
+// Public Trust Centre shows only completed verifications. In-progress
+// certifications appear publicly once officially received.
+const COMPLETED = CREDENTIALS.filter((c) => !c.inProgress);
 
 export function Credentials() {
   return (
@@ -10,11 +14,11 @@ export function Credentials() {
       id="credentials"
       eyebrow="Section 01 · Trust & Verifications"
       title="Registered, certified, verified."
-      intro="The legal and operational foundations of a serious education company — documented, not declared. Certifications still being obtained are clearly marked."
+      intro="The legal foundations of a serious education company — documented, not declared."
       blueprint
     >
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {CREDENTIALS.map((c, i) => (
+        {COMPLETED.map((c, i) => (
           <Reveal key={c.name} delay={(i % 3) * 60}>
             <div className="group mp-glass flex h-full flex-col rounded-2xl p-5 transition-all duration-300 hover:-translate-y-1 hover:border-gold/40">
               <div className="flex items-start justify-between gap-2">
@@ -47,7 +51,10 @@ export function Credentials() {
           </Reveal>
         ))}
       </div>
-      <p className="mt-8 text-sm text-paper/50">{CREDENTIALS_NOTE}</p>
+      <p className="mt-8 text-sm text-paper/50">
+        Verification documents are available on request. Further certifications
+        are added here as they are officially received.
+      </p>
     </TrustSubsection>
   );
 }

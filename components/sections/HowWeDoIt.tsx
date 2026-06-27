@@ -12,7 +12,7 @@ const STEPS = [
 
 export function HowWeDoIt() {
   return (
-    <Section background="white" spacing="lg">
+    <Section id="how-we-do-it" background="white" spacing="lg">
       <SectionHeading
         eyebrow="How we do it"
         title="A simple method, run with real discipline."

@@ -6,7 +6,7 @@ import { whatsappLink, whatsappTrialLink } from "@/lib/data";
 
 export function Hero() {
   return (
-    <section className="relative flex min-h-[92vh] items-center overflow-hidden bg-ink text-paper">
+    <section className="relative hidden min-h-[92vh] items-center overflow-hidden bg-ink text-paper lg:flex">
       {/* Calm premium lighting */}
       <div aria-hidden="true" className="pointer-events-none absolute inset-0">
         <div className="absolute left-1/2 top-[-10%] h-[600px] w-[900px] -translate-x-1/2 rounded-full bg-deep-gold/12 blur-[120px]" />

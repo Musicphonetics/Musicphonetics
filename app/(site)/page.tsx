@@ -1,11 +1,14 @@
+import { MobileHero } from "@/components/sections/MobileHero";
 import { Hero } from "@/components/sections/Hero";
-import { WhatWeDo } from "@/components/sections/WhatWeDo";
-import { WhatMakesDifferent } from "@/components/sections/WhatMakesDifferent";
+import { MobileTabs } from "@/components/sections/MobileTabs";
+import { Classes } from "@/components/sections/Classes";
+import { Stories } from "@/components/sections/Stories";
+import { ReviewsShowcase } from "@/components/sections/ReviewsShowcase";
+import { MoreThanLessons } from "@/components/sections/MoreThanLessons";
 import { FounderFeature } from "@/components/sections/FounderFeature";
 import { HowWeDoIt } from "@/components/sections/HowWeDoIt";
-import { MoreThanLessons } from "@/components/sections/MoreThanLessons";
 import { TrustAndStandards } from "@/components/sections/TrustAndStandards";
-import { ReviewsShowcase } from "@/components/sections/ReviewsShowcase";
+import { Partners } from "@/components/sections/Partners";
 import { SeoContent } from "@/components/sections/SeoContent";
 import { FAQ } from "@/components/sections/FAQ";
 import { FinalCTA } from "@/components/sections/FinalCTA";
@@ -16,16 +19,28 @@ export default function HomePage() {
   return (
     <>
       <JsonLd data={[faqJsonLd(), coursesJsonLd(), reviewsJsonLd()]} />
-      {/* Music classes are the product — trust is the proof */}
-      <Hero />
-      <WhatWeDo />
-      <WhatMakesDifferent />
+      {/* Overview — dense listing on mobile, cinematic on desktop */}
+      <div id="overview">
+        <MobileHero />
+        <Hero />
+      </div>
+      <MobileTabs />
+
+      {/* Classes are the product */}
+      <Classes />
+      {/* Stories keep people engaged */}
+      <Stories />
+      {/* Reviews early, near the top */}
+      <ReviewsShowcase />
+      {/* Why it matters to a parent */}
+      <MoreThanLessons />
       <FounderFeature />
       <HowWeDoIt />
-      <MoreThanLessons />
+      {/* Standards as a trust strip only */}
       <TrustAndStandards />
-      <ReviewsShowcase />
-      {/* SEO / AI-readable content + FAQ schema */}
+      {/* Partner ecosystem */}
+      <Partners />
+      {/* SEO / AI + FAQ */}
       <SeoContent />
       <FAQ />
       <FinalCTA

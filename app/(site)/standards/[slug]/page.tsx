@@ -5,10 +5,11 @@ import { Section } from "@/components/ui/Section";
 import { FinalCTA } from "@/components/sections/FinalCTA";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { breadcrumbJsonLd } from "@/lib/seo";
-import { STANDARDS, getStandard } from "@/lib/standards-data";
+import { getStandard } from "@/lib/standards-data";
+import { PUBLIC_STANDARDS, isPublicStandard } from "@/lib/standards-public";
 
 export function generateStaticParams() {
-  return STANDARDS.map((s) => ({ slug: s.slug }));
+  return PUBLIC_STANDARDS.map((s) => ({ slug: s.slug }));
 }
 
 export function generateMetadata({ params }: { params: { slug: string } }): Metadata {
@@ -22,7 +23,7 @@ export function generateMetadata({ params }: { params: { slug: string } }): Meta
 
 export default function StandardPage({ params }: { params: { slug: string } }) {
   const d = getStandard(params.slug);
-  if (!d) notFound();
+  if (!d || !isPublicStandard(params.slug)) notFound();
 
   return (
     <>

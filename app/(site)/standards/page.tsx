@@ -3,7 +3,8 @@ import Link from "next/link";
 import { Reveal } from "@/components/ui/Reveal";
 import { Section } from "@/components/ui/Section";
 import { FinalCTA } from "@/components/sections/FinalCTA";
-import { STANDARDS, STANDARD_CATEGORIES, STANDARDS_COUNT } from "@/lib/standards-data";
+import { STANDARD_CATEGORIES, STANDARDS_COUNT } from "@/lib/standards-data";
+import { PUBLIC_STANDARDS } from "@/lib/standards-public";
 
 export const metadata: Metadata = {
   title: "The Standards Library",
@@ -31,6 +32,10 @@ export default function StandardsPage() {
             <p className="mt-8 font-display text-xl font-semibold text-gold">
               Twenty-three Standards. One institution.
             </p>
+            <p className="mt-3 text-sm text-paper/55">
+              Our parent-facing standards are shown below. Internal operating
+              manuals are maintained privately.
+            </p>
           </Reveal>
         </div>
       </section>
@@ -39,7 +44,8 @@ export default function StandardsPage() {
       <Section background="paper" spacing="lg">
         <div className="space-y-16">
           {STANDARD_CATEGORIES.map((cat) => {
-            const docs = STANDARDS.filter((s) => s.category === cat).sort((a, b) => a.num - b.num);
+            const docs = PUBLIC_STANDARDS.filter((s) => s.category === cat).sort((a, b) => a.num - b.num);
+            if (docs.length === 0) return null;
             return (
               <div key={cat}>
                 <Reveal>

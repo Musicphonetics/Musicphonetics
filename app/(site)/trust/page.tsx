@@ -1,8 +1,6 @@
 import type { Metadata } from "next";
 import { Reveal } from "@/components/ui/Reveal";
 import { Credentials } from "@/components/trust/Credentials";
-import { Operations } from "@/components/trust/Operations";
-import { Documentation } from "@/components/trust/Documentation";
 import { Recognition } from "@/components/trust/Recognition";
 import { CompanyTimeline } from "@/components/trust/CompanyTimeline";
 import { TrustDashboard } from "@/components/trust/TrustDashboard";
@@ -39,8 +37,6 @@ export default function TrustPage() {
       </section>
 
       <Credentials />
-      <Operations />
-      <Documentation />
       <Recognition />
       <CompanyTimeline />
       <TrustDashboard />

@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { Logo } from "./Logo";
 import { Button } from "@/components/ui/Button";
-import { NAV_LINKS, whatsappLink } from "@/lib/data";
+import { NAV_LINKS, whatsappLink, whatsappTrialLink } from "@/lib/data";
 import { cn } from "@/lib/utils";
 
 export function Navbar() {
@@ -98,7 +98,10 @@ export function Navbar() {
               {link.label}
             </Link>
           ))}
-          <div className="mt-3 px-1">
+          <div className="mt-3 flex flex-col gap-2 px-1">
+            <Button href={whatsappTrialLink()} external fullWidth size="lg" variant="light">
+              Book a Trial
+            </Button>
             <Button href={whatsappLink()} external fullWidth size="lg" variant="primary">
               Enquire on WhatsApp
             </Button>

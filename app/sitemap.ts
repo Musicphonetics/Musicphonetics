@@ -1,6 +1,6 @@
 import type { MetadataRoute } from "next";
 import { REGIONS, TEACHERS } from "@/lib/teachers";
-import { STANDARDS } from "@/lib/standards-data";
+import { PUBLIC_STANDARDS } from "@/lib/standards-public";
 
 const SITE_URL = "https://musicphonetics.com";
 
@@ -37,8 +37,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     });
   }
 
-  // Standards documents
-  for (const s of STANDARDS) {
+  // Standards documents (public only)
+  for (const s of PUBLIC_STANDARDS) {
     entries.push({
       url: `${SITE_URL}/standards/${s.slug}`,
       lastModified: now,

@@ -48,7 +48,7 @@ const EXPERIENCES: Exp[] = [
   },
   {
     title: "Student Collaborations",
-    body: "Learners of similar age and different instruments practise together — a creative environment, not an isolated lesson.",
+    body: "Playing alongside peers builds discipline, listening, and a sense of belonging — music as a shared creative effort.",
     art: (
       <Art from="#101522" to="#0B0F18">
         <circle cx="140" cy="160" r="6" fill={G} />
@@ -60,37 +60,22 @@ const EXPERIENCES: Exp[] = [
     ),
   },
   {
-    title: "Join the Ecosystem",
-    body: "Not one teacher — one learning community. Parents, teachers, students, and technology, all connected.",
+    title: "Annual Musicphonetics Awards",
+    body: "A luxury celebration of a year's growth — certificates, guest artists, and families together. Recognition children remember.",
     art: (
-      <Art from="#0d1b16" to="#0B0F18">
-        <circle cx="200" cy="160" r="10" fill={G} />
-        {[40, 100, 160, 220, 280, 340].map((a, i) => {
-          const r = (a * Math.PI) / 180;
-          const x = 200 + Math.cos(r) * 110;
-          const y = 160 + Math.sin(r) * 110;
-          return <g key={i}><line x1="200" y1="160" x2={x} y2={y} stroke={Gf} strokeWidth="1" /><circle cx={x} cy={y} r="5" fill={G} /></g>;
-        })}
+      <Art from="#15110a" to="#0B0F18">
+        <path d="M200 90 l18 40 44 5 -32 30 9 44 -39 -22 -39 22 9 -44 -32 -30 44 -5 z" fill={Gf} stroke={G} strokeWidth="1.2" strokeLinejoin="round" />
       </Art>
     ),
   },
   {
     title: "Director Sessions",
-    body: "The Director works directly with students — motivation, Q&A, workshops, and mentoring beyond the weekly class.",
+    body: "Direct mentoring from the Director — motivation, Q&A, and workshops that keep students inspired beyond the weekly class.",
     art: (
       <Art from="#1a1208" to="#0B0F18">
         <circle cx="200" cy="150" r="34" fill="none" stroke={G} strokeWidth="1.4" />
         <circle cx="200" cy="150" r="64" fill="none" stroke={Gf} strokeWidth="1" />
         <circle cx="200" cy="150" r="94" fill="none" stroke={Gf} strokeWidth="0.8" />
-      </Art>
-    ),
-  },
-  {
-    title: "Annual Musicphonetics Awards",
-    body: "A luxury celebration — certificates, awards, guest artists, and families, recognising a year of real growth.",
-    art: (
-      <Art from="#15110a" to="#0B0F18">
-        <path d="M200 90 l18 40 44 5 -32 30 9 44 -39 -22 -39 22 9 -44 -32 -30 44 -5 z" fill={Gf} stroke={G} strokeWidth="1.2" strokeLinejoin="round" />
       </Art>
     ),
   },

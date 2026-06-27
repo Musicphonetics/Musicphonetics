@@ -14,7 +14,7 @@ const TRUST_BUILDERS = [
 
 export function TrustAndStandards() {
   return (
-    <Section background="paper" spacing="lg">
+    <Section id="standards" background="paper" spacing="lg">
       <SectionHeading
         eyebrow="Endorsements, trust & features"
         title="Trust isn't claimed. It's built into how we work."

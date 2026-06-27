@@ -33,6 +33,10 @@ export function whatsappTrialLink(): string {
   return whatsappLink(WHATSAPP_TRIAL_TEXT);
 }
 
+/** Phone (same number as WhatsApp) for the "Call" quick action. */
+export const PHONE_DISPLAY = "+91 87961 99188";
+export const phoneLink = `tel:+${WHATSAPP_NUMBER}`;
+
 // ---------------------------------------------------------------------------
 // Brand
 // ---------------------------------------------------------------------------
@@ -51,11 +55,13 @@ export const BRAND = {
 // Primary navigation
 // ---------------------------------------------------------------------------
 export const NAV_LINKS = [
+  { label: "Classes", href: "/#classes" },
+  { label: "How It Works", href: "/#how-we-do-it" },
+  { label: "Stories", href: "/#stories" },
   { label: "Founder", href: "/founder" },
-  { label: "Programs", href: "/programs" },
-  { label: "Teachers", href: "/teachers" },
-  { label: "Standards", href: "/standards" },
   { label: "Reviews", href: "/reviews" },
+  { label: "Standards", href: "/standards" },
+  { label: "Partners", href: "/#partners" },
 ];
 
 // Trust line shown under the hero and elsewhere.

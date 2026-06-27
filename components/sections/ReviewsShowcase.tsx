@@ -26,7 +26,7 @@ const TRUST_INDICATORS = [
 
 export function ReviewsShowcase() {
   return (
-    <section className="relative overflow-hidden bg-ink py-20 text-paper sm:py-28">
+    <section id="reviews" className="relative overflow-hidden bg-ink py-20 text-paper sm:py-28">
       <AuroraBackground />
       <div className="container-mp relative">
         <Reveal>
