@@ -2,7 +2,6 @@ import { Button } from "@/components/ui/Button";
 import { Reveal } from "@/components/ui/Reveal";
 import { Magnetic } from "@/components/ui/Magnetic";
 import { SoundWave } from "@/components/ui/SoundWave";
-import { whatsappLink, whatsappTrialLink } from "@/lib/data";
 
 export function Hero() {
   return (
@@ -55,19 +54,18 @@ export function Hero() {
         <Reveal delay={280}>
           <div className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row">
             <Magnetic className="w-full sm:w-auto">
-              <Button href={whatsappTrialLink()} external size="lg" variant="light" className="w-full">
+              <Button href="/start" size="lg" variant="light" className="w-full">
                 Book a Trial
               </Button>
             </Magnetic>
             <Magnetic className="w-full sm:w-auto">
               <Button
-                href={whatsappLink()}
-                external
+                href="/#stories"
                 size="lg"
                 variant="secondary"
                 className="w-full border-white/25 text-paper hover:border-white"
               >
-                Enquire on WhatsApp
+                Watch Stories
               </Button>
             </Magnetic>
           </div>

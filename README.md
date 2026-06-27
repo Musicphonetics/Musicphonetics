@@ -81,6 +81,7 @@ vercel --prod # promote to production
 | Variable | Purpose | Default |
 | --- | --- | --- |
 | `NEXT_PUBLIC_OWNER_PASSWORD` | Owner portal (`/owner`) password | `Abhi@7276` |
+| `LEAD_WEBHOOK_URL` | Where the `/start` onboarding funnel POSTs each lead (e.g. a Google Apps Script Web App / WATI / automation endpoint). Fan out to Sheets + owner email + WATI/Astra from there. If unset, the funnel still works and the user is routed to WhatsApp with a prefilled summary. | _unset_ |
 
 Set this in **Vercel → Project → Settings → Environment Variables** to override
 the default. (This is a client-side gate for now — see "Adding real

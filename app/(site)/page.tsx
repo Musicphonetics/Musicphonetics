@@ -1,7 +1,7 @@
 import { MobileHero } from "@/components/sections/MobileHero";
 import { Hero } from "@/components/sections/Hero";
 import { MobileTabs } from "@/components/sections/MobileTabs";
-import { Classes } from "@/components/sections/Classes";
+import { ProgramsInteractive } from "@/components/sections/ProgramsInteractive";
 import { Stories } from "@/components/sections/Stories";
 import { ReviewsShowcase } from "@/components/sections/ReviewsShowcase";
 import { MoreThanLessons } from "@/components/sections/MoreThanLessons";
@@ -27,7 +27,7 @@ export default function HomePage() {
       <MobileTabs />
 
       {/* Classes are the product */}
-      <Classes />
+      <ProgramsInteractive />
       {/* Stories keep people engaged */}
       <Stories />
       {/* Reviews early, near the top */}

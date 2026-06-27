@@ -1,9 +1,5 @@
 import { ImagePlaceholder } from "@/components/ui/ImagePlaceholder";
-import {
-  whatsappLink,
-  whatsappTrialLink,
-  phoneLink,
-} from "@/lib/data";
+import { whatsappLink, phoneLink } from "@/lib/data";
 
 const TRUST_BADGES = ["Verified Academy", "Trusted by Families", "10+ Years", "1,100+ Students"];
 
@@ -79,7 +75,7 @@ export function MobileHero() {
 
       {/* Primary CTA bar */}
       <div className="mt-4 grid grid-cols-2 gap-3">
-        <a href={whatsappTrialLink()} target="_blank" rel="noopener noreferrer" className="rounded-full bg-gold py-3 text-center text-sm font-semibold text-ink active:bg-deep-gold">
+        <a href="/start" className="rounded-full bg-gold py-3 text-center text-sm font-semibold text-ink active:bg-deep-gold">
           Book Trial
         </a>
         <a href={whatsappLink()} target="_blank" rel="noopener noreferrer" className="rounded-full border border-white/25 py-3 text-center text-sm font-semibold text-paper active:bg-white/10">

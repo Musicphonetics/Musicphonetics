@@ -2,7 +2,7 @@ import { Section } from "@/components/ui/Section";
 import { Button } from "@/components/ui/Button";
 import { Magnetic } from "@/components/ui/Magnetic";
 import { Reveal } from "@/components/ui/Reveal";
-import { whatsappLink, whatsappTrialLink } from "@/lib/data";
+import { whatsappLink } from "@/lib/data";
 
 interface FinalCTAProps {
   headline?: string;
@@ -25,7 +25,7 @@ export function FinalCTA({
           </p>
           <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
             <Magnetic>
-              <Button href={whatsappTrialLink()} external variant="light" size="lg">
+              <Button href="/start" variant="light" size="lg">
                 Book a Trial
               </Button>
             </Magnetic>
