@@ -20,28 +20,16 @@ export function SeoContent() {
         </Reveal>
 
         <Reveal delay={120}>
-          <div className="space-y-5 text-base leading-relaxed text-ink/70">
+          <div className="space-y-5 text-lg leading-relaxed text-ink/70">
             <p>
-              Musicphonetics teaches guitar, piano, keyboard, vocals, and more —
-              one student at a time, at home across Delhi NCR or live online.
-              What sets it apart isn&apos;t a longer list of instruments; it&apos;s
-              the structure behind every lesson. Each student follows a
-              director-led method with a clear path, rather than scattered,
-              one-off classes.
+              Musicphonetics teaches guitar, piano, keyboard, and vocals across
+              Delhi NCR — at home, online, and in groups — with a structured,
+              faculty-led method rather than scattered, one-off classes.
             </p>
             <p>
-              We teach children taking their very first steps and adults
-              returning to an old dream alike. For families who want recognised
-              milestones, our teaching maps to graded pathways such as Trinity
-              and Rockschool — woven into the learning, never bolted on as
-              cramming.
-            </p>
-            <p>
-              We&apos;re based in Delhi NCR today and growing thoughtfully, city
-              by city, with online classes that already reach students wherever
-              they are. If you&apos;ve struggled to find a teacher you can trust,
-              what we offer is simple: a method, a standard, and a real plan from
-              the very first trial.
+              Children taking their first steps and adults returning to an old
+              dream learn the same way: a clear path, a real standard, and
+              graded exam pathways for those who want them.
             </p>
           </div>
         </Reveal>

@@ -9,8 +9,8 @@ interface Stat {
 const DEFAULT_STATS: Stat[] = [
   { value: "10 yrs", label: "Teaching since 2016" },
   { value: "1,100+", label: "Students taught" },
-  { value: "Trinity", label: "Graded exam pathways" },
-  { value: "Home · Online · Centre", label: "Across Delhi NCR" },
+  { value: "23", label: "Institutional standards" },
+  { value: "Home & Online", label: "Across Delhi NCR" },
   { value: "7-stage", label: "Faculty selection" },
 ];
 

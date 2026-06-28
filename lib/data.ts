@@ -56,9 +56,8 @@ export const BRAND = {
 // ---------------------------------------------------------------------------
 export const NAV_LINKS = [
   { label: "Programs", href: "/#programs" },
-  { label: "Teachers", href: "/teachers" },
+  { label: "Faculty", href: "/teachers" },
   { label: "Standards", href: "/standards" },
-  { label: "Stories", href: "/#stories" },
   { label: "Reviews", href: "/reviews" },
   { label: "Founder", href: "/founder" },
 ];

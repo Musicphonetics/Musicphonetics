@@ -62,6 +62,16 @@ export function ProgramsInteractive() {
               <div className={cn("grid transition-all duration-300", isOpen ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0")}>
                 <div className="overflow-hidden">
                   <div className="px-5 pb-5 sm:px-6">
+                    <div className="mb-4 flex flex-wrap gap-2">
+                      {(p.name === "Others"
+                        ? ["By request", "Home & online"]
+                        : ["Private", "Group", "Home & online"]
+                      ).map((tag) => (
+                        <span key={tag} className="rounded-full border border-hairline bg-paper px-3 py-1 text-xs font-semibold text-ink/70">
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
                     <dl className="grid gap-3 sm:grid-cols-2">
                       <Detail label="Duration" value={p.duration} />
                       <Detail label="Who it's for" value={p.who} />

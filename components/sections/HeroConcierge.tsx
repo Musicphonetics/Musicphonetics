@@ -16,25 +16,19 @@ export function HeroConcierge() {
         <div>
           <Reveal>
             <h1 className="font-display text-4xl font-semibold leading-[1.06] sm:text-5xl lg:text-6xl">
-              Building the future of music education in India.
+              Music education, built like an institution.
             </h1>
           </Reveal>
 
-          {/* Bible verse — part of the identity, elegant and subtle */}
           <Reveal delay={120}>
-            <figure className="mt-6 border-l-2 border-gold/40 pl-4">
-              <blockquote className="font-display text-base italic leading-relaxed text-paper/70 sm:text-lg">
-                “Train up a child in the way he should go; even when he is old he
-                will not depart from it.”
-              </blockquote>
-              <figcaption className="mt-1 text-xs uppercase tracking-[0.18em] text-gold/70">
-                Proverbs 22:6
-              </figcaption>
-            </figure>
+            <p className="mt-5 max-w-md text-base leading-relaxed text-paper/70 sm:text-lg">
+              Structured, faculty-led teaching — private and in groups, at home,
+              online, and soon at our flagship South Delhi centre.
+            </p>
           </Reveal>
 
           {/* The one action — search */}
-          <Reveal delay={250}>
+          <Reveal delay={220}>
             <div className="mt-9">
               <p className="mb-3 text-sm font-medium text-paper/70">
                 What would you like to learn?
@@ -44,10 +38,10 @@ export function HeroConcierge() {
           </Reveal>
 
           {/* Small, quiet trust + breadth */}
-          <Reveal delay={330}>
+          <Reveal delay={300}>
             <p className="mt-7 max-w-md text-sm leading-relaxed text-paper/45">
-              Home &amp; online · Group &amp; workshops · Trinity &amp; Rockschool
-              preparation · Verified teacher network · 1,100+ students
+              Private &amp; group · Home · Online · Centre on the way ·
+              Trinity-graded pathways · 1,100+ students
             </p>
           </Reveal>
         </div>

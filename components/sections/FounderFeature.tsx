@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { AuroraBackground } from "@/components/ui/AuroraBackground";
 import { Reveal } from "@/components/ui/Reveal";
+import { Stave } from "@/components/ui/Stave";
 import { Button } from "@/components/ui/Button";
 import { FOUNDER } from "@/lib/founder";
 
@@ -30,10 +31,15 @@ export function FounderFeature() {
           <h2 className="mx-auto mt-4 max-w-3xl text-center text-3xl font-semibold leading-tight sm:text-5xl">
             One guitar. One student. <span className="mp-shimmer">One conviction.</span>
           </h2>
-          <p className="mx-auto mt-5 max-w-xl text-center text-lg leading-relaxed text-paper/70">
-            After 1,100+ students, the founder saw what most miss: talent was
-            never the problem. The system was. So he built a better one.
+          <p className="mx-auto mt-5 max-w-2xl text-center text-lg leading-relaxed text-paper/70">
+            After more than 1,100 students taught one to one — and a year leading
+            music shows and guidance programmes inside a school of a thousand —
+            the founder saw what most miss: talent was never the problem. The
+            system was. So he built a better one.
           </p>
+          <div className="mt-6 flex justify-center">
+            <Stave />
+          </div>
         </Reveal>
 
         <div className="mt-16 grid items-center gap-12 lg:grid-cols-[0.9fr_1.1fr] lg:gap-16">
@@ -43,10 +49,6 @@ export function FounderFeature() {
               {/* Gold trails / rings */}
               <div aria-hidden="true" className="absolute -inset-4 rounded-[2rem] border border-gold/30" />
               <div aria-hidden="true" className="absolute -inset-8 rounded-[2.5rem] border border-gold/10" />
-              {/* Floating notes */}
-              <span aria-hidden="true" className="mp-note absolute -left-6 top-10 text-2xl" style={{ animationDelay: "0s" }}>♪</span>
-              <span aria-hidden="true" className="mp-note absolute -right-4 top-1/3 text-xl" style={{ animationDelay: "1.5s" }}>♫</span>
-              <span aria-hidden="true" className="mp-note absolute -right-7 bottom-16 text-2xl" style={{ animationDelay: "3s" }}>♬</span>
 
               <div className="relative overflow-hidden rounded-[1.5rem] border border-white/12 shadow-card-hover">
                 <Image
