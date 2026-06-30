@@ -51,12 +51,15 @@ export function HeroConcierge() {
                   WhatsApp
                 </Button>
               </div>
+              <p className="mt-3 text-xs text-paper/70">
+                Free trial, no commitment — we reply on WhatsApp within the hour.
+              </p>
             </div>
           </Reveal>
 
           {/* Small, quiet trust + breadth */}
           <Reveal delay={300}>
-            <p className="mt-7 max-w-md text-sm leading-relaxed text-paper/45">
+            <p className="mt-7 max-w-md text-sm leading-relaxed text-paper/70">
               Private &amp; group · Home · Online · Centre on the way ·
               Trinity-graded pathways · 1,100+ students
             </p>

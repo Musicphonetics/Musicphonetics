@@ -11,8 +11,8 @@ interface LogoProps {
 /** Musicphonetics brand wordmark (real logo art). */
 export function Logo({ invert = false, className }: LogoProps) {
   const src = invert
-    ? "/logo-wordmark-light.png"
-    : "/logo-wordmark-dark.png";
+    ? "/logo-wordmark-light.webp"
+    : "/logo-wordmark-dark.webp";
   // Intrinsic ratios of the supplied art (kept for crisp scaling).
   const width = invert ? 163 : 177;
 

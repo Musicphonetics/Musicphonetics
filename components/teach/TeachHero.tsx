@@ -38,12 +38,12 @@ export function TeachHero() {
           <Button href={whatsappLink("Hi Musicphonetics, I have a question about teaching with you.")} external size="lg" variant="secondary" className="border-white/25 text-paper hover:border-white">Message us</Button>
         </div>
 
-        <dl className="mt-12 grid grid-cols-2 gap-x-8 gap-y-6 sm:grid-cols-4">
+        <div className="mt-12 grid grid-cols-2 gap-x-8 gap-y-6 sm:grid-cols-4">
           <Stat label="Students taught"><CountUp value={1100} suffix="+" /></Stat>
           <Stat label="Years teaching"><CountUp value={10} suffix=" yrs" /></Stat>
           <Stat label="Your share"><CountUp value={70} suffix="%" /></Stat>
           <Stat label="Per class">₹840–₹1,050</Stat>
-        </dl>
+        </div>
       </div>
     </section>
   );

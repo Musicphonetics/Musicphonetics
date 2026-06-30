@@ -27,8 +27,8 @@ function MetricRow({ label, solo, faculty, unit }: { label: string; solo: number
     <div className="rounded-2xl border border-hairline bg-paper p-5">
       <div className="text-sm font-semibold text-ink">{label}</div>
       <div className="mt-3 space-y-2">
-        <div><span className="mb-1 block text-xs text-ink/50">Going solo</span><Bar2 v={solo} /></div>
-        <div><span className="mb-1 block text-xs text-ink/50">Musicphonetics</span><Bar2 v={faculty} gold /></div>
+        <div><span className="mb-1 block text-xs text-ink/65">Going solo</span><Bar2 v={solo} /></div>
+        <div><span className="mb-1 block text-xs text-ink/65">Musicphonetics</span><Bar2 v={faculty} gold /></div>
       </div>
     </div>
   );
@@ -70,7 +70,7 @@ export function SoloVsFaculty() {
         </div>
       </div>
 
-      <p className="mt-6 max-w-3xl text-xs leading-relaxed text-ink/50">
+      <p className="mt-6 max-w-3xl text-xs leading-relaxed text-ink/65">
         Solo per-class rates from Delhi market rates, 2026; solo income reflects
         typical roster instability and unpaid admin time. Faculty figures
         projected at a full roster. Going solo, your per-class rate can match

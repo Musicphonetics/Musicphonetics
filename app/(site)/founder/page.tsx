@@ -24,6 +24,11 @@ export const metadata: Metadata = {
   title: "The Founder · Abhishek Kumar",
   description:
     "The story of Musicphonetics — a testimony that began in 2015 with one guitar, three chords, and one student. Faith first, music second, business third.",
+  openGraph: {
+    title: "The Founder · Abhishek Kumar — Musicphonetics",
+    description:
+      "Why Musicphonetics exists: a faculty-led standard built by founder Abhishek Kumar after teaching 1,100+ students across Delhi NCR.",
+  },
 };
 
 export default function FounderPage() {

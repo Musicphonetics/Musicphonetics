@@ -24,7 +24,7 @@ export function ReferralRewards() {
         {REWARDS.map((r, i) => (
           <MotionReveal key={r.title} delay={i * 100}>
             <div className="flex h-full items-start gap-4 rounded-2xl border border-hairline bg-white p-6 shadow-card">
-              <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-gold/15 text-deep-gold">
+              <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-gold/15 text-[#7A5E0F]">
                 <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3v18M5 8l7-5 7 5M5 8a7 7 0 0 0 14 0" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" /></svg>
               </span>
               <div>

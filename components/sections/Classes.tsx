@@ -20,7 +20,7 @@ export function Classes() {
       <SectionHeading
         eyebrow="Classes"
         title="Premium music classes, built around the student."
-        intro="Choose your instrument and format. Every class follows the same structured, director-led method."
+        intro="Choose your instrument and format. Every class follows the same structured, faculty-led method."
       />
       <div className="mt-10 flex snap-x snap-mandatory gap-4 overflow-x-auto pb-4 sm:grid sm:grid-cols-2 sm:overflow-visible lg:grid-cols-3 [scrollbar-width:thin]">
         {CARDS.map((c, i) => (

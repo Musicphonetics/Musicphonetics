@@ -12,11 +12,17 @@ import { FounderWord } from "@/components/teach/FounderWord";
 import { Selective } from "@/components/teach/Selective";
 import { BenefitsFaq } from "@/components/teach/BenefitsFaq";
 import { TeachFinalCTA } from "@/components/teach/TeachFinalCTA";
+import { FacultyApplication } from "@/components/teach/FacultyApplication";
 
 export const metadata: Metadata = {
-  title: "Teach with us",
+  title: "Teach with us — join the faculty",
   description:
     "Join the Musicphonetics faculty. You teach — we bring the students, payments, scheduling, and brand. A 70% per-class share, paid on time. Limited intake.",
+  openGraph: {
+    title: "Teach with us — join the Musicphonetics faculty",
+    description:
+      "You teach — we bring the students, payments, scheduling, and brand. 70% per-class share, paid on time. Limited intake.",
+  },
 };
 
 export default function TeachWithUsPage() {
@@ -34,6 +40,7 @@ export default function TeachWithUsPage() {
       <FounderWord />
       <Selective />
       <BenefitsFaq />
+      <FacultyApplication />
       <TeachFinalCTA />
     </>
   );

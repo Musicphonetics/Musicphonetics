@@ -32,7 +32,7 @@ export function ProgramsInteractive() {
       <SectionHeading
         eyebrow="Programs"
         title="What can you learn?"
-        intro="Every program follows the same structured, director-led method — with real outcomes, not vague promises. Tap any program to see exactly what to expect."
+        intro="Every program follows the same structured, faculty-led method — with real outcomes, not vague promises. Tap any program to see exactly what to expect."
       />
       <div className="mx-auto mt-12 max-w-3xl space-y-3">
         {PROGRAMS.map((p, i) => {
@@ -98,7 +98,7 @@ export function ProgramsInteractive() {
 function Detail({ label, value }: { label: string; value: string }) {
   return (
     <div className="rounded-xl border border-hairline bg-paper p-3.5">
-      <dt className="text-xs font-medium uppercase tracking-wide text-ink/45">{label}</dt>
+      <dt className="text-xs font-medium uppercase tracking-wide text-ink/70">{label}</dt>
       <dd className="mt-1 text-sm font-medium text-ink">{value}</dd>
     </div>
   );

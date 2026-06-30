@@ -11,7 +11,7 @@ export function ProgramsGrid() {
       <SectionHeading
         eyebrow="Programs"
         title="One method, every instrument and stage."
-        intro="Choose where to begin. Every program follows the same structured, director-led standard."
+        intro="Choose where to begin. Every program follows the same structured, faculty-led standard."
       />
       <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
         {PROGRAM_ITEMS.map((p, i) => (

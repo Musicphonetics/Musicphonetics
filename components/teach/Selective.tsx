@@ -33,7 +33,7 @@ export function Selective() {
             <ul className="mt-5 space-y-3">
               {LOOK_FOR.map((l) => (
                 <li key={l} className="flex items-center gap-3 text-ink/75">
-                  <span className="grid h-6 w-6 shrink-0 place-items-center rounded-full bg-gold/15 text-deep-gold">
+                  <span className="grid h-6 w-6 shrink-0 place-items-center rounded-full bg-gold/15 text-[#7A5E0F]">
                     <svg width="13" height="13" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12l4 4 10-10" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" /></svg>
                   </span>
                   {l}

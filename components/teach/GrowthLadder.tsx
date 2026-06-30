@@ -36,7 +36,7 @@ export function GrowthLadder() {
         {RUNGS.map((r, i) => (
           <li key={r.when} className="relative">
             <span className="absolute -left-10 top-0 grid h-7 w-7 place-items-center rounded-full bg-gold text-xs font-bold text-ink shadow-[0_0_12px_rgba(201,162,39,0.5)]">{i + 1}</span>
-            <p className="font-display text-sm font-semibold text-deep-gold">{r.when}</p>
+            <p className="font-display text-sm font-semibold text-[#7A5E0F]">{r.when}</p>
             <h3 className="mt-1 text-lg font-semibold text-ink">{r.title}</h3>
             <p className="mt-1.5 text-sm leading-relaxed text-ink/65">{r.body}</p>
           </li>

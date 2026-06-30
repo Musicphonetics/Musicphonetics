@@ -12,7 +12,7 @@ import { METHOD_STAGES_FULL, METHOD_PRINCIPLES } from "@/lib/data";
 export const metadata: Metadata = {
   title: "The Method",
   description:
-    "The Musicphonetics Method: a structured, director-led pathway from Foundation to Mastery. Music should never feel random.",
+    "The Musicphonetics Method: a structured, faculty-led pathway from Foundation to Mastery. Music should never feel random.",
 };
 
 export default function MethodPage() {
@@ -21,7 +21,7 @@ export default function MethodPage() {
       <PageHero
         eyebrow="The Musicphonetics Method"
         title="A pathway, not a playlist of songs."
-        intro="A structured, director-led approach that takes a learner from first sound to confident musician — at a pace that respects them."
+        intro="A structured, faculty-led approach that takes a learner from first sound to confident musician — at a pace that respects them."
       >
         <Button href="/#plans" variant="primary" size="lg">
           See learning paths

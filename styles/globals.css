@@ -48,9 +48,11 @@
     @apply mx-auto w-full max-w-content px-5 sm:px-8;
   }
 
-  /* Eyebrow / kicker label */
+  /* Eyebrow / kicker label.
+     Darkened gold (#7A5E0F) so small gold text meets WCAG AA on light
+     backgrounds. On dark sections, override with `text-gold`. */
   .eyebrow {
-    @apply text-xs font-semibold uppercase tracking-[0.18em] text-deep-gold;
+    @apply text-xs font-semibold uppercase tracking-[0.18em] text-[#7A5E0F];
   }
 
   /* Thin hairline divider */

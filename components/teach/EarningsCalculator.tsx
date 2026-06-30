@@ -53,7 +53,7 @@ export function EarningsCalculator() {
           <label className="block">
             <span className="flex items-baseline justify-between">
               <span className="text-sm font-semibold text-ink">Students on your roster</span>
-              <span className="font-display text-2xl font-semibold text-deep-gold">{students}</span>
+              <span className="font-display text-2xl font-semibold text-[#7A5E0F]">{students}</span>
             </span>
             <input
               type="range" min={1} max={12} value={students}
@@ -61,7 +61,7 @@ export function EarningsCalculator() {
               className="mt-3 w-full accent-gold"
               aria-label="Number of students"
             />
-            <span className="mt-1 flex justify-between text-xs text-ink/45"><span>1</span><span>12</span></span>
+            <span className="mt-1 flex justify-between text-xs text-ink/70"><span>1</span><span>12</span></span>
           </label>
 
           <div className="mt-7">
@@ -78,7 +78,7 @@ export function EarningsCalculator() {
                   )}
                 >
                   <span className="block text-sm font-semibold">{o.label}</span>
-                  <span className="mt-0.5 block text-[11px] leading-tight text-ink/50">{o.note}</span>
+                  <span className="mt-0.5 block text-[11px] leading-tight text-ink/65">{o.note}</span>
                 </button>
               ))}
             </div>
@@ -86,11 +86,11 @@ export function EarningsCalculator() {
 
           <div className="mt-7 grid grid-cols-2 gap-3 text-sm">
             <div className="rounded-xl border border-hairline bg-paper p-4">
-              <div className="text-ink/50">Classes / month</div>
+              <div className="text-ink/65">Classes / month</div>
               <div className="mt-1 font-display text-xl font-semibold text-ink">{r.classesPerMonth}</div>
             </div>
             <div className="rounded-xl border border-hairline bg-paper p-4">
-              <div className="text-ink/50">Your share / class</div>
+              <div className="text-ink/65">Your share / class</div>
               <div className="mt-1 font-display text-xl font-semibold text-ink">{formatINR(r.share)}</div>
             </div>
           </div>
@@ -99,10 +99,10 @@ export function EarningsCalculator() {
         {/* Output + bar */}
         <div className="flex gap-6">
           <div className="flex-1">
-            <p className="text-xs font-semibold uppercase tracking-wider text-deep-gold">Projected monthly income</p>
+            <p className="text-xs font-semibold uppercase tracking-wider text-[#7A5E0F]">Projected monthly income</p>
             <p className="mt-1 font-display text-4xl font-semibold text-ink sm:text-5xl">{formatINR(monthly)}</p>
             <p className="mt-2 text-sm text-ink/60">Projected annual · {formatINR(r.annual)}</p>
-            <p className="mt-6 max-w-sm text-xs leading-relaxed text-ink/50">
+            <p className="mt-6 max-w-sm text-xs leading-relaxed text-ink/65">
               Projected, illustrative. Based on {8} classes per student per month
               and a 70% share. Your roster builds over the first weeks — this is a
               planning tool, not a guarantee.

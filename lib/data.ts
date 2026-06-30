@@ -46,7 +46,7 @@ export const INSTAGRAM_URL = "https://instagram.com/abhisheksessions";
 // ---------------------------------------------------------------------------
 export const BRAND = {
   name: "Musicphonetics",
-  tagline: "Teaching across cities. Expanding globally.",
+  tagline: "Across Delhi NCR & online.",
   positioning:
     "An education-first music company founded in India, built for structured music learning across cities — and eventually across countries.",
   region: "Delhi NCR",
@@ -73,7 +73,7 @@ export const TRUST_LINE = `${BRAND.yearsExperience} years · ${BRAND.studentsTau
 // Simplified footer navigation per go-live spec.
 export const FOOTER_NAV = [
   { label: "Home", href: "/" },
-  { label: "Programs", href: "/programs" },
+  { label: "Programs", href: "/#programs" },
   { label: "Standards", href: "/standards" },
   { label: "South Delhi Centre", href: "/centre" },
   { label: "Trust Centre", href: "/trust" },
@@ -87,7 +87,7 @@ export const FOOTER_NAV = [
 export const TRUST_STATS = [
   { value: "10+", label: "Years" },
   { value: "1,000+", label: "Students" },
-  { value: "Director-led", label: "Method" },
+  { value: "Faculty-led", label: "Method" },
   { value: "Delhi NCR", label: "Home & online" },
 ];
 
@@ -104,7 +104,7 @@ export const WHY_CARDS = [
     body: "Lessons follow a method, not scattered songs.",
   },
   {
-    title: "Director-led philosophy",
+    title: "Faculty-led philosophy",
     body: "The learning journey is guided by a central teaching standard.",
   },
   {
@@ -142,7 +142,7 @@ export const METHOD_STAGES_FULL = [
 
 export const METHOD_PRINCIPLES = [
   "One-to-one attention",
-  "Director-led standard",
+  "Faculty-led standard",
   "Structured progress",
   "Practical musicianship",
   "Exam pathway where needed",

@@ -14,13 +14,13 @@ import { SeoContent } from "@/components/sections/SeoContent";
 import { FAQ } from "@/components/sections/FAQ";
 import { FinalCTA } from "@/components/sections/FinalCTA";
 import { JsonLd } from "@/components/seo/JsonLd";
-import { faqJsonLd, coursesJsonLd, reviewsJsonLd } from "@/lib/seo";
+import { faqJsonLd, coursesJsonLd, reviewsJsonLd, instrumentCoursesJsonLd } from "@/lib/seo";
 
 export default function HomePage() {
   // Each section answers one question — no repetition.
   return (
     <>
-      <JsonLd data={[faqJsonLd(), coursesJsonLd(), reviewsJsonLd()]} />
+      <JsonLd data={[faqJsonLd(), coursesJsonLd(), instrumentCoursesJsonLd(), reviewsJsonLd()]} />
       <HeroConcierge />        {/* Who are you? Why continue? */}
       <ProofStrip />           {/* At a glance — real quantities */}
       <MobileTabs />

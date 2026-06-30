@@ -49,7 +49,7 @@ const PROGRAM_DETAILS: ProgramDetail[] = [
     status: "Premium",
     statusTone: "green",
     body: "Learn directly from Director Abhishek by prior booking — for serious learners who want the highest standard from day one.",
-    points: ["Director-led classes", "By prior booking", "Highest standard"],
+    points: ["Faculty-led classes", "By prior booking", "Highest standard"],
   },
   {
     title: "Group Classes & Academy Batches",

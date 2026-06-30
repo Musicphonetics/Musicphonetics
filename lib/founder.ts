@@ -7,7 +7,7 @@
 export const FOUNDER = {
   name: "Abhishek Kumar",
   role: "Founder · Musicphonetics",
-  photo: "/founder.png",
+  photo: "/founder.webp",
   photoAlt:
     "Abhishek Kumar, founder of Musicphonetics — guitarist, vocalist, and music educator",
 };
@@ -107,7 +107,7 @@ export const FOUNDER_TIMELINE: TimelineItem[] = [
   {
     period: "Building the method",
     title: "A structured methodology takes shape",
-    body: "Patterns from real teaching are distilled into a repeatable, director-led learning system.",
+    body: "Patterns from real teaching are distilled into a repeatable, faculty-led learning system.",
   },
   {
     period: "1,100+ students",
@@ -117,7 +117,7 @@ export const FOUNDER_TIMELINE: TimelineItem[] = [
   {
     period: "Today",
     title: "Musicphonetics launches",
-    body: "The method becomes a company: structured, personal, director-led music education.",
+    body: "The method becomes a company: structured, personal, faculty-led music education.",
   },
   {
     period: "Now growing",

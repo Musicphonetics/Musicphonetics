@@ -93,9 +93,15 @@ export function Footer() {
           <p>
             © {new Date().getFullYear()} {BRAND.name}. {BRAND.tagline}
           </p>
-          <div className="flex items-center gap-5">
+          <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
             <Link href="/teach-with-us" className="hover:text-paper">
               Teach with us
+            </Link>
+            <Link href="/standards/privacy-policy" className="hover:text-paper">
+              Privacy
+            </Link>
+            <Link href="/standards/terms-conditions" className="hover:text-paper">
+              Terms
             </Link>
           </div>
         </div>

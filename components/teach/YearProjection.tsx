@@ -13,7 +13,7 @@ function TooltipBox({ active, payload, label }: any) {
   return (
     <div className="rounded-lg border border-hairline bg-white px-3 py-2 text-sm shadow-card">
       <div className="font-semibold text-ink">{label}</div>
-      <div className="text-deep-gold">{formatINR(payload[0].value)}</div>
+      <div className="text-[#7A5E0F]">{formatINR(payload[0].value)}</div>
     </div>
   );
 }
@@ -45,7 +45,7 @@ export function YearProjection() {
             </AreaChart>
           </ResponsiveContainer>
         </div>
-        <p className="mt-4 text-xs text-ink/50">
+        <p className="mt-4 text-xs text-ink/65">
           Projected. Includes six-month and annual loyalty payments. Illustrative
           only — actual income depends on roster and retention.
         </p>

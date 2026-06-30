@@ -33,7 +33,7 @@ function ShortCard({ id, title }: { id: string; title: string }) {
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={`https://i.ytimg.com/vi/${id}/hqdefault.jpg`}
-            alt=""
+            alt={`${title} — tap to play`}
             loading="lazy"
             onError={(e) => {
               e.currentTarget.style.display = "none";

@@ -8,30 +8,45 @@
 // logo image path, before launch.
 // ============================================================================
 
-import { BRAND, FAQS, PACKAGES, AREAS_SERVED, REVIEWS } from "./data";
+import { BRAND, FAQS, PACKAGES, AREAS_SERVED, REVIEWS, INSTAGRAM_URL, PHONE_DISPLAY } from "./data";
 import { FOUNDER, FOUNDER_HIGHLIGHTS } from "./founder";
+import { INSTRUMENTS } from "./onboarding";
 import type { TeacherProfile, Region } from "./teachers";
 
+// Canonical brand domain (used for canonical/sitemap — unchanged for now).
 export const SITE_URL = "https://musicphonetics.com";
+// Origin that actually serves the live build today — used so OG/share images
+// and structured-data images resolve on the current testing domain.
+export const OG_ORIGIN = "https://musicphonetics.pages.dev";
 
-// TODO(content): replace with real, verified social profiles.
-export const SOCIAL_PROFILES: string[] = [];
+export const SOCIAL_PROFILES: string[] = [INSTAGRAM_URL];
 
 const ORG_ID = `${SITE_URL}/#organization`;
 
-/** Organization + EducationalOrganization. */
+/** Organization + LocalBusiness + EducationalOrganization. */
 export function organizationJsonLd() {
   return {
     "@context": "https://schema.org",
-    "@type": ["Organization", "EducationalOrganization"],
+    "@type": ["Organization", "LocalBusiness", "EducationalOrganization"],
     "@id": ORG_ID,
     name: BRAND.name,
     url: SITE_URL,
+    image: `${OG_ORIGIN}/og.png`,
+    logo: `${OG_ORIGIN}/logo-wordmark-dark.webp`,
     slogan: "Music should never feel random.",
     description:
-      "An education-first music company offering structured, director-led, one-to-one music education across Delhi NCR — home and online — built to grow into a wider music education ecosystem.",
+      "Structured, faculty-led music education across Delhi NCR — home, online, and at our South Delhi centre.",
+    telephone: PHONE_DISPLAY,
     foundingLocation: { "@type": "Place", name: "India" },
-    areaServed: AREAS_SERVED.map((name) => ({ "@type": "Place", name })),
+    areaServed: [
+      "South Delhi",
+      "Gurugram",
+      "Noida",
+      "Faridabad",
+      "Ghaziabad",
+      "Delhi NCR",
+      "Online",
+    ].map((name) => ({ "@type": "Place", name })),
     founder: { "@type": "Person", name: FOUNDER.name },
     knowsAbout: [
       "Music education",
@@ -41,7 +56,31 @@ export function organizationJsonLd() {
       "Trinity exam preparation",
       "Music curriculum development",
     ],
+    aggregateRating: {
+      "@type": "AggregateRating",
+      ratingValue: "5.0",
+      reviewCount: String(REVIEWS.length),
+      bestRating: "5",
+    },
     ...(SOCIAL_PROFILES.length ? { sameAs: SOCIAL_PROFILES } : {}),
+  };
+}
+
+/** A Course per instrument (helps instrument-intent search). */
+export function instrumentCoursesJsonLd() {
+  return {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    itemListElement: INSTRUMENTS.map((inst, i) => ({
+      "@type": "ListItem",
+      position: i + 1,
+      item: {
+        "@type": "Course",
+        name: `${inst.label} lessons`,
+        description: `Structured, faculty-led ${inst.label} lessons — home and online — across Delhi NCR, with exam preparation where wanted.`,
+        provider: { "@id": ORG_ID },
+      },
+    })),
   };
 }
 

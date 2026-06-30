@@ -17,7 +17,17 @@ const CRUSHER = CRUSHER_ORDER.map((n) => REVIEWS.find((r) => r.name === n)).filt
 ) as Review[];
 
 const DEFENCE = REVIEWS.filter((r) => r.defence);
+// All four rank labels are shown as typographic badges…
 const RANKS = ["Lt Col", "Col", "Brigadier", "Major General"];
+
+// De-dupe: every quote appears exactly once across the page.
+// Crusher pulls its 3; the defence band shows the defence quotes NOT already in
+// the crusher (so the Major General quote isn't repeated); the wall shows the
+// remaining unique reviews.
+const CRUSHER_NAMES = new Set(CRUSHER.map((r) => r.name));
+const DEFENCE_QUOTES = DEFENCE.filter((r) => !CRUSHER_NAMES.has(r.name));
+const FEATURED = new Set([...CRUSHER, ...DEFENCE].map((r) => r.name));
+const WALL = REVIEWS.filter((r) => !FEATURED.has(r.name));
 
 const LOCALITIES = [
   "Dwarka",
@@ -33,14 +43,12 @@ const FILTERS = [
   { key: "all", label: "All" },
   { key: "parents", label: "Parents" },
   { key: "students", label: "Students" },
-  { key: "defence", label: "Defence families" },
 ] as const;
 type FilterKey = (typeof FILTERS)[number]["key"];
 
 function matches(r: Review, f: FilterKey) {
   if (f === "parents") return r.role === "Parent";
   if (f === "students") return r.role === "Student";
-  if (f === "defence") return !!r.defence;
   return true;
 }
 
@@ -48,7 +56,7 @@ function matches(r: Review, f: FilterKey) {
 function Stars({ className }: { className?: string }) {
   const reduced = useReducedMotion();
   return (
-    <div className={cn("flex gap-0.5 text-gold", className)} aria-label="5 out of 5 stars">
+    <div role="img" className={cn("flex gap-0.5 text-gold", className)} aria-label="5 out of 5 stars">
       {Array.from({ length: 5 }).map((_, i) => (
         <motion.svg
           key={i}
@@ -87,7 +95,7 @@ function RoleChip({ r }: { r: Review }) {
 
 function FeePill() {
   return (
-    <span className="inline-flex items-center gap-1 rounded-full bg-gold/15 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-deep-gold">
+    <span className="inline-flex items-center gap-1 rounded-full bg-gold/15 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-[#7A5E0F]">
       <svg width="10" height="10" viewBox="0 0 24 24" fill="none" aria-hidden="true">
         <path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
       </svg>
@@ -125,7 +133,7 @@ function WallCard({ r }: { r: Review }) {
 export function ReviewsShowcase() {
   const [filter, setFilter] = useState<FilterKey>("all");
   const reduced = useReducedMotion();
-  const visible = useMemo(() => REVIEWS.filter((r) => matches(r, filter)), [filter]);
+  const visible = useMemo(() => WALL.filter((r) => matches(r, filter)), [filter]);
 
   return (
     <section id="reviews">
@@ -134,7 +142,7 @@ export function ReviewsShowcase() {
         <div className="container-mp py-20 sm:py-28">
           <Reveal>
             <div className="max-w-3xl">
-              <p className="eyebrow text-deep-gold">Loved by families</p>
+              <p className="eyebrow">Loved by families</p>
               <h2 className="mt-3 font-display text-3xl font-semibold leading-tight text-ink sm:text-4xl lg:text-[2.85rem]">
                 Trusted across Delhi NCR — by defence officers, professionals,
                 and discerning parents.
@@ -224,7 +232,7 @@ export function ReviewsShowcase() {
           </motion.div>
 
           <div className="mt-12 grid gap-5 sm:grid-cols-2">
-            {DEFENCE.map((r, i) => (
+            {DEFENCE_QUOTES.map((r, i) => (
               <Reveal key={r.name} delay={(i % 2) * 90}>
                 <figure className="flex h-full flex-col rounded-2xl border border-white/10 bg-white/[0.04] p-6 backdrop-blur-sm">
                   <Stars />
@@ -254,14 +262,14 @@ export function ReviewsShowcase() {
           <Reveal>
             <div className="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
               <div className="max-w-xl">
-                <p className="eyebrow text-deep-gold">Every review</p>
+                <p className="eyebrow">Every review</p>
                 <h3 className="mt-3 font-display text-2xl font-semibold leading-tight text-ink sm:text-3xl">
                   Real families, real homes, real progress.
                 </h3>
               </div>
               {/* Filter tabs */}
               <div
-                role="tablist"
+                role="group"
                 aria-label="Filter reviews"
                 className="flex flex-wrap gap-2"
               >
@@ -271,12 +279,11 @@ export function ReviewsShowcase() {
                     <button
                       key={f.key}
                       type="button"
-                      role="tab"
-                      aria-selected={selected}
+                      aria-pressed={selected}
                       onClick={() => setFilter(f.key)}
                       className={cn(
-                        "relative rounded-full px-4 py-2 text-sm font-medium transition-colors",
-                        selected ? "text-ink" : "text-ink/55 hover:text-ink"
+                        "relative rounded-full px-4 py-2 text-sm font-medium transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold",
+                        selected ? "text-ink" : "text-ink/60 hover:text-ink"
                       )}
                     >
                       {selected && (
@@ -317,7 +324,7 @@ export function ReviewsShowcase() {
       <div className="bg-mist">
         <div className="container-mp py-16 sm:py-20">
           <Reveal>
-            <p className="eyebrow text-center text-deep-gold">Where our families learn</p>
+            <p className="eyebrow text-center">Where our families learn</p>
             <div className="mx-auto mt-8 flex max-w-3xl flex-wrap justify-center gap-3">
               {LOCALITIES.map((loc) => (
                 <span

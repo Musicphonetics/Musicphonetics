@@ -13,7 +13,7 @@ function TooltipBox({ active, payload, label }: any) {
   return (
     <div className="rounded-lg border border-hairline bg-white px-3 py-2 text-sm shadow-card">
       <div className="font-semibold text-ink">{label}</div>
-      <div className="text-deep-gold">{formatINR(payload[0].value)} / mo</div>
+      <div className="text-[#7A5E0F]">{formatINR(payload[0].value)} / mo</div>
     </div>
   );
 }
@@ -41,7 +41,7 @@ export function RosterRamp() {
             </BarChart>
           </ResponsiveContainer>
         </div>
-        <p className="mt-4 text-xs text-ink/50">Projected, blended package, 8 classes/student/month.</p>
+        <p className="mt-4 text-xs text-ink/65">Projected, blended package, 8 classes/student/month.</p>
       </div>
     </Section>
   );

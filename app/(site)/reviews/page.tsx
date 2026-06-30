@@ -3,9 +3,14 @@ import { PageHero } from "@/components/sections/PageHero";
 import { ReviewsShowcase } from "@/components/sections/ReviewsShowcase";
 
 export const metadata: Metadata = {
-  title: "Reviews",
+  title: "Reviews — 5.0 across every review",
   description:
     "Verified Musicphonetics reviews from across Delhi NCR — defence families in Delhi Cantonment, professionals in Dwarka, Vasant Kunj, Green Park, and Gurugram. 5.0 across every review.",
+  openGraph: {
+    title: "Reviews — trusted across Delhi NCR",
+    description:
+      "Verified reviews from defence families, professionals, and parents across Delhi NCR. 5.0 across every review.",
+  },
 };
 
 export default function ReviewsPage() {

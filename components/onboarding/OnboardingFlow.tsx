@@ -117,7 +117,7 @@ export function OnboardingFlow() {
               Back
             </button>
           ) : <Logo invert />}
-          <span className="text-xs text-paper/45">
+          <span className="text-xs text-paper/70">
             {step === "intro" ? "~30 seconds" : step === "analyzing" || step === "success" ? "Almost done" : `Step ${qIndex + 1} of ${questionSteps.length}`}
           </span>
           <Link href="/" className="text-paper/40 hover:text-paper" aria-label="Close">
