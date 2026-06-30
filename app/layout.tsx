@@ -52,12 +52,14 @@ export const metadata: Metadata = {
     type: "website",
     siteName: "Musicphonetics",
     locale: "en_IN",
+    images: [{ url: "/og.png", width: 1200, height: 630, alt: "Musicphonetics" }],
   },
   twitter: {
     card: "summary_large_image",
     title: "Musicphonetics — Building the future of music education",
     description:
       "Founded in India. Teaching across cities. Expanding globally.",
+    images: ["/og.png"],
   },
 };
 

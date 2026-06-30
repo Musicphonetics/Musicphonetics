@@ -1,17 +1,12 @@
+import { Suspense } from "react";
 import { OnboardingFlow } from "@/components/onboarding/OnboardingFlow";
-import { INSTRUMENT_VALUES } from "@/lib/onboarding";
 
-export default function StartPage({
-  searchParams,
-}: {
-  searchParams: { instrument?: string };
-}) {
-  // Only accept a known instrument so the hero can deep-link straight past the
-  // instrument step. Anything else falls back to the full flow.
-  const instrument =
-    searchParams.instrument && INSTRUMENT_VALUES.includes(searchParams.instrument)
-      ? searchParams.instrument
-      : undefined;
-
-  return <OnboardingFlow initialInstrument={instrument} />;
+// Static export: the chosen instrument arrives as a ?instrument= query param
+// and is read on the client (useSearchParams) inside OnboardingFlow.
+export default function StartPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-ink" />}>
+      <OnboardingFlow />
+    </Suspense>
+  );
 }

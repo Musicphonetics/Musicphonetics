@@ -2,14 +2,18 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { Logo } from "@/components/layout/Logo";
 import { InstrumentIcon } from "@/components/ui/InstrumentIcon";
 import { whatsappLink } from "@/lib/data";
 import {
-  INSTRUMENTS, WHO, AGES, MODES, EXPERIENCE, GOALS, TIMINGS, BEGIN, AREAS,
+  INSTRUMENTS, INSTRUMENT_VALUES, WHO, AGES, MODES, EXPERIENCE, GOALS, TIMINGS, BEGIN, AREAS,
   SOCIAL_PROOF, leadSummary, type LeadData,
 } from "@/lib/onboarding";
 import { cn } from "@/lib/utils";
+
+// Web3Forms access key (public by design; tied to the destination inbox).
+const WEB3FORMS_ACCESS_KEY = "1a5d9694-46b9-4236-8ced-1b68b65b5097";
 
 type StepKey =
   | "intro" | "instrument" | "who" | "age" | "mode" | "location"
@@ -19,9 +23,16 @@ function buzz() {
   if (typeof navigator !== "undefined" && "vibrate" in navigator) navigator.vibrate?.(8);
 }
 
-export function OnboardingFlow({ initialInstrument }: { initialInstrument?: string }) {
-  // Entering with an instrument already chosen (from the homepage hero) skips
-  // the intro + instrument steps and lands the user straight on "who".
+export function OnboardingFlow() {
+  // The hero deep-links with ?instrument=<name>; read it on the client so the
+  // page can be statically exported. A valid instrument skips the intro +
+  // instrument steps and lands the user straight on "who".
+  const params = useSearchParams();
+  const initialInstrument = (() => {
+    const v = params.get("instrument");
+    return v && INSTRUMENT_VALUES.includes(v) ? v : undefined;
+  })();
+
   const [answers, setAnswers] = useState<LeadData>(
     initialInstrument ? { instrument: initialInstrument } : {}
   );
@@ -59,13 +70,33 @@ export function OnboardingFlow({ initialInstrument }: { initialInstrument?: stri
     setSubmitting(true);
     setSubmitError(false);
     try {
-      const res = await fetch("/api/lead", {
+      // Static site (no backend) → post the lead straight to Web3Forms.
+      const res = await fetch("https://api.web3forms.com/submit", {
         method: "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify({ ...answers, source: "Website onboarding" }),
+        headers: { "Content-Type": "application/json", Accept: "application/json" },
+        body: JSON.stringify({
+          access_key: WEB3FORMS_ACCESS_KEY,
+          subject: `New Musicphonetics Lead — ${answers.name ?? "Unknown"} (${answers.instrument ?? "Music"})`,
+          from_name: "Musicphonetics Website",
+          botcheck: "", // honeypot — must stay empty
+          ...(answers.email ? { email: answers.email } : {}),
+          Name: answers.name ?? "—",
+          WhatsApp: answers.phone ?? "—",
+          Email: answers.email ?? "—",
+          Instrument: answers.instrument ?? "—",
+          Mode: answers.mode ?? "—",
+          "Student Type": answers.who ?? "—",
+          Age: answers.childAge ?? "—",
+          Area: answers.location ?? "—",
+          Experience: answers.experience ?? "—",
+          Goal: answers.goal ?? "—",
+          "Preferred Timing": answers.timing ?? "—",
+          "Preferred Start": answers.begin ?? "—",
+          Source: "Website onboarding",
+        }),
       });
-      const data = (await res.json().catch(() => ({ ok: false }))) as { ok?: boolean };
-      if (!res.ok || data.ok === false) throw new Error("delivery failed");
+      const data = (await res.json().catch(() => ({ success: false }))) as { success?: boolean };
+      if (!res.ok || data.success === false) throw new Error("delivery failed");
       setSubmitting(false);
       go(1); // proceed to the "analyzing" → success flow
     } catch {
