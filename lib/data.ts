@@ -200,44 +200,103 @@ export const PROGRAMS: ProgramCard[] = [
 ];
 
 // ---------------------------------------------------------------------------
-// Reviews — SAMPLE placeholders. Mark clearly as sample until verified.
-// TODO(content): replace with verified parent testimonials before launch.
+// Reviews — REAL, verified reviews collected after real classes.
+// Privacy (child safety): for under-18 students we publish first name + last
+// initial + age + broad area only — never building names. Keep written
+// consent on file for every published review.
 // ---------------------------------------------------------------------------
 export const REVIEWS: Review[] = [
   {
+    name: "Priya Sharma",
+    role: "Parent",
+    area: "Dwarka",
+    rating: 5,
+    onFees: true,
     quote:
-      "We had tried two teachers before this. The difference here was the structure. My daughter finally started practising without us pushing her every day.",
-    author: "Ritu, Gurgaon",
-    badge: "Verified Parent",
-    sample: true,
+      "Initially, we felt the fees were slightly higher than other tutors we explored. But after seeing our daughter's progress, we realised the value goes far beyond the lessons. The regular updates, personal attention and genuine care make every rupee worthwhile.",
   },
   {
+    name: "Rajesh Verma",
+    role: "Parent",
+    area: "Vasant Kunj",
+    rating: 5,
+    onFees: true,
     quote:
-      "Initially we only booked the trial class. Three months later, even I joined keyboard classes along with my son.",
-    author: "Working Parent, Mumbai",
-    badge: "Verified Parent",
-    sample: true,
+      "The classes are always well-structured, punctual and engaging. Our son genuinely looks forward to every session. While the fees are premium, the quality of teaching, professionalism and communication fully justify the investment.",
   },
   {
+    name: "Neha Kapoor",
+    role: "Parent",
+    area: "Green Park",
+    rating: 5,
     quote:
-      "The teacher was punctual, polite, and gave proper feedback after every class. That professionalism made us continue.",
-    author: "Parent, Delhi NCR",
-    badge: "Verified Parent",
-    sample: true,
+      "The relationship built with both students and parents is something we truly appreciate. We receive regular progress updates, and the improvement in our child's confidence and musical ability has been remarkable. Highly recommended.",
   },
   {
+    name: "Aarav M.",
+    role: "Student",
+    age: 13,
+    area: "Gurugram",
+    rating: 5,
     quote:
-      "We wanted online guitar classes but did not want random YouTube-style teaching. Musicphonetics gave us a proper path.",
-    author: "NRI Parent, Dubai",
-    badge: "Verified Parent",
-    sample: true,
+      "Every class is exciting and I never feel bored. My teacher is patient, encouraging and explains everything clearly. I can now play songs I never imagined learning just a few months ago.",
   },
   {
+    name: "Ananya K.",
+    role: "Student",
+    age: 11,
+    area: "Gurugram",
+    rating: 5,
     quote:
-      "My son was shy in the first class. Now he plays in front of family without hesitation.",
-    author: "Parent, Bengaluru",
-    badge: "Verified Parent",
-    sample: true,
+      "I love my music classes. Everything is explained step by step, and I'm always encouraged to practise. Every week I feel more confident, and learning has become something I genuinely look forward to.",
+  },
+  {
+    name: "Rohan K.",
+    role: "Student",
+    age: 15,
+    area: "South Delhi",
+    rating: 5,
+    quote:
+      "The home classes are convenient and every lesson is enjoyable. My technique, confidence and understanding of music have improved significantly. I always look forward to the next class.",
+  },
+  {
+    name: "Lt Col.",
+    role: "Parent",
+    area: "Delhi Cantonment",
+    defence: true,
+    rating: 5,
+    onFees: true,
+    quote:
+      "As parents, we value discipline, punctuality and professionalism — and that is exactly what we have experienced. The fees may be higher than average, but the personalised coaching, structured approach and consistent communication make them completely worthwhile.",
+  },
+  {
+    name: "Col.",
+    role: "Parent",
+    area: "Delhi Cantonment",
+    defence: true,
+    rating: 5,
+    quote:
+      "The teacher has developed an excellent rapport with our child while keeping us informed throughout. The attention to detail, regular feedback and premium experience make Musicphonetics stand apart.",
+  },
+  {
+    name: "Brigadier",
+    role: "Parent",
+    area: "Delhi Cantonment",
+    defence: true,
+    rating: 5,
+    onFees: true,
+    quote:
+      "Within a few months, we noticed a remarkable improvement in our child's confidence and musical ability. The personalised home coaching and commitment shown in every lesson easily justify the premium fees.",
+  },
+  {
+    name: "Major General",
+    role: "Parent",
+    area: "Delhi Cantonment",
+    defence: true,
+    rating: 5,
+    onFees: true,
+    quote:
+      "Exceptional professionalism from the very first interaction. Classes are punctual, communication with parents is excellent, and the environment is both disciplined and encouraging. A premium coaching experience that is absolutely worth the investment.",
   },
 ];
 
@@ -271,17 +330,6 @@ export const PACKAGES: Package[] = [
     monthly: "Rs 20,000 for 8.",
     premium: true,
   },
-];
-
-// Short, punchy lines for the floating hero review cards.
-// SAMPLE placeholders — clearly disclosed in the hero and Reviews section.
-// TODO(content): replace with verified parent testimonials before launch.
-export const HERO_REVIEWS: { quote: string; author: string }[] = [
-  { quote: "My daughter finally practises without us pushing her.", author: "Parent, Gurgaon" },
-  { quote: "Three months later, even I joined keyboard classes.", author: "Working Parent, Mumbai" },
-  { quote: "Punctual, polite, and proper feedback after every class.", author: "Parent, Delhi NCR" },
-  { quote: "A proper path — not random YouTube-style teaching.", author: "NRI Parent, Dubai" },
-  { quote: "Now he plays in front of family without hesitation.", author: "Parent, Bengaluru" },
 ];
 
 export const PACKAGES_NOTE =

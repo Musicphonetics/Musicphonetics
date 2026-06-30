@@ -162,14 +162,18 @@ export function reviewsJsonLd() {
     name: BRAND.name,
     aggregateRating: {
       "@type": "AggregateRating",
-      ratingValue: 4.9,
+      ratingValue: 5,
       reviewCount: REVIEWS.length,
       bestRating: 5,
     },
     review: REVIEWS.map((r) => ({
       "@type": "Review",
-      reviewRating: { "@type": "Rating", ratingValue: 5, bestRating: 5 },
-      author: { "@type": "Person", name: r.author },
+      reviewRating: {
+        "@type": "Rating",
+        ratingValue: r.rating,
+        bestRating: 5,
+      },
+      author: { "@type": "Person", name: r.name },
       reviewBody: r.quote,
     })),
   };

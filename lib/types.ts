@@ -162,12 +162,22 @@ export interface Package {
   premium?: boolean;
 }
 
+export type ReviewRole = "Parent" | "Student";
+
 export interface Review {
+  /** Display name. For minors: first name + last initial only. */
+  name: string;
   quote: string;
-  author: string;
-  sample: boolean;
-  /** Verification badge, e.g. "Verified Parent", "Verified Teacher". */
-  badge?: string;
+  role: ReviewRole;
+  /** Broad locality only (no building names, per child-safety policy). */
+  area: string;
+  rating: number;
+  /** This quote resolves the price/fee objection. */
+  onFees?: boolean;
+  /** A serving / retired defence officer family (Delhi Cantonment). */
+  defence?: boolean;
+  /** Student age — only present for `role: "Student"` (all minors). */
+  age?: number;
 }
 
 export interface FaqItem {
