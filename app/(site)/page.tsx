@@ -6,6 +6,8 @@ import { ProgramsInteractive } from "@/components/sections/ProgramsInteractive";
 import { FounderFeature } from "@/components/sections/FounderFeature";
 import { FacultySelection } from "@/components/sections/FacultySelection";
 import { TrustAndStandards } from "@/components/sections/TrustAndStandards";
+import { SeeUsInAction } from "@/components/sections/SeeUsInAction";
+import { LifeAtMusicphonetics } from "@/components/sections/LifeAtMusicphonetics";
 import { ReviewsShowcase } from "@/components/sections/ReviewsShowcase";
 import { QuickContact } from "@/components/sections/QuickContact";
 import { SeoContent } from "@/components/sections/SeoContent";
@@ -26,7 +28,9 @@ export default function HomePage() {
       <ProgramsInteractive />  {/* What can I learn? */}
       <FounderFeature />       {/* Why does Musicphonetics exist? */}
       <FacultySelection />     {/* Who will teach me? — rigour, not faces */}
-      <TrustAndStandards />    {/* Why should I trust the quality? */}
+      <TrustAndStandards />    {/* Recognition & features — real photography */}
+      <SeeUsInAction />        {/* See us in action — performances */}
+      <LifeAtMusicphonetics /> {/* Life at Musicphonetics — student moments */}
       <ReviewsShowcase />      {/* What do families say? */}
       <QuickContact />
       <SeoContent />

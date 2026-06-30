@@ -20,7 +20,6 @@ function initials(name: string): string {
 const TRUST_INDICATORS = [
   "Verified Parent Reviews",
   "Screenshot Verification Available",
-  "Video Testimonials Coming Soon",
   "Every review collected after real classes",
 ];
 
@@ -36,9 +35,8 @@ export function ReviewsShowcase() {
               Trusted by families. Proven through experience.
             </h2>
             <p className="mt-4 text-base leading-relaxed text-paper/70 sm:text-lg">
-              Every review below comes from a real Musicphonetics family. Video
-              testimonials and additional verified reviews will be added over
-              time.
+              Every review below comes from a real Musicphonetics family,
+              collected after real classes.
             </p>
           </div>
         </Reveal>

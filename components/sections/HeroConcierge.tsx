@@ -1,6 +1,7 @@
 import { Reveal } from "@/components/ui/Reveal";
 import { SoundWave } from "@/components/ui/SoundWave";
-import { ImagePlaceholder } from "@/components/ui/ImagePlaceholder";
+import { Photo } from "@/components/ui/Photo";
+import { HERO_IMAGE } from "@/lib/media";
 import { InstrumentSearch } from "@/components/sections/InstrumentSearch";
 
 export function HeroConcierge() {
@@ -51,7 +52,22 @@ export function HeroConcierge() {
           <div className="relative hidden lg:block">
             <SoundWave className="absolute inset-x-0 top-1/2 h-32 -translate-y-1/2 opacity-50" />
             <div className="relative">
-              <ImagePlaceholder label="Real lesson moment" aspect="portrait" tone="ink" className="shadow-card-hover" />
+              <Photo
+                image={HERO_IMAGE}
+                aspect="portrait"
+                priority
+                sizes="(max-width: 1024px) 0px, 38vw"
+                rounded="rounded-[1.5rem]"
+                className="shadow-card-hover ring-1 ring-white/10"
+              />
+              {/* Soft gradient floor so the headline reads if it overlaps */}
+              <div
+                aria-hidden="true"
+                className="pointer-events-none absolute inset-x-0 bottom-0 h-1/3 rounded-b-[1.5rem] bg-gradient-to-t from-ink/70 to-transparent"
+              />
+              <figcaption className="absolute bottom-4 left-5 text-xs font-medium text-paper/85">
+                {HERO_IMAGE.caption} · Musicphonetics
+              </figcaption>
               <div aria-hidden="true" className="pointer-events-none absolute -inset-6 -z-10 rounded-[2rem] bg-gold/5 blur-2xl" />
             </div>
           </div>

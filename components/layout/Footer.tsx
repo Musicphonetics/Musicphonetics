@@ -1,7 +1,24 @@
 import Link from "next/link";
 import { Logo } from "./Logo";
 import { Button } from "@/components/ui/Button";
-import { BRAND, whatsappTrialLink, FOOTER_NAV, AREAS_SERVED } from "@/lib/data";
+import {
+  BRAND,
+  whatsappTrialLink,
+  FOOTER_NAV,
+  AREAS_SERVED,
+  INSTAGRAM_HANDLE,
+  INSTAGRAM_URL,
+} from "@/lib/data";
+
+function InstagramIcon({ className }: { className?: string }) {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true" className={className}>
+      <rect x="3" y="3" width="18" height="18" rx="5" stroke="currentColor" strokeWidth="1.7" />
+      <circle cx="12" cy="12" r="4" stroke="currentColor" strokeWidth="1.7" />
+      <circle cx="17.3" cy="6.7" r="1.1" fill="currentColor" />
+    </svg>
+  );
+}
 
 export function Footer() {
   return (
@@ -19,6 +36,22 @@ export function Footer() {
               <Button href={whatsappTrialLink()} external variant="light" size="md">
                 Book a Trial
               </Button>
+            </div>
+
+            {/* Follow along */}
+            <div className="mt-8">
+              <h3 className="text-xs font-semibold uppercase tracking-[0.18em] text-gold">
+                Follow along
+              </h3>
+              <a
+                href={INSTAGRAM_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-3 inline-flex items-center gap-2.5 rounded-full border border-white/15 px-4 py-2 text-sm text-paper/85 transition-colors hover:border-gold/60 hover:text-paper"
+              >
+                <InstagramIcon className="text-gold" />
+                @{INSTAGRAM_HANDLE}
+              </a>
             </div>
           </div>
 

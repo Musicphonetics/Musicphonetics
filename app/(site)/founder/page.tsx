@@ -7,6 +7,8 @@ import { Badge } from "@/components/ui/Badge";
 import { AuroraBackground } from "@/components/ui/AuroraBackground";
 import { FounderTimeline } from "@/components/sections/FounderTimeline";
 import { FinalCTA } from "@/components/sections/FinalCTA";
+import { Photo } from "@/components/ui/Photo";
+import { FOUNDER_GALLERY } from "@/lib/media";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { personJsonLd } from "@/lib/seo";
 import { BRAND, whatsappLink } from "@/lib/data";
@@ -101,6 +103,38 @@ export default function FounderPage() {
                 </span>
                 <span className="text-sm leading-relaxed text-ink/80">{h}</span>
               </div>
+            </Reveal>
+          ))}
+        </div>
+      </Section>
+
+      {/* Recognition — real photography */}
+      <Section background="paper" spacing="md">
+        <Reveal>
+          <p className="eyebrow text-center">Recognition</p>
+          <h2 className="mx-auto mt-3 max-w-2xl text-center text-2xl font-semibold leading-tight text-ink sm:text-3xl">
+            On stage, on panels, and among the people who shape the craft.
+          </h2>
+        </Reveal>
+        <div className="mt-10 grid grid-cols-1 gap-5 sm:grid-cols-3">
+          {FOUNDER_GALLERY.map((img, i) => (
+            <Reveal key={img.src} delay={(i % 3) * 80}>
+              <figure className="group relative overflow-hidden rounded-2xl shadow-card">
+                <Photo
+                  image={img}
+                  aspect="portrait"
+                  sizes="(max-width: 640px) 100vw, 30vw"
+                  rounded="rounded-2xl"
+                  className="transition-transform duration-500 group-hover:scale-[1.03]"
+                />
+                <div
+                  aria-hidden="true"
+                  className="pointer-events-none absolute inset-0 bg-gradient-to-t from-ink/80 via-ink/10 to-transparent"
+                />
+                <figcaption className="absolute inset-x-0 bottom-0 p-4 text-sm font-medium leading-snug text-paper">
+                  {img.caption}
+                </figcaption>
+              </figure>
             </Reveal>
           ))}
         </div>

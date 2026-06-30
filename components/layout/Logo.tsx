@@ -1,43 +1,35 @@
 import Link from "next/link";
+import Image from "next/image";
 import { cn } from "@/lib/utils";
 
 interface LogoProps {
+  /** Use the light wordmark for dark backgrounds (e.g. the footer). */
   invert?: boolean;
   className?: string;
 }
 
-/** Musicphonetics wordmark with a small gold seal. */
+/** Musicphonetics brand wordmark (real logo art). */
 export function Logo({ invert = false, className }: LogoProps) {
+  const src = invert
+    ? "/logo-wordmark-light.png"
+    : "/logo-wordmark-dark.png";
+  // Intrinsic ratios of the supplied art (kept for crisp scaling).
+  const width = invert ? 163 : 177;
+
   return (
     <Link
       href="/"
-      className={cn("group inline-flex items-center gap-2.5", className)}
+      className={cn("group inline-flex items-center", className)}
       aria-label="Musicphonetics home"
     >
-      <span
-        aria-hidden="true"
-        className="grid h-8 w-8 place-items-center rounded-full border border-gold/50 bg-gold/10 text-deep-gold transition-colors group-hover:bg-gold/20"
-      >
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-          <path
-            d="M9 18V6l10-2v11"
-            stroke="currentColor"
-            strokeWidth="1.6"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-          <circle cx="6" cy="18" r="2.4" stroke="currentColor" strokeWidth="1.6" />
-          <circle cx="16" cy="15" r="2.4" stroke="currentColor" strokeWidth="1.6" />
-        </svg>
-      </span>
-      <span
-        className={cn(
-          "font-display text-lg font-semibold tracking-tight",
-          invert ? "text-paper" : "text-ink"
-        )}
-      >
-        Musicphonetics
-      </span>
+      <Image
+        src={src}
+        alt="Musicphonetics"
+        width={width}
+        height={30}
+        priority
+        className="h-7 w-auto sm:h-8"
+      />
     </Link>
   );
 }

@@ -37,6 +37,10 @@ export function whatsappTrialLink(): string {
 export const PHONE_DISPLAY = "+91 87961 99188";
 export const phoneLink = `tel:+${WHATSAPP_NUMBER}`;
 
+/** Social — Instagram. */
+export const INSTAGRAM_HANDLE = "abhisheksessions";
+export const INSTAGRAM_URL = "https://instagram.com/abhisheksessions";
+
 // ---------------------------------------------------------------------------
 // Brand
 // ---------------------------------------------------------------------------
@@ -58,6 +62,7 @@ export const NAV_LINKS = [
   { label: "Programs", href: "/#programs" },
   { label: "Faculty", href: "/teachers" },
   { label: "Standards", href: "/standards" },
+  { label: "Centre", href: "/centre" },
   { label: "Reviews", href: "/reviews" },
   { label: "Founder", href: "/founder" },
 ];
@@ -70,6 +75,7 @@ export const FOOTER_NAV = [
   { label: "Home", href: "/" },
   { label: "Programs", href: "/programs" },
   { label: "Standards", href: "/standards" },
+  { label: "South Delhi Centre", href: "/centre" },
   { label: "Trust Centre", href: "/trust" },
   { label: "Reviews", href: "/reviews" },
   { label: "Contact", href: "/contact" },
