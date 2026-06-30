@@ -7,7 +7,7 @@ import { InstrumentIcon } from "@/components/ui/InstrumentIcon";
 import { whatsappLink } from "@/lib/data";
 import {
   INSTRUMENTS, WHO, AGES, MODES, EXPERIENCE, GOALS, TIMINGS, BEGIN, AREAS,
-  SOCIAL_PROOF, type LeadData,
+  SOCIAL_PROOF, leadSummary, type LeadData,
 } from "@/lib/onboarding";
 import { cn } from "@/lib/utils";
 
@@ -49,6 +49,30 @@ export function OnboardingFlow({ initialInstrument }: { initialInstrument?: stri
     set(k, v);
     setTimeout(() => go(1), 200);
   };
+
+  // Lead submission — awaited, with visible success/error states (never silent).
+  const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState(false);
+
+  async function submitLead() {
+    buzz();
+    setSubmitting(true);
+    setSubmitError(false);
+    try {
+      const res = await fetch("/api/lead", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ ...answers, source: "Website onboarding" }),
+      });
+      const data = (await res.json().catch(() => ({ ok: false }))) as { ok?: boolean };
+      if (!res.ok || data.ok === false) throw new Error("delivery failed");
+      setSubmitting(false);
+      go(1); // proceed to the "analyzing" → success flow
+    } catch {
+      setSubmitting(false);
+      setSubmitError(true);
+    }
+  }
 
   return (
     <div className="min-h-screen bg-ink text-paper lg:grid lg:grid-cols-[1fr_minmax(380px,440px)]">
@@ -184,7 +208,9 @@ export function OnboardingFlow({ initialInstrument }: { initialInstrument?: stri
               <ContactStep
                 data={answers}
                 set={set}
-                onContinue={() => go(1)}
+                onSubmit={submitLead}
+                submitting={submitting}
+                error={submitError}
               />
             )}
 
@@ -312,7 +338,13 @@ function TextStep({ title, placeholder, list, value, onChange, onContinue, valid
   );
 }
 
-function ContactStep({ data, set, onContinue }: { data: LeadData; set: (k: keyof LeadData, v: string) => void; onContinue: () => void }) {
+function ContactStep({ data, set, onSubmit, submitting, error }: {
+  data: LeadData;
+  set: (k: keyof LeadData, v: string) => void;
+  onSubmit: () => void;
+  submitting: boolean;
+  error: boolean;
+}) {
   const phoneOk = /\d{10}/.test((data.phone ?? "").replace(/\D/g, ""));
   const nameOk = (data.name ?? "").trim().length > 1;
   const field = "min-h-[56px] w-full rounded-2xl border border-white/15 bg-white/5 px-5 text-base text-paper placeholder:text-paper/40 focus:border-gold/50 focus:outline-none";
@@ -325,7 +357,28 @@ function ContactStep({ data, set, onContinue }: { data: LeadData; set: (k: keyof
         <input value={data.phone ?? ""} onChange={(e) => set("phone", e.target.value)} placeholder="Phone / WhatsApp" inputMode="tel" className={field} />
         <input value={data.email ?? ""} onChange={(e) => set("email", e.target.value)} placeholder="Email (optional)" inputMode="email" className={field} />
       </div>
-      <ContinueBtn onClick={onContinue} disabled={!(nameOk && phoneOk)} label="Find my teacher" />
+      <ContinueBtn
+        onClick={onSubmit}
+        disabled={!(nameOk && phoneOk) || submitting}
+        label={submitting ? "Sending…" : "Find my teacher"}
+      />
+      {error && (
+        <div className="mt-4 rounded-2xl border border-red-400/30 bg-red-500/10 p-4 text-sm text-red-200">
+          <p className="font-semibold">We couldn&apos;t send that just now.</p>
+          <p className="mt-1 text-red-200/80">
+            Please try again — or reach us directly on{" "}
+            <a
+              href={whatsappLink(leadSummary(data))}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-semibold text-gold underline underline-offset-2"
+            >
+              WhatsApp
+            </a>
+            .
+          </p>
+        </div>
+      )}
     </div>
   );
 }
@@ -345,17 +398,12 @@ function ContinueBtn({ onClick, disabled, label = "Continue" }: { onClick: () =>
 
 const ANALYZE_ITEMS = ["Location", "Instrument", "Learning Goal", "Schedule", "Experience"];
 
-function Analyzing({ answers, onDone }: { answers: LeadData; onDone: () => void }) {
+function Analyzing({ onDone }: { answers: LeadData; onDone: () => void }) {
   const [checked, setChecked] = useState(0);
 
+  // The lead is already submitted (awaited) on the contact step; this is the
+  // post-submit "finding your teacher" flourish only — no network here.
   useEffect(() => {
-    // Fire-and-forget submission.
-    fetch("/api/lead", {
-      method: "POST",
-      headers: { "content-type": "application/json" },
-      body: JSON.stringify(answers),
-    }).catch(() => {});
-
     const timers = ANALYZE_ITEMS.map((_, i) => setTimeout(() => setChecked(i + 1), 500 + i * 450));
     const done = setTimeout(onDone, 500 + ANALYZE_ITEMS.length * 450 + 900);
     return () => { timers.forEach(clearTimeout); clearTimeout(done); };

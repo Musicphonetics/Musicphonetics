@@ -1,8 +1,10 @@
 import { Reveal } from "@/components/ui/Reveal";
 import { SoundWave } from "@/components/ui/SoundWave";
 import { Photo } from "@/components/ui/Photo";
+import { Button } from "@/components/ui/Button";
 import { HERO_IMAGE } from "@/lib/media";
-import { InstrumentSearch } from "@/components/sections/InstrumentSearch";
+import { InstrumentChips } from "@/components/sections/InstrumentChips";
+import { whatsappTrialLink } from "@/lib/data";
 
 export function HeroConcierge() {
   return (
@@ -28,13 +30,27 @@ export function HeroConcierge() {
             </p>
           </Reveal>
 
-          {/* The one action — search */}
+          {/* The one action — pick an instrument, go straight to onboarding */}
           <Reveal delay={220}>
             <div className="mt-9">
               <p className="mb-3 text-sm font-medium text-paper/70">
                 What would you like to learn?
               </p>
-              <InstrumentSearch />
+              <InstrumentChips />
+              <div className="mt-6 flex flex-col gap-3 sm:flex-row">
+                <Button href="/start" variant="light" size="lg">
+                  Book a free trial
+                </Button>
+                <Button
+                  href={whatsappTrialLink()}
+                  external
+                  variant="secondary"
+                  size="lg"
+                  className="border-white/25 text-paper hover:border-white"
+                >
+                  WhatsApp
+                </Button>
+              </div>
             </div>
           </Reveal>
 
