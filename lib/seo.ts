@@ -66,6 +66,31 @@ export function organizationJsonLd() {
   };
 }
 
+/** A Course per curriculum level (helps "learn <instrument> levels/grades" search). */
+export function curriculumJsonLd() {
+  const levels = [
+    { name: "Foundation", d: "Posture, hand position, sound, pulse, and the daily-practice habit." },
+    { name: "Developing", d: "Reading fluency, dynamics, first full pieces; graded prep begins." },
+    { name: "Intermediate", d: "Control, interpretation, and repertoire across styles; middle grades." },
+    { name: "Advanced", d: "Refinement, expression, ownership; performance and higher grades." },
+  ];
+  return {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    name: "Musicphonetics curriculum",
+    itemListElement: levels.map((l, i) => ({
+      "@type": "ListItem",
+      position: i + 1,
+      item: {
+        "@type": "Course",
+        name: `${l.name} level`,
+        description: l.d,
+        provider: { "@id": ORG_ID },
+      },
+    })),
+  };
+}
+
 /** A Course per instrument (helps instrument-intent search). */
 export function instrumentCoursesJsonLd() {
   return {

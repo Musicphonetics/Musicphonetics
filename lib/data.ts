@@ -74,6 +74,7 @@ export const TRUST_LINE = `${BRAND.yearsExperience} years · ${BRAND.studentsTau
 export const FOOTER_NAV = [
   { label: "Home", href: "/" },
   { label: "Programs", href: "/#programs" },
+  { label: "Curriculum", href: "/curriculum" },
   { label: "Standards", href: "/standards" },
   { label: "South Delhi Centre", href: "/centre" },
   { label: "Trust Centre", href: "/trust" },

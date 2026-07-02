@@ -1,13 +1,17 @@
 import { HeroConcierge } from "@/components/sections/HeroConcierge";
-import { ProofStrip } from "@/components/sections/ProofStrip";
+import { ProofBand } from "@/components/sections/ProofBand";
 import { MobileTabs } from "@/components/sections/MobileTabs";
 import { HowWeDoIt } from "@/components/sections/HowWeDoIt";
+import { SystemFlow } from "@/components/sections/SystemFlow";
+import { CurriculumTeaser } from "@/components/sections/CurriculumTeaser";
 import { ProgramsInteractive } from "@/components/sections/ProgramsInteractive";
 import { FounderFeature } from "@/components/sections/FounderFeature";
 import { FacultySelection } from "@/components/sections/FacultySelection";
+import { FacultyProfiles } from "@/components/sections/FacultyProfiles";
 import { TrustAndStandards } from "@/components/sections/TrustAndStandards";
 import { SeeUsInAction } from "@/components/sections/SeeUsInAction";
 import { LifeAtMusicphonetics } from "@/components/sections/LifeAtMusicphonetics";
+import { StudentGallery } from "@/components/sections/StudentGallery";
 import { ReviewsShowcase } from "@/components/sections/ReviewsShowcase";
 import { QuickContact } from "@/components/sections/QuickContact";
 import { SeoContent } from "@/components/sections/SeoContent";
@@ -22,15 +26,19 @@ export default function HomePage() {
     <>
       <JsonLd data={[faqJsonLd(), coursesJsonLd(), instrumentCoursesJsonLd(), reviewsJsonLd()]} />
       <HeroConcierge />        {/* Who are you? Why continue? */}
-      <ProofStrip />           {/* At a glance — real quantities */}
+      <ProofBand />            {/* At a glance — real quantities, counted up */}
       <MobileTabs />
       <HowWeDoIt />            {/* How does Musicphonetics work? */}
+      <SystemFlow />           {/* The method as a visible system */}
+      <CurriculumTeaser />     {/* A clear path → /curriculum */}
       <ProgramsInteractive />  {/* What can I learn? */}
       <FounderFeature />       {/* Why does Musicphonetics exist? */}
       <FacultySelection />     {/* Who will teach me? — rigour, not faces */}
+      <FacultyProfiles />      {/* Real teachers — renders nothing until added */}
       <TrustAndStandards />    {/* Recognition & features — real photography */}
       <SeeUsInAction />        {/* See us in action — performances */}
       <LifeAtMusicphonetics /> {/* Life at Musicphonetics — student moments */}
+      <StudentGallery />       {/* Inside our lessons — renders nothing until added */}
       <ReviewsShowcase />      {/* What do families say? */}
       <QuickContact />
       <SeoContent />
