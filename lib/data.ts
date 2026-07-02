@@ -41,6 +41,20 @@ export const phoneLink = `tel:+${WHATSAPP_NUMBER}`;
 export const INSTAGRAM_HANDLE = "abhisheksessions";
 export const INSTAGRAM_URL = "https://instagram.com/abhisheksessions";
 
+/**
+ * Google Business Profile — fill these once the profile exists and the section
+ * appears automatically (renders nothing while `profileUrl` is empty).
+ *  - profileUrl:   your public GBP page (share link)
+ *  - reviewUrl:    the "write a review" / reviews link (g.page/…/review or the
+ *                  Place-ID review link)
+ *  - mapEmbedSrc:  Google Maps "Embed a map" iframe src (optional)
+ */
+export const GOOGLE_BUSINESS = {
+  profileUrl: "",
+  reviewUrl: "",
+  mapEmbedSrc: "",
+};
+
 // ---------------------------------------------------------------------------
 // Brand
 // ---------------------------------------------------------------------------
