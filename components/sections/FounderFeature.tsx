@@ -109,6 +109,18 @@ export function FounderFeature() {
             </ol>
           </div>
         </Reveal>
+
+        {/* Mission / vision — the founder's aspiration, in his words */}
+        <Reveal>
+          <figure className="mx-auto mt-20 max-w-3xl text-center">
+            <blockquote className="font-display text-2xl font-medium leading-snug text-paper sm:text-3xl">
+              &ldquo;My dream isn&apos;t to become India&apos;s biggest music teacher.
+              It&apos;s to build one of the world&apos;s most trusted music education
+              systems.&rdquo;
+            </blockquote>
+            <figcaption className="mt-5 text-sm text-gold">{FOUNDER.name} · Founder</figcaption>
+          </figure>
+        </Reveal>
       </div>
     </section>
   );

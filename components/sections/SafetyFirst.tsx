@@ -6,8 +6,8 @@ import { Button } from "@/components/ui/Button";
 // (7-stage selection, child-protection standard, code of ethics).
 const SAFEGUARDS = [
   {
-    title: "Background & document verification",
-    body: "Identity and documents are verified before a teacher is approved — it's a required stage of our selection, not an afterthought.",
+    title: "Police & document verification",
+    body: "Every teacher is police-verified and their identity documents checked before they're approved — a required stage of our selection, not an afterthought.",
   },
   {
     title: "Reference checks + founder approval",

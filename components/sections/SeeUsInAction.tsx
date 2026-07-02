@@ -62,7 +62,7 @@ function ShortCard({ id, title }: { id: string; title: string }) {
 
 export function SeeUsInAction() {
   return (
-    <Section background="ink" spacing="lg">
+    <Section id="performances" background="ink" spacing="lg">
       <SectionHeading
         eyebrow="See us in action"
         title="Hear the standard for yourself."

@@ -5,6 +5,7 @@ import { HowWeDoIt } from "@/components/sections/HowWeDoIt";
 import { SystemFlow } from "@/components/sections/SystemFlow";
 import { CurriculumTeaser } from "@/components/sections/CurriculumTeaser";
 import { ProgramsInteractive } from "@/components/sections/ProgramsInteractive";
+import { Plans } from "@/components/sections/Plans";
 import { FounderFeature } from "@/components/sections/FounderFeature";
 import { SafetyFirst } from "@/components/sections/SafetyFirst";
 import { FacultySelection } from "@/components/sections/FacultySelection";
@@ -34,6 +35,7 @@ export default function HomePage() {
       <SystemFlow />           {/* The method as a visible system */}
       <CurriculumTeaser />     {/* A clear path → /curriculum */}
       <ProgramsInteractive />  {/* What can I learn? */}
+      <Plans />                {/* Choose your plan — real packages */}
       <FounderFeature />       {/* Why does Musicphonetics exist? */}
       <SafetyFirst />          {/* A stranger never enters your home — child safety */}
       <FacultySelection />     {/* Who will teach me? — rigour, not faces */}
