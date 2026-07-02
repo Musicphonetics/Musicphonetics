@@ -62,15 +62,18 @@
 }
 
 @layer utilities {
-  /* Fade-up on scroll — driven by IntersectionObserver via .reveal class */
-  .reveal {
+  /* Fade-up on scroll — driven by IntersectionObserver via .reveal class.
+     Gated on `.js` (set on <html> by an inline script) so that if JavaScript
+     is ever unavailable or blocked, content renders fully visible instead of
+     staying at opacity:0. */
+  .js .reveal {
     opacity: 0;
     transform: translateY(16px);
     transition: opacity 0.7s ease-out, transform 0.7s ease-out;
     will-change: opacity, transform;
   }
 
-  .reveal.is-visible {
+  .js .reveal.is-visible {
     opacity: 1;
     transform: translateY(0);
   }

@@ -61,6 +61,9 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${display.variable} ${body.variable}`}>
       <body>
+        {/* Mark that JS is available so scroll-reveal styles apply; without this
+            (JS disabled/blocked) content renders fully visible, never blank. */}
+        <script dangerouslySetInnerHTML={{ __html: "document.documentElement.classList.add('js')" }} />
         <JsonLd data={[organizationJsonLd(), websiteJsonLd()]} />
         {children}
       </body>
