@@ -9,13 +9,13 @@ import { LIFE_AT_MP } from "@/lib/media";
 import { whatsappLink, phoneLink, PHONE_DISPLAY } from "@/lib/data";
 
 export const metadata: Metadata = {
-  title: "South Delhi Centre · Opening 2026",
+  title: "South Delhi Centre",
   description:
-    "Our flagship Musicphonetics centre opens in South Delhi in 2026 — faculty-led in-person classes, ensembles, performance space, and exam preparation. Join the waitlist.",
+    "Our flagship Musicphonetics centre in South Delhi — faculty-led in-person classes, ensembles, a performance stage, and exam preparation. Book a free trial.",
 };
 
-const WAITLIST_TEXT =
-  "Hi Musicphonetics, I'd like to join the waitlist for the South Delhi centre.";
+const CENTRE_TEXT =
+  "Hi Musicphonetics, I'd like to visit / book a trial at the South Delhi centre.";
 
 const OFFER = [
   {
@@ -45,7 +45,7 @@ export default function CentrePage() {
         <div className="container-mp relative py-20 sm:py-28">
           <div className="max-w-2xl">
             <Reveal>
-              <p className="eyebrow text-gold">South Delhi · Opening 2026</p>
+              <p className="eyebrow text-gold">South Delhi Centre · Open now</p>
             </Reveal>
             <Reveal delay={80}>
               <h1 className="mt-5 text-4xl font-semibold leading-[1.05] sm:text-5xl lg:text-6xl">
@@ -54,16 +54,16 @@ export default function CentrePage() {
             </Reveal>
             <Reveal delay={150}>
               <p className="mt-6 max-w-xl text-lg leading-relaxed text-paper/75">
-                We&apos;re building our flagship centre — a space for in-person
-                classes, ensembles, and performances, carrying the same method
-                and faculty standard families already trust at home and online.
-                Places will be limited at opening.
+                Our flagship centre is open — in-person classes, ensembles, and a
+                performance stage, carrying the same method and faculty standard
+                families trust at home and online. You can also keep learning at
+                home or online; the centre simply adds another way to grow.
               </p>
             </Reveal>
             <Reveal delay={230}>
               <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-                <Button href={whatsappLink(WAITLIST_TEXT)} external variant="light" size="lg">
-                  Join the waitlist
+                <Button href="/start" variant="light" size="lg">
+                  Book a free trial
                 </Button>
                 <Button
                   href={phoneLink}
@@ -76,10 +76,8 @@ export default function CentrePage() {
               </div>
             </Reveal>
             <Reveal delay={300}>
-              <p className="mt-6 text-sm text-paper/50">
-                Joining the waitlist is free and holds no commitment — it simply
-                means you hear first when slots and the opening date are
-                confirmed.
+              <p className="mt-6 text-sm text-paper/60">
+                Free trial, no commitment — we reply immediately.
               </p>
             </Reveal>
           </div>
@@ -121,8 +119,8 @@ export default function CentrePage() {
                 audience.
               </p>
               <div className="mt-7">
-                <Button href={whatsappLink(WAITLIST_TEXT)} external variant="primary" size="lg">
-                  Join the waitlist
+                <Button href={whatsappLink(CENTRE_TEXT)} external variant="primary" size="lg">
+                  Book a free trial
                 </Button>
               </div>
             </div>
@@ -145,8 +143,8 @@ export default function CentrePage() {
       </Section>
 
       <FinalCTA
-        headline="Be first through the doors in South Delhi."
-        text="Join the waitlist and we'll reach out the moment the centre's date and slots are confirmed."
+        headline="Visit our South Delhi centre."
+        text="Book a free trial at the centre, at home, or online — we'll match a teacher and confirm your plan."
       />
     </>
   );

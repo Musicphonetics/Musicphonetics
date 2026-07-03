@@ -152,14 +152,18 @@ export interface ClassLog {
 
 // ---- Public content model ---------------------------------------------------
 export interface Package {
-  key: "A" | "B" | "C";
+  key: string;
   name: string;
   tagline: string;
-  perClass: string;
-  monthly: string;
-  note?: string;
+  /** e.g. "from ₹12,000" or "By application". */
+  priceFrom: string;
+  /** e.g. "/month · 8 classes" or "limited seats · from ₹20,000/mo". */
+  unit: string;
+  bullets: string[];
   featured?: boolean;
   premium?: boolean;
+  badge?: string;
+  application?: boolean;
 }
 
 export type ReviewRole = "Parent" | "Student";

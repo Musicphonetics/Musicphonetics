@@ -28,7 +28,7 @@ export const metadata: Metadata = {
     template: "%s · Musicphonetics",
   },
   description:
-    "Structured, faculty-led music classes across Delhi NCR — guitar, piano, keyboard, vocals & more, at home or online. Book a free trial; we reply on WhatsApp within the hour.",
+    "Structured, faculty-led music classes across Delhi NCR — guitar, piano, keyboard, vocals & more, at home or online. Book a free trial; we reply immediately.",
   alternates: { canonical: "/" },
   openGraph: {
     title: "Music education, built like an institution.",

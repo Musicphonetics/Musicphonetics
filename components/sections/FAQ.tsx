@@ -5,8 +5,9 @@ import { Section, SectionHeading } from "@/components/ui/Section";
 import { FAQS } from "@/lib/data";
 import { cn } from "@/lib/utils";
 
-export function FAQ() {
+export function FAQ({ limit }: { limit?: number }) {
   const [open, setOpen] = useState<number | null>(0);
+  const items = limit ? FAQS.slice(0, limit) : FAQS;
 
   return (
     <Section id="faq" background="white" spacing="lg">
@@ -14,11 +15,11 @@ export function FAQ() {
         <SectionHeading
           eyebrow="Questions"
           title="Clear answers, before you commit."
-          intro="Still unsure? Message us on WhatsApp and we'll guide you personally."
+          intro="Still unsure? Message us on WhatsApp and we'll reply immediately."
         />
 
         <div className="divide-y divide-hairline border-y border-hairline">
-          {FAQS.map((faq, i) => {
+          {items.map((faq, i) => {
             const isOpen = open === i;
             return (
               <div key={faq.q}>

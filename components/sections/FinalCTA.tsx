@@ -42,7 +42,7 @@ export function FinalCTA({
             </Magnetic>
           </div>
           <p className="mt-5 text-sm text-paper/70">
-            Free trial, no commitment — we reply on WhatsApp within the hour.
+            Free trial, no commitment — we reply immediately.
           </p>
         </div>
       </Reveal>

@@ -1,57 +1,32 @@
 import { HeroConcierge } from "@/components/sections/HeroConcierge";
-import { ProofBand } from "@/components/sections/ProofBand";
-import { MobileTabs } from "@/components/sections/MobileTabs";
-import { HowWeDoIt } from "@/components/sections/HowWeDoIt";
-import { SystemFlow } from "@/components/sections/SystemFlow";
-import { CurriculumTeaser } from "@/components/sections/CurriculumTeaser";
-import { ProgramsInteractive } from "@/components/sections/ProgramsInteractive";
-import { Plans } from "@/components/sections/Plans";
 import { FounderFeature } from "@/components/sections/FounderFeature";
-import { SafetyFirst } from "@/components/sections/SafetyFirst";
-import { FacultySelection } from "@/components/sections/FacultySelection";
-import { FacultyProfiles } from "@/components/sections/FacultyProfiles";
-import { TrustAndStandards } from "@/components/sections/TrustAndStandards";
-import { SeeUsInAction } from "@/components/sections/SeeUsInAction";
-import { LifeAtMusicphonetics } from "@/components/sections/LifeAtMusicphonetics";
-import { StudentGallery } from "@/components/sections/StudentGallery";
-import { ReviewsShowcase } from "@/components/sections/ReviewsShowcase";
-import { GoogleBusiness } from "@/components/sections/GoogleBusiness";
-import { QuickContact } from "@/components/sections/QuickContact";
-import { SeoContent } from "@/components/sections/SeoContent";
+import { AchievementsStrip } from "@/components/sections/AchievementsStrip";
+import { ReviewsCompact } from "@/components/sections/ReviewsCompact";
+import { ScheduleBlock } from "@/components/sections/ScheduleBlock";
+import { Plans } from "@/components/sections/Plans";
+import { ReassuranceChips } from "@/components/sections/ReassuranceChips";
 import { FAQ } from "@/components/sections/FAQ";
 import { FinalCTA } from "@/components/sections/FinalCTA";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { faqJsonLd, coursesJsonLd, reviewsJsonLd, instrumentCoursesJsonLd } from "@/lib/seo";
 
 export default function HomePage() {
-  // Each section answers one question — no repetition.
+  // A short, proof-first parent homepage:
+  // experience → achievements → trust → schedule → fees → book.
   return (
     <>
       <JsonLd data={[faqJsonLd(), coursesJsonLd(), instrumentCoursesJsonLd(), reviewsJsonLd()]} />
-      <HeroConcierge />        {/* Who are you? Why continue? */}
-      <ProofBand />            {/* At a glance — real quantities, counted up */}
-      <MobileTabs />
-      <HowWeDoIt />            {/* How does Musicphonetics work? */}
-      <SystemFlow />           {/* The method as a visible system */}
-      <CurriculumTeaser />     {/* A clear path → /curriculum */}
-      <ProgramsInteractive />  {/* What can I learn? */}
-      <Plans />                {/* Choose your plan — real packages */}
-      <FounderFeature />       {/* Why does Musicphonetics exist? */}
-      <SafetyFirst />          {/* A stranger never enters your home — child safety */}
-      <FacultySelection />     {/* Who will teach me? — rigour, not faces */}
-      <FacultyProfiles />      {/* Real teachers — renders nothing until added */}
-      <TrustAndStandards />    {/* Recognition & features — real photography */}
-      <SeeUsInAction />        {/* See us in action — performances */}
-      <LifeAtMusicphonetics /> {/* Life at Musicphonetics — student moments */}
-      <StudentGallery />       {/* Inside our lessons — renders nothing until added */}
-      <ReviewsShowcase />      {/* What do families say? */}
-      <GoogleBusiness />       {/* Independent proof — renders once GBP is set */}
-      <QuickContact />
-      <SeoContent />
-      <FAQ />
+      <HeroConcierge />        {/* 1 · Who + how experienced + one action */}
+      <FounderFeature />       {/* 2 · The spine — experience & recognition */}
+      <AchievementsStrip />    {/* 3 · Fast proof row */}
+      <ReviewsCompact />       {/* 4 · Trust — defence families + premium reviews */}
+      <ScheduleBlock />        {/* 5 · How it works / schedule */}
+      <Plans />                {/* 6 · Plans & fees */}
+      <ReassuranceChips />     {/* Depth compressed to one line */}
+      <FAQ limit={6} />        {/* Parent questions only */}
       <FinalCTA
-        headline="Start your music journey with Musicphonetics."
-        text="Tell us what you're looking for and we'll guide you to the right teacher and path."
+        headline="Book your free trial."
+        text="Tell us the instrument and who it's for — we'll match a teacher and confirm your plan on the trial."
       />
     </>
   );

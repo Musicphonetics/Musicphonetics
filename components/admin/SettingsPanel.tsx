@@ -44,7 +44,7 @@ export function SettingsPanel() {
                 {p.key} · {p.name}
               </span>
               <span className="text-sm text-ink/60">
-                {p.perClass} · {p.monthly}
+                {p.priceFrom} {p.unit}
               </span>
             </li>
           ))}
