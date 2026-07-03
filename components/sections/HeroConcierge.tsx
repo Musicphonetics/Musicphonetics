@@ -5,7 +5,7 @@ import Image from "next/image";
 import { motion, useReducedMotion } from "framer-motion";
 import { Button } from "@/components/ui/Button";
 import { CountUp } from "@/components/ui/CountUp";
-import { HERO_IMAGE } from "@/lib/media";
+import { HERO_STUDENTS as HERO_IMAGE } from "@/lib/media";
 
 const STATS: { value?: number; suffix?: string; text?: string; label: string }[] = [
   { value: 1100, suffix: "+", label: "Students" },
@@ -95,8 +95,8 @@ export function HeroConcierge() {
             sizes="60vw"
             placeholder="blur"
             blurDataURL={HERO_IMAGE.blurDataURL}
-            className={reduced ? "object-cover object-center" : "object-cover object-center mp-hero-zoom"}
-            style={{ filter: "brightness(1.03) contrast(1.06) saturate(1.05)" }}
+            className={reduced ? "object-cover object-[50%_38%]" : "object-cover object-[50%_38%] mp-hero-zoom"}
+            style={{ filter: "brightness(1.04) contrast(1.07) saturate(1.06)" }}
           />
         </div>
         {/* Readability gradient (right → left) + warm gold + vignette */}
@@ -119,9 +119,9 @@ export function HeroConcierge() {
                   sizes="100vw"
                   placeholder="blur"
                   blurDataURL={HERO_IMAGE.blurDataURL}
-                  className="object-cover object-center"
+                  className="object-cover object-[50%_40%]"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-ink/50 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-ink/45 to-transparent" />
               </div>
             </div>
 

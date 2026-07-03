@@ -128,3 +128,14 @@ export const PERFORMANCES: Performance[] = [
   { id: "SpoBsHsUOuo", title: "Musicphonetics live performance — clip 5" },
   { id: "n4kcHxFJxhA", title: "Musicphonetics live performance — clip 6" },
 ];
+
+// Homepage hero — real students together (Dec 2025). Swap the file at
+// /public/images/students/hero.webp to update.
+export const HERO_STUDENTS: MediaImage = {
+  src: "/images/students/hero.webp",
+  alt: "Musicphonetics students together outdoors after a class",
+  caption: "Our students",
+  width: 1290,
+  height: 968,
+  blurDataURL: 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDABALDA4MChAODQ4SERATGCgaGBYWGDEjJR0oOjM9PDkzODdASFxOQERXRTc4UG1RV19iZ2hnPk1xeXBkeFxlZ2P/2wBDARESEhgVGC8aGi9jQjhCY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2P/wAARCAAMABADASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwCGSR57eC4mEbIu4x5UgnBOc459KILJjqAnjXYNo/d9NmRwTntS3GbcQiFihMhBIxnDNzUCXk010YpW3CZQGJ64ByP5Vk0iowur+Z//2Q==',
+};
