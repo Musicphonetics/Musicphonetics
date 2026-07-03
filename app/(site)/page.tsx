@@ -1,6 +1,7 @@
 import { HeroConcierge } from "@/components/sections/HeroConcierge";
 import { FounderFeature } from "@/components/sections/FounderFeature";
 import { AchievementsStrip } from "@/components/sections/AchievementsStrip";
+import { SafetyFirst } from "@/components/sections/SafetyFirst";
 import { ReviewsCompact } from "@/components/sections/ReviewsCompact";
 import { ScheduleBlock } from "@/components/sections/ScheduleBlock";
 import { Plans } from "@/components/sections/Plans";
@@ -19,6 +20,7 @@ export default function HomePage() {
       <HeroConcierge />        {/* 1 · Who + how experienced + one action */}
       <FounderFeature />       {/* 2 · The spine — experience & recognition */}
       <AchievementsStrip />    {/* 3 · Fast proof row */}
+      <SafetyFirst />          {/* Child safety — highlighted, high on the page */}
       <ReviewsCompact />       {/* 4 · Trust — defence families + premium reviews */}
       <ScheduleBlock />        {/* 5 · How it works / schedule */}
       <Plans />                {/* 6 · Plans & fees */}
