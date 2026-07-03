@@ -138,7 +138,7 @@ export function HeroConcierge() {
               <Button href="/start" variant="light" size="lg" className="px-9 py-4 text-base shadow-card-hover">
                 Book a Free Trial
               </Button>
-              <Button href="/founder" variant="secondary" size="lg" className="border-white/25 text-paper hover:border-white">
+              <Button href="#performances" variant="secondary" size="lg" className="border-white/25 text-paper hover:border-white">
                 Watch Our Story
               </Button>
             </motion.div>

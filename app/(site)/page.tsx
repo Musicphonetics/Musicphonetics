@@ -3,6 +3,7 @@ import { FounderFeature } from "@/components/sections/FounderFeature";
 import { AchievementsStrip } from "@/components/sections/AchievementsStrip";
 import { SafetyFirst } from "@/components/sections/SafetyFirst";
 import { ReviewsCompact } from "@/components/sections/ReviewsCompact";
+import { SeeUsInAction } from "@/components/sections/SeeUsInAction";
 import { ScheduleBlock } from "@/components/sections/ScheduleBlock";
 import { Plans } from "@/components/sections/Plans";
 import { ReassuranceChips } from "@/components/sections/ReassuranceChips";
@@ -22,6 +23,7 @@ export default function HomePage() {
       <AchievementsStrip />    {/* 3 · Fast proof row */}
       <SafetyFirst />          {/* Child safety — highlighted, high on the page */}
       <ReviewsCompact />       {/* 4 · Trust — defence families + premium reviews */}
+      <SeeUsInAction />        {/* See us in action — 6 performance clips */}
       <ScheduleBlock />        {/* 5 · How it works / schedule */}
       <Plans />                {/* 6 · Plans & fees */}
       <ReassuranceChips />     {/* Depth compressed to one line */}
