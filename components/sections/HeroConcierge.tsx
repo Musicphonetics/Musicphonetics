@@ -1,94 +1,157 @@
-import { Reveal } from "@/components/ui/Reveal";
-import { SoundWave } from "@/components/ui/SoundWave";
-import { Photo } from "@/components/ui/Photo";
+"use client";
+
+import { useEffect, useRef, useState } from "react";
+import Image from "next/image";
+import { motion, useReducedMotion } from "framer-motion";
 import { Button } from "@/components/ui/Button";
+import { CountUp } from "@/components/ui/CountUp";
 import { HERO_IMAGE } from "@/lib/media";
-import { InstrumentChips } from "@/components/sections/InstrumentChips";
-import { whatsappTrialLink } from "@/lib/data";
+
+const STATS: { value?: number; suffix?: string; text?: string; label: string }[] = [
+  { value: 1100, suffix: "+", label: "Students" },
+  { value: 200, suffix: "+", label: "Exam successes" },
+  { value: 10, suffix: "+", label: "Years" },
+  { text: "Personal", label: "Attention" },
+];
+
+function StatCard() {
+  return (
+    <div className="mp-glass grid grid-cols-2 gap-x-6 gap-y-4 rounded-2xl border border-white/15 bg-white/[0.08] p-5 backdrop-blur-xl sm:grid-cols-4 sm:p-6">
+      {STATS.map((s) => (
+        <div key={s.label} className="text-center sm:text-left">
+          <p className="font-display text-2xl font-semibold text-gold sm:text-3xl">
+            {s.value != null ? <CountUp value={s.value} suffix={s.suffix} /> : s.text}
+          </p>
+          <p className="mt-0.5 text-[11px] uppercase tracking-wide text-paper/70">{s.label}</p>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function TrinityBadge() {
+  const Laurel = ({ flip }: { flip?: boolean }) => (
+    <svg width="16" height="22" viewBox="0 0 16 22" fill="none" aria-hidden="true" className="text-gold" style={flip ? { transform: "scaleX(-1)" } : undefined}>
+      <path d="M13 2C7 4 4 9 4 15c0 2 .5 4 1.5 5.5" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" />
+      {[4, 7, 10, 13].map((y) => (
+        <path key={y} d={`M${12 - (y - 4) * 0.4} ${y}c-2 .3-3.6 1.4-4.3 3`} stroke="currentColor" strokeWidth="1.1" strokeLinecap="round" />
+      ))}
+    </svg>
+  );
+  return (
+    <div className="inline-flex items-center gap-2 text-paper/80">
+      <Laurel />
+      <span className="text-xs font-medium uppercase tracking-[0.18em]">Trinity-recognised · 200+ exam successes</span>
+      <Laurel flip />
+    </div>
+  );
+}
 
 export function HeroConcierge() {
+  const reduced = useReducedMotion();
+  const [offset, setOffset] = useState({ x: 0, y: 0 });
+  const raf = useRef<number | null>(null);
+
+  // Gentle desktop mouse parallax on the hero image.
+  useEffect(() => {
+    if (reduced) return;
+    const onMove = (e: MouseEvent) => {
+      if (window.innerWidth < 1024) return;
+      if (raf.current) cancelAnimationFrame(raf.current);
+      raf.current = requestAnimationFrame(() => {
+        const x = (e.clientX / window.innerWidth - 0.5) * 16;
+        const y = (e.clientY / window.innerHeight - 0.5) * 12;
+        setOffset({ x, y });
+      });
+    };
+    window.addEventListener("mousemove", onMove, { passive: true });
+    return () => {
+      window.removeEventListener("mousemove", onMove);
+      if (raf.current) cancelAnimationFrame(raf.current);
+    };
+  }, [reduced]);
+
+  const rise = (delay: number) =>
+    reduced
+      ? {}
+      : { initial: { opacity: 0, y: 16 }, animate: { opacity: 1, y: 0 }, transition: { duration: 0.5, delay, ease: "easeOut" as const } };
+
   return (
     <section id="overview" className="relative overflow-hidden bg-ink text-paper">
-      {/* Calm ambient light */}
-      <div aria-hidden="true" className="pointer-events-none absolute inset-0">
-        <div className="absolute left-1/3 top-[-20%] h-[520px] w-[720px] -translate-x-1/2 rounded-full bg-deep-gold/10 blur-[130px]" />
+      {/* Desktop full-bleed image on the right */}
+      <div className="pointer-events-none absolute inset-y-0 right-0 hidden w-[57%] lg:block">
+        <div
+          className="absolute -inset-[5%] origin-center"
+          style={{
+            transform: `translate3d(${offset.x}px, ${offset.y}px, 0)`,
+            transition: reduced ? undefined : "transform 0.6s ease-out",
+          }}
+        >
+          <Image
+            src={HERO_IMAGE.src}
+            alt={HERO_IMAGE.alt}
+            fill
+            priority
+            sizes="60vw"
+            placeholder="blur"
+            blurDataURL={HERO_IMAGE.blurDataURL}
+            className={reduced ? "object-cover object-center" : "object-cover object-center mp-hero-zoom"}
+            style={{ filter: "brightness(1.03) contrast(1.06) saturate(1.05)" }}
+          />
+        </div>
+        {/* Readability gradient (right → left) + warm gold + vignette */}
+        <div className="absolute inset-0 bg-gradient-to-r from-ink via-ink/55 to-transparent" />
+        <div className="absolute inset-0 bg-gold/10 mix-blend-overlay" />
+        <div className="absolute inset-0" style={{ background: "radial-gradient(120% 100% at 72% 42%, transparent, rgba(11,15,24,0.45))" }} />
       </div>
 
-      <div className="container-mp relative grid items-center gap-12 py-16 sm:py-20 lg:min-h-[86vh] lg:grid-cols-[1.05fr_0.95fr] lg:gap-16 lg:py-24">
-        {/* Left — brand identity, then begin */}
-        <div>
-          <Reveal>
-            <h1 className="font-display text-4xl font-semibold leading-[1.06] sm:text-5xl lg:text-6xl">
-              Premium music classes, taught to a real standard.
-            </h1>
-          </Reveal>
-
-          <Reveal delay={120}>
-            <p className="mt-5 max-w-md text-base leading-relaxed text-paper/70 sm:text-lg">
-              One-to-one lessons at home, online, and at our South Delhi centre.
-              A decade of teaching, 1,100+ students, and 200+ graded-exam successes.
-            </p>
-          </Reveal>
-
-          <Reveal delay={180}>
-            <p className="mt-4 font-display text-sm font-semibold text-gold">
-              10 years · 1,100+ students · Trinity-recognised
-            </p>
-          </Reveal>
-
-          {/* The one action — pick an instrument, go straight to onboarding */}
-          <Reveal delay={240}>
-            <div className="mt-8">
-              <p className="mb-3 text-sm font-medium text-paper/70">
-                What would you like to learn?
-              </p>
-              <InstrumentChips />
-              <div className="mt-6 flex flex-col gap-3 sm:flex-row">
-                <Button href="/start" variant="light" size="lg">
-                  Book a free trial
-                </Button>
-                <Button
-                  href={whatsappTrialLink()}
-                  external
-                  variant="secondary"
-                  size="lg"
-                  className="border-white/25 text-paper hover:border-white"
-                >
-                  WhatsApp
-                </Button>
+      <div className="container-mp relative">
+        <div className="flex flex-col py-10 sm:py-14 lg:grid lg:min-h-[90vh] lg:grid-cols-2 lg:items-center lg:py-0">
+          <div className="flex max-w-xl flex-col lg:py-24">
+            {/* Mobile image first */}
+            <div className="order-1 mb-7 overflow-hidden rounded-2xl border border-white/10 shadow-card-hover lg:hidden">
+              <div className="relative aspect-[5/4]">
+                <Image
+                  src={HERO_IMAGE.src}
+                  alt={HERO_IMAGE.alt}
+                  fill
+                  priority
+                  sizes="100vw"
+                  placeholder="blur"
+                  blurDataURL={HERO_IMAGE.blurDataURL}
+                  className="object-cover object-center"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-ink/50 to-transparent" />
               </div>
-              <p className="mt-3 text-xs text-paper/70">
-                Free trial, no commitment — we reply immediately.
-              </p>
             </div>
-          </Reveal>
-        </div>
 
-        {/* Right — calm imagery + subtle motion */}
-        <Reveal delay={200}>
-          <div className="relative hidden lg:block">
-            <SoundWave className="absolute inset-x-0 top-1/2 h-32 -translate-y-1/2 opacity-50" />
-            <div className="relative">
-              <Photo
-                image={HERO_IMAGE}
-                aspect="portrait"
-                priority
-                sizes="(max-width: 1024px) 0px, 38vw"
-                rounded="rounded-[1.5rem]"
-                className="shadow-card-hover ring-1 ring-white/10"
-              />
-              {/* Soft gradient floor so the headline reads if it overlaps */}
-              <div
-                aria-hidden="true"
-                className="pointer-events-none absolute inset-x-0 bottom-0 h-1/3 rounded-b-[1.5rem] bg-gradient-to-t from-ink/70 to-transparent"
-              />
-              <figcaption className="absolute bottom-4 left-5 text-xs font-medium text-paper/85">
-                {HERO_IMAGE.caption} · Musicphonetics
-              </figcaption>
-              <div aria-hidden="true" className="pointer-events-none absolute -inset-6 -z-10 rounded-[2rem] bg-gold/5 blur-2xl" />
-            </div>
+            <motion.h1 {...rise(0.05)} className="order-2 font-display text-4xl font-semibold leading-[1.05] sm:text-5xl lg:text-6xl">
+              Music education that <span className="text-gold">hits</span> the right note.
+            </motion.h1>
+
+            <motion.p {...rise(0.15)} className="order-3 mt-5 max-w-md text-base leading-relaxed text-paper/80 sm:text-lg">
+              Personalized music education for children and adults — home lessons,
+              online learning, and our premium South Delhi centre.
+            </motion.p>
+
+            <motion.div {...rise(0.28)} className="order-4 mt-8 flex flex-col gap-3 sm:flex-row">
+              <Button href="/start" variant="light" size="lg" className="px-9 py-4 text-base shadow-card-hover">
+                Book a Free Trial
+              </Button>
+              <Button href="/founder" variant="secondary" size="lg" className="border-white/25 text-paper hover:border-white">
+                Watch Our Story
+              </Button>
+            </motion.div>
+
+            <motion.div {...rise(0.42)} className="order-5 mt-9 lg:max-w-lg">
+              <StatCard />
+            </motion.div>
+
+            <motion.div {...rise(0.55)} className="order-6 mt-6">
+              <TrinityBadge />
+            </motion.div>
           </div>
-        </Reveal>
+        </div>
       </div>
     </section>
   );

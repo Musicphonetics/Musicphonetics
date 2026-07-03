@@ -298,3 +298,15 @@
     transition-duration: 0.001ms !important;
   }
 }
+
+/* Hero — very slow, subtle background zoom (premium, not distracting). */
+@keyframes mp-hero-zoom {
+  from { transform: scale(1); }
+  to { transform: scale(1.07); }
+}
+.mp-hero-zoom {
+  animation: mp-hero-zoom 24s ease-in-out infinite alternate;
+}
+@media (prefers-reduced-motion: reduce) {
+  .mp-hero-zoom { animation: none; }
+}
