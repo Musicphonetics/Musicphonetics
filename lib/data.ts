@@ -94,6 +94,7 @@ export const FOOTER_NAV = [
   { label: "Trust Centre", href: "/trust" },
   { label: "Reviews", href: "/reviews" },
   { label: "Contact", href: "/contact" },
+  { label: "Support", href: "/support" },
 ];
 
 // ---------------------------------------------------------------------------
@@ -325,10 +326,10 @@ export const PACKAGES: Package[] = [
     name: "Foundation",
     tagline: "Structured, one-to-one music education to a real standard.",
     priceFrom: "from ₹12,000",
-    unit: "/month · 8 classes",
+    unit: "/month · 8 classes (₹1,500/class)",
     bullets: [
       "Verified faculty (7-stage selection)",
-      "Structured method & written standards",
+      "Structured one-to-one method",
       "Monthly progress reports",
       "Home, online, or South Delhi centre",
       "Exam-pathway access (Trinity-recognised)",
@@ -338,13 +339,13 @@ export const PACKAGES: Package[] = [
     key: "Signature",
     name: "Signature",
     tagline: "Our most-chosen path — senior faculty and dedicated exam prep.",
-    priceFrom: "from ₹15,000",
-    unit: "/month · 8 classes",
+    priceFrom: "from ₹18,000",
+    unit: "/month · 8 classes (₹2,250/class)",
     featured: true,
     badge: "Most chosen",
     bullets: [
       "Everything in Foundation, plus:",
-      "Senior, hand-picked faculty",
+      "Hand-picked senior faculty",
       "Priority scheduling",
       "Detailed reports + lesson recordings",
       "Dedicated exam prep & featured performances",
@@ -355,15 +356,16 @@ export const PACKAGES: Package[] = [
     name: "Director's Circle",
     tagline: "Personally with the Director — full artist development.",
     priceFrom: "By application",
-    unit: "limited seats · from ₹20,000/mo",
+    unit: "limited seats · from ₹28,000/mo",
     premium: true,
     application: true,
+    badge: "By application · limited seats",
     bullets: [
-      "Lessons personally with the Director",
+      "Personally with the Director (Abhishek)",
       "Concierge scheduling",
       "Full artist development",
       "Showcase performances",
-      "A direct line to Abhishek",
+      "A direct line to the Director",
     ],
   },
 ];

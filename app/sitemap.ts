@@ -19,6 +19,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/reviews",
     "/teach-with-us",
     "/contact",
+    "/support",
   ];
 
   const entries: MetadataRoute.Sitemap = staticPaths.map((path) => ({

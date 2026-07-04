@@ -11,7 +11,7 @@ export function Plans() {
       <SectionHeading
         eyebrow="Plans & fees"
         title="Premium, one-to-one — priced for it."
-        intro="Musicphonetics is premium, one-to-one music education. We don't offer budget or group tuition — every plan is personalised on your free trial."
+        intro="Musicphonetics is premium, one-to-one music education. Every plan is personalised on your free trial."
       />
 
       <div className="mt-12 grid gap-6 lg:grid-cols-3">
@@ -60,23 +60,43 @@ export function Plans() {
                 </p>
 
                 <div className="mt-4">
-                  <Button
-                    href={pkg.application
-                      ? whatsappLink(`Hi Musicphonetics, I'd like to apply for the Director's Circle.`)
-                      : whatsappLink(`Hi Musicphonetics, I'm interested in the ${pkg.name} plan. Please guide me.`)}
-                    external
-                    fullWidth
-                    size="lg"
-                    variant={dark ? "light" : "primary"}
-                  >
-                    {pkg.application ? "Apply on WhatsApp" : "Book a free trial"}
-                  </Button>
+                  {pkg.application ? (
+                    <Button
+                      href={whatsappLink("Hi Musicphonetics, I'd like to apply for the Director's Circle.")}
+                      external
+                      fullWidth
+                      size="lg"
+                      variant="light"
+                    >
+                      Apply for Director&apos;s Circle
+                    </Button>
+                  ) : (
+                    <Button href="/start" fullWidth size="lg" variant={dark ? "light" : "primary"}>
+                      Book a free trial
+                    </Button>
+                  )}
                 </div>
               </div>
             </Reveal>
           );
         })}
       </div>
+
+      {/* Discount cue — no numbers, by design */}
+      <Reveal>
+        <p className="mt-8 text-center text-sm text-ink/70">
+          You may be eligible for a special rate —{" "}
+          <a
+            href={whatsappLink("Hi Musicphonetics, I'd like to book a free trial and ask about my rate.")}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="font-semibold text-[#7A5E0F] underline underline-offset-2"
+          >
+            ask us on your free trial
+          </a>
+          .
+        </p>
+      </Reveal>
     </Section>
   );
 }
