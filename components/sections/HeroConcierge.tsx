@@ -79,7 +79,7 @@ export function HeroConcierge() {
   return (
     <section id="overview" className="relative overflow-hidden bg-ink text-paper">
       {/* Desktop full-bleed image on the right */}
-      <div className="pointer-events-none absolute inset-y-0 right-0 hidden w-[57%] lg:block">
+      <div className="pointer-events-none absolute inset-y-0 right-0 hidden w-[57%] overflow-hidden lg:block">
         <div
           className="absolute -inset-[5%] origin-center"
           style={{
