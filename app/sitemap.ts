@@ -18,6 +18,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/standards",
     "/reviews",
     "/teach-with-us",
+    "/teach-with-us/terms",
     "/contact",
     "/support",
   ];
