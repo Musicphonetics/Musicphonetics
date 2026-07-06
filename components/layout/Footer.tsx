@@ -94,9 +94,6 @@ export function Footer() {
             © {new Date().getFullYear()} {BRAND.name}. {BRAND.tagline}
           </p>
           <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
-            <Link href="/teach-with-us" className="hover:text-paper">
-              Teach with us
-            </Link>
             <Link href="/standards/privacy-policy" className="hover:text-paper">
               Privacy
             </Link>
