@@ -93,6 +93,7 @@ export const FOOTER_NAV = [
   { label: "South Delhi Centre", href: "/centre" },
   { label: "Trust Centre", href: "/trust" },
   { label: "Reviews", href: "/reviews" },
+  { label: "Teach With Us", href: "/teach-with-us" },
   { label: "Contact", href: "/contact" },
   { label: "Support", href: "/support" },
 ];

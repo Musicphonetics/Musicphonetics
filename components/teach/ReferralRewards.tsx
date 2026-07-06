@@ -1,41 +1,35 @@
 import { Section, SectionHeading } from "@/components/ui/Section";
 import { MotionReveal } from "./MotionReveal";
-
-const REWARDS = [
-  {
-    title: "Refer a teacher who stays",
-    body: "Know a teacher who'd fit our standard? If they join and stay, you earn a one-time referral bonus.",
-  },
-  {
-    title: "Refer a student who enrols",
-    body: "Send a family our way. When they enrol, you earn a one-time bonus.",
-  },
-];
+import { formatINR } from "@/lib/utils";
+import { REFERRAL_BONUS } from "@/lib/teach-config";
 
 export function ReferralRewards() {
+  const bonusText = REFERRAL_BONUS ? formatINR(REFERRAL_BONUS) : "a one-time bonus";
+
   return (
     <Section background="paper" spacing="lg">
       <SectionHeading
-        eyebrow="Referral rewards"
-        title="Grow the faculty — earn for it."
-        intro="Simple and single-level: one-time bonuses for referrals that work out. No downlines, no recruiting off recruits."
+        eyebrow="Refer & earn"
+        title="Know a great teacher? Bring them in."
+        intro="Single-tier and simple: when a teacher you personally refer joins and completes 3 months, you earn a one-time bonus. No chains, no earning from recruits-of-recruits."
       />
-      <div className="mt-10 grid gap-5 sm:grid-cols-2">
-        {REWARDS.map((r, i) => (
-          <MotionReveal key={r.title} delay={i * 100}>
-            <div className="flex h-full items-start gap-4 rounded-2xl border border-hairline bg-white p-6 shadow-card">
-              <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-gold/15 text-[#7A5E0F]">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3v18M5 8l7-5 7 5M5 8a7 7 0 0 0 14 0" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" /></svg>
-              </span>
-              <div>
-                <h3 className="text-lg font-semibold text-ink">{r.title}</h3>
-                <p className="mt-1.5 text-sm leading-relaxed text-ink/65">{r.body}</p>
-                <span className="mt-3 inline-block rounded-full bg-feature-green/10 px-2.5 py-0.5 text-xs font-semibold text-feature-green">One-time bonus · single level</span>
-              </div>
-            </div>
-          </MotionReveal>
-        ))}
-      </div>
+      <MotionReveal>
+        <div className="mx-auto mt-10 max-w-2xl rounded-3xl border border-hairline bg-white p-8 text-center shadow-card sm:p-10">
+          <span className="mx-auto grid h-14 w-14 place-items-center rounded-2xl bg-gold/15 text-[#7A5E0F]">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3v18M5 8l7-5 7 5M5 8a7 7 0 0 0 14 0" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" /></svg>
+          </span>
+          <p className="mt-5 font-display text-2xl font-semibold text-ink">
+            Refer a teacher who stays 3 months — earn {bonusText}.
+          </p>
+          <p className="mx-auto mt-3 max-w-md text-sm leading-relaxed text-ink/65">
+            One bonus for one teacher you personally bring in who sticks. That&apos;s the
+            whole scheme — deliberately flat, deliberately honest.
+          </p>
+          <span className="mt-5 inline-block rounded-full bg-feature-green/10 px-3 py-1 text-xs font-semibold text-feature-green">
+            Single-tier · one-time · no downlines
+          </span>
+        </div>
+      </MotionReveal>
     </Section>
   );
 }
