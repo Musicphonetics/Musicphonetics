@@ -12,7 +12,10 @@
 // never reach the client.
 function normalizeUrl(u) {
   if (!u) return "";
-  return u.trim().replace(/\/rest\/v1\/?$/, "").replace(/\/+$/, "");
+  let s = u.trim().replace(/\/rest\/v1\/?$/, "").replace(/\/+$/, "");
+  // Supabase needs an absolute URL — add https:// if the scheme was omitted.
+  if (s && !/^https?:\/\//i.test(s)) s = "https://" + s;
+  return s;
 }
 const SUPABASE_URL = normalizeUrl(
   process.env.VITE_SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL || ""

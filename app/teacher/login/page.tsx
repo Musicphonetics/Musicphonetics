@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { getSupabase, isSupabaseConfigured } from "@/lib/supabase/client";
+import { getSupabaseSafe, isSupabaseConfigured } from "@/lib/supabase/client";
 import { Stave } from "@/components/ui/Stave";
 
 const input =
@@ -15,20 +15,28 @@ export default function TeacherLogin() {
   const [busy, setBusy] = useState(false);
   const [msg, setMsg] = useState("");
 
-  // Already signed in → straight to the dashboard.
+  // Already signed in → straight to the dashboard. Surface any client error.
   useEffect(() => {
-    if (!isSupabaseConfigured()) return;
-    getSupabase().auth.getSession().then(({ data }) => {
-      if (data.session) router.replace("/teacher/dashboard");
-    });
+    const { client, error } = getSupabaseSafe();
+    if (!client) { if (error) setMsg(error); return; }
+    client.auth.getSession()
+      .then(({ data }) => { if (data.session) router.replace("/teacher/dashboard"); })
+      .catch((e) => setMsg(e?.message || "Connection error"));
   }, [router]);
 
   async function login() {
     setMsg(""); setBusy(true);
-    const { error } = await getSupabase().auth.signInWithPassword({ email: email.trim(), password });
-    setBusy(false);
-    if (error) setMsg(error.message);
-    else router.replace("/teacher/dashboard");
+    const { client, error } = getSupabaseSafe();
+    if (!client) { setBusy(false); setMsg(error || "Portal not configured"); return; }
+    try {
+      const { error: authErr } = await client.auth.signInWithPassword({ email: email.trim(), password });
+      setBusy(false);
+      if (authErr) setMsg(authErr.message);
+      else router.replace("/teacher/dashboard");
+    } catch (e) {
+      setBusy(false);
+      setMsg(e instanceof Error ? e.message : "Sign-in failed");
+    }
   }
 
   return (

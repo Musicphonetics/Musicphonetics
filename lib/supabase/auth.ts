@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { getSupabase, isSupabaseConfigured } from "./client";
+import { getSupabaseSafe, isSupabaseConfigured } from "./client";
 import type { Profile } from "./types";
 
 export interface AuthState {
@@ -12,18 +12,18 @@ export interface AuthState {
   error: string | null;
 }
 
-// Loads the current session + profile. Components use this to guard routes.
+// Loads the current session + profile. Never throws — surfaces errors in state.
 export function useAuth(): AuthState {
   const [state, setState] = useState<AuthState>({
     loading: true, configured: isSupabaseConfigured(), userId: null, profile: null, error: null,
   });
 
   useEffect(() => {
-    if (!isSupabaseConfigured()) {
-      setState((s) => ({ ...s, loading: false, configured: false }));
+    const { client: sb, error: initErr } = getSupabaseSafe();
+    if (!sb) {
+      setState((s) => ({ ...s, loading: false, configured: isSupabaseConfigured(), error: initErr }));
       return;
     }
-    const sb = getSupabase();
     let active = true;
 
     async function load(userId: string | null) {
@@ -31,7 +31,7 @@ export function useAuth(): AuthState {
         if (active) setState({ loading: false, configured: true, userId: null, profile: null, error: null });
         return;
       }
-      const { data, error } = await sb.from("profiles").select("*").eq("id", userId).single();
+      const { data, error } = await sb!.from("profiles").select("*").eq("id", userId).single();
       if (!active) return;
       setState({
         loading: false, configured: true, userId,
@@ -40,7 +40,9 @@ export function useAuth(): AuthState {
       });
     }
 
-    sb.auth.getSession().then(({ data }) => load(data.session?.user?.id ?? null));
+    sb.auth.getSession().then(({ data }) => load(data.session?.user?.id ?? null)).catch((e) => {
+      if (active) setState((s) => ({ ...s, loading: false, error: e?.message || "Auth error" }));
+    });
     const { data: sub } = sb.auth.onAuthStateChange((_e, session) => load(session?.user?.id ?? null));
     return () => { active = false; sub.subscription.unsubscribe(); };
   }, []);
@@ -49,6 +51,6 @@ export function useAuth(): AuthState {
 }
 
 export async function signOut() {
-  if (!isSupabaseConfigured()) return;
-  await getSupabase().auth.signOut();
+  const { client } = getSupabaseSafe();
+  if (client) await client.auth.signOut();
 }
