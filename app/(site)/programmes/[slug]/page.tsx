@@ -14,9 +14,9 @@ export function generateMetadata({ params }: { params: { slug: string } }): Meta
   const p = getProgramme(params.slug);
   if (!p) return { title: "Programme" };
   return {
-    title: `${p.name} — Music Classes | Musicphonetics`,
+    title: `${p.name} - Music Classes | Musicphonetics`,
     description: p.intro,
-    openGraph: { title: `${p.name} — Musicphonetics`, description: p.intro },
+    openGraph: { title: `${p.name} - Musicphonetics`, description: p.intro },
   };
 }
 
@@ -169,7 +169,7 @@ export default function ProgrammePage({ params }: { params: { slug: string } }) 
             {p.payAmount ? "Ready to begin?" : "Think you're a fit?"}
           </h2>
           <p className="mx-auto mt-3 max-w-lg text-paper/75">
-            {p.payAmount ? "Enrol now and pay securely, or ask us anything on WhatsApp first." : "Request access and we'll take it from there — personally."}
+            {p.payAmount ? "Enrol now and pay securely, or ask us anything on WhatsApp first." : "Request access and we'll take it from there - personally."}
           </p>
           <div className="mt-7 flex flex-col justify-center gap-3 sm:flex-row">
             {enrolHref ? (

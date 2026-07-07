@@ -1,5 +1,5 @@
 /**
- * Musicphonetics — Payments sheet write-back (Google Apps Script)
+ * Musicphonetics - Payments sheet write-back (Google Apps Script)
  *
  * SETUP (once):
  * 1. Open script.google.com → New project → paste this file.
@@ -29,7 +29,7 @@ function doPost(e) {
     payments.appendRow(PAYMENTS_HEADER);
   }
 
-  // Idempotency — one row per Cashfree payment id, even if the webhook retries.
+  // Idempotency - one row per Cashfree payment id, even if the webhook retries.
   if (d.paymentId) {
     var ids = payments.getRange(1, 1, payments.getLastRow() || 1, 1).getValues();
     for (var i = 0; i < ids.length; i++) {

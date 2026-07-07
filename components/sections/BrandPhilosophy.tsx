@@ -18,7 +18,7 @@ export function BrandPhilosophy() {
           </Reveal>
           <Reveal delay={160}>
             <p className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-paper/75">
-              Teaching is the foundation — and everything grows from it. The
+              Teaching is the foundation - and everything grows from it. The
               long-term vision is an ecosystem where students, teachers, artists,
               creators, schools, and music businesses all connect through one
               trusted platform.

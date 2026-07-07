@@ -16,7 +16,7 @@ export function GrowthLadder() {
       <SectionHeading
         eyebrow="Your growth path"
         title="A career, not a gig."
-        intro="Every rung is real progression tied to delivery — from your first student to a partnership as we expand."
+        intro="Every rung is real progression tied to delivery - from your first student to a partnership as we expand."
       />
       <ol ref={ref} className="relative mt-12 max-w-2xl space-y-10 pl-10">
         <div aria-hidden="true" className="absolute left-[14px] top-2 h-[calc(100%-1rem)] w-0.5 bg-hairline" />
@@ -34,7 +34,7 @@ export function GrowthLadder() {
         ))}
       </ol>
       <p className="mt-8 max-w-2xl text-xs leading-relaxed text-ink/65">
-        The Regional Coordinator override is the single management layer — you earn on
+        The Regional Coordinator override is the single management layer - you earn on
         teachers you genuinely support and onboard. There is no chain beyond it, and no
         earning from recruits-of-recruits.
       </p>

@@ -129,7 +129,7 @@ function Body({ data }: { data: OwnerData }) {
       )}
 
       <p className="text-center text-xs text-ink/55">
-        Live — updates as teachers submit. Manage payouts under{" "}
+        Live - updates as teachers submit. Manage payouts under{" "}
         <Link href="/owner/payouts" className="font-semibold text-[#7A5E0F] underline underline-offset-2">Payouts</Link>.
       </p>
     </div>
@@ -162,7 +162,7 @@ function revenueTrend(data: OwnerData) {
 }
 
 function nameFor(data: OwnerData, studentId: string): string {
-  return data.students.find((s) => s.id === studentId)?.name ?? "—";
+  return data.students.find((s) => s.id === studentId)?.name ?? "-";
 }
 
 function Kpi({ label, value, tone = "ink" }: { label: string; value: string; tone?: "ink" | "gold" | "green" | "red" }) {

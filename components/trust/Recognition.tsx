@@ -37,7 +37,7 @@ export function Recognition() {
         ))}
       </div>
 
-      {/* Industry network — partner wall */}
+      {/* Industry network - partner wall */}
       <Reveal>
         <div className="mt-10">
           <div className="flex items-end justify-between gap-4">

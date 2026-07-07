@@ -14,7 +14,7 @@ export function Credentials() {
       id="credentials"
       eyebrow="Section 01 · Trust & Verifications"
       title="Registered, certified, verified."
-      intro="The legal foundations of a serious education company — documented, not declared."
+      intro="The legal foundations of a serious education company - documented, not declared."
       blueprint
     >
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">

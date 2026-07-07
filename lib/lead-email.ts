@@ -1,5 +1,5 @@
 // ============================================================================
-// Musicphonetics — Lead notification email (premium SaaS style)
+// Musicphonetics - Lead notification email (premium SaaS style)
 // ============================================================================
 
 export interface LeadFields {
@@ -20,7 +20,7 @@ export interface LeadFields {
 }
 
 const esc = (s: unknown) =>
-  String(s ?? "—")
+  String(s ?? "-")
     .replace(/&/g, "&amp;")
     .replace(/</g, "&lt;")
     .replace(/>/g, "&gt;");
@@ -35,18 +35,18 @@ export function buildLeadEmail(d: LeadFields): { subject: string; html: string; 
   const subject = `🎵 New Musicphonetics Lead | ${instrument} | ${place}`;
 
   const rows: [string, string][] = [
-    ["Full Name", d.name || "—"],
-    ["Phone Number", d.phone || "—"],
-    ["Email Address", d.email || "—"],
-    ["Instrument", d.instrument || "—"],
-    ["Class Mode", d.mode || "—"],
-    ["Student Type", d.who || "—"],
-    ["Age", d.childAge || "—"],
-    ["Location", d.location || "—"],
-    ["Experience Level", d.experience || "—"],
-    ["Learning Goal", d.goal || "—"],
-    ["Preferred Timing", d.timing || "—"],
-    ["Preferred Start", d.begin || "—"],
+    ["Full Name", d.name || "-"],
+    ["Phone Number", d.phone || "-"],
+    ["Email Address", d.email || "-"],
+    ["Instrument", d.instrument || "-"],
+    ["Class Mode", d.mode || "-"],
+    ["Student Type", d.who || "-"],
+    ["Age", d.childAge || "-"],
+    ["Location", d.location || "-"],
+    ["Experience Level", d.experience || "-"],
+    ["Learning Goal", d.goal || "-"],
+    ["Preferred Timing", d.timing || "-"],
+    ["Preferred Start", d.begin || "-"],
     ["Submitted", when],
     ["Source", d.source || "Website onboarding"],
   ];

@@ -6,7 +6,7 @@ import { Photo } from "@/components/ui/Photo";
 import { FOUNDER } from "@/lib/founder";
 import { RECOGNITION } from "@/lib/media";
 
-// Two recognition photos, captioned — chief-judge + shared stage (Shaan).
+// Two recognition photos, captioned - chief-judge + shared stage (Shaan).
 const RECOG = [
   RECOGNITION.find((r) => r.src.includes("04-award")),
   RECOGNITION.find((r) => r.src.includes("01-celeb")),
@@ -40,7 +40,7 @@ export function FounderFeature() {
             </div>
           </Reveal>
 
-          {/* The spine — verbatim */}
+          {/* The spine - verbatim */}
           <div>
             <Reveal>
               <p className="eyebrow text-gold">The founder</p>
@@ -51,26 +51,26 @@ export function FounderFeature() {
             <Reveal delay={120}>
               <div className="mt-5 space-y-4 text-base leading-relaxed text-paper/80 sm:text-lg">
                 <p>
-                  After teaching more than 1,100 students one-to-one — and a year
-                  shaping music for a school of a thousand — Abhishek Kumar saw what
+                  After teaching more than 1,100 students one-to-one - and a year
+                  shaping music for a school of a thousand - Abhishek Kumar saw what
                   most miss: talent was never the problem. The system was. So he
                   built one.
                 </p>
                 <p>
-                  Today, Musicphonetics is that system — structured, personal, and
+                  Today, Musicphonetics is that system - structured, personal, and
                   held to written standards. 200+ of his students have completed
                   graded music exams, recognised with Trinity College London. He has
                   been invited as chief judge at major events, shared the stage with
                   artists including Shaan, and is trusted by families most teachers
-                  never reach — from Delhi&apos;s defence officers to its most
+                  never reach - from Delhi&apos;s defence officers to its most
                   discerning homes.
                 </p>
                 <p>
-                  One guitar. One student. One standard — carried into every lesson,
+                  One guitar. One student. One standard - carried into every lesson,
                   at home, online, and at our South Delhi centre.
                 </p>
               </div>
-              <p className="mt-5 font-display text-base text-gold">— Abhishek Kumar, Founder &amp; Director</p>
+              <p className="mt-5 font-display text-base text-gold">- Abhishek Kumar, Founder &amp; Director</p>
             </Reveal>
 
             {/* Compact recognition row */}

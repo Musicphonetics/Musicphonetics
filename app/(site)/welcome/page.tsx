@@ -27,7 +27,7 @@ const NEXT_STEPS = [
 export default function WelcomePage() {
   return (
     <>
-      {/* Hero — the welcome moment */}
+      {/* Hero - the welcome moment */}
       <section className="relative overflow-hidden bg-ink py-20 text-paper sm:py-28">
         <div aria-hidden="true" className="pointer-events-none absolute left-1/2 top-[-25%] h-[520px] w-[820px] -translate-x-1/2 rounded-full bg-deep-gold/15 blur-[130px]" />
         <div className="container-mp relative text-center">
@@ -51,7 +51,7 @@ export default function WelcomePage() {
         </div>
       </section>
 
-      {/* A personal message from the Director — a signed note */}
+      {/* A personal message from the Director - a signed note */}
       <Section background="paper" spacing="lg">
         <Reveal>
           <figure className="mx-auto max-w-2xl rounded-3xl border border-hairline bg-white p-8 shadow-card sm:p-12">
@@ -67,11 +67,11 @@ export default function WelcomePage() {
             <blockquote className="mt-7 space-y-4 font-display text-lg leading-relaxed text-ink/85">
               <p>
                 For ten years, I&apos;ve taught one belief: talent was never the
-                problem — the system was. Today, that system becomes yours.
+                problem - the system was. Today, that system becomes yours.
               </p>
               <p>
                 From this moment, you&apos;re not a customer. You&apos;re part of
-                Musicphonetics — a family of 1,100+ students, defence families, and
+                Musicphonetics - a family of 1,100+ students, defence families, and
                 homes across Delhi who chose music taught properly. Your teacher is
                 already being matched to you personally.
               </p>
@@ -83,16 +83,16 @@ export default function WelcomePage() {
               <p>Welcome. I can&apos;t wait to hear you play.</p>
             </blockquote>
             <figcaption className="mt-6 border-t border-hairline pt-5">
-              <p className="font-display text-base font-semibold text-[#7A5E0F]">— Abhishek Kumar</p>
+              <p className="font-display text-base font-semibold text-[#7A5E0F]">- Abhishek Kumar</p>
               <p className="text-sm text-ink/60">Founder &amp; Director, Musicphonetics</p>
             </figcaption>
           </figure>
         </Reveal>
 
-        {/* The vision — two lines */}
+        {/* The vision - two lines */}
         <Reveal delay={120}>
           <p className="mx-auto mt-12 max-w-2xl text-center font-display text-xl leading-snug text-ink sm:text-2xl">
-            We&apos;re building a standard of teaching Delhi has never had — and a
+            We&apos;re building a standard of teaching Delhi has never had - and a
             community that performs, grows, and stays for years.
           </p>
         </Reveal>
@@ -147,7 +147,7 @@ export default function WelcomePage() {
         <p className="mt-12 text-center text-sm text-ink/60">
           Question about your payment or schedule?{" "}
           <Link href="/support" className="font-semibold text-[#7A5E0F] underline underline-offset-2">
-            We&apos;re here — and we reply immediately
+            We&apos;re here - and we reply immediately
           </Link>
           .
         </p>

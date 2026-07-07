@@ -10,7 +10,7 @@ export function FounderTimeline() {
       <SectionHeading
         eyebrow="The timeline"
         title="From one student to a system."
-        intro="A decade of teaching, distilled into a methodology — and a roadmap that's still being written."
+        intro="A decade of teaching, distilled into a methodology - and a roadmap that's still being written."
       />
 
       <div className="mt-12">

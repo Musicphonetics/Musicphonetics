@@ -23,9 +23,9 @@ import { cn } from "@/lib/utils";
 export const metadata: Metadata = {
   title: "The Founder · Abhishek Kumar",
   description:
-    "The story of Musicphonetics — a testimony that began in 2015 with one guitar, three chords, and one student. Faith first, music second, business third.",
+    "The story of Musicphonetics - a testimony that began in 2015 with one guitar, three chords, and one student. Faith first, music second, business third.",
   openGraph: {
-    title: "The Founder · Abhishek Kumar — Musicphonetics",
+    title: "The Founder · Abhishek Kumar - Musicphonetics",
     description:
       "Why Musicphonetics exists: a faculty-led standard built by founder Abhishek Kumar after teaching 1,100+ students across Delhi NCR.",
   },
@@ -55,7 +55,7 @@ export default function FounderPage() {
             <Reveal delay={200}>
               <p className="mt-6 max-w-xl text-lg leading-relaxed text-paper/75">
                 The story of Musicphonetics is, first, a testimony. Faith first,
-                music second, business third — a journey that began in 2015 with
+                music second, business third - a journey that began in 2015 with
                 one guitar, three chords, and one student.
               </p>
             </Reveal>
@@ -113,7 +113,7 @@ export default function FounderPage() {
         </div>
       </Section>
 
-      {/* Recognition — real photography */}
+      {/* Recognition - real photography */}
       <Section background="paper" spacing="md">
         <Reveal>
           <p className="eyebrow text-center">Recognition</p>

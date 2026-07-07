@@ -6,7 +6,7 @@ import type { SystemStep } from "@/lib/curriculum";
 import { SYSTEM_STEPS } from "@/lib/curriculum";
 
 /**
- * M1 — the 6-step method rendered as a visible system.
+ * M1 - the 6-step method rendered as a visible system.
  * Horizontal on desktop, vertical on mobile; the gold connector draws in on
  * scroll (disabled under prefers-reduced-motion).
  */
@@ -18,7 +18,7 @@ export function SystemFlow({ steps = SYSTEM_STEPS }: { steps?: SystemStep[] }) {
       <SectionHeading
         eyebrow="How the institution works"
         title="One method, run as a system."
-        intro="The same structure for every student, in every home — assessment through to monthly parent reports, then round again."
+        intro="The same structure for every student, in every home - assessment through to monthly parent reports, then round again."
       />
 
       <div className="mt-14">
@@ -71,7 +71,7 @@ export function SystemFlow({ steps = SYSTEM_STEPS }: { steps?: SystemStep[] }) {
       </div>
 
       <p className="mt-12 text-center text-sm text-ink/70">
-        One method, run as a system — the same for every student, in every home.
+        One method, run as a system - the same for every student, in every home.
       </p>
     </Section>
   );

@@ -15,7 +15,7 @@ export function CurriculumTeaser() {
               A clear path from first note to graded exams.
             </h2>
             <p className="mt-4 text-base leading-relaxed text-ink/70">
-              Four structured levels — Foundation to Advanced — aligned to Trinity,
+              Four structured levels - Foundation to Advanced - aligned to Trinity,
               ABRSM, and Rockschool grades. See exactly what your child works on and
               when.
             </p>

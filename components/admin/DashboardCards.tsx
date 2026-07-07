@@ -47,7 +47,7 @@ export function DashboardCards() {
         ))}
       </div>
 
-      {/* Leads by source — CSS bar chart */}
+      {/* Leads by source - CSS bar chart */}
       <div className="rounded-2xl border border-hairline bg-white p-6 shadow-card">
         <div className="flex items-center justify-between">
           <h2 className="text-base font-semibold text-ink">Leads by source</h2>

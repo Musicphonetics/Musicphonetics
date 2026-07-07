@@ -19,11 +19,11 @@ export function ReferralRewards() {
             <svg width="26" height="26" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3v18M5 8l7-5 7 5M5 8a7 7 0 0 0 14 0" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" /></svg>
           </span>
           <p className="mt-5 font-display text-2xl font-semibold text-ink">
-            Refer a teacher who stays 3 months — earn {bonusText}.
+            Refer a teacher who stays 3 months - earn {bonusText}.
           </p>
           <p className="mx-auto mt-3 max-w-md text-sm leading-relaxed text-ink/65">
             One bonus for one teacher you personally bring in who sticks. That&apos;s the
-            whole scheme — deliberately flat, deliberately honest.
+            whole scheme - deliberately flat, deliberately honest.
           </p>
           <span className="mt-5 inline-block rounded-full bg-feature-green/10 px-3 py-1 text-xs font-semibold text-feature-green">
             Single-tier · one-time · no downlines

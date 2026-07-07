@@ -11,10 +11,10 @@ export function TrustAndStandards() {
       <SectionHeading
         eyebrow="Recognition & features"
         title="Seen on stage, on panels, and in the room."
-        intro="Beyond the classroom, our founder performs, judges, and is invited where music is taken seriously — the same standard your child learns under."
+        intro="Beyond the classroom, our founder performs, judges, and is invited where music is taken seriously - the same standard your child learns under."
       />
 
-      {/* Recognition — real photography */}
+      {/* Recognition - real photography */}
       <div className="mt-12 grid grid-cols-2 gap-4 sm:gap-5 lg:grid-cols-4">
         {RECOGNITION.map((img, i) => (
           <Reveal key={img.src} delay={(i % 4) * 70}>
@@ -51,7 +51,7 @@ export function TrustAndStandards() {
               </h3>
               <p className="mt-3 max-w-xl text-paper/70">
                 Covering teaching, child safety, progress, quality, parent
-                communication, teacher conduct, and student growth — written,
+                communication, teacher conduct, and student growth - written,
                 reviewed, and improved. Proof, not promises.
               </p>
             </div>

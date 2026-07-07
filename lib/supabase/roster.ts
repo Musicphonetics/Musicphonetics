@@ -5,7 +5,7 @@ import type { Student, StudentStat } from "./types";
 
 // Loads the signed-in teacher's roster with computed stats, reading the BASE
 // tables (students, class_updates, payments) rather than the student_stats
-// view — so it works regardless of how the view's grants / security_invoker
+// view - so it works regardless of how the view's grants / security_invoker
 // are configured. RLS still scopes everything to the teacher. Returns any
 // error string so the UI can show it instead of a blank "no students".
 export async function loadRoster(): Promise<{ rows: StudentStat[]; error: string | null }> {

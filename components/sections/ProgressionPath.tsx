@@ -1,6 +1,6 @@
 import { Reveal } from "@/components/ui/Reveal";
 
-// M3.2 — an elegant stepped progression. Labelled as typical (pace varies).
+// M3.2 - an elegant stepped progression. Labelled as typical (pace varies).
 const STEPS = ["Foundation", "Developing", "Intermediate", "Advanced", "Graded exams"];
 
 export function ProgressionPath() {
@@ -27,7 +27,7 @@ export function ProgressionPath() {
         ))}
       </ol>
       <p className="mt-6 text-xs text-ink/70">
-        A typical progression — individual pace varies by student.
+        A typical progression - individual pace varies by student.
       </p>
     </div>
   );

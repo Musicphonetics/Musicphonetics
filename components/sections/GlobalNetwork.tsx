@@ -85,7 +85,7 @@ export function GlobalNetwork() {
           {/* Legend */}
           <div className="mt-6 flex flex-wrap items-center justify-center gap-5 text-sm text-paper/65">
             <span className="flex items-center gap-2">
-              <span className="h-2.5 w-2.5 rounded-full bg-gold" /> Live — India &amp; online
+              <span className="h-2.5 w-2.5 rounded-full bg-gold" /> Live - India &amp; online
             </span>
             <span className="flex items-center gap-2">
               <span className="h-2.5 w-2.5 rounded-full bg-gold/40 ring-1 ring-gold/50" /> Planned expansion

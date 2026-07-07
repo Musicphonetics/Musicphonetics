@@ -146,7 +146,7 @@ export function OwnerDashboard() {
             <p className="mt-1 text-sm text-ink/55">Written reviews · video reviews coming soon.</p>
             <div className="mt-4 rounded-xl border border-hairline bg-paper p-4 text-sm italic text-ink/70">
               “{REVIEWS[0].quote}”
-              <span className="mt-1 block not-italic text-xs text-ink/45">— {REVIEWS[0].name}</span>
+              <span className="mt-1 block not-italic text-xs text-ink/45">- {REVIEWS[0].name}</span>
             </div>
           </div>
         </div>

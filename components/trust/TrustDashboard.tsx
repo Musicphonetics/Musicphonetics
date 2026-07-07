@@ -7,7 +7,7 @@ export function TrustDashboard() {
     <TrustSubsection
       eyebrow="Section 07 · Trust Dashboard"
       title="Operating in the open."
-      intro="A live operating snapshot — the kind of transparency families, schools, and partners deserve."
+      intro="A live operating snapshot - the kind of transparency families, schools, and partners deserve."
     >
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {DASHBOARD.map((d, i) => (

@@ -47,7 +47,7 @@ export function EarningsCalculator() {
   const shownMonthly = useTweened(m);
   const shownYearly = useTweened(y);
 
-  // Chart data — income by roster size at the chosen fee, current pick highlighted.
+  // Chart data - income by roster size at the chosen fee, current pick highlighted.
   const chartData = CHART_STUDENT_STEPS.map((n) => ({
     name: `${n}`,
     income: Math.round(monthly(n, fee, bonus)),
@@ -59,7 +59,7 @@ export function EarningsCalculator() {
       <SectionHeading
         eyebrow="What you'll earn"
         title="You keep 70%. Here's what that becomes."
-        intro="An honest projection tool — no hidden inflation, no guarantees. Move the sliders to explore. Actual earnings depend on your students and their fees."
+        intro="An honest projection tool - no hidden inflation, no guarantees. Move the sliders to explore. Actual earnings depend on your students and their fees."
       />
 
       <div className="mt-10 grid gap-6 rounded-3xl border border-hairline bg-paper p-6 shadow-card sm:p-8 lg:grid-cols-2 lg:gap-10">
@@ -91,13 +91,13 @@ export function EarningsCalculator() {
               aria-label="Average monthly fee per student"
             />
             <span className="mt-1 flex justify-between text-xs text-ink/70"><span>{formatINR(FEE_MIN)}</span><span>{formatINR(FEE_MAX)}</span></span>
-            <span className="mt-1.5 block text-[11px] leading-tight text-ink/70">Representative — actual fees vary by student and arrangement.</span>
+            <span className="mt-1.5 block text-[11px] leading-tight text-ink/70">Representative - actual fees vary by student and arrangement.</span>
           </label>
 
           <label className="mt-7 flex items-center justify-between gap-4 rounded-xl border border-hairline bg-white px-4 py-3">
             <span>
               <span className="block text-sm font-semibold text-ink">Include an estimated monthly bonus</span>
-              <span className="block text-[11px] text-ink/70">Illustrative {formatINR(AVG_BONUS)} — off by default so the base case is pure teaching income.</span>
+              <span className="block text-[11px] text-ink/70">Illustrative {formatINR(AVG_BONUS)} - off by default so the base case is pure teaching income.</span>
             </span>
             <button
               type="button" role="switch" aria-checked={bonus} aria-label="Include estimated monthly bonus"
@@ -116,7 +116,7 @@ export function EarningsCalculator() {
           <p className="mt-2 text-sm text-ink/70">Estimated annual · <span className="font-semibold text-ink/80">{formatINR(shownYearly)}</span></p>
           <div className="mt-5 rounded-xl bg-paper p-4">
             <p className="text-sm leading-relaxed text-ink/70">
-              You keep <span className="font-semibold text-ink">70% of every fee</span>. Musicphonetics keeps 30% and runs everything else — students, payments, scheduling, brand.
+              You keep <span className="font-semibold text-ink">70% of every fee</span>. Musicphonetics keeps 30% and runs everything else - students, payments, scheduling, brand.
             </p>
           </div>
           <p className="mt-4 font-mono text-[11px] leading-relaxed text-ink/65">
@@ -125,10 +125,10 @@ export function EarningsCalculator() {
         </div>
       </div>
 
-      {/* Chart — income by roster size (the honest compounding story) */}
+      {/* Chart - income by roster size (the honest compounding story) */}
       <div className="mt-6 rounded-3xl border border-hairline bg-paper p-6 shadow-card sm:p-8">
         <p className="text-sm font-semibold text-ink">Your monthly income by student count</p>
-        <p className="mt-1 text-xs text-ink/70">At {formatINR(fee)}/student. Your current pick is highlighted. More students is the real lever — bars roughly double as your roster grows.</p>
+        <p className="mt-1 text-xs text-ink/70">At {formatINR(fee)}/student. Your current pick is highlighted. More students is the real lever - bars roughly double as your roster grows.</p>
         <div className="mt-6 h-64 w-full">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={chartData} margin={{ top: 8, right: 8, left: 8, bottom: 8 }}>
@@ -149,7 +149,7 @@ export function EarningsCalculator() {
           </ResponsiveContainer>
         </div>
         <p className="mt-4 text-[11px] leading-relaxed text-ink/65">
-          All figures are illustrative estimates based on the fixed 70% split. They are not guaranteed income. The only levers shown are more students, higher fees, tenure, and bonuses — there is no multi-level or recruit-from-recruits math anywhere on this page.
+          All figures are illustrative estimates based on the fixed 70% split. They are not guaranteed income. The only levers shown are more students, higher fees, tenure, and bonuses - there is no multi-level or recruit-from-recruits math anywhere on this page.
         </p>
       </div>
     </Section>

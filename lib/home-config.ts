@@ -1,5 +1,5 @@
 // ============================================================================
-// Musicphonetics homepage funnel — edit content here without touching components.
+// Musicphonetics homepage funnel - edit content here without touching components.
 // ============================================================================
 
 // WhatsApp (shared with the rest of the site via lib/data). Edit the number
@@ -29,7 +29,7 @@ export interface HomePackage {
   secondaryBadge?: string;
   tagline: string;
   bullets: string[];
-  forWho: string[];          // "View details" — who it's for
+  forWho: string[];          // "View details" - who it's for
   notForWho: string[];       // who it's NOT for
   note?: string;
   ctaLabel: string;
@@ -45,7 +45,7 @@ export const HOME_PACKAGES: HomePackage[] = [
     price: "₹8,000",
     payAmount: 8000,
     cadence: "8 classes / month · 1 hour each",
-    tagline: "Beginner-only pathway — a clean, correct start.",
+    tagline: "Beginner-only pathway - a clean, correct start.",
     bullets: [
       "Best for absolute beginners",
       "Foundation learning only",
@@ -53,7 +53,7 @@ export const HOME_PACKAGES: HomePackage[] = [
       "No advanced progress track",
     ],
     forWho: [
-      "Absolute beginners — children or adults",
+      "Absolute beginners - children or adults",
       "Anyone wanting a calm, correct first start",
       "Casual learners exploring an instrument",
       "Parents testing if their child enjoys music",
@@ -74,7 +74,7 @@ export const HOME_PACKAGES: HomePackage[] = [
     cadence: "8 classes / month · 1 hour each",
     badge: "Most Recommended",
     secondaryBadge: "Main Pathway",
-    tagline: "The full system — for real, lasting progress.",
+    tagline: "The full system - for real, lasting progress.",
     bullets: [
       "Serious progress with a strong foundation",
       "Stage confidence, theory, ear training & improvisation",
@@ -126,7 +126,7 @@ export const HOME_PACKAGES: HomePackage[] = [
   },
 ];
 
-// Hero slideshow — real student & performance photos, text overlaid.
+// Hero slideshow - real student & performance photos, text overlaid.
 export const HERO_SLIDES: string[] = [
   "/images/hero/slide-1.webp",
   "/images/hero/slide-2.webp",

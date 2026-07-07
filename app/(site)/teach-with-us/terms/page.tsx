@@ -6,7 +6,7 @@ import { BREACH_DAMAGES } from "@/lib/teach-config";
 import { formatINR } from "@/lib/utils";
 
 export const metadata: Metadata = {
-  title: "Faculty Terms & Conditions — Teach With Musicphonetics",
+  title: "Faculty Terms & Conditions - Teach With Musicphonetics",
   description:
     "The engagement terms for Musicphonetics faculty: 70/30 payout, daily reporting, confidentiality, a 6-month non-solicitation on exit, and safeguarding.",
   robots: { index: false, follow: true },
@@ -28,7 +28,7 @@ const CLAUSES: { n: number; title: string; body: React.ReactNode }[] = [
     n: 2,
     title: "Daily reporting",
     body: (
-      <>The teacher must update the class sheet daily — attendance, content taught, homework and the next class.
+      <>The teacher must update the class sheet daily - attendance, content taught, homework and the next class.
       Non-compliance may pause payouts and, if persistent, end the engagement.</>
     ),
   },
@@ -107,7 +107,7 @@ export default function TeachTermsPage() {
             <p><span className="font-semibold text-ink">Note:</span> this is a plain-language summary provided for
             transparency. It is not legal advice. The signed agreement, reviewed by a qualified Indian lawyer, governs
             the engagement. The non-solicitation approach here focuses on Musicphonetics&apos; own students, parents
-            and materials — consistent with Section 27 of the Indian Contract Act, under which blanket bans on
+            and materials - consistent with Section 27 of the Indian Contract Act, under which blanket bans on
             practising one&apos;s profession after leaving are generally void.</p>
           </div>
 

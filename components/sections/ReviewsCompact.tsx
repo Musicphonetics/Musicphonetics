@@ -16,7 +16,7 @@ export function ReviewsCompact() {
         <div className="max-w-2xl">
           <p className="eyebrow">Trusted families</p>
           <h2 className="mt-3 font-display text-3xl font-semibold leading-tight text-ink sm:text-4xl">
-            Trusted across Delhi NCR — by defence officers and discerning families.
+            Trusted across Delhi NCR - by defence officers and discerning families.
           </h2>
         </div>
       </Reveal>

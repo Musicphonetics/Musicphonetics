@@ -1,5 +1,5 @@
 // ============================================================================
-// Musicphonetics — Conversational onboarding (lead funnel) configuration
+// Musicphonetics - Conversational onboarding (lead funnel) configuration
 // ============================================================================
 
 import type { InstrumentKey } from "@/components/ui/InstrumentIcon";
@@ -35,9 +35,9 @@ export const WHO: Option[] = [
 ];
 
 export const AGES: Option[] = [
-  { value: "4–7", label: "4–7" },
-  { value: "8–12", label: "8–12" },
-  { value: "13–17", label: "13–17" },
+  { value: "4-7", label: "4-7" },
+  { value: "8-12", label: "8-12" },
+  { value: "13-17", label: "13-17" },
   { value: "18+", label: "18+" },
 ];
 

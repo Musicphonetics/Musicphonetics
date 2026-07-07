@@ -21,12 +21,12 @@ export default function OwnerPayments() {
     if (!isSupabaseConfigured()) return;
     loadOwnerData().then((d) => {
       setErr(d.error);
-      const tName = new Map(d.teachers.map((t) => [t.id, t.full_name || "—"]));
+      const tName = new Map(d.teachers.map((t) => [t.id, t.full_name || "-"]));
       const sName = new Map(d.students.map((s) => [s.id, s.name]));
       setRows(d.payments.map((p) => ({
-        date: p.payment_date, student: sName.get(p.student_id) ?? "—", teacher: tName.get(p.teacher_id) ?? "—",
+        date: p.payment_date, student: sName.get(p.student_id) ?? "-", teacher: tName.get(p.teacher_id) ?? "-",
         amount: p.amount_paid, teacher70: p.teacher_share, company30: p.company_share,
-        status: p.payment_status, bill: p.cashfree_bill_no ?? "—",
+        status: p.payment_status, bill: p.cashfree_bill_no ?? "-",
       })));
     });
   }, []);

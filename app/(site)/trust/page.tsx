@@ -10,7 +10,7 @@ import { FinalCTA } from "@/components/sections/FinalCTA";
 export const metadata: Metadata = {
   title: "Trust Centre",
   description:
-    "The Musicphonetics Trust Centre — credentials, operations, standards, documentation, public recognition, company timeline, and a live trust dashboard. Built on systems, not promises.",
+    "The Musicphonetics Trust Centre - credentials, operations, standards, documentation, public recognition, company timeline, and a live trust dashboard. Built on systems, not promises.",
 };
 
 export default function TrustPage() {
@@ -29,7 +29,7 @@ export default function TrustPage() {
             </h1>
             <p className="mt-6 max-w-2xl text-lg leading-relaxed text-paper/70">
               Every class is backed by systems, documentation and accountability.
-              Great education isn&apos;t built on promises — it is built on
+              Great education isn&apos;t built on promises - it is built on
               standards.
             </p>
           </Reveal>

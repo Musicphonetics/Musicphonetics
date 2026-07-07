@@ -25,7 +25,7 @@ export function HowPayouts() {
             </div>
           </div>
           <p className="mt-4 text-sm leading-relaxed text-ink/65">
-            Fees vary by student and arrangement — the split does not. No hidden cuts, ever.
+            Fees vary by student and arrangement - the split does not. No hidden cuts, ever.
           </p>
         </div>
 

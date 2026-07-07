@@ -1,7 +1,7 @@
 "use client";
 
 // ============================================================================
-// Musicphonetics — Owner Portal Auth (v1)
+// Musicphonetics - Owner Portal Auth (v1)
 // Client-side password gate. Structured so the secret can move to an
 // environment variable / backend auth without changing call sites.
 //

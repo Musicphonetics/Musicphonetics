@@ -43,11 +43,11 @@ export function SoloVsFaculty() {
       <SectionHeading
         eyebrow="Solo vs Musicphonetics"
         title="The edge isn't a higher rate. It's a full, steady roster."
-        intro="Your per-class rate going solo can match ours. What changes is the volume and the stability — and who carries the admin."
+        intro="Your per-class rate going solo can match ours. What changes is the volume and the stability - and who carries the admin."
       />
 
       <div className="mt-10 grid gap-6 lg:grid-cols-[1.2fr_0.8fr]">
-        {/* Steady monthly income — hero comparison */}
+        {/* Steady monthly income - hero comparison */}
         <div className="rounded-3xl border border-hairline bg-paper p-5 shadow-card sm:p-7">
           <p className="text-sm font-semibold text-ink">Steady monthly income</p>
           <div className="mt-2 h-64 w-full">
@@ -74,7 +74,7 @@ export function SoloVsFaculty() {
         Solo per-class rates from Delhi market rates, 2026; solo income reflects
         typical roster instability and unpaid admin time. Faculty figures
         projected at a full roster. Going solo, your per-class rate can match
-        ours — but you carry the empty weeks, the no-shows, and the admin. We
+        ours - but you carry the empty weeks, the no-shows, and the admin. We
         trade volatility for a full, steady roster.
       </p>
     </Section>

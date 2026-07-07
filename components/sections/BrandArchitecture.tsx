@@ -25,7 +25,7 @@ export function BrandArchitecture() {
       <SectionHeading
         eyebrow="Built as an ecosystem"
         title="Eight divisions. One mission."
-        intro="Education stays at the heart — and the company is built to grow into a connected ecosystem. Live divisions are marked; the rest are our long-term vision."
+        intro="Education stays at the heart - and the company is built to grow into a connected ecosystem. Live divisions are marked; the rest are our long-term vision."
       />
       <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
         {DIVISIONS.map((d, i) => (

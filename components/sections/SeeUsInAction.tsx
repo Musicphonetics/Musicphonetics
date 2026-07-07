@@ -7,7 +7,7 @@ import { PERFORMANCES } from "@/lib/media";
 import { cn } from "@/lib/utils";
 
 /**
- * Lightweight YouTube facade — shows the thumbnail until the visitor taps play,
+ * Lightweight YouTube facade - shows the thumbnail until the visitor taps play,
  * then mounts the iframe. Avoids loading six players on page load.
  */
 function ShortCard({ id, title }: { id: string; title: string }) {
@@ -33,7 +33,7 @@ function ShortCard({ id, title }: { id: string; title: string }) {
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={`https://i.ytimg.com/vi/${id}/hqdefault.jpg`}
-            alt={`${title} — tap to play`}
+            alt={`${title} - tap to play`}
             loading="lazy"
             onError={(e) => {
               e.currentTarget.style.display = "none";

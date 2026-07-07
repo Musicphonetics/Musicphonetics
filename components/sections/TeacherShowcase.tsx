@@ -14,7 +14,7 @@ export function TeacherShowcase() {
       <SectionHeading
         eyebrow="Teachers"
         title="Who will teach you?"
-        intro="Not a marketplace of strangers — a verified network of teachers, matched to your instrument, level, and goal."
+        intro="Not a marketplace of strangers - a verified network of teachers, matched to your instrument, level, and goal."
       />
       <div className="mt-12 grid gap-6 sm:grid-cols-3">
         {FEATURED.map((t, i) => (

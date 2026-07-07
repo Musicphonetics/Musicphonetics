@@ -21,7 +21,7 @@ export default function MethodPage() {
       <PageHero
         eyebrow="The Musicphonetics Method"
         title="A pathway, not a playlist of songs."
-        intro="A structured, faculty-led approach that takes a learner from first sound to confident musician — at a pace that respects them."
+        intro="A structured, faculty-led approach that takes a learner from first sound to confident musician - at a pace that respects them."
       >
         <Button href="/#plans" variant="primary" size="lg">
           See learning paths
@@ -125,7 +125,7 @@ export default function MethodPage() {
           </Reveal>
         </div>
         <div className="mt-8">
-          <Badge tone="sample">Placeholders — replace before launch</Badge>
+          <Badge tone="sample">Placeholders - replace before launch</Badge>
         </div>
       </Section>
 

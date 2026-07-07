@@ -39,7 +39,7 @@ export function MobileHero() {
         <p className="mt-1 text-base font-semibold text-gold">Premium One-to-One Music Classes</p>
         <p className="mt-2 text-sm text-paper/80">Guitar · Piano · Keyboard · Vocals · Ukulele</p>
         <p className="mt-2 text-sm leading-relaxed text-paper/65">
-          Home classes across Delhi NCR and live online classes — with trained
+          Home classes across Delhi NCR and live online classes - with trained
           teachers, structured progress, and parent updates.
         </p>
       </div>

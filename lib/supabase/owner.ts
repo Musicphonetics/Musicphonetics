@@ -12,7 +12,7 @@ export interface OwnerData {
   error: string | null;
 }
 
-// Owner RLS returns every row, so we aggregate on the client — robust and free
+// Owner RLS returns every row, so we aggregate on the client - robust and free
 // of view/grant dependencies. Fine for early scale; can move to get_owner_stats
 // RPC + server pagination later.
 export async function loadOwnerData(): Promise<OwnerData> {

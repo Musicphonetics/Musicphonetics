@@ -43,7 +43,7 @@ export default function MyStudents() {
                   className="flex w-full items-center justify-between gap-3 p-4 text-left">
                   <div className="min-w-0">
                     <p className="truncate font-semibold text-ink">{s.name}</p>
-                    <p className="mt-0.5 text-xs text-ink/60">{s.instrument || "—"} · {s.level || "—"}</p>
+                    <p className="mt-0.5 text-xs text-ink/60">{s.instrument || "-"} · {s.level || "-"}</p>
                   </div>
                   <div className="text-right">
                     <span className={cn("inline-block rounded-full px-2 py-0.5 text-[11px] font-semibold",
@@ -83,7 +83,7 @@ function StudentDetail({ stat }: { stat: StudentStat }) {
         <Mini label="Paid" value={formatMoney(stat.total_paid)} />
       </div>
       {stat.classes_remaining <= 2 && stat.status === "active" && (
-        <p className="mt-3 rounded-lg bg-gold/15 px-3 py-2 text-xs font-semibold text-[#7A5E0F]">Renewal due — {stat.classes_remaining} classes left.</p>
+        <p className="mt-3 rounded-lg bg-gold/15 px-3 py-2 text-xs font-semibold text-[#7A5E0F]">Renewal due - {stat.classes_remaining} classes left.</p>
       )}
 
       <p className="mt-4 text-xs font-semibold uppercase tracking-wide text-ink/60">Recent classes</p>

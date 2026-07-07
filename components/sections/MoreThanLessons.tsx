@@ -7,7 +7,7 @@ interface Exp {
   art: React.ReactNode;
 }
 
-// Generated, branded background artwork (consistent luxury style — no stock).
+// Generated, branded background artwork (consistent luxury style - no stock).
 function Art({ children, from, to }: { children: React.ReactNode; from: string; to: string }) {
   return (
     <div className="absolute inset-0" style={{ background: `linear-gradient(150deg, ${from}, ${to})` }}>
@@ -25,7 +25,7 @@ const Gf = "rgba(201,162,39,0.18)";
 const EXPERIENCES: Exp[] = [
   {
     title: "Monthly Home Concerts",
-    body: "Students perform for family in their own home — proud parents, warm cinematic moments, real confidence built monthly.",
+    body: "Students perform for family in their own home - proud parents, warm cinematic moments, real confidence built monthly.",
     art: (
       <Art from="#1a1208" to="#0B0F18">
         <ellipse cx="200" cy="150" rx="160" ry="120" fill={Gf} />
@@ -37,7 +37,7 @@ const EXPERIENCES: Exp[] = [
   },
   {
     title: "Quarterly Stage Performances",
-    body: "Professional auditoriums, stage lighting, and a real audience — performance experience that exam halls can't give.",
+    body: "Professional auditoriums, stage lighting, and a real audience - performance experience that exam halls can't give.",
     art: (
       <Art from="#0d1f17" to="#0B0F18">
         <path d="M200 40 L120 220 H280 Z" fill={Gf} />
@@ -48,7 +48,7 @@ const EXPERIENCES: Exp[] = [
   },
   {
     title: "Student Collaborations",
-    body: "Playing alongside peers builds discipline, listening, and a sense of belonging — music as a shared creative effort.",
+    body: "Playing alongside peers builds discipline, listening, and a sense of belonging - music as a shared creative effort.",
     art: (
       <Art from="#101522" to="#0B0F18">
         <circle cx="140" cy="160" r="6" fill={G} />
@@ -61,7 +61,7 @@ const EXPERIENCES: Exp[] = [
   },
   {
     title: "Annual Musicphonetics Awards",
-    body: "A luxury celebration of a year's growth — certificates, guest artists, and families together. Recognition children remember.",
+    body: "A luxury celebration of a year's growth - certificates, guest artists, and families together. Recognition children remember.",
     art: (
       <Art from="#15110a" to="#0B0F18">
         <path d="M200 90 l18 40 44 5 -32 30 9 44 -39 -22 -39 22 9 -44 -32 -30 44 -5 z" fill={Gf} stroke={G} strokeWidth="1.2" strokeLinejoin="round" />
@@ -70,7 +70,7 @@ const EXPERIENCES: Exp[] = [
   },
   {
     title: "Director Sessions",
-    body: "Direct mentoring from the Director — motivation, Q&A, and workshops that keep students inspired beyond the weekly class.",
+    body: "Direct mentoring from the Director - motivation, Q&A, and workshops that keep students inspired beyond the weekly class.",
     art: (
       <Art from="#1a1208" to="#0B0F18">
         <circle cx="200" cy="150" r="34" fill="none" stroke={G} strokeWidth="1.4" />

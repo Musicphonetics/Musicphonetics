@@ -23,7 +23,7 @@ export function TeachStickyBar() {
 
   return (
     <>
-      {/* Desktop — slim sticky top bar */}
+      {/* Desktop - slim sticky top bar */}
       <div
         className={cn(
           "fixed inset-x-0 top-0 z-40 hidden border-b border-white/10 bg-ink/95 backdrop-blur-md transition-transform duration-300 lg:block",
@@ -45,7 +45,7 @@ export function TeachStickyBar() {
         </div>
       </div>
 
-      {/* Mobile — fixed bottom CTA bar */}
+      {/* Mobile - fixed bottom CTA bar */}
       <div
         className={cn(
           "fixed inset-x-0 bottom-0 z-40 border-t border-white/10 bg-ink/95 p-3 backdrop-blur-md transition-transform duration-300 lg:hidden",

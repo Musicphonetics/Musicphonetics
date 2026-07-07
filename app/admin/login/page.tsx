@@ -60,7 +60,7 @@ export default function AdminLoginPage() {
             </div>
           </form>
 
-          {/* Demo helper — remove before launch */}
+          {/* Demo helper - remove before launch */}
           <p className="mt-5 rounded-lg bg-mist px-3 py-2 text-xs text-ink/55">
             Demo password: <code className="font-semibold">{DEMO_ADMIN_PASSWORD}</code>
           </p>

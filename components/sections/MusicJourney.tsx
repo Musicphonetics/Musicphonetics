@@ -4,7 +4,7 @@ import { Reveal } from "@/components/ui/Reveal";
 const STEPS = [
   { title: "Student enters", note: "A short guided conversation to understand you." },
   { title: "First lesson", note: "Comfort, posture, and a real instrument in hand." },
-  { title: "Rhythm", note: "Timing and groove — the heartbeat of music." },
+  { title: "Rhythm", note: "Timing and groove - the heartbeat of music." },
   { title: "Technique", note: "Clean, confident control of the instrument." },
   { title: "Songs", note: "Complete pieces, start to finish." },
   { title: "Musical confidence", note: "Playing freely, expressively, without fear." },
@@ -18,7 +18,7 @@ export function MusicJourney() {
       <SectionHeading
         eyebrow="The learning journey"
         title="From first lesson to lifelong musician."
-        intro="Every student follows the same intentional arc — each stage building naturally on the last."
+        intro="Every student follows the same intentional arc - each stage building naturally on the last."
       />
       <div className="mt-12">
         <ol className="flex gap-4 overflow-x-auto pb-4 [scrollbar-width:thin] snap-x snap-mandatory">

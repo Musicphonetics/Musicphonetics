@@ -60,7 +60,7 @@ export function OwnerTable<T extends Record<string, unknown>>({
               <tr key={i} className="border-b border-hairline/60 last:border-0">
                 {cols.map((c) => (
                   <td key={c.key} className="px-4 py-3 text-ink/80">
-                    {c.render ? c.render(r) : String((r as Record<string, unknown>)[c.key] ?? "—")}
+                    {c.render ? c.render(r) : String((r as Record<string, unknown>)[c.key] ?? "-")}
                   </td>
                 ))}
               </tr>

@@ -1,6 +1,6 @@
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 
-// Browser Supabase client (anon key). RLS enforces per-teacher access — the
+// Browser Supabase client (anon key). RLS enforces per-teacher access - the
 // anon key is safe to ship. Created lazily so `next build` (static export)
 // never crashes when env vars are absent at build time.
 let _client: SupabaseClient | null = null;
@@ -24,7 +24,7 @@ export function isSupabaseConfigured(): boolean {
   return Boolean(rawUrl() && rawKey());
 }
 
-// Returns { client, error } and never throws — callers can show a friendly
+// Returns { client, error } and never throws - callers can show a friendly
 // message instead of a white-screen "check console" crash.
 export function getSupabaseSafe(): { client: SupabaseClient | null; error: string | null } {
   if (_client) return { client: _client, error: null };

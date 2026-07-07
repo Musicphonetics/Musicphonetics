@@ -21,11 +21,11 @@ export default function OwnerStudents() {
     if (!isSupabaseConfigured()) return;
     loadOwnerData().then((d) => {
       setErr(d.error);
-      const tName = new Map(d.teachers.map((t) => [t.id, t.full_name || "—"]));
+      const tName = new Map(d.teachers.map((t) => [t.id, t.full_name || "-"]));
       setRows(d.students.map((s) => ({
-        name: s.name, teacher: tName.get(s.teacher_id) ?? "—",
-        instrument: s.instrument ?? "—", level: s.level ?? "—", status: s.status,
-        fee: s.fee_quoted, days: s.class_day ?? "—", parent: s.parent_name ?? "—", phone: s.parent_phone ?? "—",
+        name: s.name, teacher: tName.get(s.teacher_id) ?? "-",
+        instrument: s.instrument ?? "-", level: s.level ?? "-", status: s.status,
+        fee: s.fee_quoted, days: s.class_day ?? "-", parent: s.parent_name ?? "-", phone: s.parent_phone ?? "-",
       })));
     });
   }, []);
@@ -36,7 +36,7 @@ export default function OwnerStudents() {
     { key: "instrument", label: "Instrument" },
     { key: "level", label: "Level" },
     { key: "status", label: "Status" },
-    { key: "fee", label: "Fee", render: (r) => (r.fee ? formatMoney(r.fee) : "—"), csv: (r) => r.fee ?? "" },
+    { key: "fee", label: "Fee", render: (r) => (r.fee ? formatMoney(r.fee) : "-"), csv: (r) => r.fee ?? "" },
     { key: "days", label: "Days" },
     { key: "parent", label: "Parent" },
     { key: "phone", label: "Phone" },

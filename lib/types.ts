@@ -1,5 +1,5 @@
 // ============================================================================
-// Musicphonetics — Shared TypeScript Types
+// Musicphonetics - Shared TypeScript Types
 // CRM data model + content model. Used by mock data today, integration-ready
 // for Google Sheets / Apps Script / Supabase later.
 // ============================================================================
@@ -180,7 +180,7 @@ export interface Review {
   onFees?: boolean;
   /** A serving / retired defence officer family (Delhi Cantonment). */
   defence?: boolean;
-  /** Student age — only present for `role: "Student"` (all minors). */
+  /** Student age - only present for `role: "Student"` (all minors). */
   age?: number;
 }
 

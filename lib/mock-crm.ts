@@ -1,5 +1,5 @@
 // ============================================================================
-// Musicphonetics — Mock CRM Data
+// Musicphonetics - Mock CRM Data
 // Local mock data for the admin portal. Integration-ready: swap these exports
 // for a data layer backed by Google Sheets / Apps Script / Supabase later.
 //
@@ -210,7 +210,7 @@ export const MOCK_STUDENTS: Student[] = [
   {
     id: "S-2002",
     name: "Rohit Bansal",
-    parentName: "—",
+    parentName: "-",
     phone: "+91 98xxxxxx99",
     teacher: "Placeholder · Teacher One",
     instrument: "Guitar",
@@ -537,7 +537,7 @@ export function getOverviewMetrics() {
     sourceCounts.set(p.leadSource, (sourceCounts.get(p.leadSource) ?? 0) + 1)
   );
   const topLeadSource =
-    [...sourceCounts.entries()].sort((a, b) => b[1] - a[1])[0]?.[0] ?? "—";
+    [...sourceCounts.entries()].sort((a, b) => b[1] - a[1])[0]?.[0] ?? "-";
 
   // Most requested instrument
   const instrumentCounts = new Map<string, number>();
@@ -548,7 +548,7 @@ export function getOverviewMetrics() {
     )
   );
   const mostRequestedInstrument =
-    [...instrumentCounts.entries()].sort((a, b) => b[1] - a[1])[0]?.[0] ?? "—";
+    [...instrumentCounts.entries()].sort((a, b) => b[1] - a[1])[0]?.[0] ?? "-";
 
   return {
     newEnquiriesToday,

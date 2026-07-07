@@ -10,7 +10,7 @@ export function GlobalVision() {
       <SectionHeading
         eyebrow="Global vision"
         title="Founded in India. Designed for global growth."
-        intro="The platform is built to scale — from Delhi NCR, to online learners anywhere, toward regional leadership and, in time, international growth."
+        intro="The platform is built to scale - from Delhi NCR, to online learners anywhere, toward regional leadership and, in time, international growth."
         invert
       />
 
@@ -65,7 +65,7 @@ export function GlobalVision() {
       </Reveal>
 
       <p className="mt-6 text-sm text-paper/55">
-        Roadmap regions represent long-term vision — not current international
+        Roadmap regions represent long-term vision - not current international
         operations.
       </p>
     </Section>

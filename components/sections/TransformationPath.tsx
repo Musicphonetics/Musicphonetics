@@ -17,7 +17,7 @@ export function TransformationPath() {
       <SectionHeading
         eyebrow="The Musicphonetics way"
         title="You don't see lessons. You see a child changing."
-        intro="This is what structured learning actually looks like, month by month — a pathway, not a school chart."
+        intro="This is what structured learning actually looks like, month by month - a pathway, not a school chart."
         invert
       />
 

@@ -3,7 +3,7 @@ import { WhatsAppCTA } from "./WhatsAppCTA";
 import { WA_MSG } from "@/lib/home-config";
 
 const POINTS = [
-  { t: "A student profile before starting", d: "We learn the student first — level, goal and learning style." },
+  { t: "A student profile before starting", d: "We learn the student first - level, goal and learning style." },
   { t: "A teacher assigned on fit", d: "Matched to the student, not whoever is free." },
   { t: "Class updates after sessions", d: "What was taught, homework, and what's next." },
   { t: "Progress tracking", d: "A clear view of how the student is growing." },
@@ -29,7 +29,7 @@ export function AfterYouJoin() {
             A more organised way to learn music.
           </h2>
           <p className="mt-4 max-w-xl text-base leading-relaxed text-paper/75">
-            Every assigned teacher follows a structured Musicphonetics process — so learning stays consistent, tracked and clear.
+            Every assigned teacher follows a structured Musicphonetics process - so learning stays consistent, tracked and clear.
           </p>
         </Reveal>
 

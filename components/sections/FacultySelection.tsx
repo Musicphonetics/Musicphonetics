@@ -12,7 +12,7 @@ const STAGES: Stage[] = [
   { n: "01", title: "Application", body: "Proficiency, experience, and fit are reviewed before anything else." },
   { n: "02", title: "Interview", body: "A direct conversation on communication, professionalism, and values." },
   { n: "03", title: "Skill assessment", body: "The teacher demonstrates genuine command of their instrument." },
-  { n: "04", title: "Teaching evaluation", body: "A live demo lesson. Playing well and teaching well are not the same thing — we hire for the second." },
+  { n: "04", title: "Teaching evaluation", body: "A live demo lesson. Playing well and teaching well are not the same thing - we hire for the second." },
   { n: "05", title: "Background & document verification", body: "Identity, qualifications, and credentials confirmed against originals." },
   { n: "06", title: "Reference checks", body: "Real accounts of reliability and conduct from people who have worked with them." },
   { n: "07", title: "Founder approval", body: "No teacher reaches a student without a final personal sign-off." },
@@ -21,9 +21,9 @@ const STAGES: Stage[] = [
 export function FacultySelection({
   eyebrow = "Faculty",
   title = "Every teacher is chosen, not listed.",
-  intro = "We don't run a marketplace of strangers. Every Musicphonetics teacher passes a seven-stage selection before they teach a single student — because each one carries our name into your home and onto our stage.",
+  intro = "We don't run a marketplace of strangers. Every Musicphonetics teacher passes a seven-stage selection before they teach a single student - because each one carries our name into your home and onto our stage.",
   stages = STAGES,
-  closing = "Faculty teach across Delhi NCR — at home, online, and at our centre.",
+  closing = "Faculty teach across Delhi NCR - at home, online, and at our centre.",
   ctaHref = "/standards",
   ctaLabel = "See our teaching standards",
 }: {

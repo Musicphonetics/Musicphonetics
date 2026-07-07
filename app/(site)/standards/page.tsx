@@ -9,7 +9,7 @@ import { PUBLIC_STANDARDS } from "@/lib/standards-public";
 export const metadata: Metadata = {
   title: "The Standards Library",
   description:
-    "The Musicphonetics Standards Library — twenty-three institutional standards covering teaching, child safety, progress, quality, parent communication, teacher conduct, and student growth.",
+    "The Musicphonetics Standards Library - twenty-three institutional standards covering teaching, child safety, progress, quality, parent communication, teacher conduct, and student growth.",
 };
 
 export default function StandardsPage() {
@@ -25,7 +25,7 @@ export default function StandardsPage() {
               The Standards Library
             </h1>
             <p className="mt-6 max-w-2xl text-lg leading-relaxed text-paper/70">
-              Every lesson. Every policy. Every process — written, reviewed, and
+              Every lesson. Every policy. Every process - written, reviewed, and
               improved. The standards behind a serious music education
               institution.
             </p>

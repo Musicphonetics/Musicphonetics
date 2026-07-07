@@ -1,5 +1,5 @@
 // ============================================================================
-// Musicphonetics — Structured data (JSON-LD) for SEO + AI understanding
+// Musicphonetics - Structured data (JSON-LD) for SEO + AI understanding
 // Helps search engines and AI systems understand Musicphonetics as a music
 // education company / learning platform / ecosystem.
 //
@@ -13,9 +13,9 @@ import { FOUNDER, FOUNDER_HIGHLIGHTS } from "./founder";
 import { INSTRUMENTS } from "./onboarding";
 import type { TeacherProfile, Region } from "./teachers";
 
-// Canonical brand domain (used for canonical/sitemap — unchanged for now).
+// Canonical brand domain (used for canonical/sitemap - unchanged for now).
 export const SITE_URL = "https://musicphonetics.com";
-// Origin that actually serves the live build today — used so OG/share images
+// Origin that actually serves the live build today - used so OG/share images
 // and structured-data images resolve on the current testing domain.
 export const OG_ORIGIN = "https://musicphonetics.pages.dev";
 
@@ -35,7 +35,7 @@ export function organizationJsonLd() {
     logo: `${OG_ORIGIN}/logo-wordmark-dark.webp`,
     slogan: "Music should never feel random.",
     description:
-      "Structured, faculty-led music education across Delhi NCR — home, online, and at our South Delhi centre.",
+      "Structured, faculty-led music education across Delhi NCR - home, online, and at our South Delhi centre.",
     telephone: PHONE_DISPLAY,
     foundingLocation: { "@type": "Place", name: "India" },
     areaServed: [
@@ -102,7 +102,7 @@ export function instrumentCoursesJsonLd() {
       item: {
         "@type": "Course",
         name: `${inst.label} lessons`,
-        description: `Structured, faculty-led ${inst.label} lessons — home and online — across Delhi NCR, with exam preparation where wanted.`,
+        description: `Structured, faculty-led ${inst.label} lessons - home and online - across Delhi NCR, with exam preparation where wanted.`,
         provider: { "@id": ORG_ID },
       },
     })),
@@ -196,7 +196,7 @@ export function teacherJsonLd(t: TeacherProfile) {
   };
 }
 
-/** A region as a CollectionPage of teachers — optimised for local search. */
+/** A region as a CollectionPage of teachers - optimised for local search. */
 export function regionJsonLd(region: Region, teachers: TeacherProfile[]) {
   return {
     "@context": "https://schema.org",

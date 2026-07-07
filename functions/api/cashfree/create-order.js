@@ -1,13 +1,13 @@
 /**
- * Cloudflare Pages Function — POST /api/cashfree/create-order
+ * Cloudflare Pages Function - POST /api/cashfree/create-order
  *
  * Creates a Cashfree order server-side and returns the payment_session_id for
  * the drop-in checkout. Secrets live ONLY in Cloudflare Pages env vars:
- *   CASHFREE_APP_ID      — app id (TEST first; switch to LIVE only after approval)
- *   CASHFREE_SECRET_KEY  — secret key (server env only, never client)
- *   CASHFREE_ENV         — "TEST" (default) or "PROD"
+ *   CASHFREE_APP_ID      - app id (TEST first; switch to LIVE only after approval)
+ *   CASHFREE_SECRET_KEY  - secret key (server env only, never client)
+ *   CASHFREE_ENV         - "TEST" (default) or "PROD"
  *
- * A payment is marked Paid ONLY by the verified webhook — never from here or
+ * A payment is marked Paid ONLY by the verified webhook - never from here or
  * from any client redirect.
  */
 

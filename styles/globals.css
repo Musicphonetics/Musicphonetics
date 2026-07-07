@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 /* ==========================================================================
-   Musicphonetics — Design System Base
+   Musicphonetics - Design System Base
    Premium, composed, trusted. Charcoal ink + gold accent on warm paper.
    ========================================================================== */
 
@@ -62,7 +62,7 @@
 }
 
 @layer utilities {
-  /* Fade-up on scroll — driven by IntersectionObserver via .reveal class.
+  /* Fade-up on scroll - driven by IntersectionObserver via .reveal class.
      Gated on `.js` (set on <html> by an inline script) so that if JavaScript
      is ever unavailable or blocked, content renders fully visible instead of
      staying at opacity:0. */
@@ -89,7 +89,7 @@
 }
 
 /* ==========================================================================
-   Immersive backdrop — aurora gradients, grain, floating notes
+   Immersive backdrop - aurora gradients, grain, floating notes
    Used in dark cinematic sections (Founder, Ecosystem, Global Vision).
    ========================================================================== */
 .mp-aurora {
@@ -159,7 +159,7 @@
   100% { transform: scale(1) rotate(0); opacity: 1; }
 }
 
-/* Hero trailer sequence — fade/slide reveal */
+/* Hero trailer sequence - fade/slide reveal */
 .mp-cue {
   opacity: 0;
   transform: translateY(14px);
@@ -180,7 +180,7 @@
   50% { transform: scale(2.4); opacity: 0; }
 }
 
-/* Hero frequency lines — slow horizontal drift */
+/* Hero frequency lines - slow horizontal drift */
 .mp-wave path { fill: none; }
 .mp-wave-1 { animation: mp-wave-flow 22s linear infinite; }
 .mp-wave-2 { animation: mp-wave-flow 30s linear infinite; }
@@ -204,7 +204,7 @@
   border: 1px solid rgba(255, 255, 255, 0.12);
 }
 
-/* Standards reader — branded prose for injected document content */
+/* Standards reader - branded prose for injected document content */
 .standard-prose section { margin-top: 2.5rem; scroll-margin-top: 6rem; }
 .standard-prose section:first-child { margin-top: 0; }
 .standard-prose h2 {
@@ -299,7 +299,7 @@
   }
 }
 
-/* Hero — very slow, subtle background zoom (premium, not distracting). */
+/* Hero - very slow, subtle background zoom (premium, not distracting). */
 @keyframes mp-hero-zoom {
   from { transform: scale(1); }
   to { transform: scale(1.07); }

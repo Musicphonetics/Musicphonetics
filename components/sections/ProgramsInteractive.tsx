@@ -16,12 +16,12 @@ interface Prog {
 }
 
 const PROGRAMS: Prog[] = [
-  { name: "Guitar", icon: "guitar", duration: "45–60 min · 2×/week", who: "Kids & adults, all levels", availability: "High · home & online", outcome: "Play full songs within months" },
-  { name: "Piano", icon: "piano", duration: "45–60 min · 2×/week", who: "Children & serious learners", availability: "High · home & online", outcome: "Read music & build technique" },
-  { name: "Vocals", icon: "vocals", duration: "45–60 min · 2×/week", who: "Teens & adults", availability: "Medium · online-friendly", outcome: "Confident, healthy singing" },
-  { name: "Keyboard", icon: "piano", duration: "45–60 min · 2×/week", who: "Beginners & kids", availability: "High · home & online", outcome: "Melody, chords & coordination" },
-  { name: "Ukulele", icon: "ukulele", duration: "45–60 min · 2×/week", who: "Young beginners", availability: "High · home & online", outcome: "A joyful first instrument" },
-  { name: "Others", icon: "theory", duration: "45–60 min · 2×/week", who: "Drums, Violin, Bass, Production, Theory & more", availability: "By request · home & online", outcome: "Tell us — we'll match a specialist teacher" },
+  { name: "Guitar", icon: "guitar", duration: "45-60 min · 2×/week", who: "Kids & adults, all levels", availability: "High · home & online", outcome: "Play full songs within months" },
+  { name: "Piano", icon: "piano", duration: "45-60 min · 2×/week", who: "Children & serious learners", availability: "High · home & online", outcome: "Read music & build technique" },
+  { name: "Vocals", icon: "vocals", duration: "45-60 min · 2×/week", who: "Teens & adults", availability: "Medium · online-friendly", outcome: "Confident, healthy singing" },
+  { name: "Keyboard", icon: "piano", duration: "45-60 min · 2×/week", who: "Beginners & kids", availability: "High · home & online", outcome: "Melody, chords & coordination" },
+  { name: "Ukulele", icon: "ukulele", duration: "45-60 min · 2×/week", who: "Young beginners", availability: "High · home & online", outcome: "A joyful first instrument" },
+  { name: "Others", icon: "theory", duration: "45-60 min · 2×/week", who: "Drums, Violin, Bass, Production, Theory & more", availability: "By request · home & online", outcome: "Tell us - we'll match a specialist teacher" },
 ];
 
 export function ProgramsInteractive() {
@@ -32,7 +32,7 @@ export function ProgramsInteractive() {
       <SectionHeading
         eyebrow="Programs"
         title="What can you learn?"
-        intro="Every program follows the same structured, faculty-led method — with real outcomes, not vague promises. Tap any program to see exactly what to expect."
+        intro="Every program follows the same structured, faculty-led method - with real outcomes, not vague promises. Tap any program to see exactly what to expect."
       />
       <div className="mx-auto mt-12 max-w-3xl space-y-3">
         {PROGRAMS.map((p, i) => {

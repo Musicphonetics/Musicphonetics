@@ -3,9 +3,9 @@ import { WhatsAppCTA } from "./WhatsAppCTA";
 import { WA_MSG } from "@/lib/home-config";
 
 const STEPS = [
-  { n: "01", t: "We understand the student", d: "Age, level, instrument, goal and learning style — before anything begins." },
+  { n: "01", t: "We understand the student", d: "Age, level, instrument, goal and learning style - before anything begins." },
   { n: "02", t: "We recommend the right path", d: "A pathway matched to the student, not a one-size-fits-all class." },
-  { n: "03", t: "We assign the right teacher", d: "A teacher chosen on fit — the right person for this learner." },
+  { n: "03", t: "We assign the right teacher", d: "A teacher chosen on fit - the right person for this learner." },
   { n: "04", t: "We track progress & guide", d: "Class updates, progress notes and clear direction over time." },
 ];
 
@@ -21,7 +21,7 @@ export function WhyTrust() {
             A structured system, not a random class.
           </h2>
           <p className="mt-4 max-w-xl text-base leading-relaxed text-paper/75">
-            Before a student begins, we understand who they are — then build the path around them.
+            Before a student begins, we understand who they are - then build the path around them.
           </p>
         </Reveal>
 

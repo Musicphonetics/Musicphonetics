@@ -11,7 +11,7 @@ import { whatsappLink, phoneLink, PHONE_DISPLAY } from "@/lib/data";
 export const metadata: Metadata = {
   title: "South Delhi Centre",
   description:
-    "Our flagship Musicphonetics centre in South Delhi — faculty-led in-person classes, ensembles, a performance stage, and exam preparation. Book a free trial.",
+    "Our flagship Musicphonetics centre in South Delhi - faculty-led in-person classes, ensembles, a performance stage, and exam preparation. Book a free trial.",
 };
 
 const CENTRE_TEXT =
@@ -24,11 +24,11 @@ const OFFER = [
   },
   {
     title: "Ensembles & bands",
-    body: "Spaces to play together — the part of music that practice rooms can't give. Students rehearse, perform, and grow as musicians, not just learners.",
+    body: "Spaces to play together - the part of music that practice rooms can't give. Students rehearse, perform, and grow as musicians, not just learners.",
   },
   {
     title: "A real performance stage",
-    body: "Regular showcases and open mics, so progress is felt in front of an audience — the moment that keeps students coming back.",
+    body: "Regular showcases and open mics, so progress is felt in front of an audience - the moment that keeps students coming back.",
   },
   {
     title: "Exam & pathway preparation",
@@ -54,7 +54,7 @@ export default function CentrePage() {
             </Reveal>
             <Reveal delay={150}>
               <p className="mt-6 max-w-xl text-lg leading-relaxed text-paper/75">
-                Our flagship centre is open — in-person classes, ensembles, and a
+                Our flagship centre is open - in-person classes, ensembles, and a
                 performance stage, carrying the same method and faculty standard
                 families trust at home and online. You can also keep learning at
                 home or online; the centre simply adds another way to grow.
@@ -77,7 +77,7 @@ export default function CentrePage() {
             </Reveal>
             <Reveal delay={300}>
               <p className="mt-6 text-sm text-paper/60">
-                Free trial, no commitment — we reply immediately.
+                Free trial, no commitment - we reply immediately.
               </p>
             </Reveal>
           </div>
@@ -88,7 +88,7 @@ export default function CentrePage() {
       <Section background="paper" spacing="lg">
         <SectionHeading
           eyebrow="What the centre adds"
-          title="Everything you get now — plus a room to play it loud."
+          title="Everything you get now - plus a room to play it loud."
           intro="The centre extends Musicphonetics; it doesn't replace it. Home and online classes continue exactly as they are."
         />
         <div className="mt-12 grid gap-5 sm:grid-cols-2">
@@ -115,7 +115,7 @@ export default function CentrePage() {
               <p className="mt-4 text-base leading-relaxed text-ink/70">
                 Every teacher at the centre passes the same seven-stage
                 selection. Every student follows the same structured pathway.
-                The centre simply gives that work a permanent home — and an
+                The centre simply gives that work a permanent home - and an
                 audience.
               </p>
               <div className="mt-7">
@@ -144,7 +144,7 @@ export default function CentrePage() {
 
       <FinalCTA
         headline="Visit our South Delhi centre."
-        text="Book a free trial at the centre, at home, or online — we'll match a teacher and confirm your plan."
+        text="Book a free trial at the centre, at home, or online - we'll match a teacher and confirm your plan."
       />
     </>
   );

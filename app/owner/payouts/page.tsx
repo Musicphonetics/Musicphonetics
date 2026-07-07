@@ -33,7 +33,7 @@ export default function OwnerPayouts() {
 
   return (
     <PortalShell role="owner" tabs={OWNER_TABS} variant="wide" title="Payouts">
-      <p className="mb-4 text-sm text-ink/60">Teacher payout is advance-based on the 70% share. This is the only place payout status is managed — teachers never see it.</p>
+      <p className="mb-4 text-sm text-ink/60">Teacher payout is advance-based on the 70% share. This is the only place payout status is managed - teachers never see it.</p>
       <div className="space-y-3">
         {data.teachers.map((t) => {
           const earned = earnedByTeacher.get(t.id) ?? 0;

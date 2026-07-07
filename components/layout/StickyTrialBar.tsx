@@ -6,7 +6,7 @@ import { whatsappLink } from "@/lib/data";
 import { cn } from "@/lib/utils";
 
 /**
- * Sticky mobile CTA bar — WhatsApp-first (the primary conversion path), with a
+ * Sticky mobile CTA bar - WhatsApp-first (the primary conversion path), with a
  * small "Free trial" secondary. Appears once the hero has scrolled away.
  */
 export function StickyTrialBar() {

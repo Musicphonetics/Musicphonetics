@@ -8,7 +8,7 @@ import { Reveal } from "@/components/ui/Reveal";
  * Family video stories.
  *
  * Built now, hidden until the real videos exist (expected next week).
- * Populate REVIEW_VIDEOS with { id, name } and the section reveals itself —
+ * Populate REVIEW_VIDEOS with { id, name } and the section reveals itself -
  * we never ship a "coming soon" label.
  */
 export type ReviewVideo = { id: string; name: string };
@@ -25,7 +25,7 @@ function VideoCard({ id, name }: ReviewVideo) {
           <iframe
             className="absolute inset-0 h-full w-full"
             src={`https://www.youtube-nocookie.com/embed/${id}?autoplay=1&playsinline=1&rel=0`}
-            title={`${name} — family story`}
+            title={`${name} - family story`}
             loading="lazy"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
             allowFullScreen
@@ -60,7 +60,7 @@ function VideoCard({ id, name }: ReviewVideo) {
 }
 
 export function ReviewVideos() {
-  // Hidden until real videos exist — no placeholder, no "coming soon".
+  // Hidden until real videos exist - no placeholder, no "coming soon".
   if (REVIEW_VIDEOS.length === 0) return null;
 
   return (

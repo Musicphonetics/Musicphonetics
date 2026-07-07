@@ -17,7 +17,7 @@ export function FunnelPackages() {
             Choose the path that fits the student.
           </h2>
           <p className="mt-4 max-w-xl text-base leading-relaxed text-paper/75">
-            Not sure which fits? Open <span className="font-semibold text-paper">View details</span> — a full page explains exactly who each plan is for, what you learn and what to expect.
+            Not sure which fits? Open <span className="font-semibold text-paper">View details</span> - a full page explains exactly who each plan is for, what you learn and what to expect.
           </p>
         </Reveal>
 

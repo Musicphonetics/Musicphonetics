@@ -1,7 +1,7 @@
 import { cn } from "@/lib/utils";
 
 /**
- * Calm, premium soundwave backdrop — a few thin frequency lines that drift
+ * Calm, premium soundwave backdrop - a few thin frequency lines that drift
  * slowly. No particles, no maps. Purely decorative; static under reduced-motion.
  */
 export function SoundWave({ className }: { className?: string }) {

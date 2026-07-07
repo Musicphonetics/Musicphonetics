@@ -5,7 +5,7 @@ interface Stat {
   label: string;
 }
 
-// Real quantities only — no adjective-stats.
+// Real quantities only - no adjective-stats.
 const DEFAULT_STATS: Stat[] = [
   { value: "10 yrs", label: "Teaching since 2016" },
   { value: "1,100+", label: "Students taught" },

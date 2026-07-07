@@ -2,12 +2,12 @@ import { Section, SectionHeading } from "@/components/ui/Section";
 import { Reveal } from "@/components/ui/Reveal";
 import { Button } from "@/components/ui/Button";
 
-// Real, defensible safety facts — sourced from the Standards Library
+// Real, defensible safety facts - sourced from the Standards Library
 // (7-stage selection, child-protection standard, code of ethics).
 const SAFEGUARDS = [
   {
     title: "Police & document verification",
-    body: "Every teacher is police-verified and their identity documents checked before they're approved — a required stage of our selection, not an afterthought.",
+    body: "Every teacher is police-verified and their identity documents checked before they're approved - a required stage of our selection, not an afterthought.",
   },
   {
     title: "Reference checks + founder approval",
@@ -15,7 +15,7 @@ const SAFEGUARDS = [
   },
   {
     title: "A written child-protection standard",
-    body: "Conduct in the home, boundaries, and safety are governed by a documented standard — the same for every teacher, every home.",
+    body: "Conduct in the home, boundaries, and safety are governed by a documented standard - the same for every teacher, every home.",
   },
   {
     title: "You're always in the room",
@@ -36,7 +36,7 @@ export function SafetyFirst() {
               A stranger never enters your home.
             </h2>
             <p className="mt-4 max-w-md text-base leading-relaxed text-paper/80">
-              A home class means someone new around your child — we treat that with
+              A home class means someone new around your child - we treat that with
               the seriousness it deserves. Every teacher is verified through our
               seven-stage selection before they ever meet a student.
             </p>

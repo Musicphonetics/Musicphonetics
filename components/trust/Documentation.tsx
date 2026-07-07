@@ -10,7 +10,7 @@ export function Documentation() {
       id="documentation"
       eyebrow="Section 03 · Documentation"
       title="Built to international standards."
-      intro="Twenty-five policies, handbooks, and frameworks — with child safety and safeguarding at the core. We don't operate casually."
+      intro="Twenty-five policies, handbooks, and frameworks - with child safety and safeguarding at the core. We don't operate casually."
     >
       {/* Status legend */}
       <div className="mb-8 flex flex-wrap gap-2">

@@ -21,7 +21,7 @@ export function WhatWeDo() {
       <SectionHeading
         eyebrow="Music classes & what we do"
         title="Premium one-to-one music classes, built around your child."
-        intro="Learn guitar, piano, keyboard, or vocals — at home across Delhi NCR or live online — with trained, verified teachers and a clear path to real progress."
+        intro="Learn guitar, piano, keyboard, or vocals - at home across Delhi NCR or live online - with trained, verified teachers and a clear path to real progress."
       />
 
       {/* Instruments */}
@@ -45,13 +45,13 @@ export function WhatWeDo() {
             <div className="rounded-2xl border border-hairline bg-white p-6 shadow-card">
               <h3 className="text-base font-semibold text-ink">Home classes</h3>
               <p className="mt-1.5 text-sm leading-relaxed text-ink/60">
-                A trained teacher comes to you, across Delhi NCR — personal, focused, and convenient.
+                A trained teacher comes to you, across Delhi NCR - personal, focused, and convenient.
               </p>
             </div>
             <div className="rounded-2xl border border-hairline bg-white p-6 shadow-card">
               <h3 className="text-base font-semibold text-ink">Online classes</h3>
               <p className="mt-1.5 text-sm leading-relaxed text-ink/60">
-                The same structured method, live online — learn from any city or country.
+                The same structured method, live online - learn from any city or country.
               </p>
             </div>
           </div>

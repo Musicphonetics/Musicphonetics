@@ -7,7 +7,7 @@ export function HowItWorks() {
     <Section background="paper" spacing="lg">
       <SectionHeading
         eyebrow="How it works"
-        title="A calm, guided start — no pressure."
+        title="A calm, guided start - no pressure."
         intro="You begin with a short guided conversation. Then the Musicphonetics team helps you move toward the right teacher, format, and plan."
       />
       <div className="mt-12 grid gap-6 md:grid-cols-3">

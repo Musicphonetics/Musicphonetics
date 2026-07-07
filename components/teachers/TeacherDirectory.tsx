@@ -57,7 +57,7 @@ function Select({
   );
 }
 
-/** Scalable teacher discovery — search + facet filters over any teacher set. */
+/** Scalable teacher discovery - search + facet filters over any teacher set. */
 export function TeacherDirectory({
   teachers,
   showCountryFilter = true,

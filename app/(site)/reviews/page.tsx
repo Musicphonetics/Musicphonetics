@@ -4,11 +4,11 @@ import { WhatsAppCTA } from "@/components/home/WhatsAppCTA";
 import { REVIEWS, WA_MSG } from "@/lib/home-config";
 
 export const metadata: Metadata = {
-  title: "Reviews — Real Google reviews from parents & students | Musicphonetics",
+  title: "Reviews - Real Google reviews from parents & students | Musicphonetics",
   description:
-    "Real Google reviews from Musicphonetics parents and students across Delhi NCR — shown as screenshots exactly as received from Google.",
+    "Real Google reviews from Musicphonetics parents and students across Delhi NCR - shown as screenshots exactly as received from Google.",
   openGraph: {
-    title: "Real Parents. Real Students. Real Progress. — Musicphonetics reviews",
+    title: "Real Parents. Real Students. Real Progress. - Musicphonetics reviews",
     description: "Real Google reviews from parents and students across Delhi NCR.",
   },
 };
@@ -22,7 +22,7 @@ export default function ReviewsPage() {
           Real Parents. Real Students. Real Progress.
         </h1>
         <p className="mt-4 max-w-xl text-base leading-relaxed text-paper/75">
-          Real experiences shared through Google reviews — screenshots shown exactly as received from Google.
+          Real experiences shared through Google reviews - screenshots shown exactly as received from Google.
         </p>
 
         <div className="mt-10">

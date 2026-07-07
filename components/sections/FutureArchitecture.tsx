@@ -9,7 +9,7 @@ export function FutureArchitecture() {
       <SectionHeading
         eyebrow="Future brand architecture"
         title="Built so new divisions can grow naturally."
-        intro="Education stays at the heart. These are examples of where Musicphonetics could grow over time — illustrative future divisions, not current products."
+        intro="Education stays at the heart. These are examples of where Musicphonetics could grow over time - illustrative future divisions, not current products."
       />
       <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {FUTURE_DIVISIONS.map((d, i) => {

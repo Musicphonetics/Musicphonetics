@@ -48,7 +48,7 @@ export function TeachersTable() {
                   </span>
                 </div>
               </Td>
-              <Td className="text-right">{t.rating > 0 ? `★ ${t.rating.toFixed(1)}` : "—"}</Td>
+              <Td className="text-right">{t.rating > 0 ? `★ ${t.rating.toFixed(1)}` : "-"}</Td>
               <Td>
                 <StatusPill tone={t.active ? "green" : "neutral"}>
                   {t.active ? "Active" : "Inactive"}

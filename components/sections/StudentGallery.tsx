@@ -2,7 +2,7 @@ import Image from "next/image";
 import { Section, SectionHeading } from "@/components/ui/Section";
 import { Reveal } from "@/components/ui/Reveal";
 
-// M9 — real student/teaching photos only. This array is intentionally EMPTY:
+// M9 - real student/teaching photos only. This array is intentionally EMPTY:
 // the "Inside our lessons" section renders nothing until images are dropped in
 // /public/images/students/ and listed here (see that folder's README).
 export type GalleryImage = {

@@ -3,11 +3,11 @@ import { Reveal } from "@/components/ui/Reveal";
 
 const STEPS = [
   { title: "Personal assessment", body: "We understand the learner's level, goals, and pace before anything else." },
-  { title: "Right teacher matching", body: "You're matched to a verified teacher who fits the student — never random." },
+  { title: "Right teacher matching", body: "You're matched to a verified teacher who fits the student - never random." },
   { title: "Structured monthly classes", body: "A steady cycle of classes that builds real momentum, month after month." },
-  { title: "Progress tracking", body: "Clear milestones and feedback, so growth is visible — not guessed at." },
+  { title: "Progress tracking", body: "Clear milestones and feedback, so growth is visible - not guessed at." },
   { title: "Home concerts & performances", body: "Regular performance opportunities that build genuine confidence." },
-  { title: "Parent updates", body: "Honest, consistent communication after classes — you're always in the loop." },
+  { title: "Parent updates", body: "Honest, consistent communication after classes - you're always in the loop." },
 ];
 
 export function HowWeDoIt() {

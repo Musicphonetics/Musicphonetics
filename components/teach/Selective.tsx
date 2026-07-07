@@ -22,7 +22,7 @@ export function Selective() {
   return (
     <Section background="paper" spacing="lg">
       <SectionHeading
-        eyebrow="We're selective — on purpose"
+        eyebrow="We're selective - on purpose"
         title="A faculty worth being part of."
         intro="The bar is high because it protects you. The students you teach already trust the name on the door."
       />

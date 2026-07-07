@@ -18,12 +18,12 @@ import { StaveDivider } from "@/components/teach/StaveDivider";
 const SITE = "https://musicphonetics.com";
 
 export const metadata: Metadata = {
-  title: "Teach With Musicphonetics — Earn What Your Craft Is Worth",
+  title: "Teach With Musicphonetics - Earn What Your Craft Is Worth",
   description:
     "Music teacher jobs in Delhi NCR and online. Keep 70% of every fee, walk into a ready student network, and be paid on time. Students, payments and scheduling are handled for you.",
   alternates: { canonical: `${SITE}/teach-with-us` },
   openGraph: {
-    title: "Teach With Musicphonetics — Earn What Your Craft Is Worth",
+    title: "Teach With Musicphonetics - Earn What Your Craft Is Worth",
     description:
       "Keep 70% of every fee. A ready student network, payments and scheduling handled for you. Music teacher roles across Delhi NCR and online.",
   },
@@ -32,7 +32,7 @@ export const metadata: Metadata = {
 const jobPosting = {
   "@context": "https://schema.org",
   "@type": "JobPosting",
-  title: "Music Teacher (Faculty) — Guitar, Piano, Vocals, Drums, Violin & more",
+  title: "Music Teacher (Faculty) - Guitar, Piano, Vocals, Drums, Violin & more",
   description:
     "Musicphonetics is recruiting music teachers across Delhi NCR and online. You teach one-to-one; we bring the students, handle payments and scheduling, and provide the brand and systems. Teachers keep 70% of every fee, paid on a fixed monthly cycle.",
   datePosted: "2026-07-06",

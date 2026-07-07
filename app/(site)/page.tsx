@@ -13,14 +13,14 @@ import { REVIEWS, HOME_REVIEW_COUNT } from "@/lib/home-config";
 const SITE = "https://musicphonetics.com";
 
 export const metadata: Metadata = {
-  title: "Music Classes in Delhi NCR & Online — Guitar, Piano, Vocals | Musicphonetics",
+  title: "Music Classes in Delhi NCR & Online - Guitar, Piano, Vocals | Musicphonetics",
   description:
-    "Structured music learning for children, beginners & serious learners — guitar, piano/keyboard & vocal classes at home and online across Delhi NCR. Teacher matching, progress tracking, Trinity exam preparation where applicable. Enquire on WhatsApp.",
+    "Structured music learning for children, beginners & serious learners - guitar, piano/keyboard & vocal classes at home and online across Delhi NCR. Teacher matching, progress tracking, Trinity exam preparation where applicable. Enquire on WhatsApp.",
   alternates: { canonical: "/" },
   openGraph: {
-    title: "Music classes that don't feel random — Musicphonetics",
+    title: "Music classes that don't feel random - Musicphonetics",
     description:
-      "Structured music learning — guitar, piano/keyboard & vocals. Delhi NCR + Online. Teacher matching and progress tracking. Enquire on WhatsApp.",
+      "Structured music learning - guitar, piano/keyboard & vocals. Delhi NCR + Online. Teacher matching and progress tracking. Enquire on WhatsApp.",
     type: "website",
     siteName: "Musicphonetics",
     locale: "en_IN",
@@ -32,7 +32,7 @@ const localBusiness = {
   "@type": "LocalBusiness",
   name: "Musicphonetics",
   description:
-    "Structured music education — guitar, piano/keyboard and vocal classes for children, beginners and serious learners, at home and online across Delhi NCR.",
+    "Structured music education - guitar, piano/keyboard and vocal classes for children, beginners and serious learners, at home and online across Delhi NCR.",
   url: SITE,
   areaServed: "Delhi NCR",
   knowsAbout: ["Guitar classes", "Piano classes", "Keyboard classes", "Vocal classes", "Music theory", "Trinity music exam preparation"],

@@ -11,11 +11,11 @@ import { JsonLd } from "@/components/seo/JsonLd";
 import { curriculumJsonLd } from "@/lib/seo";
 
 export const metadata: Metadata = {
-  title: "Curriculum — a clear path from first note to graded exams",
+  title: "Curriculum - a clear path from first note to graded exams",
   description:
-    "The Musicphonetics learning roadmap: Foundation, Developing, Intermediate, and Advanced levels aligned to Trinity, ABRSM, and Rockschool grades — home and online across Delhi NCR.",
+    "The Musicphonetics learning roadmap: Foundation, Developing, Intermediate, and Advanced levels aligned to Trinity, ABRSM, and Rockschool grades - home and online across Delhi NCR.",
   openGraph: {
-    title: "Curriculum — from first note to graded exams",
+    title: "Curriculum - from first note to graded exams",
     description:
       "Four structured levels aligned to Trinity, ABRSM, and Rockschool grades. See exactly what students work on and when.",
   },
@@ -29,7 +29,7 @@ export default function CurriculumPage() {
       <PageHero
         eyebrow="The learning roadmap"
         title="A clear path from first note to graded exams."
-        intro="Four structured levels, one method — the same for every student, aligned to Trinity, ABRSM, and Rockschool where wanted."
+        intro="Four structured levels, one method - the same for every student, aligned to Trinity, ABRSM, and Rockschool where wanted."
       >
         <Button href="/start" variant="primary" size="lg">
           Book a free trial
@@ -64,7 +64,7 @@ export default function CurriculumPage() {
 
       <FinalCTA
         headline="Start the path with one free trial."
-        text="Tell us the instrument and goal — we'll place your child at the right level."
+        text="Tell us the instrument and goal - we'll place your child at the right level."
       />
     </>
   );

@@ -46,7 +46,7 @@ export function PortalShell({
         <h1 className="font-display text-xl font-semibold text-ink">Wrong area</h1>
         <p className="mt-2 max-w-sm text-sm text-ink/65">
           This account is a <b>{profile.role}</b>. Use the {profile.role} portal
-          {role === "teacher" ? " — the owner dashboard is at /owner/dashboard." : "."}
+          {role === "teacher" ? " - the owner dashboard is at /owner/dashboard." : "."}
         </p>
         <button onClick={() => signOut()} className="mt-5 rounded-full bg-ink px-6 py-3 text-sm font-semibold text-paper">Sign out</button>
       </Centered>

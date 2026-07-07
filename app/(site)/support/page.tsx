@@ -6,29 +6,29 @@ import { Reveal } from "@/components/ui/Reveal";
 import { whatsappLink, phoneLink, PHONE_DISPLAY } from "@/lib/data";
 
 export const metadata: Metadata = {
-  title: "Support — we reply immediately",
+  title: "Support - we reply immediately",
   description:
-    "Help with payments, refunds, rescheduling, and classes at Musicphonetics. WhatsApp, phone, and email support — we reply immediately.",
+    "Help with payments, refunds, rescheduling, and classes at Musicphonetics. WhatsApp, phone, and email support - we reply immediately.",
 };
 
 const SUPPORT_EMAIL = "adm.musicphonetics@gmail.com";
 
 const FAQ = [
   {
-    q: "I paid — what happens now?",
+    q: "I paid - what happens now?",
     a: "You'll get a WhatsApp from us immediately to schedule your first class. Payments are processed securely by Cashfree; if anything looks off, message us and we'll verify it on the spot.",
   },
   {
     q: "How do refunds work?",
-    a: "Refunds follow our published Refund & Payment Standard (linked below). Start with a WhatsApp message — most issues are resolved the same day.",
+    a: "Refunds follow our published Refund & Payment Standard (linked below). Start with a WhatsApp message - most issues are resolved the same day.",
   },
   {
     q: "Can I reschedule a class?",
-    a: "Yes — plans include flexible rescheduling. Message us on WhatsApp and we'll move your slot.",
+    a: "Yes - plans include flexible rescheduling. Message us on WhatsApp and we'll move your slot.",
   },
   {
     q: "How do classes work?",
-    a: "One-to-one, 8 classes a month, at home, online, or at our South Delhi centre — with monthly progress reports. Everything starts with a free trial.",
+    a: "One-to-one, 8 classes a month, at home, online, or at our South Delhi centre - with monthly progress reports. Everything starts with a free trial.",
   },
 ];
 
@@ -59,7 +59,7 @@ export default function SupportPage() {
               </Button>
             </div>
             <p className="mt-5 text-sm text-paper/60">
-              Every day of the week · WhatsApp is fastest — we reply immediately.
+              Every day of the week · WhatsApp is fastest - we reply immediately.
             </p>
           </Reveal>
         </div>
@@ -71,7 +71,7 @@ export default function SupportPage() {
           <SectionHeading
             eyebrow="Quick answers"
             title="Payments, refunds & classes."
-            intro="Can't find it here? Message us — a person replies, not a bot."
+            intro="Can't find it here? Message us - a person replies, not a bot."
           />
           <div className="divide-y divide-hairline border-y border-hairline">
             {FAQ.map((f) => (
@@ -89,7 +89,7 @@ export default function SupportPage() {
         </div>
       </Section>
 
-      {/* Refund & payment policy — required visible for Cashfree */}
+      {/* Refund & payment policy - required visible for Cashfree */}
       <Section background="white" spacing="md">
         <Reveal>
           <div className="rounded-3xl border border-hairline bg-paper p-8 sm:p-10">
@@ -102,7 +102,7 @@ export default function SupportPage() {
                 <p className="mt-3 max-w-xl text-sm leading-relaxed text-ink/70">
                   Payments are processed securely by Cashfree (UPI, cards, netbanking).
                   Refunds and payment terms follow our published standard in the
-                  Standards Library — the same document for every family.
+                  Standards Library - the same document for every family.
                 </p>
               </div>
               <div className="flex flex-col gap-3">

@@ -1,5 +1,5 @@
 // ============================================================================
-// Musicphonetics — "Teach With Us" economics.
+// Musicphonetics - "Teach With Us" economics.
 // Tune every number on the page from here. All projections are illustrative.
 // Real, citable figures: 70% teacher share, ₹1,200 / ₹1,500 per-class fees,
 // per-class shares ₹840 / ₹1,050, 1,100+ students taught, ~10 years teaching.

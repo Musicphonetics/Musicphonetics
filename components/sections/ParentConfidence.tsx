@@ -5,10 +5,10 @@ import { Section, SectionHeading } from "@/components/ui/Section";
 import { cn } from "@/lib/utils";
 
 const ITEMS = [
-  { title: "A clear learning path", body: "A defined, staged journey from the very first class — your child always knows what they're working toward, and so do you." },
-  { title: "Verified teachers", body: "Every teacher passes a seven-stage quality process — interview, skill assessment, teaching evaluation, background verification, and founder approval — before teaching." },
+  { title: "A clear learning path", body: "A defined, staged journey from the very first class - your child always knows what they're working toward, and so do you." },
+  { title: "Verified teachers", body: "Every teacher passes a seven-stage quality process - interview, skill assessment, teaching evaluation, background verification, and founder approval - before teaching." },
   { title: "A trial before any commitment", body: "Begin with a single trial class. Continue only when it feels right for your family. No pressure, no lock-in to start." },
-  { title: "Online and home formats", body: "Learn at home across Delhi NCR, or live online from anywhere in the world — the same method and the same standard either way." },
+  { title: "Online and home formats", body: "Learn at home across Delhi NCR, or live online from anywhere in the world - the same method and the same standard either way." },
   { title: "Honest progress updates", body: "Feedback after classes and a structured progress system, so you always know how your child is growing." },
   { title: "A real exam pathway", body: "Trinity, ABRSM, and Rockschool graded pathways are available for families who want recognised milestones." },
 ];
@@ -21,7 +21,7 @@ export function ParentConfidence() {
       <SectionHeading
         eyebrow="For families"
         title="What every family deserves before choosing a music school."
-        intro="Clarity before commitment. Here's what you can expect from us — every time."
+        intro="Clarity before commitment. Here's what you can expect from us - every time."
       />
       <div className="mx-auto mt-12 max-w-3xl space-y-3">
         {ITEMS.map((item, i) => {

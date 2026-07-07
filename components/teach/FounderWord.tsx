@@ -13,8 +13,8 @@ export function FounderWord() {
             {/* TODO(content): replace with the founder's exact "You were chosen…" quote. */}
             <blockquote className="mt-7 font-display text-2xl font-medium italic leading-relaxed text-paper sm:text-3xl sm:leading-snug">
               “You weren&apos;t hired to fill a slot. You were chosen to carry a
-              standard. Teach well, and we&apos;ll make sure the rest of it —
-              the students, the pay, the platform — is never your problem again.”
+              standard. Teach well, and we&apos;ll make sure the rest of it -
+              the students, the pay, the platform - is never your problem again.”
             </blockquote>
             <figcaption className="mt-6 text-sm text-paper/60">
               Abhishek Kumar · Founder, Musicphonetics

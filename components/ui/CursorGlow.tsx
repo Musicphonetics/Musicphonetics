@@ -3,7 +3,7 @@
 import { useEffect, useRef } from "react";
 
 /**
- * Soft light that follows the cursor — desktop pointer only, very subtle.
+ * Soft light that follows the cursor - desktop pointer only, very subtle.
  * Disabled on touch and under reduced-motion. Purely decorative.
  */
 export function CursorGlow() {

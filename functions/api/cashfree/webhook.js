@@ -1,16 +1,16 @@
 /**
- * Cloudflare Pages Function — POST /api/cashfree/webhook
+ * Cloudflare Pages Function - POST /api/cashfree/webhook
  *
  * The ONLY place a payment becomes "Paid".
- * 1. Verifies the Cashfree webhook signature (HMAC-SHA256, base64) — requests
+ * 1. Verifies the Cashfree webhook signature (HMAC-SHA256, base64) - requests
  *    that fail verification are rejected.
  * 2. On PAYMENT_SUCCESS, POSTs a Payments row to the owner's Google Sheet via
  *    APPS_SCRIPT_URL (Apps Script also de-dupes by Payment ID and flips the
- *    matching Leads row to Paid by phone — see scripts/apps-script-payments.gs).
+ *    matching Leads row to Paid by phone - see scripts/apps-script-payments.gs).
  *
  * Env (Cloudflare Pages, server only):
- *   CASHFREE_SECRET_KEY — used for signature verification
- *   APPS_SCRIPT_URL     — deployed Apps Script /exec URL (sheet write-back)
+ *   CASHFREE_SECRET_KEY - used for signature verification
+ *   APPS_SCRIPT_URL     - deployed Apps Script /exec URL (sheet write-back)
  */
 
 async function verifySignature(rawBody, timestamp, signature, secret) {
@@ -84,7 +84,7 @@ export async function onRequestPost(context) {
         body: JSON.stringify(row),
       });
     } catch (err) {
-      // Log but still 200 — Cashfree retries would double-write otherwise; the
+      // Log but still 200 - Cashfree retries would double-write otherwise; the
       // payment itself is safe inside Cashfree's dashboard regardless.
       console.error("Sheet write-back failed", String(err));
     }

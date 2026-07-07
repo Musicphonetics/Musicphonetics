@@ -25,7 +25,7 @@ export function YearProjection() {
       <SectionHeading
         eyebrow="Projected"
         title="Your first year."
-        intro="Income ramps as your roster fills, then steadies — with a visible step at month 6 and month 12 for loyalty payments."
+        intro="Income ramps as your roster fills, then steadies - with a visible step at month 6 and month 12 for loyalty payments."
       />
       <div className="mt-10 rounded-3xl border border-hairline bg-white p-5 shadow-card sm:p-7">
         <div className="h-72 w-full">
@@ -47,7 +47,7 @@ export function YearProjection() {
         </div>
         <p className="mt-4 text-xs text-ink/65">
           Projected. Includes six-month and annual loyalty payments. Illustrative
-          only — actual income depends on roster and retention.
+          only - actual income depends on roster and retention.
         </p>
       </div>
     </Section>

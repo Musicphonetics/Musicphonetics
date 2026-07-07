@@ -9,7 +9,7 @@ function WhatsAppIcon({ className }: { className?: string }) {
   );
 }
 
-// Inline primary CTA — opens WhatsApp in a new tab.
+// Inline primary CTA - opens WhatsApp in a new tab.
 export function WhatsAppCTA({
   label, message, variant = "primary", size = "lg", className, fullWidth,
 }: {
@@ -31,7 +31,7 @@ export function WhatsAppCTA({
   );
 }
 
-// Sticky bottom WhatsApp bar — always reachable on mobile.
+// Sticky bottom WhatsApp bar - always reachable on mobile.
 export function StickyWhatsAppBar({ label = "Enquire on WhatsApp", message }: { label?: string; message: string }) {
   return (
     <div className="fixed inset-x-0 bottom-0 z-40 border-t border-white/10 bg-ink/95 p-3 backdrop-blur-md lg:hidden"

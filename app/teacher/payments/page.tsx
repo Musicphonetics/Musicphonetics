@@ -9,7 +9,7 @@ import { getSupabase, isSupabaseConfigured } from "@/lib/supabase/client";
 import { loadRoster } from "@/lib/supabase/roster";
 import type { StudentStat } from "@/lib/supabase/types";
 
-const CYCLES = ["—", "Monthly", "Quarterly", "Half-yearly", "One-time"];
+const CYCLES = ["-", "Monthly", "Quarterly", "Half-yearly", "One-time"];
 const PAY_STATUS = ["Received", "Pending", "Partial"];
 const MODES = ["Cashfree", "Other"];
 const today = () => new Date().toISOString().slice(0, 10);
@@ -41,7 +41,7 @@ export default function PaymentsPage() {
     const { data: u } = await getSupabase().auth.getUser();
     const uid = u.user?.id;
     if (!uid) { setBusy(false); setToast({ kind: "error", message: "Session expired." }); return; }
-    // teacher_share / company_share are DB-generated — we never send them.
+    // teacher_share / company_share are DB-generated - we never send them.
     const { error } = await getSupabase().from("payments").insert({
       teacher_id: uid,
       student_id: sid,
@@ -83,7 +83,7 @@ export default function PaymentsPage() {
           )}
 
           <Field label="Payment date" req type="date" value={f.payment_date || ""} onChange={(v) => set("payment_date", v)} />
-          <Select label="Billing cycle" value={f.billing_cycle || "—"} onChange={(v) => set("billing_cycle", v)} options={CYCLES} />
+          <Select label="Billing cycle" value={f.billing_cycle || "-"} onChange={(v) => set("billing_cycle", v)} options={CYCLES} />
           <MoneyField label="Amount paid" req value={f.amount_paid || ""} onChange={(v) => set("amount_paid", v)} />
 
           <Select label="Payment status" value={f.payment_status || "Received"} onChange={(v) => set("payment_status", v)} options={PAY_STATUS} />
@@ -92,7 +92,7 @@ export default function PaymentsPage() {
           <Field label="Transaction reference" value={f.txn_reference || ""} onChange={(v) => set("txn_reference", v)} />
           <TextArea label="Notes" value={f.notes || ""} onChange={(v) => set("notes", v)} />
 
-          <p className="text-xs text-ink/60">Parents pay only via the company Cashfree link — you just record the confirmation here.</p>
+          <p className="text-xs text-ink/60">Parents pay only via the company Cashfree link - you just record the confirmation here.</p>
 
           <button disabled={busy} onClick={save}
             className="w-full rounded-full bg-ink py-4 text-base font-semibold text-paper shadow-card disabled:opacity-60">

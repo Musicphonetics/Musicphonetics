@@ -9,7 +9,7 @@ export function LifeAtMusicphonetics() {
       <SectionHeading
         eyebrow="Life at Musicphonetics"
         title="Music that leaves the practice room."
-        intro="Open mics, stages, showcases, and the moments students remember — this is what learning here actually feels like."
+        intro="Open mics, stages, showcases, and the moments students remember - this is what learning here actually feels like."
       />
       <div className="mt-12 grid grid-cols-2 gap-4 sm:gap-5 lg:grid-cols-4">
         {LIFE_AT_MP.map((img, i) => (

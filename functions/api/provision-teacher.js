@@ -1,6 +1,6 @@
 // POST /api/provision-teacher  (OWNER ONLY)
 // Creates a Supabase auth user + promotes/extends their profile to a teacher.
-// Uses the SERVICE ROLE key — server-side only, never exposed to the client.
+// Uses the SERVICE ROLE key - server-side only, never exposed to the client.
 // Written with plain fetch (Supabase Admin/REST API) so it needs no bundler.
 //
 // Required env (Cloudflare Pages → Settings → Environment variables):

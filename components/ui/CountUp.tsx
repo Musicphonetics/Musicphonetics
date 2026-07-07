@@ -13,7 +13,7 @@ interface CountUpProps {
   className?: string;
 }
 
-/** Animated number that counts up — on scroll-into-view or an external `play` flag. */
+/** Animated number that counts up - on scroll-into-view or an external `play` flag. */
 export function CountUp({
   value,
   prefix = "",

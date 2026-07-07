@@ -1,6 +1,6 @@
 import { cn } from "@/lib/utils";
 
-/** The Musicphonetics "stave" motif — five thin horizontal gold lines. */
+/** The Musicphonetics "stave" motif - five thin horizontal gold lines. */
 export function Stave({ className }: { className?: string }) {
   return (
     <div

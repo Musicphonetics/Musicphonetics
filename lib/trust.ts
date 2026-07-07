@@ -1,7 +1,7 @@
 // ============================================================================
-// Musicphonetics — Trust Centre content
+// Musicphonetics - Trust Centre content
 // Corporate-grade: credentials, operations, documentation, recognition,
-// timeline, dashboard. Only real or in-progress credentials are shown — future
+// timeline, dashboard. Only real or in-progress credentials are shown - future
 // certifications are clearly marked "Certification in Progress".
 // ============================================================================
 
@@ -30,7 +30,7 @@ export const CREDENTIALS: Credential[] = [
   { name: "IEC Registration", status: "Active", category: "Business" },
   { name: "Google Business Verification", status: "Verified", category: "Technology" },
   { name: "WhatsApp Business Verification", status: "Verified", category: "Technology" },
-  // In progress — clearly marked, not claimed as received.
+  // In progress - clearly marked, not claimed as received.
   { name: "DPIIT Startup Recognition", status: "Certification in Progress", category: "Business", inProgress: true },
   { name: "ISO Certification", status: "Certification in Progress", category: "Quality", inProgress: true },
   { name: "NSIC Registration", status: "Certification in Progress", category: "Business", inProgress: true },
@@ -190,7 +190,7 @@ export const DASHBOARD_NOTE =
 
 export const TRUST_PILLARS: { title: string; line: string; icon: TrustIconKey }[] = [
   { title: "Company Credentials", line: "Registrations, certifications, and verifications.", icon: "certificate" },
-  { title: "Business Operations", line: "Finance, compliance, support — organised to scale.", icon: "finance" },
+  { title: "Business Operations", line: "Finance, compliance, support - organised to scale.", icon: "finance" },
   { title: "Documentation", line: "International-standard policies and frameworks.", icon: "standards" },
   { title: "Child Safety", line: "Safeguarding and verification at the core.", icon: "safety" },
   { title: "Public Recognition", line: "Media, performances, and institutional work.", icon: "media" },

@@ -1,5 +1,5 @@
 // ============================================================================
-// Musicphonetics — Programs (instruments & tracks) and brand divisions
+// Musicphonetics - Programs (instruments & tracks) and brand divisions
 // ============================================================================
 
 export interface ProgramItem {
@@ -31,7 +31,7 @@ export const PROGRAM_ITEMS: ProgramItem[] = [
   { title: "Kids Foundation", outcome: "A playful, structured first step.", icon: "kids" },
 ];
 
-// Future brand architecture — each division has its own accent + vision line.
+// Future brand architecture - each division has its own accent + vision line.
 export interface Division {
   name: string;
   short: string;
@@ -52,7 +52,7 @@ export type DivisionIcon =
   | "media";
 
 export const DIVISIONS: Division[] = [
-  { name: "Musicphonetics Learn", short: "Learn", vision: "Structured lessons — the heart of everything.", accent: "#C9A227", icon: "learn", status: "live" },
+  { name: "Musicphonetics Learn", short: "Learn", vision: "Structured lessons - the heart of everything.", accent: "#C9A227", icon: "learn", status: "live" },
   { name: "Musicphonetics Teachers", short: "Teachers", vision: "A verified educator network.", accent: "#1F3D2F", icon: "teachers", status: "live" },
   { name: "Musicphonetics Artists", short: "Artists", vision: "Artist development for serious musicians.", accent: "#9B5DE5", icon: "artists", status: "vision" },
   { name: "Musicphonetics Studio", short: "Studio", vision: "Recording and practice spaces.", accent: "#0EA5E9", icon: "studio", status: "vision" },

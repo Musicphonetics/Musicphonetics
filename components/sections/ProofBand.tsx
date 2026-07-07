@@ -2,7 +2,7 @@ import { Section } from "@/components/ui/Section";
 import { Reveal } from "@/components/ui/Reveal";
 import { CountUp } from "@/components/ui/CountUp";
 
-// M3.1 — real, defensible numbers only. Count up once on scroll into view.
+// M3.1 - real, defensible numbers only. Count up once on scroll into view.
 const STATS = [
   { value: 10, suffix: " yrs", label: "Teaching since 2016" },
   { value: 1100, suffix: "+", label: "Students taught" },

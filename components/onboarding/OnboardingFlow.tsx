@@ -61,7 +61,7 @@ export function OnboardingFlow() {
     setTimeout(() => go(1), 200);
   };
 
-  // Lead submission — awaited, with visible success/error states (never silent).
+  // Lead submission - awaited, with visible success/error states (never silent).
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState(false);
 
@@ -76,22 +76,22 @@ export function OnboardingFlow() {
         headers: { "Content-Type": "application/json", Accept: "application/json" },
         body: JSON.stringify({
           access_key: WEB3FORMS_ACCESS_KEY,
-          subject: `New Musicphonetics Lead — ${answers.name ?? "Unknown"} (${answers.instrument ?? "Music"})`,
+          subject: `New Musicphonetics Lead - ${answers.name ?? "Unknown"} (${answers.instrument ?? "Music"})`,
           from_name: "Musicphonetics Website",
-          botcheck: "", // honeypot — must stay empty
+          botcheck: "", // honeypot - must stay empty
           ...(answers.email ? { email: answers.email } : {}),
-          Name: answers.name ?? "—",
-          WhatsApp: answers.phone ?? "—",
-          Email: answers.email ?? "—",
-          Instrument: answers.instrument ?? "—",
-          Mode: answers.mode ?? "—",
-          "Student Type": answers.who ?? "—",
-          Age: answers.childAge ?? "—",
-          Area: answers.location ?? "—",
-          Experience: answers.experience ?? "—",
-          Goal: answers.goal ?? "—",
-          "Preferred Timing": answers.timing ?? "—",
-          "Preferred Start": answers.begin ?? "—",
+          Name: answers.name ?? "-",
+          WhatsApp: answers.phone ?? "-",
+          Email: answers.email ?? "-",
+          Instrument: answers.instrument ?? "-",
+          Mode: answers.mode ?? "-",
+          "Student Type": answers.who ?? "-",
+          Age: answers.childAge ?? "-",
+          Area: answers.location ?? "-",
+          Experience: answers.experience ?? "-",
+          Goal: answers.goal ?? "-",
+          "Preferred Timing": answers.timing ?? "-",
+          "Preferred Start": answers.begin ?? "-",
           Source: "Website onboarding",
         }),
       });
@@ -107,7 +107,7 @@ export function OnboardingFlow() {
 
   return (
     <div className="min-h-screen bg-ink text-paper lg:grid lg:grid-cols-[1fr_minmax(380px,440px)]">
-      {/* Main — question column */}
+      {/* Main - question column */}
       <main className="flex min-h-screen flex-col">
         {/* Top bar */}
         <div className="flex items-center justify-between gap-4 px-5 py-4 sm:px-8">
@@ -254,7 +254,7 @@ export function OnboardingFlow() {
         </div>
       </main>
 
-      {/* Aside — desktop trust panel */}
+      {/* Aside - desktop trust panel */}
       <aside className="relative hidden flex-col justify-between overflow-hidden bg-midnight p-10 lg:flex">
         <div aria-hidden="true" className="pointer-events-none absolute -right-20 top-0 h-80 w-80 rounded-full bg-deep-gold/15 blur-3xl" />
         <div className="relative">
@@ -296,7 +296,7 @@ function Intro({ onStart }: { onStart: () => void }) {
       <h1 className="mt-5 font-display text-3xl font-semibold leading-tight sm:text-5xl">
         Let&apos;s find your perfect music teacher.
       </h1>
-      <p className="mt-4 text-paper/65">A few quick questions — start in 30 seconds.</p>
+      <p className="mt-4 text-paper/65">A few quick questions - start in 30 seconds.</p>
       <button type="button" onClick={onStart} className="mt-8 min-h-[56px] w-full rounded-full bg-gold px-8 text-base font-semibold text-ink transition-transform active:scale-95 sm:w-auto sm:px-12">
         Begin
       </button>
@@ -381,7 +381,7 @@ function ContactStep({ data, set, onSubmit, submitting, error }: {
   const field = "min-h-[56px] w-full rounded-2xl border border-white/15 bg-white/5 px-5 text-base text-paper placeholder:text-paper/40 focus:border-gold/50 focus:outline-none";
   return (
     <div>
-      <h2 className="font-display text-2xl font-semibold leading-tight sm:text-3xl">Almost there — where do we reach you?</h2>
+      <h2 className="font-display text-2xl font-semibold leading-tight sm:text-3xl">Almost there - where do we reach you?</h2>
       <p className="mt-2 text-paper/60">We&apos;ll match you with a teacher and call back within 15 minutes.</p>
       <div className="mt-7 space-y-3">
         <input autoFocus value={data.name ?? ""} onChange={(e) => set("name", e.target.value)} placeholder="Full name" className={field} />
@@ -397,7 +397,7 @@ function ContactStep({ data, set, onSubmit, submitting, error }: {
         <div className="mt-4 rounded-2xl border border-red-400/30 bg-red-500/10 p-4 text-sm text-red-200">
           <p className="font-semibold">We couldn&apos;t send that just now.</p>
           <p className="mt-1 text-red-200/80">
-            Please try again — or reach us directly on{" "}
+            Please try again - or reach us directly on{" "}
             <a
               href={whatsappLink(leadSummary(data))}
               target="_blank"
@@ -433,7 +433,7 @@ function Analyzing({ onDone }: { answers: LeadData; onDone: () => void }) {
   const [checked, setChecked] = useState(0);
 
   // The lead is already submitted (awaited) on the contact step; this is the
-  // post-submit "finding your teacher" flourish only — no network here.
+  // post-submit "finding your teacher" flourish only - no network here.
   useEffect(() => {
     const timers = ANALYZE_ITEMS.map((_, i) => setTimeout(() => setChecked(i + 1), 500 + i * 450));
     const done = setTimeout(onDone, 500 + ANALYZE_ITEMS.length * 450 + 900);
@@ -475,7 +475,7 @@ function Success({ answers }: { answers: LeadData }) {
       </div>
       <h2 className="mt-6 font-display text-3xl font-semibold">Enquiry received{answers.name ? `, ${answers.name.split(" ")[0]}` : ""}.</h2>
       <p className="mt-3 text-paper/70">
-        Thank you — your details are with our team. A Musicphonetics advisor will
+        Thank you - your details are with our team. A Musicphonetics advisor will
         contact you shortly to confirm your trial and match you with the right
         teacher.
       </p>

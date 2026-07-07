@@ -49,8 +49,8 @@ export function FounderSection() {
               </p>
               <p>
                 After teaching more than {BRAND.studentsTaught} one-on-one
-                students across {BRAND.region} over a decade — children,
-                teenagers, and adults — one pattern became impossible to ignore.
+                students across {BRAND.region} over a decade - children,
+                teenagers, and adults - one pattern became impossible to ignore.
                 Great music education wasn&apos;t limited by talented teachers.
                 It was limited by inconsistent systems. Musicphonetics was built
                 to change that.

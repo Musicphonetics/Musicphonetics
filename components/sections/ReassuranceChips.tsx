@@ -3,7 +3,7 @@ import { Section } from "@/components/ui/Section";
 import { Reveal } from "@/components/ui/Reveal";
 
 // The depth (method, faculty rigour, standards) compressed to one scannable
-// line — each links to its full page for the rare digger + SEO.
+// line - each links to its full page for the rare digger + SEO.
 const CHIPS = [
   { label: "Structured method", href: "/method" },
   { label: "Verified faculty (7-stage)", href: "/teachers" },

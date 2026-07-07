@@ -22,14 +22,14 @@ export function TeachFinalCTA() {
           </h2>
           <p className="mx-auto mt-4 max-w-xl text-lg leading-relaxed text-paper/75">
             Bring the music. We&apos;ll bring the students, the structure, and the
-            pay — on time, every cycle.
+            pay - on time, every cycle.
           </p>
           <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
             <Button type="button" onClick={() => scrollToId("apply")} variant="light" size="lg">Apply to Teach</Button>
             <Button href={whatsappLink("Hi Musicphonetics, I have a question about teaching with you.")} external variant="secondary" size="lg" className="border-white/25 text-paper hover:border-white">Ask a question</Button>
           </div>
           <p className="mt-6 text-sm text-paper/50">
-            We review every application personally — and we reply immediately. Prefer to talk?{" "}
+            We review every application personally - and we reply immediately. Prefer to talk?{" "}
             <a href={phoneLink} className="font-semibold text-gold underline underline-offset-2">Call us</a>.
           </p>
         </div>

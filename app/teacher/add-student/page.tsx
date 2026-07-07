@@ -8,8 +8,8 @@ import { Field, Select, TextArea, MoneyField, Toast, Label } from "@/components/
 import { getSupabase } from "@/lib/supabase/client";
 
 const INSTRUMENTS = ["Guitar", "Piano", "Keyboard", "Vocals (Western)", "Vocals (Hindustani)", "Ukulele", "Drums", "Cajon", "Violin", "Music Theory"];
-const LEVELS = ["—", "Beginner", "Elementary", "Intermediate", "Advanced"];
-const MODES = ["—", "At home", "Online", "At the centre"];
+const LEVELS = ["-", "Beginner", "Elementary", "Intermediate", "Advanced"];
+const MODES = ["-", "At home", "Online", "At the centre"];
 const DAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 const STATUS = ["active", "trial", "paused"];
 
@@ -36,7 +36,7 @@ export default function AddStudent() {
     setBusy(true);
     const { data: u } = await getSupabase().auth.getUser();
     const uid = u.user?.id;
-    if (!uid) { setBusy(false); setToast({ kind: "error", message: "Session expired — sign in again." }); return; }
+    if (!uid) { setBusy(false); setToast({ kind: "error", message: "Session expired - sign in again." }); return; }
 
     // Teacher's suggested fee is captured in notes; fee_quoted stays owner-only.
     const notes = [
@@ -93,12 +93,12 @@ export default function AddStudent() {
 
         <SectionTitle>Learning</SectionTitle>
         <Select label="Instrument" value={f.instrument || "Guitar"} onChange={(v) => set("instrument", v)} options={INSTRUMENTS} />
-        <Select label="Level" value={f.level || "—"} onChange={(v) => set("level", v)} options={LEVELS} />
+        <Select label="Level" value={f.level || "-"} onChange={(v) => set("level", v)} options={LEVELS} />
         <Field label="Learning goal" value={f.learning_goal || ""} onChange={(v) => set("learning_goal", v)} />
         <TextArea label="Student profile" value={f.student_profile || ""} onChange={(v) => set("student_profile", v)} />
 
         <SectionTitle>Schedule</SectionTitle>
-        <Select label="Class mode" value={f.class_mode || "—"} onChange={(v) => set("class_mode", v)} options={MODES} />
+        <Select label="Class mode" value={f.class_mode || "-"} onChange={(v) => set("class_mode", v)} options={MODES} />
         <div>
           <Label>Class days <span className="font-normal text-ink/55">(select all that apply)</span></Label>
           <div className="flex flex-wrap gap-2">

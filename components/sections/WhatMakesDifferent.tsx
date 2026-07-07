@@ -4,13 +4,13 @@ import { TrustIcon } from "@/components/trust/TrustIcon";
 import type { TrustIconKey } from "@/lib/trust";
 
 const ITEMS: { title: string; body: string; icon: TrustIconKey }[] = [
-  { title: "Structured curriculum", body: "A defined, staged path — not scattered songs.", icon: "standards" },
+  { title: "Structured curriculum", body: "A defined, staged path - not scattered songs.", icon: "standards" },
   { title: "Teacher verification", body: "A seven-stage quality process before any class.", icon: "verify" },
   { title: "Personal progress tracking", body: "Every student's growth is mapped and visible.", icon: "assessment" },
   { title: "Parent communication", body: "Clear, consistent updates after classes.", icon: "support" },
   { title: "Monthly reporting", body: "Structured reports, not vague reassurances.", icon: "reports" },
   { title: "Performance opportunities", body: "Concerts, stages, and recitals built in.", icon: "performance" },
-  { title: "Community ecosystem", body: "Not one teacher — a connected community.", icon: "network" },
+  { title: "Community ecosystem", body: "Not one teacher - a connected community.", icon: "network" },
   { title: "Long-term learning", body: "Built for years of growth, not a few classes.", icon: "timeline" },
 ];
 

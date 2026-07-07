@@ -26,7 +26,7 @@ export function TrustCentre() {
             </h2>
             <p className="mt-5 max-w-2xl text-base leading-relaxed text-paper/70 sm:text-lg">
               Every class is backed by systems, documentation and
-              accountability. Great education isn&apos;t built on promises — it
+              accountability. Great education isn&apos;t built on promises - it
               is built on standards.
             </p>
           </div>

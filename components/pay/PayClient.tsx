@@ -5,13 +5,13 @@ import { useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/Button";
 import { Stave } from "@/components/ui/Stave";
 
-// Cashfree hosted Payment Form — collects name, phone, and amount on
+// Cashfree hosted Payment Form - collects name, phone, and amount on
 // Cashfree's secure page. Configure in the Cashfree dashboard:
 //   Redirect URL → https://musicphonetics.pages.dev/welcome
 //   Webhook URL  → https://musicphonetics.pages.dev/api/cashfree/webhook
 const CASHFREE_FORM_URL = "https://payments.cashfree.com/forms?code=musicphonetics";
 
-// Plan list prices (₹/month) — shown for context; ?amt= overrides for the
+// Plan list prices (₹/month) - shown for context; ?amt= overrides for the
 // personalised links the owner shares with new and existing students.
 const PLAN_AMOUNTS: Record<string, { name: string; amount: number }> = {
   foundation: { name: "Foundation", amount: 8000 },
@@ -46,7 +46,7 @@ export function PayClient() {
         )}
 
         <p className="mt-6 text-sm leading-relaxed text-paper/75">
-          You&apos;ll complete your payment on Cashfree&apos;s secure page — enter
+          You&apos;ll complete your payment on Cashfree&apos;s secure page - enter
           your name, phone, and the amount{amount > 0 ? ` (₹${amount.toLocaleString("en-IN")})` : ""} there.
         </p>
 

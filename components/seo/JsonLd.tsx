@@ -1,6 +1,6 @@
 /**
  * Renders a JSON-LD <script> tag for structured data.
- * Server component — safe to drop into any page or layout.
+ * Server component - safe to drop into any page or layout.
  */
 export function JsonLd({ data }: { data: object | object[] }) {
   return (

@@ -5,7 +5,7 @@ const STATS = [
   { value: "5.0★", label: "On Google reviews" },
 ];
 
-// Light band — deliberate contrast against the dark sections, and the numbers
+// Light band - deliberate contrast against the dark sections, and the numbers
 // that build instant credibility for a first-time visitor.
 export function StatsBand() {
   return (

@@ -10,7 +10,7 @@ export function Plans() {
     <Section id="plans" background="white" spacing="lg">
       <SectionHeading
         eyebrow="Plans & fees"
-        title="Premium, one-to-one — priced for it."
+        title="Premium, one-to-one - priced for it."
         intro="Musicphonetics is premium, one-to-one music education. Every plan is personalised on your free trial."
       />
 
@@ -82,10 +82,10 @@ export function Plans() {
         })}
       </div>
 
-      {/* Discount cue — no numbers, by design */}
+      {/* Discount cue - no numbers, by design */}
       <Reveal>
         <p className="mt-8 text-center text-sm text-ink/70">
-          You may be eligible for a special rate —{" "}
+          You may be eligible for a special rate -{" "}
           <a
             href={whatsappLink("Hi Musicphonetics, I'd like to book a free trial and ask about my rate.")}
             target="_blank"

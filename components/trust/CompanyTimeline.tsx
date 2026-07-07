@@ -8,7 +8,7 @@ export function CompanyTimeline() {
     <TrustSubsection
       eyebrow="Section 06 · Musicphonetics Timeline"
       title="From first students to a global roadmap."
-      intro="A company built year by year — with systems, not shortcuts."
+      intro="A company built year by year - with systems, not shortcuts."
       blueprint
     >
       <div className="relative mx-auto max-w-3xl">

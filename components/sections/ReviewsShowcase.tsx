@@ -144,7 +144,7 @@ export function ReviewsShowcase() {
             <div className="max-w-3xl">
               <p className="eyebrow">Loved by families</p>
               <h2 className="mt-3 font-display text-3xl font-semibold leading-tight text-ink sm:text-4xl lg:text-[2.85rem]">
-                Trusted across Delhi NCR — by defence officers, professionals,
+                Trusted across Delhi NCR - by defence officers, professionals,
                 and discerning parents.
               </h2>
             </div>
@@ -218,7 +218,7 @@ export function ReviewsShowcase() {
               and trust.
             </h3>
 
-            {/* Typographic rank badges — no insignia */}
+            {/* Typographic rank badges - no insignia */}
             <div className="mt-10 flex flex-wrap items-center justify-center gap-3 sm:gap-4">
               {RANKS.map((rank) => (
                 <span
@@ -346,7 +346,7 @@ export function ReviewsShowcase() {
         </div>
       </div>
 
-      {/* 7 · Video stories — hidden until real videos exist (renders null for now) */}
+      {/* 7 · Video stories - hidden until real videos exist (renders null for now) */}
       <ReviewVideos />
 
       {/* 8 · CTA */}
@@ -357,7 +357,7 @@ export function ReviewsShowcase() {
               See why families stay.
             </h3>
             <p className="mx-auto mt-4 max-w-xl text-lg leading-relaxed text-paper/75">
-              Start with a free trial class — no commitment, just an honest first
+              Start with a free trial class - no commitment, just an honest first
               lesson.
             </p>
             <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">

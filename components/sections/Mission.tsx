@@ -10,7 +10,7 @@ export function Mission() {
         </Reveal>
         <Reveal delay={100}>
           <p className="mt-6 font-display text-2xl font-medium leading-[1.4] text-ink sm:text-[2rem] sm:leading-[1.4]">
-            To give every learner a teacher, a structure, and a path — so that
+            To give every learner a teacher, a structure, and a path - so that
             music never feels random, and progress never depends on luck.
           </p>
         </Reveal>
@@ -18,7 +18,7 @@ export function Mission() {
           <p className="mx-auto mt-8 max-w-xl text-base leading-relaxed text-ink/65 sm:text-lg">
             Musicphonetics is an education-first music company founded in India,
             built for structured music learning across cities, countries, and
-            online classrooms — designed to last for decades, not seasons.
+            online classrooms - designed to last for decades, not seasons.
           </p>
         </Reveal>
       </div>

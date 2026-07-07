@@ -20,7 +20,7 @@ export default function ContactPage() {
       <PageHero
         eyebrow="Contact"
         title="Let's find the right path for you."
-        intro="The fastest way to begin is a short WhatsApp conversation. Tell us who the classes are for and your goal — we'll guide you from there."
+        intro="The fastest way to begin is a short WhatsApp conversation. Tell us who the classes are for and your goal - we'll guide you from there."
       >
         <Button href={whatsappLink()} external variant="primary" size="lg">
           Message us on WhatsApp
@@ -37,7 +37,7 @@ export default function ContactPage() {
               </h2>
               <ol className="mt-5 space-y-4">
                 {[
-                  "A short, guided conversation — about a minute.",
+                  "A short, guided conversation - about a minute.",
                   "A recommendation for the right teacher, format, and plan.",
                   "Personal confirmation of fee, slot, and teacher by our team.",
                 ].map((step, i) => (

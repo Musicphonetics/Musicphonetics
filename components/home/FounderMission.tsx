@@ -17,7 +17,7 @@ export function FounderMission() {
             <p className="mt-5 text-base leading-relaxed text-paper/75 sm:text-lg">
               Musicphonetics was built to solve one problem: music classes often become
               random. Students learn songs, but not always structure, confidence, rhythm,
-              theory or long-term direction. Our goal is to give every student a clear path —
+              theory or long-term direction. Our goal is to give every student a clear path -
               from first notes to confident performance.
             </p>
           </Reveal>

@@ -79,7 +79,7 @@ export function SampleReport() {
         </div>
       </figure>
       <figcaption className="mt-4 text-center text-sm text-ink/55">
-        Sample report — what parents receive every month. Content is illustrative;
+        Sample report - what parents receive every month. Content is illustrative;
         every student differs.
       </figcaption>
     </Reveal>

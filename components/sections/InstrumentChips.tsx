@@ -2,7 +2,7 @@ import Link from "next/link";
 import { InstrumentIcon, type InstrumentKey } from "@/components/ui/InstrumentIcon";
 
 /**
- * Hero instrument picker — premium cards.
+ * Hero instrument picker - premium cards.
  * Each card navigates straight to onboarding, deep-linked to the instrument
  * (no input, no dropdown). "More" opens the full instrument step.
  * (Photos can be layered in later when student/instrument imagery is added.)

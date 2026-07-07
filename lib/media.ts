@@ -118,18 +118,18 @@ export const FOUNDER_GALLERY: MediaImage[] = [
 ];
 
 
-// YouTube Shorts — performances ("See us in action"). Facade-loaded on click.
+// YouTube Shorts - performances ("See us in action"). Facade-loaded on click.
 export type Performance = { id: string; title: string };
 export const PERFORMANCES: Performance[] = [
-  { id: "zkuY5IqfPLc", title: "Musicphonetics live performance — clip 1" },
-  { id: "xWbCNL5_g28", title: "Musicphonetics live performance — clip 2" },
-  { id: "ah37-laIgPE", title: "Musicphonetics live performance — clip 3" },
-  { id: "JXMBwmfg6n0", title: "Musicphonetics live performance — clip 4" },
-  { id: "SpoBsHsUOuo", title: "Musicphonetics live performance — clip 5" },
-  { id: "n4kcHxFJxhA", title: "Musicphonetics live performance — clip 6" },
+  { id: "zkuY5IqfPLc", title: "Musicphonetics live performance - clip 1" },
+  { id: "xWbCNL5_g28", title: "Musicphonetics live performance - clip 2" },
+  { id: "ah37-laIgPE", title: "Musicphonetics live performance - clip 3" },
+  { id: "JXMBwmfg6n0", title: "Musicphonetics live performance - clip 4" },
+  { id: "SpoBsHsUOuo", title: "Musicphonetics live performance - clip 5" },
+  { id: "n4kcHxFJxhA", title: "Musicphonetics live performance - clip 6" },
 ];
 
-// Homepage hero — real students together (Dec 2025). Swap the file at
+// Homepage hero - real students together (Dec 2025). Swap the file at
 // /public/images/students/hero.webp to update.
 export const HERO_STUDENTS: MediaImage = {
   src: "/images/students/hero.webp",

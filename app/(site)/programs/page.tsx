@@ -48,7 +48,7 @@ const PROGRAM_DETAILS: ProgramDetail[] = [
     title: "The Director's Circle",
     status: "Premium",
     statusTone: "green",
-    body: "Learn directly from Director Abhishek by prior booking — for serious learners who want the highest standard from day one.",
+    body: "Learn directly from Director Abhishek by prior booking - for serious learners who want the highest standard from day one.",
     points: ["Faculty-led classes", "By prior booking", "Highest standard"],
   },
   {
@@ -62,7 +62,7 @@ const PROGRAM_DETAILS: ProgramDetail[] = [
     title: "Workshops & Camps",
     status: "Seasonal",
     statusTone: "muted",
-    body: "Focused seasonal programs — summer batches, performance preparation, and short intensives announced through the year.",
+    body: "Focused seasonal programs - summer batches, performance preparation, and short intensives announced through the year.",
     points: ["Summer batches", "Performance prep", "Short intensives"],
   },
 ];
@@ -120,7 +120,7 @@ export default function ProgramsPage() {
               <span className="font-semibold text-ink">Future-ready: </span>
               Group and academy programs open based on demand, batch size,
               location, and teacher availability. Our current primary route is
-              one-to-one personal learning — but the brand is built to expand.
+              one-to-one personal learning - but the brand is built to expand.
             </p>
           </div>
         </Reveal>

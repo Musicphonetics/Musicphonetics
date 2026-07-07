@@ -72,13 +72,13 @@ export default function ClassUpdatePage() {
             <select value={sid} onChange={(e) => setSid(e.target.value)}
               className="w-full rounded-xl border border-hairline bg-white px-4 py-3.5 text-base focus-visible:outline-2 focus-visible:outline-gold focus:outline-none">
               <option value="">Select a student…</option>
-              {students.map((s) => <option key={s.student_id} value={s.student_id}>{s.name} · {s.instrument || "—"}</option>)}
+              {students.map((s) => <option key={s.student_id} value={s.student_id}>{s.name} · {s.instrument || "-"}</option>)}
             </select>
           </label>
 
           {picked && (
             <div className="grid grid-cols-3 gap-2 rounded-xl bg-mist p-3 text-center text-xs">
-              <div><p className="font-semibold text-ink">{picked.level || "—"}</p><p className="text-ink/55">Level</p></div>
+              <div><p className="font-semibold text-ink">{picked.level || "-"}</p><p className="text-ink/55">Level</p></div>
               <div><p className="font-semibold text-ink">{picked.classes_completed}</p><p className="text-ink/55">Completed</p></div>
               <div><p className="font-semibold text-ink">{picked.classes_remaining}</p><p className="text-ink/55">Remaining</p></div>
             </div>

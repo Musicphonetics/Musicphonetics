@@ -187,7 +187,7 @@ Every student deserves structured, personal guidance from the very beginning.`}
           <code className="rounded bg-mist px-1 py-0.5">package_selected</code>.
         </p>
         <CopyBlock title="Packages message">
-{`Great! Here's how students begin with us — three simple ways:
+{`Great! Here's how students begin with us - three simple ways:
 
 A · The Foundation
 Steady start, trained teacher, two classes a week.
@@ -195,7 +195,7 @@ Rs 1,200/class · Rs 9,600/mo
 
 B · The Transformation (most chosen)
 Everything in Foundation, plus our Director from day one + a monthly session with him.
-Rs 1,500/class · Rs 12,000/mo — about Rs 50 a day.
+Rs 1,500/class · Rs 12,000/mo - about Rs 50 a day.
 
 C · The Director's Circle
 Learn from the Director himself, by prior booking.
@@ -226,7 +226,7 @@ Rs 2,800/class · Rs 20,000 for 8.`}
       <BotCard code="BOT_06" title="Director" badge="Human confirmation">
         <p>
           Director Abhishek provides human confirmation of the final fee,
-          teacher, slot, and booking — the only stage where these are locked in.
+          teacher, slot, and booking - the only stage where these are locked in.
         </p>
       </BotCard>
     </div>

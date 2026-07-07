@@ -4,9 +4,9 @@ import { Button } from "@/components/ui/Button";
 import { GOOGLE_BUSINESS } from "@/lib/data";
 
 /**
- * "Find us on Google" — a third-party trust signal a cold visitor can verify
+ * "Find us on Google" - a third-party trust signal a cold visitor can verify
  * independently. Renders NOTHING until a Google Business Profile URL is set in
- * GOOGLE_BUSINESS (lib/data.ts) — no placeholder, no fake rating.
+ * GOOGLE_BUSINESS (lib/data.ts) - no placeholder, no fake rating.
  */
 export function GoogleBusiness() {
   const { profileUrl, reviewUrl, mapEmbedSrc } = GOOGLE_BUSINESS;
@@ -17,13 +17,13 @@ export function GoogleBusiness() {
       <SectionHeading
         eyebrow="Verified on Google"
         title="Check us for yourself."
-        intro="Real, independent reviews on our Google Business Profile — the trust signal you can verify without taking our word for it."
+        intro="Real, independent reviews on our Google Business Profile - the trust signal you can verify without taking our word for it."
       />
       <div className="mt-10 grid gap-6 lg:grid-cols-[1fr_1.1fr] lg:items-stretch">
         <Reveal>
           <div className="flex h-full flex-col justify-center rounded-3xl border border-hairline bg-paper p-8">
             <p className="text-sm leading-relaxed text-ink/70">
-              See our reviews, photos, and location on Google — and, if we&apos;ve
+              See our reviews, photos, and location on Google - and, if we&apos;ve
               taught your family, we&apos;d be grateful for a review.
             </p>
             <div className="mt-6 flex flex-col gap-3 sm:flex-row">

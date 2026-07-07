@@ -8,7 +8,7 @@ export function ScopeOfWork() {
       <SectionHeading
         eyebrow="Scope of work"
         title="Exactly what the role is."
-        intro="No ambiguity. This is the whole job — nothing hidden, nothing added later."
+        intro="No ambiguity. This is the whole job - nothing hidden, nothing added later."
       />
       <div className="mt-10 grid gap-4 sm:grid-cols-2">
         {SCOPE.map((s, i) => (

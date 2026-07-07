@@ -1,5 +1,5 @@
 // ============================================================================
-// Musicphonetics — Teachers & Regions (discovery model)
+// Musicphonetics - Teachers & Regions (discovery model)
 // Built to scale to many teachers across regions without UX change.
 // Sample teacher details (realistic) until verified real profiles are added.
 // ============================================================================

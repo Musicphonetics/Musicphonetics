@@ -8,9 +8,9 @@ export function MarketingPanel() {
   const withLeads = sources.filter((s) => s.count > 0);
   const maxCount = Math.max(...sources.map((s) => s.count), 1);
 
-  const topSource = withLeads[0]?.source ?? "—";
+  const topSource = withLeads[0]?.source ?? "-";
 
-  // Conversion by source (converted / total) — demo computation
+  // Conversion by source (converted / total) - demo computation
   const converted = MOCK_PEOPLE.filter((p) => p.currentStatus === "Converted");
   const convBySource = new Map<string, number>();
   converted.forEach((p) =>
@@ -70,7 +70,7 @@ export function MarketingPanel() {
         </ul>
       </div>
 
-      {/* Conversion by source — placeholder */}
+      {/* Conversion by source - placeholder */}
       <div className="rounded-2xl border border-hairline bg-white p-6 shadow-card">
         <div className="flex items-center justify-between">
           <h2 className="text-base font-semibold text-ink">Conversion by source</h2>

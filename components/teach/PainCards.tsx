@@ -2,9 +2,9 @@ import { Section, SectionHeading } from "@/components/ui/Section";
 import { MotionReveal } from "./MotionReveal";
 
 const PAINS = [
-  { title: "Forever finding students", body: "Every month starts at zero — chasing leads, posting ads, replacing the ones who drift away." },
+  { title: "Forever finding students", body: "Every month starts at zero - chasing leads, posting ads, replacing the ones who drift away." },
   { title: "Late, unpredictable pay", body: "Cash that arrives whenever, if it arrives. No structure, no certainty, no leverage." },
-  { title: "You're the whole business", body: "Teacher, salesperson, accountant, scheduler, and support desk — all at once, all unpaid." },
+  { title: "You're the whole business", body: "Teacher, salesperson, accountant, scheduler, and support desk - all at once, all unpaid." },
 ];
 
 export function PainCards() {

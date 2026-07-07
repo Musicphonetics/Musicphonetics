@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils";
 
 type Cat = "Retailers" | "Collaborators";
 
-// Genuine local relationships only — no brand logos we don't have formal deals with.
+// Genuine local relationships only - no brand logos we don't have formal deals with.
 const PARTNERS: { name: string; cat: Cat }[] = [
   { name: "Raj Musicals", cat: "Retailers" },
   { name: "Bhatia Musicals", cat: "Retailers" },

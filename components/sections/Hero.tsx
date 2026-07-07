@@ -21,7 +21,7 @@ export function Hero() {
 
       <div className="container-mp relative z-10 py-24 text-center">
         <Reveal>
-          {/* Scripture — tasteful, restrained */}
+          {/* Scripture - tasteful, restrained */}
           <figure className="mx-auto max-w-xl">
             <blockquote className="font-display text-base italic leading-relaxed text-paper/65 sm:text-lg">
               “Train up a child in the way he should go; even when he is old he
@@ -42,7 +42,7 @@ export function Hero() {
 
         <Reveal delay={200}>
           <p className="mx-auto mt-6 max-w-lg text-base leading-relaxed text-paper/75 sm:text-lg">
-            Premium one-to-one music classes — guitar, piano, keyboard, and
+            Premium one-to-one music classes - guitar, piano, keyboard, and
             vocals. Home &amp; online, with trained teachers and real student
             growth.
           </p>

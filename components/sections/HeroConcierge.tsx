@@ -130,7 +130,7 @@ export function HeroConcierge() {
             </motion.h1>
 
             <motion.p {...rise(0.15)} className="order-3 mt-5 max-w-md text-base leading-relaxed text-paper/80 sm:text-lg">
-              Personalized music education for children and adults — home lessons,
+              Personalised music education for children and adults - home lessons,
               online learning, and our premium South Delhi centre.
             </motion.p>
 

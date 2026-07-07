@@ -45,7 +45,7 @@ export function NonNegotiable() {
             </div>
             <p className="mt-4 text-xs leading-relaxed text-paper/50">
               The 6-month non-solicitation covers our students, parents, materials
-              and contacts — not your right to teach elsewhere. Full clauses are
+              and contacts - not your right to teach elsewhere. Full clauses are
               published and{" "}
               <Link href="/teach-with-us/terms" className="underline underline-offset-2 hover:text-paper/80">
                 independently reviewable

@@ -32,7 +32,7 @@ export function Ecosystem() {
       <SectionHeading
         eyebrow="Why teach with us"
         title={<>A solo tutor builds everything alone. Here, it&apos;s already built.</>}
-        intro="Finding students, chasing payments, having no brand and no backup — that's the solo grind. Step into a decade-old ecosystem instead, and just teach."
+        intro="Finding students, chasing payments, having no brand and no backup - that's the solo grind. Step into a decade-old ecosystem instead, and just teach."
       />
 
       <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -49,7 +49,7 @@ export function Ecosystem() {
         ))}
       </div>
 
-      {/* Partner + social proof slots — degrade gracefully when logos aren't in yet */}
+      {/* Partner + social proof slots - degrade gracefully when logos aren't in yet */}
       <Reveal delay={120}>
         <div className="mt-12 rounded-3xl border border-hairline bg-white/60 p-6 sm:p-8">
           <p className="text-center text-xs font-semibold uppercase tracking-[0.16em] text-ink/55">
@@ -57,7 +57,7 @@ export function Ecosystem() {
           </p>
           <div className="mt-5 flex flex-wrap items-center justify-center gap-x-8 gap-y-4">
             {PARTNER_SLOTS.map((p) => (
-              // PARTNER_LOGO slot — replace this text chip with a monochrome logo
+              // PARTNER_LOGO slot - replace this text chip with a monochrome logo
               // (greyscale-to-colour on hover) once the asset is supplied.
               <div key={p.name} className="text-center">
                 <span className="font-display text-lg font-semibold text-ink/70">{p.name}</span>
@@ -70,7 +70,7 @@ export function Ecosystem() {
             <a href={INSTAGRAM_URL} target="_blank" rel="noopener noreferrer" className="font-semibold text-[#7A5E0F] underline underline-offset-2">
               Instagram
             </a>{" "}
-            — YouTube, WhatsApp channel and website features roll out to every teacher.
+            - YouTube, WhatsApp channel and website features roll out to every teacher.
           </p>
         </div>
       </Reveal>

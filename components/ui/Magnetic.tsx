@@ -3,7 +3,7 @@
 import { useRef, type ReactNode } from "react";
 
 /**
- * Magnetic hover wrapper — child gently follows the cursor on pointer devices.
+ * Magnetic hover wrapper - child gently follows the cursor on pointer devices.
  * No-op on touch and under reduced-motion (transition handles the spring).
  */
 export function Magnetic({

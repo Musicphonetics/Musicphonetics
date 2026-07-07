@@ -1,5 +1,5 @@
 // ============================================================================
-// Musicphonetics — Geography (hero map + India→world roadmap)
+// Musicphonetics - Geography (hero map + India→world roadmap)
 // Coordinates are stylised percentages on the hero's map stage (not exact
 // cartography). North cities sit higher, southern cities lower, roughly
 // echoing India's shape, then a wider field for the global phase.
@@ -11,7 +11,7 @@ export interface City {
   y: number;
 }
 
-// Indian cities — golden light points that rise in the hero.
+// Indian cities - golden light points that rise in the hero.
 export const INDIA_CITIES: City[] = [
   { name: "Chandigarh", x: 50, y: 18 },
   { name: "Delhi", x: 51, y: 28 },
@@ -29,7 +29,7 @@ export const INDIA_CITIES: City[] = [
   { name: "Kochi", x: 47, y: 84 },
 ];
 
-// Global cities — lights that appear as the camera zooms out.
+// Global cities - lights that appear as the camera zooms out.
 export const GLOBAL_CITIES: City[] = [
   { name: "Toronto", x: 16, y: 34 },
   { name: "London", x: 44, y: 28 },

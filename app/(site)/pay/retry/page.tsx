@@ -21,16 +21,16 @@ export default function PayRetryPage() {
           <h1 className="mt-5 font-display text-2xl font-semibold">That payment didn&apos;t complete.</h1>
           <p className="mt-3 text-sm leading-relaxed text-paper/70">
             No money moves on an incomplete payment. You can try again in a
-            minute — or message us and we&apos;ll sort it out together.
+            minute - or message us and we&apos;ll sort it out together.
           </p>
           <div className="mt-6 flex flex-col gap-3">
             <Button href="/pay" variant="light" size="lg" fullWidth>Try again</Button>
             <Button href="/support" variant="secondary" size="lg" fullWidth className="border-white/25 text-paper hover:border-white">
-              Get help — we reply immediately
+              Get help - we reply immediately
             </Button>
           </div>
           <p className="mt-5 text-xs text-paper/50">
-            Charged but seeing this page? Don&apos;t pay twice — <Link href="/support" className="text-gold underline underline-offset-2">contact us</Link> and we&apos;ll verify it instantly.
+            Charged but seeing this page? Don&apos;t pay twice - <Link href="/support" className="text-gold underline underline-offset-2">contact us</Link> and we&apos;ll verify it instantly.
           </p>
         </div>
       </div>

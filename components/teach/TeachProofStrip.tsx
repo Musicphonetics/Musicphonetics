@@ -18,7 +18,7 @@ export function TeachProofStrip() {
       <Reveal delay={120}>
         <p className="mx-auto mt-10 max-w-3xl text-center text-sm leading-relaxed text-paper/70">
           Recognised with Trinity College London. Government-registered and
-          standardised — every process, contract and safeguarding norm is already
+          standardised - every process, contract and safeguarding norm is already
           in place, so you walk into a system, not a start-up.
         </p>
       </Reveal>

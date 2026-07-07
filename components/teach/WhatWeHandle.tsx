@@ -5,7 +5,7 @@ const ITEMS = [
   { title: "Students", body: "We bring matched, qualified students to you." },
   { title: "Parents", body: "We manage updates, expectations, and communication." },
   { title: "Payments", body: "Collected, reconciled, and paid to you on time." },
-  { title: "Scheduling", body: "Slots, reminders, and rescheduling — handled." },
+  { title: "Scheduling", body: "Slots, reminders, and rescheduling - handled." },
   { title: "Method", body: "A structured curriculum so you never improvise alone." },
   { title: "Standards", body: "Twenty-three documented standards behind every class." },
   { title: "Stage", body: "Concerts and performances we organise for your students." },

@@ -1,7 +1,7 @@
 "use client";
 
 // ============================================================================
-// Musicphonetics — Admin Auth (v1, demo only)
+// Musicphonetics - Admin Auth (v1, demo only)
 // Simple client-side password gate using sessionStorage. NOT real security.
 //
 // TODO(integration): replace with real authentication (e.g. Supabase Auth,

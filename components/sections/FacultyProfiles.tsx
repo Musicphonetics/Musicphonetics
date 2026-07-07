@@ -2,7 +2,7 @@ import Image from "next/image";
 import { Section, SectionHeading } from "@/components/ui/Section";
 import { Reveal } from "@/components/ui/Reveal";
 
-// M6 — real faculty only. This array is intentionally EMPTY: the section renders
+// M6 - real faculty only. This array is intentionally EMPTY: the section renders
 // nothing until real teachers are added (never a placeholder / "coming soon").
 // Add entries here (with a real photo in /public/images/faculty/) and the grid
 // appears automatically below the 7-stage selection section.

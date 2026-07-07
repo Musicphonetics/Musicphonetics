@@ -103,8 +103,8 @@ export function PeopleTable() {
             <Td>{p.area}</Td>
             <Td>{p.experience}</Td>
             <Td className="max-w-[200px] whitespace-normal text-ink/60">{p.goal}</Td>
-            <Td>{p.recommendedPath || "—"}</Td>
-            <Td>{p.selectedPackage || "—"}</Td>
+            <Td>{p.recommendedPath || "-"}</Td>
+            <Td>{p.selectedPackage || "-"}</Td>
             <Td>
               <StatusPill tone={toneForStatus(p.currentStatus)}>
                 {p.currentStatus}

@@ -24,11 +24,11 @@ export const metadata: Metadata = {
   metadataBase: new URL("https://musicphonetics.com"),
   title: {
     default:
-      "Musicphonetics — Structured, faculty-led music classes in Delhi NCR (home & online)",
+      "Musicphonetics - Structured, faculty-led music classes in Delhi NCR (home & online)",
     template: "%s · Musicphonetics",
   },
   description:
-    "Structured, faculty-led music classes across Delhi NCR — guitar, piano, keyboard, vocals & more, at home or online. Book a free trial; we reply immediately.",
+    "Structured, faculty-led music classes across Delhi NCR - guitar, piano, keyboard, vocals & more, at home or online. Book a free trial; we reply immediately.",
   alternates: { canonical: "/" },
   manifest: "/manifest.webmanifest",
   appleWebApp: { capable: true, statusBarStyle: "black-translucent", title: "Teacher OS" },
@@ -36,7 +36,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Music education, built like an institution.",
     description:
-      "Structured, faculty-led music classes across Delhi NCR — at home and online. Book a free trial, no commitment.",
+      "Structured, faculty-led music classes across Delhi NCR - at home and online. Book a free trial, no commitment.",
     type: "website",
     siteName: "Musicphonetics",
     locale: "en_IN",
@@ -46,7 +46,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Music education, built like an institution.",
     description:
-      "Structured, faculty-led music classes across Delhi NCR — at home and online.",
+      "Structured, faculty-led music classes across Delhi NCR - at home and online.",
     images: [OG_IMAGE],
   },
 };
@@ -65,7 +65,7 @@ export default function RootLayout({
     <html lang="en" className={`${display.variable} ${body.variable}`}>
       <body>
         {/* Preload the first hero image so it's ready the instant the intro
-            flash lifts — critical for the reel-first opening. */}
+            flash lifts - critical for the reel-first opening. */}
         {/* eslint-disable-next-line @next/next/no-page-custom-font */}
         <link rel="preload" as="image" href="/images/hero/slide-1.webp" fetchPriority="high" />
         {/* Mark that JS is available so scroll-reveal styles apply; without this

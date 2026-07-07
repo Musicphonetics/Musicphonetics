@@ -2,11 +2,11 @@ import { Section, SectionHeading } from "@/components/ui/Section";
 import { Reveal } from "@/components/ui/Reveal";
 import { ImagePlaceholder } from "@/components/ui/ImagePlaceholder";
 
-// Real experiences that happen after joining — stated factually, no
+// Real experiences that happen after joining - stated factually, no
 // "Coming Soon" tiles. Real student/film stories slot in here as they're filmed.
 const EXPERIENCES: { title: string; line: string; tag: string }[] = [
-  { title: "Monthly Home Concerts", line: "Students perform for family at home — confidence built one evening at a time.", tag: "Performance" },
-  { title: "Quarterly Stage Performances", line: "Real auditoriums and audiences — composure that exam rooms can't teach.", tag: "Performance" },
+  { title: "Monthly Home Concerts", line: "Students perform for family at home - confidence built one evening at a time.", tag: "Performance" },
+  { title: "Quarterly Stage Performances", line: "Real auditoriums and audiences - composure that exam rooms can't teach.", tag: "Performance" },
   { title: "Annual Musicphonetics Awards", line: "A celebration of a year's growth, with certificates, guests, and families.", tag: "Celebration" },
   { title: "Director Sessions", line: "Direct mentoring that keeps students inspired between weekly classes.", tag: "Mentoring" },
   { title: "Student Collaborations", line: "Playing alongside peers builds listening, discipline, and belonging.", tag: "Community" },
@@ -18,7 +18,7 @@ export function Stories() {
       <SectionHeading
         eyebrow="Beyond the lessons"
         title="What happens after you join."
-        intro="Music education isn't a class on a calendar — it's a year of growth, performance, and family moments. This is the culture every student becomes part of."
+        intro="Music education isn't a class on a calendar - it's a year of growth, performance, and family moments. This is the culture every student becomes part of."
         invert
       />
 
@@ -35,7 +35,7 @@ export function Stories() {
               A weekly class becomes part of who a child is.
             </h3>
             <p className="mt-3 text-paper/70">
-              Practice, performance, and quiet confidence — built over months and
+              Practice, performance, and quiet confidence - built over months and
               years, and shared with the people who matter most.
             </p>
           </div>

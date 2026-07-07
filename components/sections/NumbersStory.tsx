@@ -4,7 +4,7 @@ import { CountUp } from "@/components/ui/CountUp";
 
 const NUMBERS = [
   { value: 10, suffix: "+", label: "Years teaching", note: "A decade refining how music is actually taught." },
-  { value: 1100, suffix: "+", label: "Students taught", note: "Children, teenagers, and adults — personally." },
+  { value: 1100, suffix: "+", label: "Students taught", note: "Children, teenagers, and adults - personally." },
   { value: 8, suffix: "", label: "Classes / cycle", note: "A steady monthly rhythm that builds momentum." },
   { value: 4, suffix: "", label: "Core learning tracks", note: "Foundation, Fluency, Performance, Mastery." },
   { value: 3, suffix: "", label: "Learning formats", note: "Home, online, and future academy pathways." },

@@ -64,7 +64,7 @@ export function Select({
     <label className="block">
       <Label req={req}>{label}</Label>
       <select className={inputBase} value={value} onChange={(e) => onChange(e.target.value)}>
-        {options.map((o) => <option key={o} value={o === "—" ? "" : o}>{o}</option>)}
+        {options.map((o) => <option key={o} value={o === "-" ? "" : o}>{o}</option>)}
       </select>
     </label>
   );

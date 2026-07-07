@@ -54,7 +54,7 @@ export function Ecosystem() {
             </h2>
             <p className="mt-4 text-base leading-relaxed text-paper/70">
               Education is the centre. Over time, everything else connects to it.
-              Hover any node to explore — some are real today, others are part of
+              Hover any node to explore - some are real today, others are part of
               the long-term vision.
             </p>
           </div>

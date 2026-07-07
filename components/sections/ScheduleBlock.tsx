@@ -10,7 +10,7 @@ const FACTS = [
 
 const STEPS = [
   { n: 1, t: "Message us", d: "Tell us the instrument and who it's for." },
-  { n: 2, t: "Free trial with a matched teacher", d: "Meet a teacher chosen for the student — no commitment." },
+  { n: 2, t: "Free trial with a matched teacher", d: "Meet a teacher chosen for the student - no commitment." },
   { n: 3, t: "Your personalised plan", d: "We confirm slot, faculty, and plan on the trial." },
 ];
 

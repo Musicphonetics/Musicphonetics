@@ -4,8 +4,8 @@ import { useEffect, useRef, useState } from "react";
 import { Section, SectionHeading } from "@/components/ui/Section";
 import { cn } from "@/lib/utils";
 
-// Qualitative ability (0–100) per month. Illustrates the *principle* that
-// consistent, structured practice compounds — no fabricated metrics.
+// Qualitative ability (0-100) per month. Illustrates the *principle* that
+// consistent, structured practice compounds - no fabricated metrics.
 const STRUCTURED = [2, 8, 14, 22, 31, 41, 52, 62, 71, 79, 85, 90, 94];
 const RANDOM = [2, 5, 8, 11, 14, 16, 19, 21, 23, 25, 27, 29, 31];
 
@@ -59,7 +59,7 @@ export function Compounding() {
             Small lessons. <span className="mp-shimmer">Massive growth.</span>
           </>
         }
-        intro="Structured, consistent practice doesn't add up — it compounds. The gap between scattered learning and a real method widens every single month."
+        intro="Structured, consistent practice doesn't add up - it compounds. The gap between scattered learning and a real method widens every single month."
         invert
       />
 

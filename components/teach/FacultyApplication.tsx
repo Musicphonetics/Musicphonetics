@@ -8,7 +8,7 @@ import { INSTRUMENTS } from "@/lib/teach-config";
 import { cn } from "@/lib/utils";
 
 // Same Web3Forms inbox as the student lead form; the subject line marks it as
-// a faculty application. Web3Forms access keys are public by design — no secret
+// a faculty application. Web3Forms access keys are public by design - no secret
 // is exposed. We deliberately do NOT collect Aadhaar numbers or bank details on
 // this public page; those are gathered securely AFTER selection.
 const WEB3FORMS_ACCESS_KEY = "1a5d9694-46b9-4236-8ced-1b68b65b5097";
@@ -102,40 +102,40 @@ export function FacultyApplication() {
         headers: { "Content-Type": "application/json", Accept: "application/json" },
         body: JSON.stringify({
           access_key: WEB3FORMS_ACCESS_KEY,
-          subject: `New Faculty Application — ${f.fullName} (${f.instruments.join(", ") || "—"})`,
+          subject: `New Faculty Application - ${f.fullName} (${f.instruments.join(", ") || "-"})`,
           from_name: "Musicphonetics Careers",
           botcheck: "",
           email: f.email,
           Name: f.fullName,
           "Date of birth": f.dob,
-          Gender: f.gender || "—",
+          Gender: f.gender || "-",
           City: f.city,
           Address: f.address,
           Phone: f.phone,
           Email: f.email,
-          Languages: f.languages || "—",
-          Instruments: f.instruments.join(", ") || "—",
-          "Years teaching": f.yearsTeaching || "—",
-          "Years performing": f.yearsPerforming || "—",
-          Qualification: f.qualification || "—",
-          Grade: f.grade || "—",
-          "Teaching philosophy": f.philosophy || "—",
-          Commitment: f.commitment || "—",
-          "Days available": f.days.join(", ") || "—",
-          "Time bands": f.timeBands.join(", ") || "—",
-          "Teaching modes": f.modes.join(", ") || "—",
-          "Areas covered": f.areas.join(", ") || "—",
-          "Own transport": f.transport || "—",
-          YouTube: f.youtube || "—",
-          Instagram: f.instagram || "—",
-          Website: f.website || "—",
-          "Demo link": f.demo || "—",
-          "Reference 1": f.ref1Name ? `${f.ref1Name} · ${f.ref1Phone}` : "—",
-          "Reference 2": f.ref2Name ? `${f.ref2Name} · ${f.ref2Phone}` : "—",
+          Languages: f.languages || "-",
+          Instruments: f.instruments.join(", ") || "-",
+          "Years teaching": f.yearsTeaching || "-",
+          "Years performing": f.yearsPerforming || "-",
+          Qualification: f.qualification || "-",
+          Grade: f.grade || "-",
+          "Teaching philosophy": f.philosophy || "-",
+          Commitment: f.commitment || "-",
+          "Days available": f.days.join(", ") || "-",
+          "Time bands": f.timeBands.join(", ") || "-",
+          "Teaching modes": f.modes.join(", ") || "-",
+          "Areas covered": f.areas.join(", ") || "-",
+          "Own transport": f.transport || "-",
+          YouTube: f.youtube || "-",
+          Instagram: f.instagram || "-",
+          Website: f.website || "-",
+          "Demo link": f.demo || "-",
+          "Reference 1": f.ref1Name ? `${f.ref1Name} · ${f.ref1Phone}` : "-",
+          "Reference 2": f.ref2Name ? `${f.ref2Name} · ${f.ref2Phone}` : "-",
           "ID + verification consent": f.idConsent ? "Yes" : "No",
           "Accepted terms (70/30, daily sheet, safeguarding, non-solicit)":
             [f.cTerms, f.cSheet, f.cSafeguard, f.cNonSolicit].every(Boolean) ? "All accepted" : "Incomplete",
-          "Why join": f.whyJoin || "—",
+          "Why join": f.whyJoin || "-",
         }),
       });
       const data = (await res.json().catch(() => ({ success: false }))) as { success?: boolean };
@@ -155,7 +155,7 @@ export function FacultyApplication() {
           </div>
           <h3 className="mt-5 font-display text-2xl font-semibold text-ink">Application received.</h3>
           <p className="mx-auto mt-3 max-w-md text-sm leading-relaxed text-ink/70">
-            We review every application personally — and we reply immediately.
+            We review every application personally - and we reply immediately.
           </p>
           <div className="mt-6 flex justify-center">
             <Button href={whatsappLink("Hi Musicphonetics, I've just submitted a faculty application.")} external variant="primary" size="lg">
@@ -172,7 +172,7 @@ export function FacultyApplication() {
       <SectionHeading
         eyebrow="Apply to teach"
         title="Your application."
-        intro="Five short steps. Nothing here confirms a fee, a slot, or a role — it starts a conversation, and we take it from there personally."
+        intro="Five short steps. Nothing here confirms a fee, a slot, or a role - it starts a conversation, and we take it from there personally."
       />
 
       <div className="mx-auto mt-10 max-w-2xl">
@@ -208,7 +208,7 @@ export function FacultyApplication() {
               <Text label="Phone / WhatsApp" req inputMode="tel" value={f.phone} onChange={(v) => set("phone", v)} placeholder="+91…" />
               <Text label="Email" req type="email" inputMode="email" value={f.email} onChange={(v) => set("email", v)} placeholder="you@email.com" />
               <div className="sm:col-span-2"><Text label="Languages spoken" value={f.languages} onChange={(v) => set("languages", v)} placeholder="e.g. Hindi, English, Punjabi" /></div>
-              <p className="sm:col-span-2 text-xs text-ink/70">Photo and ID are collected securely after selection — not on this page.</p>
+              <p className="sm:col-span-2 text-xs text-ink/70">Photo and ID are collected securely after selection - not on this page.</p>
             </div>
           )}
 
@@ -255,7 +255,7 @@ export function FacultyApplication() {
           {/* STEP 4 */}
           {step === 3 && (
             <div className="space-y-4">
-              <p className="text-sm text-ink/70">All optional — but a demo link and references help us move faster.</p>
+              <p className="text-sm text-ink/70">All optional - but a demo link and references help us move faster.</p>
               <div className="grid gap-4 sm:grid-cols-2">
                 <Text label="YouTube" type="url" value={f.youtube} onChange={(v) => set("youtube", v)} placeholder="https://…" />
                 <Text label="Instagram" type="url" value={f.instagram} onChange={(v) => set("instagram", v)} placeholder="https://…" />
@@ -263,10 +263,10 @@ export function FacultyApplication() {
                 <Text label="Demo video link" type="url" value={f.demo} onChange={(v) => set("demo", v)} placeholder="YouTube / Drive URL" />
               </div>
               <div className="grid gap-4 sm:grid-cols-2">
-                <Text label="Reference 1 — name" value={f.ref1Name} onChange={(v) => set("ref1Name", v)} placeholder="Name" />
-                <Text label="Reference 1 — phone" inputMode="tel" value={f.ref1Phone} onChange={(v) => set("ref1Phone", v)} placeholder="+91…" />
-                <Text label="Reference 2 — name" value={f.ref2Name} onChange={(v) => set("ref2Name", v)} placeholder="Name" />
-                <Text label="Reference 2 — phone" inputMode="tel" value={f.ref2Phone} onChange={(v) => set("ref2Phone", v)} placeholder="+91…" />
+                <Text label="Reference 1 - name" value={f.ref1Name} onChange={(v) => set("ref1Name", v)} placeholder="Name" />
+                <Text label="Reference 1 - phone" inputMode="tel" value={f.ref1Phone} onChange={(v) => set("ref1Phone", v)} placeholder="+91…" />
+                <Text label="Reference 2 - name" value={f.ref2Name} onChange={(v) => set("ref2Name", v)} placeholder="Name" />
+                <Text label="Reference 2 - phone" inputMode="tel" value={f.ref2Phone} onChange={(v) => set("ref2Phone", v)} placeholder="+91…" />
               </div>
             </div>
           )}
@@ -275,7 +275,7 @@ export function FacultyApplication() {
           {step === 4 && (
             <div className="space-y-4">
               <Check checked={f.idConsent} onChange={(v) => set("idConsent", v)}>
-                I can provide government ID (Aadhaar / PAN) and I consent to police / background verification for student safeguarding. <span className="text-ink/70">(ID numbers and bank details are shared securely after selection — never on this form.)</span>
+                I can provide government ID (Aadhaar / PAN) and I consent to police / background verification for student safeguarding. <span className="text-ink/70">(ID numbers and bank details are shared securely after selection - never on this form.)</span>
               </Check>
               <div className="rounded-2xl border border-hairline bg-white p-4">
                 <p className="text-xs font-semibold uppercase tracking-wider text-[#7A5E0F]">I agree to the terms</p>

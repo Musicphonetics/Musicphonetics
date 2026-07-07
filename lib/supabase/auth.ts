@@ -12,7 +12,7 @@ export interface AuthState {
   error: string | null;
 }
 
-// Loads the current session + profile. Never throws — surfaces errors in state.
+// Loads the current session + profile. Never throws - surfaces errors in state.
 export function useAuth(): AuthState {
   const [state, setState] = useState<AuthState>({
     loading: true, configured: isSupabaseConfigured(), userId: null, profile: null, error: null,

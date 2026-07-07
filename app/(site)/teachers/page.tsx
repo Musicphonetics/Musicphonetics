@@ -8,7 +8,7 @@ import { FinalCTA } from "@/components/sections/FinalCTA";
 export const metadata: Metadata = {
   title: "Faculty",
   description:
-    "How Musicphonetics selects faculty — a seven-stage process every teacher passes before they teach a single student. Verified teacher profiles are being published.",
+    "How Musicphonetics selects faculty - a seven-stage process every teacher passes before they teach a single student. Verified teacher profiles are being published.",
 };
 
 export default function TeachersPage() {
@@ -20,7 +20,7 @@ export default function TeachersPage() {
         intro="We don't run a marketplace of strangers. Each teacher passes a seven-stage selection before they reach a student."
       />
 
-      {/* The seven-stage selection — the real, finished content */}
+      {/* The seven-stage selection - the real, finished content */}
       <FacultySelection eyebrow="Selection" />
 
       {/* Honest slot for real profiles, styled as a finished note (no fake cards) */}
@@ -28,8 +28,8 @@ export default function TeachersPage() {
         <Reveal>
           <div className="mx-auto max-w-2xl rounded-2xl border border-hairline bg-paper p-8 text-center">
             <p className="text-ink/70">
-              Individual faculty profiles — with names, instruments, and verified
-              credentials — are being published. Until then, every teacher you
+              Individual faculty profiles - with names, instruments, and verified
+              credentials - are being published. Until then, every teacher you
               meet has already passed the process above.
             </p>
           </div>

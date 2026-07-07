@@ -1,6 +1,6 @@
 import { cn } from "@/lib/utils";
 
-// Stylised (not cartographic) world map — simplified continent silhouettes on
+// Stylised (not cartographic) world map - simplified continent silhouettes on
 // a 1000×480 canvas. Used as a faint hero backdrop and as the global-network
 // map in the region section.
 

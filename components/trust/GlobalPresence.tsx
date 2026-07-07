@@ -25,7 +25,7 @@ export function GlobalPresence() {
     <TrustSubsection
       eyebrow="Section 08 · Global Presence"
       title="Built to operate internationally."
-      intro="Teaching across cities. Expanding globally — with the systems already in place to support it. Hover a marker to explore."
+      intro="Teaching across cities. Expanding globally - with the systems already in place to support it. Hover a marker to explore."
     >
       <Reveal>
         <div className="relative mx-auto aspect-[1000/480] w-full max-w-4xl overflow-hidden rounded-3xl border border-white/10 bg-midnight">
@@ -69,7 +69,7 @@ export function GlobalPresence() {
         </div>
       </Reveal>
       <div className="mt-6 flex flex-wrap items-center gap-5 text-sm text-paper/60">
-        <span className="flex items-center gap-2"><span className="h-2.5 w-2.5 rounded-full bg-gold" /> Live — India &amp; online</span>
+        <span className="flex items-center gap-2"><span className="h-2.5 w-2.5 rounded-full bg-gold" /> Live - India &amp; online</span>
         <span className="flex items-center gap-2"><span className="h-2.5 w-2.5 rounded-full bg-paper/30 ring-1 ring-gold/30" /> Future expansion</span>
       </div>
     </TrustSubsection>

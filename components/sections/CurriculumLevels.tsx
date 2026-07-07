@@ -49,7 +49,7 @@ export function CurriculumLevels() {
             ))}
           </ol>
           <p className="mt-4 text-xs text-paper/55">
-            A typical journey — every student differs.
+            A typical journey - every student differs.
           </p>
         </div>
       </Reveal>
