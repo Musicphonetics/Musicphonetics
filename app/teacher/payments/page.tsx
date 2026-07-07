@@ -30,8 +30,6 @@ export default function PaymentsPage() {
 
   const picked = useMemo(() => students?.find((s) => s.student_id === sid) || null, [students, sid]);
   const amount = Number(f.amount_paid || 0);
-  const teacherShare = Math.round(amount * 0.7);
-  const companyShare = amount - teacherShare;
 
   async function save() {
     if (!sid) { setToast({ kind: "error", message: "Pick a student." }); return; }
@@ -88,26 +86,13 @@ export default function PaymentsPage() {
           <Select label="Billing cycle" value={f.billing_cycle || "—"} onChange={(v) => set("billing_cycle", v)} options={CYCLES} />
           <MoneyField label="Amount paid" req value={f.amount_paid || ""} onChange={(v) => set("amount_paid", v)} />
 
-          {amount > 0 && (
-            <div className="grid grid-cols-2 gap-3">
-              <div className="rounded-xl border border-hairline bg-feature-green/5 p-3 text-center">
-                <p className="font-display text-xl font-semibold text-feature-green">{formatMoney(teacherShare)}</p>
-                <p className="text-[11px] uppercase tracking-wide text-ink/55">Your 70%</p>
-              </div>
-              <div className="rounded-xl border border-hairline bg-mist p-3 text-center">
-                <p className="font-display text-xl font-semibold text-ink">{formatMoney(companyShare)}</p>
-                <p className="text-[11px] uppercase tracking-wide text-ink/55">Company 30%</p>
-              </div>
-            </div>
-          )}
-
           <Select label="Payment status" value={f.payment_status || "Received"} onChange={(v) => set("payment_status", v)} options={PAY_STATUS} />
           <Select label="Payment mode" value={f.payment_mode || "Cashfree"} onChange={(v) => set("payment_mode", v)} options={MODES} />
           <Field label="Cashfree bill / reference no." value={f.cashfree_bill_no || ""} onChange={(v) => set("cashfree_bill_no", v)} placeholder="From the Cashfree receipt" />
           <Field label="Transaction reference" value={f.txn_reference || ""} onChange={(v) => set("txn_reference", v)} />
           <TextArea label="Notes" value={f.notes || ""} onChange={(v) => set("notes", v)} />
 
-          <p className="text-xs text-ink/60">Parents pay only via the company Cashfree link. You record the confirmation here — the 70/30 split is computed automatically and cannot be edited.</p>
+          <p className="text-xs text-ink/60">Parents pay only via the company Cashfree link — you just record the confirmation here.</p>
 
           <button disabled={busy} onClick={save}
             className="w-full rounded-full bg-ink py-4 text-base font-semibold text-paper shadow-card disabled:opacity-60">

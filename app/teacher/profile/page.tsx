@@ -64,7 +64,7 @@ export default function TeacherProfile() {
           </button>
 
           <div className="mt-6 rounded-2xl border border-hairline bg-white p-4 text-center">
-            <p className="text-xs text-ink/60">Payouts are managed by the office. Your 70% share accrues automatically from recorded payments.</p>
+            <p className="text-xs text-ink/60">Payouts are managed by the Musicphonetics office.</p>
           </div>
 
           <button onClick={() => signOut()} className="w-full rounded-full border border-hairline py-3.5 text-sm font-semibold text-ink/70">
