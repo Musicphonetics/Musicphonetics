@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Section } from "@/components/ui/Section";
@@ -7,6 +8,7 @@ import { Stave } from "@/components/ui/Stave";
 import { Photo } from "@/components/ui/Photo";
 import { HERO_STUDENTS, LIFE_AT_MP } from "@/lib/media";
 import { FOUNDER } from "@/lib/founder";
+import { OnboardingDocument } from "@/components/welcome/OnboardingDocument";
 
 export const metadata: Metadata = {
   title: "Welcome to the family",
@@ -50,6 +52,22 @@ export default function WelcomePage() {
           </Reveal>
         </div>
       </section>
+
+      {/* The formal enrolment document - printable */}
+      <Section background="mist" spacing="lg">
+        <Reveal>
+          <div className="mb-8 text-center">
+            <p className="eyebrow">Your enrolment</p>
+            <h2 className="mt-2 font-display text-3xl font-semibold text-ink">Your course details, in writing.</h2>
+            <p className="mx-auto mt-3 max-w-xl text-sm leading-relaxed text-ink/65">
+              Keep this for your records. It sets out your plan, class schedule, billing and the terms you agreed to.
+            </p>
+          </div>
+        </Reveal>
+        <Suspense fallback={<div className="mx-auto max-w-2xl rounded-3xl border border-hairline bg-white p-10 text-center text-ink/50">Loading your enrolment…</div>}>
+          <OnboardingDocument />
+        </Suspense>
+      </Section>
 
       {/* A personal message from the Director - a signed note */}
       <Section background="paper" spacing="lg">

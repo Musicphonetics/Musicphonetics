@@ -97,20 +97,12 @@ function PackageCard({ p }: { p: HomePackage }) {
 
       {p.note && <p className="mt-5 rounded-xl bg-white/[0.04] px-3 py-2 text-xs leading-relaxed text-paper/65">{p.note}</p>}
 
-      <div className="mt-7 flex flex-col gap-2.5 pt-1">
-        {p.payAmount ? (
-          <Link href={`/pay?plan=${p.key}&amt=${p.payAmount}`}
-            className={cn("inline-flex min-h-[48px] w-full items-center justify-center rounded-full px-5 text-sm font-semibold transition-all active:scale-[0.98]",
-              featured ? "bg-gold text-ink shadow-card hover:bg-deep-gold" : "border border-gold/50 text-gold hover:bg-gold/10")}>
-            Enrol Now · Pay Securely
-          </Link>
-        ) : (
-          <WhatsAppCTA label={p.ctaLabel} message={p.ctaMsg} size="md" fullWidth variant="primary" />
-        )}
-
+      <div className="mt-7 pt-1">
+        {/* Focus is on understanding the plan first - payment lives inside the details. */}
         <Link href={`/programmes/${slug}`}
-          className="inline-flex min-h-[44px] w-full items-center justify-center gap-1.5 rounded-full border border-white/15 text-sm font-semibold text-paper/85 transition-colors hover:border-white/40 hover:text-paper">
-          View details →
+          className={cn("inline-flex min-h-[50px] w-full items-center justify-center gap-1.5 rounded-full px-5 text-sm font-semibold transition-all active:scale-[0.98]",
+            featured ? "bg-gold text-ink shadow-card hover:bg-deep-gold" : "border border-white/25 text-paper hover:border-white")}>
+          View Details {featured ? "& Enrol" : ""} →
         </Link>
       </div>
     </div>

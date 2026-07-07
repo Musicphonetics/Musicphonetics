@@ -19,5 +19,6 @@ export const OWNER_TABS: Tab[] = [
   { href: "/owner/teachers", label: "Teachers", icon: I("M16 19v-1a4 4 0 0 0-8 0v1M12 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z") },
   { href: "/owner/students", label: "Students", icon: I("M4 19V5a1 1 0 0 1 1-1h11l4 4v11a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1Z") },
   { href: "/owner/payments", label: "Payments", icon: I("M3 7h18v10H3zM3 10h18M7 14h3") },
+  { href: "/owner/reports", label: "Reports", icon: I("M4 4h16v16H4zM8 4v16M4 9h4M4 14h4") },
   { href: "/owner/payouts", label: "Payouts", icon: I("M12 3v18M17 7H9.5a2.5 2.5 0 0 0 0 5h5a2.5 2.5 0 0 1 0 5H6") },
 ];

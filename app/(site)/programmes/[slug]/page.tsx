@@ -5,6 +5,7 @@ import { Section } from "@/components/ui/Section";
 import { WhatsAppCTA } from "@/components/home/WhatsAppCTA";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { PROGRAMMES, getProgramme, type Programme } from "@/lib/programmes";
+import { SCHEDULE_POLICY, BILLING_POLICY } from "@/lib/policy";
 
 export function generateStaticParams() {
   return PROGRAMMES.map((p) => ({ slug: p.slug }));
@@ -125,6 +126,14 @@ export default function ProgrammePage({ params }: { params: { slug: string } }) 
           <InfoTile label="Duration" value={p.duration} />
           <InfoTile label="Format" value={p.format} />
         </div>
+
+        {/* Schedule & fees policy - shown before payment so it's clear */}
+        {p.payAmount && (
+          <div className="mt-6 grid gap-4 lg:grid-cols-2">
+            <PolicyCard title="Class schedule" items={SCHEDULE_POLICY} />
+            <PolicyCard title="Fees & billing" items={BILLING_POLICY} />
+          </div>
+        )}
       </Section>
 
       {/* What to expect */}
@@ -208,6 +217,22 @@ function InfoTile({ label, value }: { label: string; value: string }) {
     <div className="rounded-2xl border border-hairline bg-white p-6">
       <p className="text-xs font-semibold uppercase tracking-wide text-[#7A5E0F]">{label}</p>
       <p className="mt-1.5 text-sm leading-relaxed text-ink/80">{value}</p>
+    </div>
+  );
+}
+
+function PolicyCard({ title, items }: { title: string; items: string[] }) {
+  return (
+    <div className="rounded-2xl border border-hairline bg-white p-6">
+      <p className="text-xs font-semibold uppercase tracking-wide text-[#7A5E0F]">{title}</p>
+      <ul className="mt-3 space-y-2">
+        {items.map((x) => (
+          <li key={x} className="flex items-start gap-2.5 text-sm leading-relaxed text-ink/75">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true" className="mt-0.5 shrink-0 text-[#7A5E0F]"><path d="M5 12l4 4 10-10" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" /></svg>
+            {x}
+          </li>
+        ))}
+      </ul>
     </div>
   );
 }

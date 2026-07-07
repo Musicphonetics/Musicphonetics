@@ -310,3 +310,14 @@
 @media (prefers-reduced-motion: reduce) {
   .mp-hero-zoom { animation: none; }
 }
+
+/* Print isolation - "Save as PDF" of the enrolment document only. */
+@media print {
+  body * { visibility: hidden !important; }
+  #enrolment-doc, #enrolment-doc * { visibility: visible !important; }
+  #enrolment-doc {
+    position: absolute; left: 0; top: 0; width: 100%;
+    box-shadow: none !important; border: none !important;
+  }
+  .no-print { display: none !important; }
+}
