@@ -1,27 +1,40 @@
 import type { Metadata } from "next";
-import { PageHero } from "@/components/sections/PageHero";
-import { ReviewsShowcase } from "@/components/sections/ReviewsShowcase";
+import { Reviews } from "@/components/home/Reviews";
+import { WhatsAppCTA } from "@/components/home/WhatsAppCTA";
+import { REVIEWS, WA_MSG } from "@/lib/home-config";
 
 export const metadata: Metadata = {
-  title: "Reviews — 5.0 across every review",
+  title: "Reviews — Real Google reviews from parents & students | Musicphonetics",
   description:
-    "Verified Musicphonetics reviews from across Delhi NCR — defence families in Delhi Cantonment, professionals in Dwarka, Vasant Kunj, Green Park, and Gurugram. 5.0 across every review.",
+    "Real Google reviews from Musicphonetics parents and students across Delhi NCR — shown as screenshots exactly as received from Google.",
   openGraph: {
-    title: "Reviews — trusted across Delhi NCR",
-    description:
-      "Verified reviews from defence families, professionals, and parents across Delhi NCR. 5.0 across every review.",
+    title: "Real Parents. Real Students. Real Progress. — Musicphonetics reviews",
+    description: "Real Google reviews from parents and students across Delhi NCR.",
   },
 };
 
 export default function ReviewsPage() {
   return (
-    <>
-      <PageHero
-        eyebrow="Reviews"
-        title="Trust, earned one student at a time."
-        intro="Every review is real and collected after real classes. Student reviews are published with first name and initial only, by family consent."
-      />
-      <ReviewsShowcase />
-    </>
+    <section className="bg-ink py-16 text-paper sm:py-20">
+      <div className="container-mp">
+        <p className="eyebrow text-gold">Reviews</p>
+        <h1 className="mt-3 max-w-2xl font-display text-4xl font-semibold leading-[1.08] sm:text-5xl">
+          Real Parents. Real Students. Real Progress.
+        </h1>
+        <p className="mt-4 max-w-xl text-base leading-relaxed text-paper/75">
+          Real experiences shared through Google reviews — screenshots shown exactly as received from Google.
+        </p>
+
+        <div className="mt-10">
+          <Reviews files={REVIEWS} variant="grid" />
+        </div>
+
+        <p className="mt-6 text-xs text-paper/50">Real Google reviews from parents and students · Screenshots shown as received from Google.</p>
+
+        <div className="mt-9">
+          <WhatsAppCTA label="Talk to us on WhatsApp" message={WA_MSG.reviews} />
+        </div>
+      </div>
+    </section>
   );
 }

@@ -1,37 +1,63 @@
-import { HeroConcierge } from "@/components/sections/HeroConcierge";
-import { FounderFeature } from "@/components/sections/FounderFeature";
-import { AchievementsStrip } from "@/components/sections/AchievementsStrip";
-import { SafetyFirst } from "@/components/sections/SafetyFirst";
-import { ReviewsCompact } from "@/components/sections/ReviewsCompact";
-import { SeeUsInAction } from "@/components/sections/SeeUsInAction";
-import { ScheduleBlock } from "@/components/sections/ScheduleBlock";
-import { Plans } from "@/components/sections/Plans";
-import { ReassuranceChips } from "@/components/sections/ReassuranceChips";
-import { FAQ } from "@/components/sections/FAQ";
-import { FinalCTA } from "@/components/sections/FinalCTA";
+import type { Metadata } from "next";
+import { FunnelHero } from "@/components/home/FunnelHero";
+import { WhyTrust } from "@/components/home/WhyTrust";
+import { FunnelPackages } from "@/components/home/FunnelPackages";
+import { ReviewsSection } from "@/components/home/Reviews";
+import { AfterYouJoin } from "@/components/home/AfterYouJoin";
+import { FounderMission } from "@/components/home/FounderMission";
+import { GoldDivider } from "@/components/home/GoldDivider";
 import { JsonLd } from "@/components/seo/JsonLd";
-import { faqJsonLd, coursesJsonLd, reviewsJsonLd, instrumentCoursesJsonLd } from "@/lib/seo";
+import { REVIEWS, HOME_REVIEW_COUNT } from "@/lib/home-config";
+
+const SITE = "https://musicphonetics.com";
+
+export const metadata: Metadata = {
+  title: "Music Classes in Delhi NCR & Online — Guitar, Piano, Vocals | Musicphonetics",
+  description:
+    "Structured music learning for children, beginners & serious learners — guitar, piano/keyboard & vocal classes at home and online across Delhi NCR. Teacher matching, progress tracking, Trinity exam preparation where applicable. Enquire on WhatsApp.",
+  alternates: { canonical: "/" },
+  openGraph: {
+    title: "Music classes that don't feel random — Musicphonetics",
+    description:
+      "Structured music learning — guitar, piano/keyboard & vocals. Delhi NCR + Online. Teacher matching and progress tracking. Enquire on WhatsApp.",
+    type: "website",
+    siteName: "Musicphonetics",
+    locale: "en_IN",
+  },
+};
+
+const localBusiness = {
+  "@context": "https://schema.org",
+  "@type": "LocalBusiness",
+  name: "Musicphonetics",
+  description:
+    "Structured music education — guitar, piano/keyboard and vocal classes for children, beginners and serious learners, at home and online across Delhi NCR.",
+  url: SITE,
+  areaServed: "Delhi NCR",
+  knowsAbout: ["Guitar classes", "Piano classes", "Keyboard classes", "Vocal classes", "Music theory", "Trinity music exam preparation"],
+  address: { "@type": "PostalAddress", addressRegion: "Delhi NCR", addressCountry: "IN" },
+  makesOffer: [
+    { "@type": "Offer", name: "Foundation", price: "8000", priceCurrency: "INR" },
+    { "@type": "Offer", name: "Main Musicphonetics Pathway", price: "12000", priceCurrency: "INR" },
+  ],
+};
 
 export default function HomePage() {
-  // A short, proof-first parent homepage:
-  // experience → achievements → trust → schedule → fees → book.
+  const homeReviews = REVIEWS.slice(0, HOME_REVIEW_COUNT);
   return (
     <>
-      <JsonLd data={[faqJsonLd(), coursesJsonLd(), instrumentCoursesJsonLd(), reviewsJsonLd()]} />
-      <HeroConcierge />        {/* 1 · Who + how experienced + one action */}
-      <FounderFeature />       {/* 2 · The spine — experience & recognition */}
-      <AchievementsStrip />    {/* 3 · Fast proof row */}
-      <SafetyFirst />          {/* Child safety — highlighted, high on the page */}
-      <ReviewsCompact />       {/* 4 · Trust — defence families + premium reviews */}
-      <SeeUsInAction />        {/* See us in action — 6 performance clips */}
-      <ScheduleBlock />        {/* 5 · How it works / schedule */}
-      <Plans />                {/* 6 · Plans & fees */}
-      <ReassuranceChips />     {/* Depth compressed to one line */}
-      <FAQ limit={6} />        {/* Parent questions only */}
-      <FinalCTA
-        headline="Book your free trial."
-        text="Tell us the instrument and who it's for — we'll match a teacher and confirm your plan on the trial."
-      />
+      <JsonLd data={localBusiness} />
+      <FunnelHero />
+      <GoldDivider />
+      <WhyTrust />
+      <GoldDivider />
+      <FunnelPackages />
+      <GoldDivider />
+      <ReviewsSection files={homeReviews} />
+      <GoldDivider />
+      <AfterYouJoin />
+      <GoldDivider />
+      <FounderMission />
     </>
   );
 }

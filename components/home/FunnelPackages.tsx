@@ -1,0 +1,102 @@
+import { Reveal } from "@/components/ui/Reveal";
+import { WhatsAppCTA } from "./WhatsAppCTA";
+import { HOME_PACKAGES, WA_MSG, type HomePackage } from "@/lib/home-config";
+import { cn } from "@/lib/utils";
+
+export function FunnelPackages() {
+  return (
+    <section id="programmes" className="bg-ink py-20 text-paper sm:py-24">
+      <div className="container-mp">
+        <Reveal>
+          <p className="eyebrow text-gold">Programmes</p>
+          <h2 className="mt-3 max-w-2xl font-display text-3xl font-semibold leading-tight sm:text-4xl">
+            Choose the path that fits the student.
+          </h2>
+        </Reveal>
+
+        <div className="mt-10 grid items-start gap-5 lg:grid-cols-3">
+          {HOME_PACKAGES.map((p, i) => (
+            <Reveal key={p.key} delay={(i % 3) * 80}>
+              <PackageCard p={p} />
+            </Reveal>
+          ))}
+        </div>
+
+        <Reveal delay={120}>
+          <div className="mt-9 flex justify-center">
+            <WhatsAppCTA label="Choose Your Programme" message={WA_MSG.packages} />
+          </div>
+        </Reveal>
+      </div>
+    </section>
+  );
+}
+
+function PackageCard({ p }: { p: HomePackage }) {
+  const featured = p.featured;
+  const exclusive = p.exclusive;
+
+  return (
+    <div
+      className={cn(
+        "relative flex h-full flex-col rounded-3xl border p-7 transition-all",
+        featured
+          ? "border-gold/70 bg-gradient-to-b from-gold/[0.10] to-white/[0.02] shadow-[0_0_50px_-12px_rgba(201,162,39,0.45)] lg:-translate-y-3 lg:p-8"
+          : exclusive
+            ? "border-white/12 bg-[#11151f]"
+            : "border-white/10 bg-white/[0.03]"
+      )}
+    >
+      {(p.badge || p.secondaryBadge) && (
+        <div className="mb-4 flex flex-wrap gap-2">
+          {p.badge && (
+            <span className={cn("rounded-full px-3 py-1 text-[11px] font-semibold uppercase tracking-wide",
+              featured ? "bg-gold text-ink" : "border border-white/20 text-paper/80")}>
+              {p.badge}
+            </span>
+          )}
+          {p.secondaryBadge && (
+            <span className="rounded-full border border-gold/40 px-3 py-1 text-[11px] font-semibold uppercase tracking-wide text-gold">
+              {p.secondaryBadge}
+            </span>
+          )}
+        </div>
+      )}
+
+      <h3 className={cn("font-display font-semibold leading-tight", featured ? "text-2xl text-paper" : "text-xl text-paper")}>
+        {p.name}
+      </h3>
+      <p className="mt-1.5 text-sm leading-relaxed text-paper/70">{p.tagline}</p>
+
+      <div className="mt-5">
+        {p.price ? (
+          <p className="flex items-baseline gap-1.5">
+            <span className={cn("font-display font-semibold", featured ? "text-4xl text-gold" : "text-3xl text-paper")}>{p.price}</span>
+            <span className="text-sm text-paper/60">/ month</span>
+          </p>
+        ) : (
+          <p className="font-display text-2xl font-semibold text-gold">By Request</p>
+        )}
+        {p.cadence && <p className="mt-1 text-sm text-paper/60">{p.cadence}</p>}
+      </div>
+
+      <ul className="mt-6 space-y-2.5">
+        {p.bullets.map((b) => (
+          <li key={b} className="flex items-start gap-2.5 text-sm text-paper/80">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true" className={cn("mt-0.5 shrink-0", featured ? "text-gold" : "text-paper/45")}>
+              <path d="M5 12l4 4 10-10" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+            {b}
+          </li>
+        ))}
+      </ul>
+
+      {p.note && <p className="mt-5 rounded-xl bg-white/[0.04] px-3 py-2 text-xs leading-relaxed text-paper/65">{p.note}</p>}
+
+      <div className="mt-7 pt-1">
+        <WhatsAppCTA label={p.ctaLabel} message={p.ctaMsg} size="md" fullWidth
+          variant={featured ? "primary" : "outline"} />
+      </div>
+    </div>
+  );
+}
