@@ -23,11 +23,14 @@ export interface HomePackage {
   key: string;
   name: string;
   price: string | null;      // null → "By request", never a per-class price
+  payAmount: number | null;  // ₹ for instant Cashfree enrolment; null → WhatsApp only
   cadence: string | null;    // e.g. "8 classes / month · 1 hour each"
   badge?: string;
   secondaryBadge?: string;
   tagline: string;
   bullets: string[];
+  forWho: string[];          // "View details" — who it's for
+  notForWho: string[];       // who it's NOT for
   note?: string;
   ctaLabel: string;
   ctaMsg: string;
@@ -40,6 +43,7 @@ export const HOME_PACKAGES: HomePackage[] = [
     key: "foundation",
     name: "Foundation",
     price: "₹8,000",
+    payAmount: 8000,
     cadence: "8 classes / month · 1 hour each",
     tagline: "Beginner-only pathway — a clean, correct start.",
     bullets: [
@@ -48,6 +52,17 @@ export const HOME_PACKAGES: HomePackage[] = [
       "No Trinity grades or exam preparation",
       "No advanced progress track",
     ],
+    forWho: [
+      "Absolute beginners — children or adults",
+      "Anyone wanting a calm, correct first start",
+      "Casual learners exploring an instrument",
+      "Parents testing if their child enjoys music",
+    ],
+    notForWho: [
+      "Students who want Trinity grades or exam prep",
+      "Anyone chasing fast, advanced progress",
+      "Serious performance or competition goals",
+    ],
     ctaLabel: "Enquire on WhatsApp",
     ctaMsg: WA_MSG.foundation,
   },
@@ -55,6 +70,7 @@ export const HOME_PACKAGES: HomePackage[] = [
     key: "main",
     name: "Main Musicphonetics Pathway",
     price: "₹12,000",
+    payAmount: 12000,
     cadence: "8 classes / month · 1 hour each",
     badge: "Most Recommended",
     secondaryBadge: "Main Pathway",
@@ -65,6 +81,16 @@ export const HOME_PACKAGES: HomePackage[] = [
       "Grade-oriented / Trinity preparation where applicable",
       "Progress tracking with founder & system oversight",
     ],
+    forWho: [
+      "Serious learners committed to real progress",
+      "Kids, teens & adults who want structure, theory & performance",
+      "Students aiming for Trinity grades / exams",
+      "Anyone who wants a clear long-term musical direction",
+    ],
+    notForWho: [
+      "Someone wanting only a few casual songs",
+      "Learners who don't want any structure or tracking",
+    ],
     note: "Serious students typically move here after ~4 months.",
     ctaLabel: "Choose the Main Pathway",
     ctaMsg: WA_MSG.main,
@@ -74,6 +100,7 @@ export const HOME_PACKAGES: HomePackage[] = [
     key: "directors",
     name: "Director's Circle",
     price: null,
+    payAmount: null,
     cadence: null,
     badge: "By request only",
     tagline: "Direct founder-level mentoring, for a select few.",
@@ -83,10 +110,29 @@ export const HOME_PACKAGES: HomePackage[] = [
       "~1 week waiting list",
       "An exclusive, personally guided pathway",
     ],
+    forWho: [
+      "Advanced or highly committed students",
+      "Those wanting direct founder-level mentoring",
+      "Performance, audition or competition level",
+      "Students happy to wait for a limited slot",
+    ],
+    notForWho: [
+      "Beginners or first-time learners",
+      "Casual, exploratory students",
+    ],
     ctaLabel: "Request Access on WhatsApp",
     ctaMsg: WA_MSG.directors,
     exclusive: true,
   },
+];
+
+// Hero slideshow — real student & performance photos, text overlaid.
+export const HERO_SLIDES: string[] = [
+  "/images/hero/slide-1.webp",
+  "/images/hero/slide-2.webp",
+  "/images/hero/slide-3.webp",
+  "/images/hero/slide-4.webp",
+  "/images/hero/slide-5.webp",
 ];
 
 // Google review screenshots in public/reviews/. Reorder / swap freely.

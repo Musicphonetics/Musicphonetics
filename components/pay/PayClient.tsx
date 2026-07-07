@@ -14,8 +14,8 @@ const CASHFREE_FORM_URL = "https://payments.cashfree.com/forms?code=musicphoneti
 // Plan list prices (₹/month) — shown for context; ?amt= overrides for the
 // personalised links the owner shares with new and existing students.
 const PLAN_AMOUNTS: Record<string, { name: string; amount: number }> = {
-  foundation: { name: "Foundation", amount: 12000 },
-  signature: { name: "Signature", amount: 18000 },
+  foundation: { name: "Foundation", amount: 8000 },
+  main: { name: "Main Musicphonetics Pathway", amount: 12000 },
   "directors-circle": { name: "Director's Circle", amount: 28000 },
 };
 
