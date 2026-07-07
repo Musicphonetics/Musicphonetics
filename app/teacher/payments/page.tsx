@@ -6,6 +6,7 @@ import { PortalShell } from "@/components/portal/PortalShell";
 import { TEACHER_TABS } from "@/components/portal/tabs";
 import { Field, Select, TextArea, MoneyField, Toast, Loading, EmptyState, formatMoney } from "@/components/portal/kit";
 import { getSupabase, isSupabaseConfigured } from "@/lib/supabase/client";
+import { loadRoster } from "@/lib/supabase/roster";
 import type { StudentStat } from "@/lib/supabase/types";
 
 const CYCLES = ["—", "Monthly", "Quarterly", "Half-yearly", "One-time"];
@@ -24,7 +25,7 @@ export default function PaymentsPage() {
 
   useEffect(() => {
     if (!isSupabaseConfigured()) return;
-    getSupabase().from("student_stats").select("*").order("name").then(({ data }) => setStudents((data as StudentStat[]) ?? []));
+    loadRoster().then(({ rows }) => setStudents(rows));
   }, []);
 
   const picked = useMemo(() => students?.find((s) => s.student_id === sid) || null, [students, sid]);

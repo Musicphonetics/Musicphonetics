@@ -27,6 +27,7 @@ export default function TeacherDashboard() {
   const { profile } = useAuth();
   const first = (profile?.full_name || "").split(" ")[0] || "there";
   const [stats, setStats] = useState<{ students: number; week: number; received: number; pending: number } | null>(null);
+  const [err, setErr] = useState<string | null>(null);
 
   useEffect(() => {
     if (!isSupabaseConfigured()) return;
@@ -39,6 +40,7 @@ export default function TeacherDashboard() {
           .gte("class_date", mondayISO()).eq("class_status", "Completed"),
         sb.from("payments").select("amount_paid").gte("payment_date", monthStartISO()),
       ]);
+      if (studentsRes.error) setErr(studentsRes.error.message);
       const active = studentsRes.data ?? [];
       const expected = active.reduce((s, r) => s + (r.fee_quoted ?? 0), 0);
       const received = (payRes.data ?? []).reduce((s, r) => s + (r.amount_paid ?? 0), 0);
@@ -56,6 +58,11 @@ export default function TeacherDashboard() {
       <p className="text-sm text-ink/60">{greeting()},</p>
       <h1 className="font-display text-2xl font-semibold text-ink">{first}</h1>
 
+      {err && (
+        <div className="mt-4 rounded-xl border border-red-300 bg-red-50 p-3 text-sm text-red-700">
+          Couldn&apos;t load your data: {err}
+        </div>
+      )}
       {!stats ? <Loading /> : (
         <div className="mt-5 grid grid-cols-2 gap-3">
           <StatCard label="Students" value={`${stats.students}/20`} tone="gold" />

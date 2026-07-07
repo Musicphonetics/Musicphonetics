@@ -10,7 +10,7 @@ import { getSupabase } from "@/lib/supabase/client";
 const INSTRUMENTS = ["Guitar", "Piano", "Keyboard", "Vocals (Western)", "Vocals (Hindustani)", "Ukulele", "Drums", "Cajon", "Violin", "Music Theory"];
 const LEVELS = ["—", "Beginner", "Elementary", "Intermediate", "Advanced"];
 const MODES = ["—", "At home", "Online", "At the centre"];
-const DAYS = ["—", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+const DAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 const STATUS = ["active", "trial", "paused"];
 
 function ageFrom(dob: string): string {
@@ -24,6 +24,8 @@ function ageFrom(dob: string): string {
 export default function AddStudent() {
   const router = useRouter();
   const [f, setF] = useState<Record<string, string>>({ status: "active", classes_per_month: "8", instrument: "Guitar" });
+  const [days, setDays] = useState<string[]>([]);
+  const toggleDay = (d: string) => setDays((p) => (p.includes(d) ? p.filter((x) => x !== d) : [...p, d]));
   const [consent, setConsent] = useState(false);
   const [busy, setBusy] = useState(false);
   const [toast, setToast] = useState<{ kind: "success" | "error"; message: string } | null>(null);
@@ -57,7 +59,7 @@ export default function AddStudent() {
       learning_goal: f.learning_goal || null,
       student_profile: f.student_profile || null,
       class_mode: f.class_mode || null,
-      class_day: f.class_day || null,
+      class_day: days.length ? days.join(", ") : null,
       class_time: f.class_time || null,
       classes_per_month: f.classes_per_month ? Number(f.classes_per_month) : 8,
       start_date: f.start_date || null,
@@ -97,7 +99,26 @@ export default function AddStudent() {
 
         <SectionTitle>Schedule</SectionTitle>
         <Select label="Class mode" value={f.class_mode || "—"} onChange={(v) => set("class_mode", v)} options={MODES} />
-        <Select label="Class day" value={f.class_day || "—"} onChange={(v) => set("class_day", v)} options={DAYS} />
+        <div>
+          <Label>Class days <span className="font-normal text-ink/55">(select all that apply)</span></Label>
+          <div className="flex flex-wrap gap-2">
+            {DAYS.map((d) => {
+              const on = days.includes(d);
+              return (
+                <button key={d} type="button" onClick={() => toggleDay(d)} aria-pressed={on}
+                  className={
+                    "min-h-[42px] rounded-full border px-4 text-sm font-medium transition-colors focus-visible:outline-2 focus-visible:outline-gold " +
+                    (on ? "border-deep-gold bg-gold/15 text-ink" : "border-hairline bg-white text-ink/70 hover:border-ink/40")
+                  }>
+                  {d}
+                </button>
+              );
+            })}
+          </div>
+          {days.length > 0 && (
+            <p className="mt-1.5 text-xs text-ink/60">{days.length}× per week · ~{days.length * 4} classes/month</p>
+          )}
+        </div>
         <Field label="Class time" value={f.class_time || ""} onChange={(v) => set("class_time", v)} placeholder="e.g. 5:00 PM" />
         <Field label="Classes per month" inputMode="numeric" value={f.classes_per_month || ""} onChange={(v) => set("classes_per_month", v)} />
         <Field label="Start date" type="date" value={f.start_date || ""} onChange={(v) => set("start_date", v)} />

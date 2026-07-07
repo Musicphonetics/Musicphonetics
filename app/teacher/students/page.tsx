@@ -6,25 +6,30 @@ import { PortalShell } from "@/components/portal/PortalShell";
 import { TEACHER_TABS } from "@/components/portal/tabs";
 import { Loading, EmptyState, formatMoney } from "@/components/portal/kit";
 import { getSupabase, isSupabaseConfigured } from "@/lib/supabase/client";
+import { loadRoster } from "@/lib/supabase/roster";
 import type { StudentStat, ClassUpdate, Payment } from "@/lib/supabase/types";
 import { cn } from "@/lib/utils";
 
 export default function MyStudents() {
   const [rows, setRows] = useState<StudentStat[] | null>(null);
+  const [err, setErr] = useState<string | null>(null);
   const [q, setQ] = useState("");
   const [openId, setOpenId] = useState<string | null>(null);
 
   useEffect(() => {
     if (!isSupabaseConfigured()) return;
-    getSupabase().from("student_stats").select("*").order("name").then(({ data }) => {
-      setRows((data as StudentStat[]) ?? []);
-    });
+    loadRoster().then(({ rows, error }) => { setRows(rows); setErr(error); });
   }, []);
 
   const filtered = (rows ?? []).filter((r) => r.name.toLowerCase().includes(q.toLowerCase()));
 
   return (
     <PortalShell role="teacher" tabs={TEACHER_TABS} title="My Students">
+      {err && (
+        <div className="mb-4 rounded-xl border border-red-300 bg-red-50 p-3 text-sm text-red-700">
+          Couldn&apos;t load students: {err}
+        </div>
+      )}
       {!rows ? <Loading /> : rows.length === 0 ? (
         <EmptyState title="No students yet" hint="Add your first student to get started." />
       ) : (

@@ -6,6 +6,7 @@ import { PortalShell } from "@/components/portal/PortalShell";
 import { TEACHER_TABS } from "@/components/portal/tabs";
 import { Field, Select, TextArea, Toast, Loading, EmptyState } from "@/components/portal/kit";
 import { getSupabase, isSupabaseConfigured } from "@/lib/supabase/client";
+import { loadRoster } from "@/lib/supabase/roster";
 import type { StudentStat } from "@/lib/supabase/types";
 
 const STATUS = ["Completed", "Rescheduled", "Cancelled", "No-Show"];
@@ -22,7 +23,7 @@ export default function ClassUpdatePage() {
 
   useEffect(() => {
     if (!isSupabaseConfigured()) return;
-    getSupabase().from("student_stats").select("*").order("name").then(({ data }) => setStudents((data as StudentStat[]) ?? []));
+    loadRoster().then(({ rows }) => setStudents(rows));
   }, []);
 
   const picked = useMemo(() => students?.find((s) => s.student_id === sid) || null, [students, sid]);
