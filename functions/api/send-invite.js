@@ -1,7 +1,6 @@
 // POST /api/send-invite  (OWNER ONLY)
-// Sends a login invite to a provisioned teacher. Email → magic-link/invite;
-// phone → OTP (requires an SMS provider configured in Supabase Auth).
-// Service-role key server-side only.
+// Emails a login invite to a provisioned teacher (email + password auth).
+// Service-role key server-side only. Phone/SMS OTP is intentionally not used.
 //
 // Env: SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY
 
@@ -34,21 +33,10 @@ export async function onRequestPost({ request, env }) {
 
   let body;
   try { body = await request.json(); } catch { return json({ ok: false, error: "Bad JSON" }, 400); }
-  const { email, phone } = body || {};
-  if (!email && !phone) return json({ ok: false, error: "email or phone required" }, 400);
+  const { email } = body || {};
+  if (!email) return json({ ok: false, error: "email required" }, 400);
 
-  if (phone) {
-    // Trigger a phone OTP (needs an SMS provider set in Supabase Auth settings).
-    const r = await fetch(`${env.SUPABASE_URL}/auth/v1/otp`, {
-      method: "POST",
-      headers: { apikey: env.SUPABASE_SERVICE_ROLE_KEY, "content-type": "application/json" },
-      body: JSON.stringify({ phone }),
-    });
-    if (!r.ok) return json({ ok: false, error: "OTP send failed (check SMS provider)" }, 400);
-    return json({ ok: true, channel: "sms" });
-  }
-
-  // Email: generate an invite link (Supabase emails it if SMTP is configured).
+  // Email: generate an invite/recovery link (Supabase emails it if SMTP is set).
   const r = await fetch(`${env.SUPABASE_URL}/auth/v1/admin/generate_link`, {
     method: "POST",
     headers: {

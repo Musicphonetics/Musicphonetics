@@ -4,23 +4,18 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { getSupabase, isSupabaseConfigured } from "@/lib/supabase/client";
 import { Stave } from "@/components/ui/Stave";
-import { cn } from "@/lib/utils";
 
 const input =
   "w-full rounded-xl border border-white/15 bg-white/[0.06] px-4 py-3.5 text-base text-paper placeholder:text-paper/40 focus:border-gold focus-visible:outline-2 focus-visible:outline-gold focus:outline-none";
 
 export default function TeacherLogin() {
   const router = useRouter();
-  const [mode, setMode] = useState<"phone" | "email">("phone");
-  const [phone, setPhone] = useState("");
-  const [otp, setOtp] = useState("");
-  const [sent, setSent] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [busy, setBusy] = useState(false);
   const [msg, setMsg] = useState("");
 
-  // Already signed in → go to dashboard.
+  // Already signed in → straight to the dashboard.
   useEffect(() => {
     if (!isSupabaseConfigured()) return;
     getSupabase().auth.getSession().then(({ data }) => {
@@ -28,25 +23,9 @@ export default function TeacherLogin() {
     });
   }, [router]);
 
-  const e164 = (p: string) => (p.startsWith("+") ? p : "+91" + p.replace(/\D/g, ""));
-
-  async function sendOtp() {
+  async function login() {
     setMsg(""); setBusy(true);
-    const { error } = await getSupabase().auth.signInWithOtp({ phone: e164(phone) });
-    setBusy(false);
-    if (error) setMsg(error.message);
-    else { setSent(true); setMsg("Code sent. Check your SMS."); }
-  }
-  async function verifyOtp() {
-    setMsg(""); setBusy(true);
-    const { error } = await getSupabase().auth.verifyOtp({ phone: e164(phone), token: otp, type: "sms" });
-    setBusy(false);
-    if (error) setMsg(error.message);
-    else router.replace("/teacher/dashboard");
-  }
-  async function emailLogin() {
-    setMsg(""); setBusy(true);
-    const { error } = await getSupabase().auth.signInWithPassword({ email, password });
+    const { error } = await getSupabase().auth.signInWithPassword({ email: email.trim(), password });
     setBusy(false);
     if (error) setMsg(error.message);
     else router.replace("/teacher/dashboard");
@@ -65,45 +44,20 @@ export default function TeacherLogin() {
           </p>
         )}
 
-        <div className="mt-7 rounded-2xl border border-white/12 bg-white/[0.04] p-5">
-          {/* mode toggle */}
-          <div className="mb-5 grid grid-cols-2 gap-1 rounded-full bg-white/[0.06] p-1 text-sm">
-            {(["phone", "email"] as const).map((m) => (
-              <button key={m} onClick={() => { setMode(m); setMsg(""); }}
-                className={cn("rounded-full py-2 font-semibold capitalize transition-colors",
-                  mode === m ? "bg-gold text-ink" : "text-paper/70")}>
-                {m === "phone" ? "Phone OTP" : "Email"}
-              </button>
-            ))}
-          </div>
-
-          {mode === "phone" ? (
-            <div className="space-y-3">
-              <input className={input} inputMode="tel" placeholder="Phone (10-digit)"
-                value={phone} onChange={(e) => setPhone(e.target.value)} disabled={sent} />
-              {sent && (
-                <input className={input} inputMode="numeric" placeholder="6-digit code"
-                  value={otp} onChange={(e) => setOtp(e.target.value)} />
-              )}
-              <button disabled={busy} onClick={sent ? verifyOtp : sendOtp}
-                className="w-full rounded-full bg-gold py-3.5 text-base font-semibold text-ink disabled:opacity-60">
-                {busy ? "Please wait…" : sent ? "Verify & sign in" : "Send code"}
-              </button>
-              {sent && <button onClick={() => { setSent(false); setOtp(""); }} className="w-full text-center text-xs text-paper/55">Use a different number</button>}
-            </div>
-          ) : (
-            <div className="space-y-3">
-              <input className={input} inputMode="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} />
-              <input className={input} type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
-              <button disabled={busy} onClick={emailLogin}
-                className="w-full rounded-full bg-gold py-3.5 text-base font-semibold text-ink disabled:opacity-60">
-                {busy ? "Please wait…" : "Sign in"}
-              </button>
-            </div>
-          )}
-
-          {msg && <p className="mt-4 text-center text-sm text-paper/75">{msg}</p>}
-        </div>
+        <form
+          className="mt-7 space-y-3 rounded-2xl border border-white/12 bg-white/[0.04] p-5"
+          onSubmit={(e) => { e.preventDefault(); login(); }}
+        >
+          <input className={input} type="email" inputMode="email" autoComplete="email"
+            placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} />
+          <input className={input} type="password" autoComplete="current-password"
+            placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
+          <button type="submit" disabled={busy}
+            className="w-full rounded-full bg-gold py-3.5 text-base font-semibold text-ink disabled:opacity-60">
+            {busy ? "Signing in…" : "Sign in"}
+          </button>
+          {msg && <p className="text-center text-sm text-paper/75">{msg}</p>}
+        </form>
 
         <p className="mt-6 text-center text-xs text-paper/45">
           Accounts are created by Musicphonetics. No public sign-up.
