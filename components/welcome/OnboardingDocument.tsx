@@ -1,14 +1,19 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { SCHEDULE_POLICY, BILLING_POLICY, computeProrata } from "@/lib/policy";
+import { loadEnrolment, type Enrolment } from "@/lib/enrolment";
 
 const PLANS: Record<string, { name: string; amount: number | null }> = {
   foundation: { name: "Foundation", amount: 8000 },
   main: { name: "Main Musicphonetics Pathway", amount: 12000 },
   "directors-circle": { name: "Director's Circle", amount: null },
 };
+
+const prettyDate = (iso: string) =>
+  new Date(iso + "T00:00:00").toLocaleDateString("en-IN", { weekday: "long", day: "numeric", month: "long", year: "numeric" });
 
 const TERMS_AGREED = [
   "Fees are paid only through the official Musicphonetics Cashfree link.",
@@ -24,16 +29,27 @@ const inr = (n: number) => "₹" + n.toLocaleString("en-IN");
 
 export function OnboardingDocument() {
   const params = useSearchParams();
-  const planKey = (params.get("plan") || "").toLowerCase();
-  const plan = PLANS[planKey];
-  const name = params.get("name") || "";
-  const days = params.get("days") || "";
-  const mode = params.get("mode") || "";
-  const teacher = params.get("teacher") || "";
-  const amtParam = Math.round(Number(params.get("amt") || ""));
-  const monthly = (Number.isFinite(amtParam) && amtParam > 0 ? amtParam : plan?.amount) ?? null;
 
-  const pr = monthly ? computeProrata(monthly) : null;
+  // The enrolment the family filled on /pay carries through Cashfree via
+  // localStorage. That is the source of truth here - this document is never
+  // pre-filled by the office. URL params remain a fallback for office links.
+  const [en, setEn] = useState<Enrolment | null>(null);
+  useEffect(() => setEn(loadEnrolment()), []);
+
+  const planKey = (en?.planKey || params.get("plan") || "").toLowerCase();
+  const plan = PLANS[planKey];
+  const name = en?.name || params.get("name") || "";
+  const days = (en?.days?.length ? en.days.join(", ") : "") || params.get("days") || "";
+  const mode = en?.mode || params.get("mode") || "";
+  const level = en?.level || "";
+  const instrument = en?.instrument || params.get("instrument") || "";
+  const teacher = params.get("teacher") || "";
+  const startDate = en?.startDate || "";
+  const amtParam = Math.round(Number(params.get("amt") || ""));
+  const monthly = (en?.monthly && en.monthly > 0 ? en.monthly : (Number.isFinite(amtParam) && amtParam > 0 ? amtParam : plan?.amount)) ?? null;
+
+  // Pro-rate from the family's chosen start date when we have it.
+  const pr = monthly ? computeProrata(monthly, startDate ? new Date(startDate + "T00:00:00") : new Date()) : null;
   const today = new Date().toLocaleDateString("en-IN", { day: "numeric", month: "long", year: "numeric" });
   const ref = "MP-" + new Date().toISOString().slice(0, 10).replace(/-/g, "") + "-" + Math.floor(1000 + Math.random() * 9000);
 
@@ -56,15 +72,18 @@ export function OnboardingDocument() {
         <div className="mt-6 grid gap-x-8 gap-y-4 sm:grid-cols-2">
           <Field label="Student / Enrolee" value={name || "As provided at payment"} />
           <Field label="Programme" value={plan?.name || "Musicphonetics classes"} />
+          <Field label="Instrument" value={instrument || "Confirmed on WhatsApp"} />
+          <Field label="Current level" value={level || "Assessed in the first class"} />
           <Field label="Classes" value="8 classes per month · 1 hour each" />
           <Field label="Monthly fee" value={monthly ? `${inr(monthly)} / month` : "As confirmed by the office"} />
         </div>
 
         {/* Your setup */}
         <SectionTitle>Your class setup</SectionTitle>
-        <div className="grid gap-x-8 gap-y-4 sm:grid-cols-3">
+        <div className="grid gap-x-8 gap-y-4 sm:grid-cols-2">
           <Field label="Preferred days" value={days || "Confirmed on WhatsApp"} />
           <Field label="Mode of classes" value={mode || "Confirmed on WhatsApp"} />
+          <Field label="Requested start date" value={startDate ? prettyDate(startDate) : "Confirmed on WhatsApp"} />
           <Field label="Assigned teacher" value={teacher || "Matched & confirmed on WhatsApp"} />
         </div>
         <p className="mt-3 text-xs leading-relaxed text-ink/60">

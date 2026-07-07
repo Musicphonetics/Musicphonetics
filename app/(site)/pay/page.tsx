@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 
 export default function PayPage() {
   return (
-    <section className="relative flex min-h-[80vh] items-center overflow-hidden bg-ink py-16 text-paper">
+    <section className="relative flex min-h-[80vh] items-start overflow-hidden bg-ink py-14 text-paper sm:py-16">
       <div aria-hidden="true" className="pointer-events-none absolute left-1/2 top-[-20%] h-[480px] w-[720px] -translate-x-1/2 rounded-full bg-deep-gold/10 blur-[130px]" />
       <div className="container-mp relative">
         <Suspense fallback={<div className="min-h-[420px]" />}>
