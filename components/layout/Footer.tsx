@@ -100,6 +100,9 @@ export function Footer() {
             <Link href="/standards/terms-conditions" className="hover:text-paper">
               Terms
             </Link>
+            <Link href="/teacher/login" className="hover:text-paper">
+              Teacher Login
+            </Link>
           </div>
         </div>
       </div>
