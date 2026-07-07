@@ -30,6 +30,9 @@ export const metadata: Metadata = {
   description:
     "Structured, faculty-led music classes across Delhi NCR — guitar, piano, keyboard, vocals & more, at home or online. Book a free trial; we reply immediately.",
   alternates: { canonical: "/" },
+  manifest: "/manifest.webmanifest",
+  appleWebApp: { capable: true, statusBarStyle: "black-translucent", title: "Teacher OS" },
+  icons: { icon: "/icons/icon-192.png", apple: "/icons/apple-touch-icon.png" },
   openGraph: {
     title: "Music education, built like an institution.",
     description:
@@ -64,6 +67,8 @@ export default function RootLayout({
         {/* Mark that JS is available so scroll-reveal styles apply; without this
             (JS disabled/blocked) content renders fully visible, never blank. */}
         <script dangerouslySetInnerHTML={{ __html: "document.documentElement.classList.add('js')" }} />
+        {/* Register the Teacher OS service worker (PWA offline shell). */}
+        <script dangerouslySetInnerHTML={{ __html: "if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('/sw.js').catch(function(){})})}" }} />
         <JsonLd data={[organizationJsonLd(), websiteJsonLd()]} />
         {children}
       </body>
