@@ -19,12 +19,14 @@ export function Loader() {
     setShow(true);
     document.body.style.overflow = "hidden";
 
-    const leaveAt = setTimeout(() => setLeaving(true), 1500);
+    // Kept deliberately brief — reel visitors want the hero instantly. A quick
+    // premium flash that masks the first hero image loading, not a wall.
+    const leaveAt = setTimeout(() => setLeaving(true), 500);
     const doneAt = setTimeout(() => {
       setShow(false);
       sessionStorage.setItem("mp-loaded", "true");
       document.body.style.overflow = "";
-    }, 2100);
+    }, 850);
 
     return () => {
       clearTimeout(leaveAt);

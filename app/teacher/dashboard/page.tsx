@@ -57,6 +57,7 @@ export default function TeacherDashboard() {
     <PortalShell role="teacher" tabs={TEACHER_TABS}>
       <p className="text-sm text-ink/60">{greeting()},</p>
       <h1 className="font-display text-2xl font-semibold text-ink">{first}</h1>
+      <p className="mt-1 text-xs text-ink/55">{new Date().toLocaleDateString("en-IN", { weekday: "long", day: "numeric", month: "long" })}</p>
 
       {err && (
         <div className="mt-4 rounded-xl border border-red-300 bg-red-50 p-3 text-sm text-red-700">
