@@ -5,6 +5,7 @@ import Link from "next/link";
 import { PortalShell } from "@/components/portal/PortalShell";
 import { TEACHER_TABS } from "@/components/portal/tabs";
 import { Loading, EmptyState, formatMoney } from "@/components/portal/kit";
+import { ReportCardModal, type ReportStudent } from "@/components/portal/ReportCard";
 import { getSupabase, isSupabaseConfigured } from "@/lib/supabase/client";
 import { loadRoster } from "@/lib/supabase/roster";
 import type { StudentStat, ClassUpdate, Payment } from "@/lib/supabase/types";
@@ -15,6 +16,7 @@ export default function MyStudents() {
   const [err, setErr] = useState<string | null>(null);
   const [q, setQ] = useState("");
   const [openId, setOpenId] = useState<string | null>(null);
+  const [report, setReport] = useState<ReportStudent | null>(null);
 
   useEffect(() => {
     if (!isSupabaseConfigured()) return;
@@ -51,19 +53,26 @@ export default function MyStudents() {
                     <p className="mt-1 text-xs text-ink/60">{s.classes_completed}/{(s.classes_per_month ?? 0)} classes</p>
                   </div>
                 </button>
-                {openId === s.student_id && <StudentDetail stat={s} />}
+                {openId === s.student_id && (
+                  <StudentDetail
+                    stat={s}
+                    onReport={() => setReport({ id: s.student_id, name: s.name, instrument: s.instrument, level: s.level, classes_per_month: s.classes_per_month })}
+                  />
+                )}
               </div>
             ))}
           </div>
         </>
       )}
 
+      {report && <ReportCardModal student={report} teacherName="" onClose={() => setReport(null)} />}
+
       <Link href="/teacher/add-student" className="fixed bottom-24 right-4 z-40 grid h-14 w-14 place-items-center rounded-full bg-ink text-2xl text-gold shadow-card-hover">+</Link>
     </PortalShell>
   );
 }
 
-function StudentDetail({ stat }: { stat: StudentStat }) {
+function StudentDetail({ stat, onReport }: { stat: StudentStat; onReport: () => void }) {
   const [classes, setClasses] = useState<ClassUpdate[] | null>(null);
   const [payments, setPayments] = useState<Payment[] | null>(null);
 
@@ -85,6 +94,12 @@ function StudentDetail({ stat }: { stat: StudentStat }) {
       {stat.classes_remaining <= 2 && stat.status === "active" && (
         <p className="mt-3 rounded-lg bg-gold/15 px-3 py-2 text-xs font-semibold text-[#7A5E0F]">Renewal due - {stat.classes_remaining} classes left.</p>
       )}
+
+      <button onClick={onReport}
+        className="mt-3 flex w-full items-center justify-center gap-2 rounded-xl bg-ink px-4 py-2.5 text-sm font-semibold text-paper hover:bg-[#0f131c]">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M8 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2h-2M9 3h6M8 11h8M8 15h5" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" /></svg>
+        Progress report card
+      </button>
 
       <p className="mt-4 text-xs font-semibold uppercase tracking-wide text-ink/60">Recent classes</p>
       {!classes ? <p className="mt-1 text-xs text-ink/50">Loading…</p> :

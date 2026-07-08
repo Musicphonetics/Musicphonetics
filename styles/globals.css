@@ -315,8 +315,9 @@
 @media print {
   body * { visibility: hidden !important; }
   #enrolment-doc, #enrolment-doc *,
-  #joining-doc, #joining-doc * { visibility: visible !important; }
-  #enrolment-doc, #joining-doc {
+  #joining-doc, #joining-doc *,
+  #report-doc, #report-doc * { visibility: visible !important; }
+  #enrolment-doc, #joining-doc, #report-doc {
     position: absolute; left: 0; top: 0; width: 100%;
     box-shadow: none !important; border: none !important;
   }
