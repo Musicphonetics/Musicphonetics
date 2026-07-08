@@ -23,6 +23,14 @@ const SUPABASE_URL = normalizeUrl(
 const SUPABASE_ANON_KEY =
   (process.env.VITE_SUPABASE_ANON_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "").trim();
 
+// Razorpay: only the PUBLISHABLE key id is bridged to the client. If the
+// dashboard sets RAZORPAY_KEY_ID (for the Functions), reuse it so the frontend
+// can open Checkout. The KEY SECRET is NEVER bridged - Functions read it from
+// env directly. As a fallback the create-order response also returns key_id.
+const RAZORPAY_KEY_ID = (
+  process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID || process.env.RAZORPAY_KEY_ID || ""
+).trim();
+
 const nextConfig = {
   reactStrictMode: true,
   // Static HTML export — Cloudflare Pages serves the `out/` folder directly
@@ -35,6 +43,7 @@ const nextConfig = {
   env: {
     NEXT_PUBLIC_SUPABASE_URL: SUPABASE_URL,
     NEXT_PUBLIC_SUPABASE_ANON_KEY: SUPABASE_ANON_KEY,
+    NEXT_PUBLIC_RAZORPAY_KEY_ID: RAZORPAY_KEY_ID,
   },
 };
 

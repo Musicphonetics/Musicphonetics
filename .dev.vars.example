@@ -1,0 +1,4 @@
+# For local Cloudflare Functions testing: `wrangler pages dev out`
+# Copy to .dev.vars (git-ignored) and fill in real values.
+RAZORPAY_KEY_ID=rzp_test_xxxxxxxxxxxxxx
+RAZORPAY_KEY_SECRET=your_key_secret_here

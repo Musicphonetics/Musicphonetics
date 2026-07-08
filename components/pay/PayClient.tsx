@@ -8,13 +8,12 @@ import { InstrumentIcon } from "@/components/ui/InstrumentIcon";
 import { INSTRUMENTS, EXPERIENCE, MODES } from "@/lib/onboarding";
 import { WEEK_DAYS, saveEnrolment } from "@/lib/enrolment";
 import { computeProrata, SCHEDULE_POLICY, TERMS_AGREED } from "@/lib/policy";
+import { loadRazorpay, createOrder, verifyPayment } from "@/lib/razorpay";
 import { cn } from "@/lib/utils";
 
-// Cashfree hosted Payment Form - collects name, phone and amount on Cashfree's
-// secure page. Configure in the Cashfree dashboard:
-//   Redirect URL -> https://musicphonetics.pages.dev/welcome
-//   Webhook URL  -> https://musicphonetics.pages.dev/api/cashfree/webhook
-const CASHFREE_FORM_URL = "https://payments.cashfree.com/forms?code=musicphonetics";
+// Razorpay Standard Checkout. The order is created server-side by the Pages
+// Function /api/razorpay/create-order and verified by /api/razorpay/verify-payment;
+// the key SECRET never reaches this file.
 
 const PLAN_AMOUNTS: Record<string, { name: string; amount: number }> = {
   foundation: { name: "Foundation", amount: 8000 },
@@ -44,6 +43,8 @@ export function PayClient() {
   const [days, setDays] = useState<string[]>([]);
   const [startDate, setStartDate] = useState(todayISO());
   const [agreed, setAgreed] = useState(false);
+  const [paying, setPaying] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const toggleDay = (d: string) =>
     setDays((cur) => (cur.includes(d) ? cur.filter((x) => x !== d) : [...cur, d]));
@@ -58,18 +59,79 @@ export function PayClient() {
   const payNow = pr ? (prorated ? pr.firstPayment : monthly) : 0;
 
   const detailsReady = Boolean(name.trim() && instrument && days.length > 0 && startDate);
-  const ready = detailsReady && agreed;
+  const ready = detailsReady && agreed && payNow > 0;
 
-  function proceed() {
-    if (!ready) return;
+  async function proceed() {
+    if (!ready || paying) return;
+    setError(null);
+    setPaying(true);
+
+    // Save the enrolment first so /welcome can show the confirmation on success.
     const now = new Date().toISOString();
     saveEnrolment({
       planKey, planName, monthly, name: name.trim(), instrument, level, mode, days,
       startDate, firstPayment: payNow, agreedAt: now, savedAt: now,
     });
-    // Hand off to Cashfree's secure page. localStorage carries the enrolment
-    // through the redirect and back to /welcome.
-    window.location.href = CASHFREE_FORM_URL;
+
+    try {
+      const loaded = await loadRazorpay();
+      if (!loaded || !window.Razorpay) {
+        throw new Error("Could not load the secure checkout. Check your connection and try again.");
+      }
+
+      const order = await createOrder({
+        amount: Math.round(payNow * 100), // paise
+        currency: "INR",
+        receipt: `mp_${Date.now()}`,
+        plan: planName,
+        name: name.trim(),
+      });
+
+      const key = order.key_id || process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID;
+      if (!key) throw new Error("Payments are not configured yet. Please reach us on WhatsApp.");
+
+      const rzp = new window.Razorpay({
+        key,
+        order_id: order.order_id,
+        amount: order.amount,
+        currency: order.currency,
+        name: "Musicphonetics",
+        description: `${planName} · enrolment`,
+        prefill: { name: name.trim() },
+        notes: { plan: planName, instrument },
+        theme: { color: "#C9A227" },
+        handler: async (resp: { razorpay_payment_id: string; razorpay_order_id: string; razorpay_signature: string }) => {
+          try {
+            const v = await verifyPayment(resp);
+            if (v.ok && v.verified) {
+              window.location.href = "/welcome";
+            } else {
+              setPaying(false);
+              setError(`We received your payment but could not verify it automatically. Please message us on WhatsApp with payment id ${resp.razorpay_payment_id} and we'll confirm right away.`);
+            }
+          } catch {
+            setPaying(false);
+            setError(`Payment done but verification did not complete. Please message us on WhatsApp with payment id ${resp.razorpay_payment_id}.`);
+          }
+        },
+        modal: {
+          ondismiss: () => {
+            setPaying(false);
+            setError(null); // user simply closed the window - no error shown
+          },
+        },
+      });
+
+      rzp.on("payment.failed", (r: { error?: { description?: string } }) => {
+        setPaying(false);
+        setError(r?.error?.description || "The payment failed. Please try again or use another method.");
+      });
+
+      rzp.open();
+    } catch (e) {
+      setPaying(false);
+      setError(e instanceof Error ? e.message : "Something went wrong. Please try again.");
+    }
   }
 
   return (
@@ -212,24 +274,33 @@ export function PayClient() {
 
         {/* Pay */}
         <button
-          type="button" onClick={proceed} disabled={!ready}
+          type="button" onClick={proceed} disabled={!ready || paying}
           className={cn("mt-5 inline-flex min-h-[54px] w-full items-center justify-center gap-2 rounded-full px-6 text-base font-semibold transition-all active:scale-[0.99]",
-            ready ? "bg-gold text-ink shadow-card hover:bg-deep-gold" : "cursor-not-allowed bg-white/10 text-paper/40")}>
-          {ready ? `Proceed to pay ${payNow > 0 ? inr(payNow) : ""} securely` : !detailsReady ? "Fill your details to continue" : "Tick the box to agree and continue"}
+            ready && !paying ? "bg-gold text-ink shadow-card hover:bg-deep-gold" : "cursor-not-allowed bg-white/10 text-paper/40")}>
+          {paying
+            ? "Opening secure checkout…"
+            : ready
+              ? `Pay ${payNow > 0 ? inr(payNow) : ""} securely`
+              : !detailsReady ? "Fill your details to continue" : "Tick the box to agree and continue"}
         </button>
-        {!detailsReady && (
+        {!detailsReady && !paying && (
           <p className="mt-2 text-center text-xs text-paper/50">Name, instrument, at least one day and a start date are needed.</p>
+        )}
+        {error && (
+          <div role="alert" className="mt-3 rounded-xl border border-red-400/40 bg-red-500/10 p-3 text-center text-sm text-red-200">
+            {error}
+          </div>
         )}
 
         <p className="mt-4 flex items-center justify-center gap-2 text-xs text-paper/60">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" aria-hidden="true" className="text-gold">
             <path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6l7-3z" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" />
           </svg>
-          Encrypted · UPI, cards &amp; netbanking via Cashfree
+          Encrypted · UPI, cards &amp; netbanking via Razorpay
         </p>
         <p className="mt-3 text-center text-xs leading-relaxed text-paper/50">
-          On Cashfree&apos;s secure page, enter your name, phone and the amount shown above
-          {payNow > 0 ? ` (${inr(payNow)})` : ""}. Your details above are saved so your welcome document is ready.
+          A secure Razorpay window opens for {payNow > 0 ? inr(payNow) : "your amount"}. Your details above
+          are saved, so your welcome document is ready the moment payment succeeds.
         </p>
       </div>
 
