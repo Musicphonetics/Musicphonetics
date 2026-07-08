@@ -29,7 +29,11 @@ function json(body, status = 200) {
 export async function onRequestPost(context) {
   const { request, env } = context;
 
-  if (!env.RAZORPAY_KEY_ID || !env.RAZORPAY_KEY_SECRET) {
+  // Trim so a stray space/newline pasted into the dashboard can't break auth.
+  const keyId = (env.RAZORPAY_KEY_ID || "").trim();
+  const keySecret = (env.RAZORPAY_KEY_SECRET || "").trim();
+
+  if (!keyId || !keySecret) {
     return json({ ok: false, error: "Payments are not configured yet." }, 503);
   }
 
@@ -54,7 +58,7 @@ export async function onRequestPost(context) {
     student: String(body.name || "").slice(0, 100),
   };
 
-  const auth = "Basic " + btoa(`${env.RAZORPAY_KEY_ID}:${env.RAZORPAY_KEY_SECRET}`);
+  const auth = "Basic " + btoa(`${keyId}:${keySecret}`);
 
   let res;
   try {
@@ -69,8 +73,15 @@ export async function onRequestPost(context) {
   }
 
   if (res.status === 401) {
-    console.error("Razorpay auth failed (check RAZORPAY_KEY_ID / RAZORPAY_KEY_SECRET)");
-    return json({ ok: false, error: "Payment gateway authentication failed." }, 401);
+    // Safe diagnostics only - the key id is publishable, and we expose the
+    // SECRET's length (never its value) so a wrong/short paste is obvious.
+    // The correct test secret is 24 characters.
+    console.error("Razorpay 401", { keyId, keyIdLen: keyId.length, secretLen: keySecret.length });
+    return json({
+      ok: false,
+      error: "Payment gateway authentication failed. Please recheck the Razorpay key id and secret in Cloudflare.",
+      detail: { key_id: keyId, key_id_len: keyId.length, secret_len: keySecret.length },
+    }, 401);
   }
 
   const data = await res.json().catch(() => ({}));

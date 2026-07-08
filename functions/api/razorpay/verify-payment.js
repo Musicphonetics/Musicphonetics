@@ -41,7 +41,8 @@ function timingSafeEqual(a, b) {
 export async function onRequestPost(context) {
   const { request, env } = context;
 
-  if (!env.RAZORPAY_KEY_SECRET) {
+  const keySecret = (env.RAZORPAY_KEY_SECRET || "").trim();
+  if (!keySecret) {
     return json({ ok: false, error: "Payments are not configured yet." }, 503);
   }
 
@@ -60,7 +61,7 @@ export async function onRequestPost(context) {
     return json({ ok: false, verified: false, error: "Missing payment fields." }, 400);
   }
 
-  const expected = await hmacSha256Hex(env.RAZORPAY_KEY_SECRET, `${orderId}|${paymentId}`);
+  const expected = await hmacSha256Hex(keySecret, `${orderId}|${paymentId}`);
 
   if (!timingSafeEqual(expected, String(signature))) {
     // Signature mismatch: DO NOT treat this as paid.
