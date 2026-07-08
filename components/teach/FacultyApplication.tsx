@@ -5,6 +5,7 @@ import { Section, SectionHeading } from "@/components/ui/Section";
 import { Button } from "@/components/ui/Button";
 import { whatsappLink } from "@/lib/data";
 import { INSTRUMENTS } from "@/lib/teach-config";
+import { JoiningLetter, type JoiningCreds } from "@/components/teach/JoiningLetter";
 import { cn } from "@/lib/utils";
 
 // Same Web3Forms inbox as the student lead form; the subject line marks it as
@@ -23,7 +24,7 @@ const field =
 
 type Status = "idle" | "sending" | "success" | "error";
 
-const STEPS = ["About you", "Your music", "Availability", "Portfolio", "Consent"];
+const STEPS = ["About you", "Your music", "Availability", "Portfolio", "Bank & payout", "Consent"];
 
 interface FormState {
   fullName: string; dob: string; gender: string; city: string; address: string;
@@ -32,6 +33,7 @@ interface FormState {
   qualification: string; grade: string; philosophy: string;
   commitment: string; days: string[]; timeBands: string[]; modes: string[];
   areas: string[]; transport: string;
+  bankHolder: string; bankName: string; bankAccount: string; bankIfsc: string; bankUpi: string;
   youtube: string; instagram: string; website: string; demo: string;
   ref1Name: string; ref1Phone: string; ref2Name: string; ref2Phone: string;
   idConsent: boolean; cTerms: boolean; cSheet: boolean; cSafeguard: boolean; cNonSolicit: boolean;
@@ -42,6 +44,7 @@ const EMPTY: FormState = {
   fullName: "", dob: "", gender: "", city: "", address: "", phone: "", email: "", languages: "",
   instruments: [], yearsTeaching: "", yearsPerforming: "", qualification: "", grade: "", philosophy: "",
   commitment: "", days: [], timeBands: [], modes: [], areas: [], transport: "",
+  bankHolder: "", bankName: "", bankAccount: "", bankIfsc: "", bankUpi: "",
   youtube: "", instagram: "", website: "", demo: "", ref1Name: "", ref1Phone: "", ref2Name: "", ref2Phone: "",
   idConsent: false, cTerms: false, cSheet: false, cSafeguard: false, cNonSolicit: false, whyJoin: "",
 };
@@ -51,6 +54,7 @@ export function FacultyApplication() {
   const [status, setStatus] = useState<Status>("idle");
   const [error, setError] = useState("");
   const [f, setF] = useState<FormState>(EMPTY);
+  const [creds, setCreds] = useState<JoiningCreds | null>(null);
 
   const set = <K extends keyof FormState>(k: K, v: FormState[K]) => setF((p) => ({ ...p, [k]: v }));
   const toggle = (k: "instruments" | "days" | "timeBands" | "modes" | "areas", v: string) =>
@@ -77,6 +81,12 @@ export function FacultyApplication() {
       if (f.areas.length === 0) return "Select the areas you can cover.";
     }
     if (s === 4) {
+      if (f.bankHolder.trim().length < 2) return "Please enter the bank account holder's name.";
+      if (f.bankName.trim().length < 2) return "Please enter your bank name.";
+      if (f.bankAccount.replace(/\s/g, "").length < 6) return "Please enter a valid account number.";
+      if (!/^[A-Za-z]{4}0[A-Za-z0-9]{6}$/.test(f.bankIfsc.trim())) return "Please enter a valid IFSC code.";
+    }
+    if (s === 5) {
       if (!f.idConsent) return "Please confirm you can provide government ID and consent to verification.";
       if (!(f.cTerms && f.cSheet && f.cSafeguard && f.cNonSolicit)) return "Please accept all four terms to continue.";
     }
@@ -92,10 +102,41 @@ export function FacultyApplication() {
   function back() { setError(""); setStep((s) => Math.max(s - 1, 0)); }
 
   async function submit() {
-    const err = validateStep(4);
+    const err = validateStep(5);
     if (err) { setError(err); return; }
     setError("");
     setStatus("sending");
+
+    // 1) Create the teacher's Supabase login + record (server-side). If it
+    //    fails we still show the letter, and the office provisions the login.
+    try {
+      const applyRes = await fetch("/api/teacher-apply", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          full_name: f.fullName, email: f.email, phone: f.phone, agreed: true,
+          instruments: f.instruments, regions: f.areas, modes: f.modes,
+          experience_years: f.yearsTeaching, qualifications: f.qualification,
+          bank_holder: f.bankHolder, bank_name: f.bankName, bank_account: f.bankAccount,
+          bank_ifsc: f.bankIfsc, bank_upi: f.bankUpi,
+        }),
+      });
+      const applyData = (await applyRes.json().catch(() => ({}))) as
+        { ok?: boolean; login_email?: string; temp_password?: string; error?: string };
+      if (applyRes.status === 409) {
+        // Email already has a login - stop and let them fix it.
+        setError(applyData.error || "This email is already registered. Use a different email or log in.");
+        setStatus("idle");
+        return;
+      }
+      if (applyData.ok && applyData.login_email && applyData.temp_password) {
+        setCreds({ login_email: applyData.login_email, temp_password: applyData.temp_password });
+      }
+    } catch {
+      /* keep going - the letter is still generated, login sent by office */
+    }
+
+    // 2) Notify the office by email (never send bank details or the password).
     try {
       const res = await fetch("https://api.web3forms.com/submit", {
         method: "POST",
@@ -133,36 +174,48 @@ export function FacultyApplication() {
           "Reference 1": f.ref1Name ? `${f.ref1Name} · ${f.ref1Phone}` : "-",
           "Reference 2": f.ref2Name ? `${f.ref2Name} · ${f.ref2Phone}` : "-",
           "ID + verification consent": f.idConsent ? "Yes" : "No",
-          "Accepted terms (70/30, daily sheet, safeguarding, non-solicit)":
+          "Accepted terms (fee share, daily sheet, safeguarding, non-solicit)":
             [f.cTerms, f.cSheet, f.cSafeguard, f.cNonSolicit].every(Boolean) ? "All accepted" : "Incomplete",
           "Why join": f.whyJoin || "-",
         }),
       });
-      const data = (await res.json().catch(() => ({ success: false }))) as { success?: boolean };
-      if (!res.ok || data.success === false) throw new Error("send failed");
-      setStatus("success");
+      await res.json().catch(() => ({}));
     } catch {
-      setStatus("error");
+      /* notification is best-effort - the letter is the deliverable */
     }
+    setStatus("success");
   }
 
   if (status === "success") {
     return (
       <Section id="apply" background="white" spacing="lg">
-        <div className="mx-auto max-w-xl rounded-3xl border border-hairline bg-paper p-8 text-center shadow-card sm:p-10">
+        <div className="mx-auto mb-8 max-w-2xl text-center">
           <div className="mx-auto grid h-14 w-14 place-items-center rounded-full bg-feature-green/10 text-feature-green">
             <svg width="26" height="26" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12l4 4 10-10" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" /></svg>
           </div>
-          <h3 className="mt-5 font-display text-2xl font-semibold text-ink">Application received.</h3>
-          <p className="mx-auto mt-3 max-w-md text-sm leading-relaxed text-ink/70">
-            We review every application personally - and we reply immediately.
+          <h3 className="mt-5 font-display text-2xl font-semibold text-ink">Welcome aboard. Here is your joining letter.</h3>
+          <p className="mx-auto mt-3 max-w-lg text-sm leading-relaxed text-ink/70">
+            {creds
+              ? "Your portal login is ready and shown below. Print or save this letter as a PDF, sign it, and send it back to us on WhatsApp."
+              : "Print or save this letter as a PDF, sign it, and send it back to us on WhatsApp. We'll set up your portal login and share it with you."}
           </p>
-          <div className="mt-6 flex justify-center">
-            <Button href={whatsappLink("Hi Musicphonetics, I've just submitted a faculty application.")} external variant="primary" size="lg">
-              Message us on WhatsApp
+          <div className="mt-5 flex justify-center">
+            <Button href={whatsappLink("Hi Musicphonetics, I've just submitted my faculty application and joining letter.")} external variant="primary" size="lg">
+              Send the signed PDF on WhatsApp
             </Button>
           </div>
         </div>
+        <JoiningLetter
+          data={{
+            fullName: f.fullName, dob: f.dob, gender: f.gender, city: f.city, address: f.address,
+            phone: f.phone, email: f.email, languages: f.languages,
+            instruments: f.instruments, yearsTeaching: f.yearsTeaching, yearsPerforming: f.yearsPerforming,
+            qualification: f.qualification, grade: f.grade,
+            commitment: f.commitment, days: f.days, timeBands: f.timeBands, modes: f.modes, areas: f.areas, transport: f.transport,
+            bankHolder: f.bankHolder, bankName: f.bankName, bankAccount: f.bankAccount, bankIfsc: f.bankIfsc, bankUpi: f.bankUpi,
+          }}
+          creds={creds}
+        />
       </Section>
     );
   }
@@ -172,7 +225,7 @@ export function FacultyApplication() {
       <SectionHeading
         eyebrow="Apply to teach"
         title="Your application."
-        intro="Five short steps. Nothing here confirms a fee, a slot, or a role - it starts a conversation, and we take it from there personally."
+        intro="A few short steps. At the end you get your joining letter and portal login, ready to print and sign."
       />
 
       <div className="mx-auto mt-10 max-w-2xl">
@@ -271,16 +324,33 @@ export function FacultyApplication() {
             </div>
           )}
 
-          {/* STEP 5 */}
+          {/* STEP 5 - Bank & payout */}
           {step === 4 && (
             <div className="space-y-4">
+              <p className="text-sm text-ink/70">
+                Your payouts go here. Fees are settled to this account within <b className="text-ink">T+2 business days</b>. All student fees are billed only in the Musicphonetics name - you never collect fees directly.
+              </p>
+              <div className="grid gap-4 sm:grid-cols-2">
+                <Text label="Account holder name" req value={f.bankHolder} onChange={(v) => set("bankHolder", v)} placeholder="As printed in your bank" />
+                <Text label="Bank name" req value={f.bankName} onChange={(v) => set("bankName", v)} placeholder="e.g. HDFC Bank" />
+                <Text label="Account number" req inputMode="numeric" value={f.bankAccount} onChange={(v) => set("bankAccount", v)} placeholder="Your account number" />
+                <Text label="IFSC code" req value={f.bankIfsc} onChange={(v) => set("bankIfsc", v.toUpperCase())} placeholder="e.g. HDFC0001234" />
+                <div className="sm:col-span-2"><Text label="UPI ID (optional)" value={f.bankUpi} onChange={(v) => set("bankUpi", v)} placeholder="name@bank" /></div>
+              </div>
+              <p className="text-xs text-ink/60">Kept private and used only for your payouts. Government ID is collected securely after selection.</p>
+            </div>
+          )}
+
+          {/* STEP 6 - Consent */}
+          {step === 5 && (
+            <div className="space-y-4">
               <Check checked={f.idConsent} onChange={(v) => set("idConsent", v)}>
-                I can provide government ID (Aadhaar / PAN) and I consent to police / background verification for student safeguarding. <span className="text-ink/70">(ID numbers and bank details are shared securely after selection - never on this form.)</span>
+                I can provide government ID (Aadhaar / PAN) and I consent to police / background verification for student safeguarding. <span className="text-ink/70">(ID document images are shared securely after selection.)</span>
               </Check>
               <div className="rounded-2xl border border-hairline bg-white p-4">
                 <p className="text-xs font-semibold uppercase tracking-wider text-[#7A5E0F]">I agree to the terms</p>
                 <div className="mt-3 space-y-3">
-                  <Check checked={f.cTerms} onChange={(v) => set("cTerms", v)}>The 70/30 fee split (my 70%, fees variable).</Check>
+                  <Check checked={f.cTerms} onChange={(v) => set("cTerms", v)}>My agreed fee share, settled T+2 business days via the company account.</Check>
                   <Check checked={f.cSheet} onChange={(v) => set("cSheet", v)}>Mandatory daily class-sheet updates.</Check>
                   <Check checked={f.cSafeguard} onChange={(v) => set("cSafeguard", v)}>The safeguarding code of conduct.</Check>
                   <Check checked={f.cNonSolicit} onChange={(v) => set("cNonSolicit", v)}>The 6-month non-solicitation of Musicphonetics students/parents on exit.</Check>

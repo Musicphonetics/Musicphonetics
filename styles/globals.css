@@ -311,11 +311,12 @@
   .mp-hero-zoom { animation: none; }
 }
 
-/* Print isolation - "Save as PDF" of the enrolment document only. */
+/* Print isolation - "Save as PDF" of a single printable document. */
 @media print {
   body * { visibility: hidden !important; }
-  #enrolment-doc, #enrolment-doc * { visibility: visible !important; }
-  #enrolment-doc {
+  #enrolment-doc, #enrolment-doc *,
+  #joining-doc, #joining-doc * { visibility: visible !important; }
+  #enrolment-doc, #joining-doc {
     position: absolute; left: 0; top: 0; width: 100%;
     box-shadow: none !important; border: none !important;
   }

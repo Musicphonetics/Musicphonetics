@@ -39,7 +39,7 @@ export default function OwnerPayments() {
     { key: "teacher70", label: "Teacher 70%", render: (r) => formatMoney(r.teacher70), csv: (r) => r.teacher70 },
     { key: "company30", label: "Company 30%", render: (r) => formatMoney(r.company30), csv: (r) => r.company30 },
     { key: "status", label: "Status" },
-    { key: "bill", label: "Cashfree bill" },
+    { key: "bill", label: "Payment reference" },
   ];
 
   return (

@@ -300,10 +300,10 @@ export function PayClient() {
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" aria-hidden="true" className="text-gold">
             <path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6l7-3z" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" />
           </svg>
-          Encrypted · UPI, cards &amp; netbanking via Razorpay
+          Encrypted &amp; secure · UPI, cards &amp; netbanking
         </p>
         <p className="mt-3 text-center text-xs leading-relaxed text-paper/50">
-          A secure Razorpay window opens for {payNow > 0 ? inr(payNow) : "your amount"}. Your details above
+          A secure payment window opens for {payNow > 0 ? inr(payNow) : "your amount"}. Your details above
           are saved, so your welcome document is ready the moment payment succeeds.
         </p>
       </div>

@@ -16,7 +16,7 @@ const SUPPORT_EMAIL = "adm.musicphonetics@gmail.com";
 const FAQ = [
   {
     q: "I paid - what happens now?",
-    a: "You'll get a WhatsApp from us immediately to schedule your first class. Payments are processed securely by Cashfree; if anything looks off, message us and we'll verify it on the spot.",
+    a: "You'll get a WhatsApp from us immediately to schedule your first class. Payments are processed through a secure, encrypted payment gateway; if anything looks off, message us and we'll verify it on the spot.",
   },
   {
     q: "How do refunds work?",
@@ -89,7 +89,7 @@ export default function SupportPage() {
         </div>
       </Section>
 
-      {/* Refund & payment policy - required visible for Cashfree */}
+      {/* Refund & payment policy - required visible for the payment gateway */}
       <Section background="white" spacing="md">
         <Reveal>
           <div className="rounded-3xl border border-hairline bg-paper p-8 sm:p-10">
@@ -100,7 +100,7 @@ export default function SupportPage() {
                   Written down, published, and honoured.
                 </h2>
                 <p className="mt-3 max-w-xl text-sm leading-relaxed text-ink/70">
-                  Payments are processed securely by Cashfree (UPI, cards, netbanking).
+                  Payments are processed through a secure, encrypted gateway (UPI, cards, netbanking).
                   Refunds and payment terms follow our published standard in the
                   Standards Library - the same document for every family.
                 </p>

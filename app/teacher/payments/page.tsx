@@ -11,14 +11,14 @@ import type { StudentStat } from "@/lib/supabase/types";
 
 const CYCLES = ["-", "Monthly", "Quarterly", "Half-yearly", "One-time"];
 const PAY_STATUS = ["Received", "Pending", "Partial"];
-const MODES = ["Cashfree", "Other"];
+const MODES = ["Secure gateway", "Other"];
 const today = () => new Date().toISOString().slice(0, 10);
 
 export default function PaymentsPage() {
   const router = useRouter();
   const [students, setStudents] = useState<StudentStat[] | null>(null);
   const [sid, setSid] = useState("");
-  const [f, setF] = useState<Record<string, string>>({ payment_date: today(), payment_status: "Received", payment_mode: "Cashfree" });
+  const [f, setF] = useState<Record<string, string>>({ payment_date: today(), payment_status: "Received", payment_mode: "Secure gateway" });
   const [busy, setBusy] = useState(false);
   const [toast, setToast] = useState<{ kind: "success" | "error"; message: string } | null>(null);
   const set = (k: string, v: string) => setF((p) => ({ ...p, [k]: v }));
@@ -34,8 +34,8 @@ export default function PaymentsPage() {
   async function save() {
     if (!sid) { setToast({ kind: "error", message: "Pick a student." }); return; }
     if (!amount || amount <= 0) { setToast({ kind: "error", message: "Enter the amount paid." }); return; }
-    if ((f.payment_mode || "Cashfree") === "Cashfree" && !f.cashfree_bill_no) {
-      setToast({ kind: "error", message: "Enter the Cashfree bill / reference number." }); return;
+    if ((f.payment_mode || "Secure gateway") === "Secure gateway" && !f.cashfree_bill_no) {
+      setToast({ kind: "error", message: "Enter the payment / bill reference number." }); return;
     }
     setBusy(true);
     const { data: u } = await getSupabase().auth.getUser();
@@ -50,7 +50,7 @@ export default function PaymentsPage() {
       fee_quoted: picked?.fee_quoted ?? null,
       amount_paid: amount,
       payment_status: f.payment_status || "Received",
-      payment_mode: f.payment_mode || "Cashfree",
+      payment_mode: f.payment_mode || "Secure gateway",
       cashfree_bill_no: f.cashfree_bill_no || null,
       txn_reference: f.txn_reference || null,
       notes: f.notes || null,
@@ -87,12 +87,12 @@ export default function PaymentsPage() {
           <MoneyField label="Amount paid" req value={f.amount_paid || ""} onChange={(v) => set("amount_paid", v)} />
 
           <Select label="Payment status" value={f.payment_status || "Received"} onChange={(v) => set("payment_status", v)} options={PAY_STATUS} />
-          <Select label="Payment mode" value={f.payment_mode || "Cashfree"} onChange={(v) => set("payment_mode", v)} options={MODES} />
-          <Field label="Cashfree bill / reference no." value={f.cashfree_bill_no || ""} onChange={(v) => set("cashfree_bill_no", v)} placeholder="From the Cashfree receipt" />
+          <Select label="Payment mode" value={f.payment_mode || "Secure gateway"} onChange={(v) => set("payment_mode", v)} options={MODES} />
+          <Field label="Payment / bill reference no." value={f.cashfree_bill_no || ""} onChange={(v) => set("cashfree_bill_no", v)} placeholder="From the payment receipt" />
           <Field label="Transaction reference" value={f.txn_reference || ""} onChange={(v) => set("txn_reference", v)} />
           <TextArea label="Notes" value={f.notes || ""} onChange={(v) => set("notes", v)} />
 
-          <p className="text-xs text-ink/60">Parents pay only via the company Cashfree link - you just record the confirmation here.</p>
+          <p className="text-xs text-ink/60">Parents pay only via the company&apos;s secure payment link - you just record the confirmation here.</p>
 
           <button disabled={busy} onClick={save}
             className="w-full rounded-full bg-ink py-4 text-base font-semibold text-paper shadow-card disabled:opacity-60">
