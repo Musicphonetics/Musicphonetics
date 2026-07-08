@@ -135,6 +135,18 @@ export const HERO_SLIDES: string[] = [
   "/images/hero/slide-5.webp",
 ];
 
+// Real, unstaged moments from our classes, recitals and student wins across
+// Delhi NCR. No stock photos - these are our people.
+export interface Moment { src: string; alt: string; caption: string }
+export const REAL_MOMENTS: Moment[] = [
+  { src: "/images/moments/03-stage-guitar.webp", alt: "A Musicphonetics student performing guitar on a large stage", caption: "On the big stage, where months of practice pay off." },
+  { src: "/images/moments/02-openmic.webp", alt: "A student singing and playing guitar at an Open Mic and Chai evening", caption: "Open Mic and Chai, our students take the mic." },
+  { src: "/images/moments/05-group.webp", alt: "Musicphonetics students celebrating an award together in class", caption: "Student of the term, celebrated together." },
+  { src: "/images/moments/04-award.webp", alt: "Founder Abhishek Kumar receiving a certificate of appreciation as a judge", caption: "Invited to judge a Delhi cultural fest." },
+  { src: "/images/moments/08-stage.webp", alt: "A Musicphonetics student meeting a musician backstage", caption: "Learning from the musicians who inspire us." },
+  { src: "/images/moments/09-mentor.webp", alt: "A one-on-one music lesson between teacher and student", caption: "One student, one teacher, full attention." },
+];
+
 // Google review screenshots in public/reviews/. Reorder / swap freely.
 // Homepage shows HOME_REVIEW_COUNT of these; /reviews shows all.
 export const REVIEWS: string[] = [

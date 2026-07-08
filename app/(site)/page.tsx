@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { FunnelHero } from "@/components/home/FunnelHero";
 import { StatsBand } from "@/components/home/StatsBand";
+import { RealMoments } from "@/components/home/RealMoments";
 import { WhyTrust } from "@/components/home/WhyTrust";
 import { FunnelPackages } from "@/components/home/FunnelPackages";
 import { ReviewsSection } from "@/components/home/Reviews";
@@ -50,6 +51,7 @@ export default function HomePage() {
       <JsonLd data={localBusiness} />
       <FunnelHero />
       <StatsBand />
+      <RealMoments />
       <WhyTrust />
       <GoldDivider />
       <FunnelPackages />

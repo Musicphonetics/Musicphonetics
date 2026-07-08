@@ -49,9 +49,10 @@ export function FunnelHero() {
       {/* Content */}
       <div className="container-mp relative flex min-h-[92vh] flex-col justify-end pb-28 pt-24 sm:min-h-[86vh] sm:justify-center sm:pb-24">
         <div className="max-w-2xl">
-          <span className="inline-flex w-fit items-center gap-2 rounded-full border border-white/15 bg-black/30 px-3.5 py-1.5 text-xs text-paper/90 backdrop-blur">
-            <span className="text-gold">★★★★★</span>
-            Trusted by parents &amp; students across Delhi NCR
+          <span className="inline-flex w-fit items-center gap-2 rounded-full border border-gold/30 bg-black/30 px-4 py-1.5 text-sm text-paper/90 backdrop-blur">
+            <span aria-hidden="true">🙏</span>
+            <span className="font-display font-semibold text-gold">नमस्ते</span>
+            <span className="text-paper/85">Namaste, and welcome</span>
           </span>
 
           <h1 className="mt-5 font-display text-[2.7rem] font-semibold leading-[1.03] drop-shadow-sm sm:text-6xl lg:text-7xl">
@@ -59,12 +60,14 @@ export function FunnelHero() {
           </h1>
 
           <p className="mt-5 max-w-xl text-lg leading-relaxed text-paper/85">
-            Structured guitar, piano/keyboard &amp; vocal classes for children,
-            beginners &amp; serious learners. Delhi NCR + Online.
+            Real teachers, real students, real progress. Warm, structured guitar,
+            piano/keyboard &amp; vocal classes for children, beginners &amp; serious
+            learners, at home and online across Delhi NCR.
           </p>
 
           <p className="mt-4 flex flex-wrap items-center gap-x-2 gap-y-1 text-sm font-medium text-paper/80">
-            <span>Structured classes</span><Dot /><span>Teacher matching</span><Dot /><span>Progress tracking</span>
+            <span className="text-gold">★★★★★</span>
+            <span>Loved by 1,100+ families</span><Dot /><span>Teacher matching</span><Dot /><span>Progress tracking</span>
           </p>
 
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
