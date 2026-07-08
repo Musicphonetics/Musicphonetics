@@ -5,14 +5,12 @@ import { Section, SectionHeading } from "@/components/ui/Section";
 import { Button } from "@/components/ui/Button";
 import { whatsappLink } from "@/lib/data";
 import { INSTRUMENTS } from "@/lib/teach-config";
-import { JoiningLetter } from "@/components/teach/JoiningLetter";
+import { ApplicationSummary } from "@/components/teach/ApplicationSummary";
 import { cn } from "@/lib/utils";
 
-// Same Web3Forms inbox as the student lead form; the subject line marks it as
-// a faculty application. Web3Forms access keys are public by design - no secret
-// is exposed. We deliberately do NOT collect Aadhaar numbers or bank details on
-// this public page; those are gathered securely AFTER selection.
-const WEB3FORMS_ACCESS_KEY = "1a5d9694-46b9-4236-8ced-1b68b65b5097";
+// The application is submitted to /api/teacher-application, which stores it and
+// emails the owner the full details (including bank). No login is created here;
+// the owner approves in the portal, and only then is a login + Offer Letter issued.
 
 const DAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 const TIME_BANDS = ["Morning", "Afternoon", "Evening", "Late evening"];
@@ -54,7 +52,7 @@ export function FacultyApplication() {
   const [status, setStatus] = useState<Status>("idle");
   const [error, setError] = useState("");
   const [f, setF] = useState<FormState>(EMPTY);
-  const [login, setLogin] = useState<{ email: string; password: string; teacherId: string } | null>(null);
+  const [appRef, setAppRef] = useState<string | null>(null);
 
   const set = <K extends keyof FormState>(k: K, v: FormState[K]) => setF((p) => ({ ...p, [k]: v }));
   const toggle = (k: "instruments" | "days" | "timeBands" | "modes" | "areas", v: string) =>
@@ -107,85 +105,34 @@ export function FacultyApplication() {
     setError("");
     setStatus("sending");
 
-    // 1) Create the teacher's Supabase login + record (server-side). If it
-    //    fails we still show the letter, and the office provisions the login.
+    // Record the APPLICATION only. No login is created here - the owner reviews
+    // and approves in the portal, and only then is a login + Offer Letter issued.
+    // The server stores it and emails the owner the full details (incl. bank).
     try {
-      const applyRes = await fetch("/api/teacher-apply", {
+      const res = await fetch("/api/teacher-application", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           full_name: f.fullName, email: f.email, phone: f.phone, agreed: true,
-          instruments: f.instruments, regions: f.areas, modes: f.modes,
-          experience_years: f.yearsTeaching, qualifications: f.qualification,
-          bank_holder: f.bankHolder, bank_name: f.bankName, bank_account: f.bankAccount,
-          bank_ifsc: f.bankIfsc, bank_upi: f.bankUpi,
+          dob: f.dob, gender: f.gender, city: f.city, address: f.address, languages: f.languages,
+          instruments: f.instruments, years_teaching: f.yearsTeaching, years_performing: f.yearsPerforming,
+          qualification: f.qualification, grade: f.grade,
+          commitment: f.commitment, days: f.days, time_bands: f.timeBands, modes: f.modes, areas: f.areas, transport: f.transport,
+          bank_holder: f.bankHolder, bank_name: f.bankName, bank_account: f.bankAccount, bank_ifsc: f.bankIfsc, bank_upi: f.bankUpi,
+          why_join: f.whyJoin,
         }),
       });
-      const applyData = (await applyRes.json().catch(() => ({}))) as
-        { ok?: boolean; teacher_id?: string; login_email?: string; temp_password?: string; error?: string };
-      if (applyRes.status === 409) {
-        // Email already has a login - stop and let them fix it.
-        setError(applyData.error || "This email is already registered. Use a different email or log in.");
+      const data = (await res.json().catch(() => ({}))) as { ok?: boolean; ref?: string; error?: string };
+      if (!res.ok || !data.ok) {
+        setError(data.error || "That didn't go through. Please try again, or apply on WhatsApp.");
         setStatus("idle");
         return;
       }
-      if (applyData.ok && applyData.login_email) {
-        setLogin({
-          email: applyData.login_email,
-          password: applyData.temp_password || "",
-          teacherId: applyData.teacher_id || "",
-        });
-      }
+      setAppRef(data.ref || null);
     } catch {
-      /* keep going - the letter is still generated, login sent by office */
-    }
-
-    // 2) Notify the office by email (never send bank details or the password).
-    try {
-      const res = await fetch("https://api.web3forms.com/submit", {
-        method: "POST",
-        headers: { "Content-Type": "application/json", Accept: "application/json" },
-        body: JSON.stringify({
-          access_key: WEB3FORMS_ACCESS_KEY,
-          subject: `New Faculty Application - ${f.fullName} (${f.instruments.join(", ") || "-"})`,
-          from_name: "Musicphonetics Careers",
-          botcheck: "",
-          email: f.email,
-          Name: f.fullName,
-          "Date of birth": f.dob,
-          Gender: f.gender || "-",
-          City: f.city,
-          Address: f.address,
-          Phone: f.phone,
-          Email: f.email,
-          Languages: f.languages || "-",
-          Instruments: f.instruments.join(", ") || "-",
-          "Years teaching": f.yearsTeaching || "-",
-          "Years performing": f.yearsPerforming || "-",
-          Qualification: f.qualification || "-",
-          Grade: f.grade || "-",
-          "Teaching philosophy": f.philosophy || "-",
-          Commitment: f.commitment || "-",
-          "Days available": f.days.join(", ") || "-",
-          "Time bands": f.timeBands.join(", ") || "-",
-          "Teaching modes": f.modes.join(", ") || "-",
-          "Areas covered": f.areas.join(", ") || "-",
-          "Own transport": f.transport || "-",
-          YouTube: f.youtube || "-",
-          Instagram: f.instagram || "-",
-          Website: f.website || "-",
-          "Demo link": f.demo || "-",
-          "Reference 1": f.ref1Name ? `${f.ref1Name} · ${f.ref1Phone}` : "-",
-          "Reference 2": f.ref2Name ? `${f.ref2Name} · ${f.ref2Phone}` : "-",
-          "ID + verification consent": f.idConsent ? "Yes" : "No",
-          "Accepted terms (fee share, daily sheet, safeguarding, non-solicit)":
-            [f.cTerms, f.cSheet, f.cSafeguard, f.cNonSolicit].every(Boolean) ? "All accepted" : "Incomplete",
-          "Why join": f.whyJoin || "-",
-        }),
-      });
-      await res.json().catch(() => ({}));
-    } catch {
-      /* notification is best-effort - the letter is the deliverable */
+      setError("That didn't go through. Please check your connection and try again.");
+      setStatus("idle");
+      return;
     }
     setStatus("success");
   }
@@ -197,33 +144,20 @@ export function FacultyApplication() {
           <div className="mx-auto grid h-14 w-14 place-items-center rounded-full bg-feature-green/10 text-feature-green">
             <svg width="26" height="26" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12l4 4 10-10" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" /></svg>
           </div>
-          <h3 className="mt-5 font-display text-2xl font-semibold text-ink">Welcome aboard. Here is your engagement agreement.</h3>
+          <h3 className="mt-5 font-display text-2xl font-semibold text-ink">Application received. It is now under review.</h3>
           <p className="mx-auto mt-3 max-w-lg text-sm leading-relaxed text-ink/70">
-            Review it, then <b>Print / Save as PDF</b>, sign it, and send it back to us on WhatsApp.
+            Below is a copy of the details you submitted, for your records. We review every application
+            personally. If you are selected, we&apos;ll send your <b>Offer Letter</b> and portal login. You can save
+            this confirmation as a PDF.
           </p>
           <div className="mt-5 flex justify-center">
-            <Button href={whatsappLink("Hi Musicphonetics, I've just submitted my faculty application and engagement agreement.")} external variant="primary" size="lg">
-              Send the signed PDF on WhatsApp
+            <Button href={whatsappLink("Hi Musicphonetics, I've just submitted my teacher application.")} external variant="primary" size="lg">
+              Message us on WhatsApp
             </Button>
           </div>
         </div>
 
-        {/* One-time credentials - shown on screen only, deliberately NOT in the PDF. */}
-        {login?.password && (
-          <div className="no-print mx-auto mb-8 max-w-2xl rounded-2xl border border-gold/50 bg-gold/[0.07] p-5">
-            <p className="text-xs font-bold uppercase tracking-wider text-[#7A5E0F]">Your portal login · save this now</p>
-            <p className="mt-1 text-sm text-ink/70">
-              This password is shown once here and is <b>not</b> included in your PDF. Save it, then change it after your first login.
-            </p>
-            <div className="mt-3 grid gap-3 sm:grid-cols-3">
-              <CredBox label="Portal" value="musicphonetics.pages.dev/teacher/login" />
-              <CredBox label="Login email" value={login.email} />
-              <CredBox label="Temporary password" value={login.password} mono />
-            </div>
-          </div>
-        )}
-
-        <JoiningLetter
+        <ApplicationSummary
           data={{
             fullName: f.fullName, dob: f.dob, gender: f.gender, city: f.city, address: f.address,
             phone: f.phone, email: f.email, languages: f.languages,
@@ -232,8 +166,7 @@ export function FacultyApplication() {
             commitment: f.commitment, days: f.days, timeBands: f.timeBands, modes: f.modes, areas: f.areas, transport: f.transport,
             bankHolder: f.bankHolder, bankName: f.bankName, bankAccount: f.bankAccount, bankIfsc: f.bankIfsc, bankUpi: f.bankUpi,
           }}
-          loginEmail={login?.email ?? null}
-          agreementId={login?.teacherId ?? null}
+          reference={appRef}
         />
       </Section>
     );
@@ -411,15 +344,6 @@ export function FacultyApplication() {
 }
 
 /* ---- small field helpers ---- */
-
-function CredBox({ label, value, mono }: { label: string; value: string; mono?: boolean }) {
-  return (
-    <div className="rounded-xl border border-hairline bg-white p-3">
-      <p className="text-[10px] font-semibold uppercase tracking-wide text-ink/50">{label}</p>
-      <p className={cn("mt-0.5 break-all text-sm font-semibold text-ink", mono && "font-mono")}>{value}</p>
-    </div>
-  );
-}
 
 function FieldLabel({ children, req }: { children: React.ReactNode; req?: boolean }) {
   return <span className="block text-sm font-medium text-ink">{children}{req && <span className="text-[#7A5E0F]"> *</span>}</span>;

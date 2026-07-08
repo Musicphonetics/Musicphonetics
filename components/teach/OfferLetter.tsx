@@ -2,7 +2,7 @@
 
 import { printDoc } from "@/lib/print";
 
-// Musicphonetics - Teacher Engagement Letter & Onboarding Agreement.
+// Musicphonetics - Teacher Offer & Engagement Letter (owner-issued after approval).
 // A professional, A4, multi-page company agreement. The temporary password is
 // NEVER shown here (it is surfaced once on-screen elsewhere, and never printed).
 
@@ -53,7 +53,7 @@ const ACK = [
   "I agree to update the teacher portal after every class.",
 ];
 
-export function JoiningLetter({ data: d, loginEmail, agreementId }: {
+export function OfferLetter({ data: d, loginEmail, agreementId }: {
   data: JoiningData; loginEmail: string | null; agreementId?: string | null;
 }) {
   const today = new Date().toLocaleDateString("en-IN", { day: "numeric", month: "long", year: "numeric" });
@@ -63,7 +63,7 @@ export function JoiningLetter({ data: d, loginEmail, agreementId }: {
 
   return (
     <div className="mx-auto max-w-3xl">
-      <div id="joining-doc" className="overflow-hidden rounded-2xl border border-hairline bg-white shadow-card">
+      <div id="offer-doc" className="overflow-hidden rounded-2xl border border-hairline bg-white shadow-card">
 
         {/* ===== PAGE 1 - Header, opening, identity ===== */}
         <DocPage n={1} id={id}>
@@ -71,7 +71,7 @@ export function JoiningLetter({ data: d, loginEmail, agreementId }: {
             <div>
               <p className="font-display text-2xl font-bold tracking-tight text-ink">MUSICPHONETICS</p>
               <p className="mt-1 text-[13px] font-semibold uppercase tracking-[0.14em] text-[#7A5E0F]">
-                Teacher Engagement Letter &amp; Onboarding Agreement
+                Teacher Offer &amp; Engagement Letter
               </p>
               <p className="mt-1 text-xs text-ink/60">{COMPANY.tagline} · {COMPANY.area}</p>
             </div>
@@ -267,7 +267,7 @@ export function JoiningLetter({ data: d, loginEmail, agreementId }: {
 
       {/* Actions (not printed) */}
       <div className="no-print mt-6 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
-        <button onClick={() => printDoc("joining-doc")} className="inline-flex items-center gap-2 rounded-full bg-ink px-6 py-3 text-sm font-semibold text-paper hover:bg-[#0f131c]">
+        <button onClick={() => printDoc("offer-doc")} className="inline-flex items-center gap-2 rounded-full bg-ink px-6 py-3 text-sm font-semibold text-paper hover:bg-[#0f131c]">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9V3h12v6M6 18H4a1 1 0 0 1-1-1v-5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v5a1 1 0 0 1-1 1h-2M6 14h12v7H6z" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" /></svg>
           Print / Save as PDF
         </button>
@@ -284,7 +284,7 @@ function DocPage({ n, id, last, children }: { n: number; id: string; last?: bool
     <div className={last ? "doc-page p-7 sm:p-10" : "doc-page border-b border-hairline p-7 sm:p-10"}>
       {children}
       <div className="mt-8 flex items-center justify-between border-t border-hairline pt-3 text-[10px] uppercase tracking-wider text-ink/45">
-        <span>Musicphonetics · Teacher Engagement Agreement</span>
+        <span>Musicphonetics · Teacher Offer & Engagement Letter</span>
         <span>Confidential · Page {n} of {TOTAL_PAGES}</span>
       </div>
     </div>

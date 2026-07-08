@@ -316,9 +316,10 @@
 @media print {
   body * { visibility: hidden !important; }
   #enrolment-doc, #enrolment-doc *,
-  #joining-doc, #joining-doc *,
+  #offer-doc, #offer-doc *,
+  #application-doc, #application-doc *,
   #report-doc, #report-doc * { visibility: visible !important; }
-  #enrolment-doc, #joining-doc, #report-doc {
+  #enrolment-doc, #offer-doc, #application-doc, #report-doc {
     position: absolute; left: 0; top: 0; width: 100%;
     box-shadow: none !important; border: none !important; border-radius: 0 !important;
   }
