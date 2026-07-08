@@ -7,7 +7,7 @@ import { Stave } from "@/components/ui/Stave";
 import { InstrumentIcon } from "@/components/ui/InstrumentIcon";
 import { INSTRUMENTS, EXPERIENCE, MODES } from "@/lib/onboarding";
 import { WEEK_DAYS, saveEnrolment } from "@/lib/enrolment";
-import { computeProrata } from "@/lib/policy";
+import { computeProrata, SCHEDULE_POLICY, TERMS_AGREED } from "@/lib/policy";
 import { cn } from "@/lib/utils";
 
 // Cashfree hosted Payment Form - collects name, phone and amount on Cashfree's
@@ -43,6 +43,7 @@ export function PayClient() {
   const [mode, setMode] = useState("");
   const [days, setDays] = useState<string[]>([]);
   const [startDate, setStartDate] = useState(todayISO());
+  const [agreed, setAgreed] = useState(false);
 
   const toggleDay = (d: string) =>
     setDays((cur) => (cur.includes(d) ? cur.filter((x) => x !== d) : [...cur, d]));
@@ -56,13 +57,15 @@ export function PayClient() {
   const prorated = pr ? pr.day > 2 : false;
   const payNow = pr ? (prorated ? pr.firstPayment : monthly) : 0;
 
-  const ready = Boolean(name.trim() && instrument && days.length > 0 && startDate);
+  const detailsReady = Boolean(name.trim() && instrument && days.length > 0 && startDate);
+  const ready = detailsReady && agreed;
 
   function proceed() {
     if (!ready) return;
+    const now = new Date().toISOString();
     saveEnrolment({
       planKey, planName, monthly, name: name.trim(), instrument, level, mode, days,
-      startDate, firstPayment: payNow, savedAt: new Date().toISOString(),
+      startDate, firstPayment: payNow, agreedAt: now, savedAt: now,
     });
     // Hand off to Cashfree's secure page. localStorage carries the enrolment
     // through the redirect and back to /welcome.
@@ -168,14 +171,53 @@ export function PayClient() {
           </div>
         )}
 
+        {/* Please read before paying - class schedule */}
+        <div className="mt-7 rounded-2xl border border-white/12 bg-white/[0.03] p-5">
+          <p className="text-xs font-semibold uppercase tracking-wide text-paper/60">Please read before you pay · Class schedule</p>
+          <ul className="mt-3 space-y-2">
+            {SCHEDULE_POLICY.map((s) => (
+              <li key={s} className="flex items-start gap-2.5 text-sm leading-relaxed text-paper/80">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true" className="mt-0.5 shrink-0 text-gold"><path d="M5 12l4 4 10-10" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" /></svg>
+                {s}
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        {/* Terms & conditions */}
+        <div className="mt-4 rounded-2xl border border-white/12 bg-white/[0.03] p-5">
+          <p className="text-xs font-semibold uppercase tracking-wide text-paper/60">Terms &amp; conditions</p>
+          <ol className="mt-3 space-y-2">
+            {TERMS_AGREED.map((t, i) => (
+              <li key={t} className="flex gap-2.5 text-sm leading-relaxed text-paper/80">
+                <span className="font-semibold text-gold">{i + 1}.</span> {t}
+              </li>
+            ))}
+          </ol>
+          <p className="mt-3 text-xs text-paper/55">
+            Full documents:{" "}
+            <Link href="/standards/terms-conditions" className="font-semibold text-gold underline underline-offset-2">Terms &amp; Conditions</Link>{" · "}
+            <Link href="/standards/refund-payment" className="font-semibold text-gold underline underline-offset-2">Refund &amp; Payment</Link>.
+          </p>
+        </div>
+
+        {/* Agreement */}
+        <label className="mt-4 flex cursor-pointer items-start gap-3 rounded-2xl border border-white/12 bg-white/[0.04] p-4">
+          <input type="checkbox" checked={agreed} onChange={(e) => setAgreed(e.target.checked)}
+            className="mt-0.5 h-5 w-5 shrink-0 accent-gold" />
+          <span className="text-sm leading-relaxed text-paper/85">
+            I have read and agree to the class schedule, fees and terms &amp; conditions above.
+          </span>
+        </label>
+
         {/* Pay */}
         <button
           type="button" onClick={proceed} disabled={!ready}
-          className={cn("mt-6 inline-flex min-h-[54px] w-full items-center justify-center gap-2 rounded-full px-6 text-base font-semibold transition-all active:scale-[0.99]",
+          className={cn("mt-5 inline-flex min-h-[54px] w-full items-center justify-center gap-2 rounded-full px-6 text-base font-semibold transition-all active:scale-[0.99]",
             ready ? "bg-gold text-ink shadow-card hover:bg-deep-gold" : "cursor-not-allowed bg-white/10 text-paper/40")}>
-          {ready ? `Proceed to pay ${payNow > 0 ? inr(payNow) : ""} securely` : "Fill your details to continue"}
+          {ready ? `Proceed to pay ${payNow > 0 ? inr(payNow) : ""} securely` : !detailsReady ? "Fill your details to continue" : "Tick the box to agree and continue"}
         </button>
-        {!ready && (
+        {!detailsReady && (
           <p className="mt-2 text-center text-xs text-paper/50">Name, instrument, at least one day and a start date are needed.</p>
         )}
 

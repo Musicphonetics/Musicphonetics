@@ -57,10 +57,10 @@ export default function WelcomePage() {
       <Section background="mist" spacing="lg">
         <Reveal>
           <div className="mb-8 text-center">
-            <p className="eyebrow">Your enrolment</p>
-            <h2 className="mt-2 font-display text-3xl font-semibold text-ink">Your course details, in writing.</h2>
+            <p className="eyebrow">You&apos;re enrolled</p>
+            <h2 className="mt-2 font-display text-3xl font-semibold text-ink">Your enrolment is confirmed.</h2>
             <p className="mx-auto mt-3 max-w-xl text-sm leading-relaxed text-ink/65">
-              Keep this for your records. It sets out your plan, class schedule, billing and the terms you agreed to.
+              Keep this for your records. It confirms your programme, your schedule and your teacher. We&apos;ll message you on WhatsApp right away with your first class.
             </p>
           </div>
         </Reveal>

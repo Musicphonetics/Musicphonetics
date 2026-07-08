@@ -23,7 +23,8 @@ export interface Enrolment {
   days: string[];
   startDate: string; // ISO yyyy-mm-dd
   firstPayment: number;
-  savedAt: string; // ISO timestamp
+  agreedAt: string;  // ISO timestamp - terms accepted before payment
+  savedAt: string;   // ISO timestamp
 }
 
 export function saveEnrolment(e: Enrolment) {

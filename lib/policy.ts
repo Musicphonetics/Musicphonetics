@@ -25,6 +25,17 @@ export const BILLING_POLICY: string[] = [
   "Payments are made only through the official Musicphonetics Cashfree link.",
 ];
 
+// The terms a family reads and agrees to BEFORE paying.
+export const TERMS_AGREED: string[] = [
+  "Fees are paid only through the official Musicphonetics Cashfree link.",
+  "8 classes per month, to be completed within 35 days of the cycle start.",
+  "Unused classes lapse after 35 days; the cycle must be renewed to continue.",
+  "Rescheduling is allowed with advance notice, subject to teacher availability.",
+  "The final teacher, slot and start are confirmed by the Musicphonetics office.",
+  "Refunds follow the published Refund & Payment Standard.",
+  "Respectful conduct and a safe learning environment are expected at all times.",
+];
+
 export interface Prorata {
   monthly: number;
   daysInMonth: number;
