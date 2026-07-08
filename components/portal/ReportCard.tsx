@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { getSupabase } from "@/lib/supabase/client";
 import type { ClassUpdate } from "@/lib/supabase/types";
 import { buildReport, type ProgressReport } from "@/lib/report";
+import { printDoc } from "@/lib/print";
 
 export interface ReportStudent {
   id: string;
@@ -132,7 +133,7 @@ export function ReportCardModal({ student, teacherName, onClose }: {
         <div className="no-print mb-3 flex items-center justify-between">
           <p className="text-sm font-semibold text-paper">{student.name} · report card</p>
           <div className="flex gap-2">
-            <button onClick={() => window.print()} disabled={!report}
+            <button onClick={() => printDoc("report-doc")} disabled={!report}
               className="rounded-full bg-gold px-4 py-2 text-sm font-semibold text-ink hover:bg-deep-gold disabled:opacity-50">Print / Save PDF</button>
             <button onClick={onClose} className="rounded-full border border-white/30 px-4 py-2 text-sm font-semibold text-paper hover:border-white">Close</button>
           </div>

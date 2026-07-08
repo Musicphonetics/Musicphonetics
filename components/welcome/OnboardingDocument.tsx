@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { loadEnrolment, type Enrolment } from "@/lib/enrolment";
+import { printDoc } from "@/lib/print";
 
 const PLANS: Record<string, { name: string; amount: number | null }> = {
   foundation: { name: "Foundation", amount: 8000 },
@@ -113,7 +114,7 @@ export function OnboardingDocument() {
 
       {/* Actions (not printed) */}
       <div className="no-print mt-6 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
-        <button onClick={() => window.print()} className="inline-flex items-center gap-2 rounded-full bg-ink px-6 py-3 text-sm font-semibold text-paper hover:bg-[#0f131c]">
+        <button onClick={() => printDoc("enrolment-doc")} className="inline-flex items-center gap-2 rounded-full bg-ink px-6 py-3 text-sm font-semibold text-paper hover:bg-[#0f131c]">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9V3h12v6M6 18H4a1 1 0 0 1-1-1v-5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v5a1 1 0 0 1-1 1h-2M6 14h12v7H6z" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" /></svg>
           Print / Save as PDF
         </button>

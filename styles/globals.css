@@ -312,6 +312,7 @@
 }
 
 /* Print isolation - "Save as PDF" of a single printable document. */
+@page { size: A4; margin: 12mm; }
 @media print {
   body * { visibility: hidden !important; }
   #enrolment-doc, #enrolment-doc *,
@@ -319,7 +320,11 @@
   #report-doc, #report-doc * { visibility: visible !important; }
   #enrolment-doc, #joining-doc, #report-doc {
     position: absolute; left: 0; top: 0; width: 100%;
-    box-shadow: none !important; border: none !important;
+    box-shadow: none !important; border: none !important; border-radius: 0 !important;
   }
   .no-print { display: none !important; }
+  /* Each logical page of a multi-page agreement starts on a fresh sheet. */
+  .doc-page { break-after: page; page-break-after: always; }
+  .doc-page:last-child { break-after: auto; page-break-after: auto; }
+  .avoid-break { break-inside: avoid; page-break-inside: avoid; }
 }

@@ -5,7 +5,7 @@ import { Section, SectionHeading } from "@/components/ui/Section";
 import { Button } from "@/components/ui/Button";
 import { whatsappLink } from "@/lib/data";
 import { INSTRUMENTS } from "@/lib/teach-config";
-import { JoiningLetter, type JoiningCreds } from "@/components/teach/JoiningLetter";
+import { JoiningLetter } from "@/components/teach/JoiningLetter";
 import { cn } from "@/lib/utils";
 
 // Same Web3Forms inbox as the student lead form; the subject line marks it as
@@ -54,7 +54,7 @@ export function FacultyApplication() {
   const [status, setStatus] = useState<Status>("idle");
   const [error, setError] = useState("");
   const [f, setF] = useState<FormState>(EMPTY);
-  const [creds, setCreds] = useState<JoiningCreds | null>(null);
+  const [login, setLogin] = useState<{ email: string; password: string; teacherId: string } | null>(null);
 
   const set = <K extends keyof FormState>(k: K, v: FormState[K]) => setF((p) => ({ ...p, [k]: v }));
   const toggle = (k: "instruments" | "days" | "timeBands" | "modes" | "areas", v: string) =>
@@ -122,15 +122,19 @@ export function FacultyApplication() {
         }),
       });
       const applyData = (await applyRes.json().catch(() => ({}))) as
-        { ok?: boolean; login_email?: string; temp_password?: string; error?: string };
+        { ok?: boolean; teacher_id?: string; login_email?: string; temp_password?: string; error?: string };
       if (applyRes.status === 409) {
         // Email already has a login - stop and let them fix it.
         setError(applyData.error || "This email is already registered. Use a different email or log in.");
         setStatus("idle");
         return;
       }
-      if (applyData.ok && applyData.login_email && applyData.temp_password) {
-        setCreds({ login_email: applyData.login_email, temp_password: applyData.temp_password });
+      if (applyData.ok && applyData.login_email) {
+        setLogin({
+          email: applyData.login_email,
+          password: applyData.temp_password || "",
+          teacherId: applyData.teacher_id || "",
+        });
       }
     } catch {
       /* keep going - the letter is still generated, login sent by office */
@@ -193,18 +197,32 @@ export function FacultyApplication() {
           <div className="mx-auto grid h-14 w-14 place-items-center rounded-full bg-feature-green/10 text-feature-green">
             <svg width="26" height="26" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12l4 4 10-10" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" /></svg>
           </div>
-          <h3 className="mt-5 font-display text-2xl font-semibold text-ink">Welcome aboard. Here is your joining letter.</h3>
+          <h3 className="mt-5 font-display text-2xl font-semibold text-ink">Welcome aboard. Here is your engagement agreement.</h3>
           <p className="mx-auto mt-3 max-w-lg text-sm leading-relaxed text-ink/70">
-            {creds
-              ? "Your portal login is ready and shown below. Print or save this letter as a PDF, sign it, and send it back to us on WhatsApp."
-              : "Print or save this letter as a PDF, sign it, and send it back to us on WhatsApp. We'll set up your portal login and share it with you."}
+            Review it, then <b>Print / Save as PDF</b>, sign it, and send it back to us on WhatsApp.
           </p>
           <div className="mt-5 flex justify-center">
-            <Button href={whatsappLink("Hi Musicphonetics, I've just submitted my faculty application and joining letter.")} external variant="primary" size="lg">
+            <Button href={whatsappLink("Hi Musicphonetics, I've just submitted my faculty application and engagement agreement.")} external variant="primary" size="lg">
               Send the signed PDF on WhatsApp
             </Button>
           </div>
         </div>
+
+        {/* One-time credentials - shown on screen only, deliberately NOT in the PDF. */}
+        {login?.password && (
+          <div className="no-print mx-auto mb-8 max-w-2xl rounded-2xl border border-gold/50 bg-gold/[0.07] p-5">
+            <p className="text-xs font-bold uppercase tracking-wider text-[#7A5E0F]">Your portal login · save this now</p>
+            <p className="mt-1 text-sm text-ink/70">
+              This password is shown once here and is <b>not</b> included in your PDF. Save it, then change it after your first login.
+            </p>
+            <div className="mt-3 grid gap-3 sm:grid-cols-3">
+              <CredBox label="Portal" value="musicphonetics.pages.dev/teacher/login" />
+              <CredBox label="Login email" value={login.email} />
+              <CredBox label="Temporary password" value={login.password} mono />
+            </div>
+          </div>
+        )}
+
         <JoiningLetter
           data={{
             fullName: f.fullName, dob: f.dob, gender: f.gender, city: f.city, address: f.address,
@@ -214,7 +232,8 @@ export function FacultyApplication() {
             commitment: f.commitment, days: f.days, timeBands: f.timeBands, modes: f.modes, areas: f.areas, transport: f.transport,
             bankHolder: f.bankHolder, bankName: f.bankName, bankAccount: f.bankAccount, bankIfsc: f.bankIfsc, bankUpi: f.bankUpi,
           }}
-          creds={creds}
+          loginEmail={login?.email ?? null}
+          agreementId={login?.teacherId ?? null}
         />
       </Section>
     );
@@ -392,6 +411,15 @@ export function FacultyApplication() {
 }
 
 /* ---- small field helpers ---- */
+
+function CredBox({ label, value, mono }: { label: string; value: string; mono?: boolean }) {
+  return (
+    <div className="rounded-xl border border-hairline bg-white p-3">
+      <p className="text-[10px] font-semibold uppercase tracking-wide text-ink/50">{label}</p>
+      <p className={cn("mt-0.5 break-all text-sm font-semibold text-ink", mono && "font-mono")}>{value}</p>
+    </div>
+  );
+}
 
 function FieldLabel({ children, req }: { children: React.ReactNode; req?: boolean }) {
   return <span className="block text-sm font-medium text-ink">{children}{req && <span className="text-[#7A5E0F]"> *</span>}</span>;
