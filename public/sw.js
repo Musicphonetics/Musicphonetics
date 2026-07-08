@@ -2,7 +2,7 @@
 // App-shell (navigations) served network-first with a cached fallback so the
 // portal opens instantly and survives brief drops. Data (Supabase) always goes
 // to the network — never cached — so records stay live and private.
-const SHELL = "mp-teacher-os-shell-v1";
+const SHELL = "mp-teacher-os-shell-v2";
 const SHELL_URLS = ["/teacher/login", "/offline.html", "/manifest.webmanifest"];
 
 self.addEventListener("install", (event) => {
@@ -23,6 +23,11 @@ self.addEventListener("fetch", (event) => {
   const req = event.request;
   if (req.method !== "GET") return;
   const url = new URL(req.url);
+
+  // Only ever handle our OWN origin. Cross-origin requests (Razorpay Checkout,
+  // YouTube, Supabase, fonts, etc.) must go straight to the network — the
+  // service worker never touches them, so a payment SDK can always load.
+  if (url.origin !== self.location.origin) return;
 
   // Never touch Supabase / API traffic — always live.
   if (url.hostname.endsWith("supabase.co") || url.pathname.startsWith("/api/")) return;

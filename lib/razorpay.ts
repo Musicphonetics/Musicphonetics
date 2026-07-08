@@ -47,24 +47,45 @@ declare global {
   }
 }
 
-// Inject checkout.js once and resolve when it's ready.
-export function loadRazorpay(): Promise<boolean> {
-  return new Promise((resolve) => {
-    if (typeof window === "undefined") return resolve(false);
-    if (window.Razorpay) return resolve(true);
-    const existing = document.querySelector<HTMLScriptElement>(`script[src="${CHECKOUT_SRC}"]`);
-    if (existing) {
-      existing.addEventListener("load", () => resolve(Boolean(window.Razorpay)));
-      existing.addEventListener("error", () => resolve(false));
-      return;
-    }
+// Inject checkout.js once and resolve when it's ready. A failed load is not
+// cached, so the next attempt (or a retry click) re-injects a fresh script
+// instead of hanging forever on a dead tag. Also guarded by a timeout.
+let loadPromise: Promise<boolean> | null = null;
+
+export function loadRazorpay(timeoutMs = 15000): Promise<boolean> {
+  if (typeof window === "undefined") return Promise.resolve(false);
+  if (window.Razorpay) return Promise.resolve(true);
+  if (loadPromise) return loadPromise;
+
+  loadPromise = new Promise<boolean>((resolve) => {
+    // Remove any previous (possibly failed) tag so we always start clean.
+    document.querySelectorAll("script[data-razorpay]").forEach((n) => n.remove());
+
     const s = document.createElement("script");
     s.src = CHECKOUT_SRC;
     s.async = true;
-    s.onload = () => resolve(Boolean(window.Razorpay));
-    s.onerror = () => resolve(false);
+    s.setAttribute("data-razorpay", "1");
+
+    let settled = false;
+    const finish = (ok: boolean) => {
+      if (settled) return;
+      settled = true;
+      clearTimeout(timer);
+      const good = ok && Boolean(window.Razorpay);
+      if (!good) {
+        // Do not cache a failure - allow a clean retry next time.
+        loadPromise = null;
+        s.remove();
+      }
+      resolve(good);
+    };
+
+    const timer = setTimeout(() => finish(false), timeoutMs);
+    s.onload = () => finish(true);
+    s.onerror = () => finish(false);
     document.body.appendChild(s);
   });
+  return loadPromise;
 }
 
 export async function createOrder(input: CreateOrderInput): Promise<CreateOrderResult> {

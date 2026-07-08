@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { Stave } from "@/components/ui/Stave";
@@ -45,6 +45,10 @@ export function PayClient() {
   const [agreed, setAgreed] = useState(false);
   const [paying, setPaying] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  // Warm up the Razorpay script as soon as the page loads, so the pay click is
+  // instant and any load problem shows up before the customer commits.
+  useEffect(() => { loadRazorpay(); }, []);
 
   const toggleDay = (d: string) =>
     setDays((cur) => (cur.includes(d) ? cur.filter((x) => x !== d) : [...cur, d]));

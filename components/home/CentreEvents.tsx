@@ -62,16 +62,23 @@ export function CentreEvents() {
                 and a performance families remember.
               </p>
 
-              {/* Real event photos */}
-              <div className="mt-5 grid grid-cols-2 gap-3">
-                {[
-                  { src: "/images/moments/02-openmic.webp", alt: "A student performing at Open Mic and Chai" },
-                  { src: "/images/moments/03-stage-guitar.webp", alt: "A student performing guitar on a large stage" },
-                ].map((p) => (
-                  <div key={p.src} className="relative aspect-[4/3] overflow-hidden rounded-xl">
-                    <img src={p.src} alt={p.alt} loading="lazy" decoding="async" className="h-full w-full object-cover" />
-                  </div>
-                ))}
+              {/* Real event photos - a full house at Open Mic + Chai, then performers */}
+              <div className="mt-5 space-y-3">
+                <div className="relative aspect-[16/10] overflow-hidden rounded-xl">
+                  <img src="/images/moments/openmic-audience.webp" alt="A full house at a Musicphonetics Open Mic and Chai evening" loading="lazy" decoding="async" className="h-full w-full object-cover" />
+                  <span aria-hidden="true" className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
+                  <span className="absolute bottom-3 left-3 rounded-full bg-black/50 px-2.5 py-1 text-[11px] font-medium text-white backdrop-blur">Open Mic + Chai · a full house</span>
+                </div>
+                <div className="grid grid-cols-2 gap-3">
+                  {[
+                    { src: "/images/moments/02-openmic.webp", alt: "A student performing at Open Mic and Chai" },
+                    { src: "/images/moments/03-stage-guitar.webp", alt: "A student performing guitar on a large stage" },
+                  ].map((p) => (
+                    <div key={p.src} className="relative aspect-[4/3] overflow-hidden rounded-xl">
+                      <img src={p.src} alt={p.alt} loading="lazy" decoding="async" className="h-full w-full object-cover" />
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
           </Reveal>
