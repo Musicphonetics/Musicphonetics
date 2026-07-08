@@ -2,9 +2,12 @@ import type { Metadata } from "next";
 import { FunnelHero } from "@/components/home/FunnelHero";
 import { StatsBand } from "@/components/home/StatsBand";
 import { RealMoments } from "@/components/home/RealMoments";
+import { WhyMusicphonetics } from "@/components/home/WhyMusicphonetics";
 import { WhyTrust } from "@/components/home/WhyTrust";
 import { FunnelPackages } from "@/components/home/FunnelPackages";
 import { ReviewsSection } from "@/components/home/Reviews";
+import { CentreEvents } from "@/components/home/CentreEvents";
+import { SeeUsInAction } from "@/components/sections/SeeUsInAction";
 import { AfterYouJoin } from "@/components/home/AfterYouJoin";
 import { FounderMission } from "@/components/home/FounderMission";
 import { GoldDivider } from "@/components/home/GoldDivider";
@@ -52,11 +55,15 @@ export default function HomePage() {
       <FunnelHero />
       <StatsBand />
       <RealMoments />
+      <WhyMusicphonetics />
       <WhyTrust />
       <GoldDivider />
       <FunnelPackages />
       <GoldDivider />
       <ReviewsSection files={homeReviews} />
+      <GoldDivider />
+      <CentreEvents />
+      <SeeUsInAction />
       <GoldDivider />
       <AfterYouJoin />
       <GoldDivider />

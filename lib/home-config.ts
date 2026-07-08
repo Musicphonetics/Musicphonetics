@@ -16,6 +16,7 @@ export const WA_MSG = {
   packages: "Hi Musicphonetics, I'd like help choosing the right programme.",
   reviews: "Hi Musicphonetics, I saw your reviews and I'd like to know more.",
   process: "Hi Musicphonetics, I'd like to book a free consultation.",
+  events: "Hi Musicphonetics, I'd like to know about the South Delhi centre and the open mic events.",
   final: "Hi Musicphonetics, I'd like to start my music journey.",
 };
 
