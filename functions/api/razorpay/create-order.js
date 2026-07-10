@@ -77,10 +77,13 @@ export async function onRequestPost(context) {
     // SECRET's length (never its value) so a wrong/short paste is obvious.
     // The correct test secret is 24 characters.
     console.error("Razorpay 401", { keyId, keyIdLen: keyId.length, secretLen: keySecret.length });
+    const live = keyId.startsWith("rzp_live_");
     return json({
       ok: false,
-      error: "Payment gateway authentication failed. Please recheck the Razorpay key id and secret in Cloudflare.",
-      detail: { key_id: keyId, key_id_len: keyId.length, secret_len: keySecret.length },
+      error: live
+        ? "Payment authentication failed. Live Razorpay keys only work once your account is ACTIVATED (KYC approved), and the live Key ID and Key Secret must be a matching pair. Use test keys (rzp_test_) to verify, then switch to live after activation."
+        : "Payment authentication failed. Check that the Razorpay Key ID and Key Secret are a matching pair from the same mode.",
+      detail: { key_id: keyId, mode: live ? "live" : "test", key_id_len: keyId.length, secret_len: keySecret.length },
     }, 401);
   }
 
