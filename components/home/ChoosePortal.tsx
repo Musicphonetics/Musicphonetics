@@ -27,7 +27,7 @@ const PORTALS = [
 
 export function ChoosePortal() {
   return (
-    <section className="bg-paper py-16 text-ink sm:py-24">
+    <section className="bg-paper py-20 text-ink sm:py-32">
       <div className="container-mp">
         <Reveal>
           <p className="eyebrow text-center">One organised system</p>

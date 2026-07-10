@@ -9,7 +9,7 @@ const STATS = [
 // that build instant credibility for a first-time visitor.
 export function StatsBand() {
   return (
-    <section className="bg-paper py-10 text-ink sm:py-12">
+    <section className="bg-paper py-14 text-ink sm:py-16">
       <div className="container-mp">
         <div className="grid grid-cols-2 gap-x-6 gap-y-8 sm:grid-cols-4">
           {STATS.map((s) => (

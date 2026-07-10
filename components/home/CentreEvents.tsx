@@ -6,7 +6,7 @@ import { WA_MSG } from "@/lib/home-config";
 // we run every few months to push students onto a stage.
 export function CentreEvents() {
   return (
-    <section id="whats-next" className="bg-ink py-16 text-paper sm:py-24">
+    <section id="whats-next" className="bg-ink py-20 text-paper sm:py-28">
       <div className="container-mp">
         <Reveal>
           <p className="eyebrow text-gold">What&apos;s next for you</p>
@@ -86,7 +86,7 @@ export function CentreEvents() {
 
         <Reveal delay={120}>
           <p className="mt-8 text-center text-sm text-paper/60">
-            Every student is invited. Watch a few clips from our stages just below.
+            Every student is invited to the stage. This is where practice becomes confidence.
           </p>
         </Reveal>
       </div>

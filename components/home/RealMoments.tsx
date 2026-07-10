@@ -5,7 +5,7 @@ import { REAL_MOMENTS } from "@/lib/home-config";
 // homepage. Deliberately unpolished, real photos across Delhi NCR.
 export function RealMoments() {
   return (
-    <section className="bg-paper py-16 text-ink sm:py-20">
+    <section className="bg-paper py-20 text-ink sm:py-28">
       <div className="container-mp">
         <Reveal>
           <p className="eyebrow text-center">Straight from our classes</p>

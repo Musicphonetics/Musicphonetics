@@ -59,15 +59,13 @@ export function FunnelHero() {
             Music classes that don&apos;t feel <span className="text-gold">random.</span>
           </h1>
 
-          <p className="mt-5 max-w-xl text-lg leading-relaxed text-paper/85">
-            Real teachers, real students, real progress. Warm, structured guitar,
-            piano/keyboard &amp; vocal classes for children, beginners &amp; serious
-            learners, at home and online across Delhi NCR.
+          <p className="mt-5 max-w-md text-lg leading-relaxed text-paper/85">
+            Structured guitar, piano &amp; vocal learning, with a teacher matched to your
+            child and every class tracked. Delhi NCR &amp; online.
           </p>
 
-          <p className="mt-4 flex flex-wrap items-center gap-x-2 gap-y-1 text-sm font-medium text-paper/80">
-            <span className="text-gold">★★★★★</span>
-            <span>Loved by 1,100+ families</span><Dot /><span>Teacher matching</span><Dot /><span>Progress tracking</span>
+          <p className="mt-5 flex flex-wrap items-center gap-x-2.5 gap-y-1 text-sm font-medium text-paper/80">
+            <span>Teacher matching</span><Dot /><span>Class updates</span><Dot /><span>Parent portal</span><Dot /><span>Monthly reports</span>
           </p>
 
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">

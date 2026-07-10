@@ -37,7 +37,7 @@ const REASONS = [
 
 export function WhyMusicphonetics() {
   return (
-    <section className="bg-white py-16 text-ink sm:py-24">
+    <section className="bg-white py-20 text-ink sm:py-32">
       <div className="container-mp">
         <div className="grid items-start gap-12 lg:grid-cols-2 lg:gap-16">
           {/* Left - heading + big-icon reasons */}

@@ -3,13 +3,10 @@ import { FunnelHero } from "@/components/home/FunnelHero";
 import { StatsBand } from "@/components/home/StatsBand";
 import { RealMoments } from "@/components/home/RealMoments";
 import { WhyMusicphonetics } from "@/components/home/WhyMusicphonetics";
-import { WhyTrust } from "@/components/home/WhyTrust";
 import { FunnelPackages } from "@/components/home/FunnelPackages";
 import { ReviewsSection } from "@/components/home/Reviews";
 import { ChoosePortal } from "@/components/home/ChoosePortal";
 import { CentreEvents } from "@/components/home/CentreEvents";
-import { SeeUsInAction } from "@/components/sections/SeeUsInAction";
-import { AfterYouJoin } from "@/components/home/AfterYouJoin";
 import { FounderMission } from "@/components/home/FounderMission";
 import { GoldDivider } from "@/components/home/GoldDivider";
 import { JsonLd } from "@/components/seo/JsonLd";
@@ -53,23 +50,17 @@ export default function HomePage() {
   return (
     <>
       <JsonLd data={localBusiness} />
+      {/* Lean, story-led flow: what it is → why → paths → proof → system → close.
+          Light-dominant with a few dark sections for premium contrast. */}
       <FunnelHero />
       <StatsBand />
-      <RealMoments />
       <WhyMusicphonetics />
-      <WhyTrust />
-      <GoldDivider />
       <FunnelPackages />
-      <GoldDivider />
+      <RealMoments />
+      <CentreEvents />
       <ChoosePortal />
       <GoldDivider />
       <ReviewsSection files={homeReviews} />
-      <GoldDivider />
-      <CentreEvents />
-      <SeeUsInAction />
-      <GoldDivider />
-      <AfterYouJoin />
-      <GoldDivider />
       <FounderMission />
     </>
   );

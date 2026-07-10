@@ -9,7 +9,7 @@ const SLUG: Record<string, string> = { foundation: "foundation", main: "main", d
 
 export function FunnelPackages() {
   return (
-    <section id="programmes" className="bg-ink py-20 text-paper sm:py-24">
+    <section id="programmes" className="bg-ink py-20 text-paper sm:py-28">
       <div className="container-mp">
         <Reveal>
           <p className="eyebrow text-gold">Programmes &amp; Fees</p>
