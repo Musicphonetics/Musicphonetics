@@ -84,20 +84,20 @@ export function StatCard({ label, value, tone = "ink" }: { label: string; value:
   );
 }
 
-export function Loading({ label = "Loading…" }: { label?: string }) {
+export function Loading({ label = "Loading…", dark }: { label?: string; dark?: boolean }) {
   return (
-    <div className="flex flex-col items-center justify-center gap-3 py-20 text-ink/60">
-      <span className="h-8 w-8 animate-spin rounded-full border-2 border-hairline border-t-gold" />
+    <div className={cn("flex flex-col items-center justify-center gap-3 py-20", dark ? "text-paper/60" : "text-ink/60")}>
+      <span className={cn("h-8 w-8 animate-spin rounded-full border-2 border-t-gold", dark ? "border-white/15" : "border-hairline")} />
       <p className="text-sm">{label}</p>
     </div>
   );
 }
 
-export function EmptyState({ title, hint }: { title: string; hint?: string }) {
+export function EmptyState({ title, hint, dark }: { title: string; hint?: string; dark?: boolean }) {
   return (
-    <div className="rounded-2xl border border-dashed border-hairline bg-paper p-8 text-center">
-      <p className="font-display text-lg font-semibold text-ink">{title}</p>
-      {hint && <p className="mt-1.5 text-sm text-ink/60">{hint}</p>}
+    <div className={cn("rounded-2xl border border-dashed p-8 text-center", dark ? "border-white/15 bg-onyx-1" : "border-hairline bg-paper")}>
+      <p className={cn("font-display text-lg font-semibold", dark ? "text-paper" : "text-ink")}>{title}</p>
+      {hint && <p className={cn("mt-1.5 text-sm", dark ? "text-paper/60" : "text-ink/60")}>{hint}</p>}
     </div>
   );
 }

@@ -14,13 +14,18 @@ export interface Tab {
 }
 
 // Wraps every portal screen: enforces auth + role, then renders either the
-// mobile bottom tab bar (teacher) or a wide top-nav command layout (owner).
+// mobile bottom tab bar (teacher/parent) or a wide top-nav command layout (owner).
+// theme="night" gives the dark, cinematic treatment (the parent portal).
 export function PortalShell({
-  children, role, tabs, title, variant = "mobile",
-}: { children: ReactNode; role: "teacher" | "owner" | "parent"; tabs: Tab[]; title?: string; variant?: "mobile" | "wide" }) {
+  children, role, tabs, title, subtitle, headerRight, variant = "mobile", theme = "light",
+}: {
+  children: ReactNode; role: "teacher" | "owner" | "parent"; tabs: Tab[]; title?: string;
+  subtitle?: string; headerRight?: ReactNode; variant?: "mobile" | "wide"; theme?: "light" | "night";
+}) {
   const { loading, configured, userId, profile } = useAuth();
   const router = useRouter();
   const pathname = usePathname();
+  const night = theme === "night";
   const loginPath = role === "owner" ? "/owner/login" : role === "parent" ? "/parent/login" : "/teacher/login";
 
   useEffect(() => {
@@ -37,8 +42,8 @@ export function PortalShell({
       </Centered>
     );
   }
-  if (loading) return <div className="min-h-screen bg-paper"><Loading /></div>;
-  if (!userId) return <div className="min-h-screen bg-paper"><Loading label="Redirecting…" /></div>;
+  if (loading) return <div className={cn("min-h-screen", night ? "bg-onyx" : "bg-paper")}><Loading dark={night} /></div>;
+  if (!userId) return <div className={cn("min-h-screen", night ? "bg-onyx" : "bg-paper")}><Loading dark={night} label="Redirecting…" /></div>;
 
   if (profile && profile.role !== role) {
     return (
@@ -87,6 +92,45 @@ export function PortalShell({
           {title && <h1 className="mb-5 font-display text-2xl font-semibold text-ink">{title}</h1>}
           {children}
         </main>
+      </div>
+    );
+  }
+
+  if (night) {
+    return (
+      <div className="min-h-screen bg-onyx pb-24 text-paper">
+        <header className="sticky top-0 z-30 border-b border-white/10 bg-onyx/85 px-4 py-3 backdrop-blur-md">
+          <div className="mx-auto flex max-w-md items-center justify-between gap-3">
+            <div className="flex items-center gap-2.5">
+              <span className="grid h-9 w-9 place-items-center rounded-full border border-gold/30 bg-gold/10 text-gold">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9 18V6l8-2v10" stroke="currentColor" strokeWidth="1.7" strokeLinejoin="round" /><circle cx="6.5" cy="18" r="2.5" stroke="currentColor" strokeWidth="1.7" /><circle cx="14.5" cy="14" r="2.5" stroke="currentColor" strokeWidth="1.7" /></svg>
+              </span>
+              <span className="leading-tight">
+                <span className="block font-display text-sm font-semibold tracking-wide text-paper">{title || "Musicphonetics"}</span>
+                {subtitle && <span className="block text-[0.6rem] font-semibold uppercase tracking-[0.18em] text-gold">{subtitle}</span>}
+              </span>
+            </div>
+            {headerRight}
+          </div>
+        </header>
+        <main className="mx-auto max-w-md px-4 py-5">{children}</main>
+        <nav className="fixed inset-x-0 bottom-0 z-40 border-t border-white/10 bg-onyx-1/95 backdrop-blur-md"
+          style={{ paddingBottom: "env(safe-area-inset-bottom)" }}>
+          <div className="mx-auto flex max-w-md items-stretch justify-around">
+            {tabs.map((t) => {
+              const active = pathname === t.href;
+              return (
+                <Link key={t.href} href={t.href}
+                  className={cn("relative flex flex-1 flex-col items-center gap-1 py-2.5 text-[11px] font-medium transition-colors",
+                    active ? "text-gold" : "text-paper/45")}>
+                  {active && <span aria-hidden="true" className="absolute inset-x-6 top-0 h-0.5 rounded-full bg-gold" />}
+                  <span className="grid h-7 w-7 place-items-center">{t.icon}</span>
+                  {t.label}
+                </Link>
+              );
+            })}
+          </div>
+        </nav>
       </div>
     );
   }
