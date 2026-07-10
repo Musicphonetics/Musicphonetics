@@ -94,12 +94,12 @@ export async function onRequestPost(context) {
   }
 
   // key_id is the publishable key - safe to return so the static frontend can
-  // open Checkout without a build-time public env var.
+  // open Checkout without a build-time public env var (trimmed, matching auth).
   return json({
     ok: true,
     order_id: data.id,
     amount: data.amount,
     currency: data.currency,
-    key_id: env.RAZORPAY_KEY_ID,
+    key_id: keyId,
   });
 }
