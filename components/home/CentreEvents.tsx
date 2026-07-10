@@ -7,7 +7,7 @@ import { WA_MSG } from "@/lib/home-config";
 // months to put students onto a stage.
 export function CentreEvents() {
   return (
-    <section id="whats-next" className="bg-ink py-20 text-paper sm:py-28">
+    <section id="whats-next" className="bg-ink py-16 text-paper sm:py-28">
       <div className="container-mp">
         <SectionHeader
           eyebrow="Where it happens"

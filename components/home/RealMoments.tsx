@@ -6,7 +6,7 @@ import { REAL_MOMENTS } from "@/lib/home-config";
 // strongest, real photos across Delhi NCR.
 export function RealMoments() {
   return (
-    <section className="bg-paper py-20 text-ink sm:py-28">
+    <section className="bg-paper py-16 text-ink sm:py-28">
       <div className="container-mp">
         <SectionHeader
           eyebrow="From our classes"
@@ -15,10 +15,10 @@ export function RealMoments() {
           center
         />
 
-        <div className="mt-12 gap-4 [column-fill:_balance] sm:columns-2 lg:columns-3">
+        <div className="mt-10 gap-3 [column-fill:_balance] columns-2 sm:mt-12 sm:gap-4 lg:columns-3">
           {REAL_MOMENTS.slice(0, 5).map((m, i) => (
             <Reveal key={m.src} delay={(i % 3) * 90}>
-              <figure className="group relative mb-4 break-inside-avoid overflow-hidden rounded-2xl border border-hairline shadow-card">
+              <figure className="group relative mb-3 break-inside-avoid overflow-hidden rounded-xl border border-hairline shadow-card sm:mb-4 sm:rounded-2xl">
                 <img
                   src={m.src}
                   alt={m.alt}
@@ -26,8 +26,8 @@ export function RealMoments() {
                   decoding="async"
                   className="w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.04]"
                 />
-                <div aria-hidden="true" className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/5 to-transparent" />
-                <figcaption className="absolute inset-x-0 bottom-0 p-4 text-sm font-medium leading-snug text-white drop-shadow">
+                <div aria-hidden="true" className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/10 to-transparent" />
+                <figcaption className="absolute inset-x-0 bottom-0 p-2.5 text-[11px] font-medium leading-snug text-white drop-shadow sm:p-4 sm:text-sm">
                   {m.caption}
                 </figcaption>
               </figure>

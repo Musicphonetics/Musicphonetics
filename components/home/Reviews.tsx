@@ -74,7 +74,7 @@ export function Reviews({ files, variant, showAllHref }: { files: string[]; vari
 // Homepage section wrapper.
 export function ReviewsSection({ files }: { files: string[] }) {
   return (
-    <section className="bg-ink py-20 text-paper sm:py-28">
+    <section className="bg-ink py-16 text-paper sm:py-28">
       <div className="container-mp">
         <div className="flex items-center gap-3">
           <span aria-hidden="true" className="h-px w-10 bg-gold" />

@@ -60,7 +60,7 @@ export function FunnelHero() {
             Music education, built like an <span className="text-gold">institution.</span>
           </h1>
 
-          <p className="mt-6 max-w-lg text-lg leading-relaxed text-paper/85">
+          <p className="mt-5 max-w-md text-[0.975rem] leading-relaxed text-paper/85 sm:mt-6 sm:max-w-lg sm:text-lg">
             One teacher matched to the student. One clear method. Every class tracked -
             from first notes to the stage. Across Delhi NCR and online.
           </p>

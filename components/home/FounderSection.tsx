@@ -6,7 +6,7 @@ import { FOUNDER } from "@/lib/founder";
 // Founder-led is a core asset - give it a real section: photo, name and voice.
 export function FounderSection() {
   return (
-    <section className="bg-paper py-20 text-ink sm:py-28">
+    <section className="bg-paper py-16 text-ink sm:py-28">
       <div className="container-mp">
         <div className="grid items-center gap-10 lg:grid-cols-[0.8fr_1fr] lg:gap-16">
           {/* Photo */}

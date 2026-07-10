@@ -26,7 +26,7 @@ export function SectionHeader({
         </h2>
         {sub && (
           <p className={cn(
-            "mt-4 max-w-xl text-[1.0625rem] leading-relaxed",
+            "mt-4 max-w-xl text-[0.95rem] leading-relaxed sm:text-[1.0625rem]",
             center && "mx-auto",
             invert ? "text-paper/70" : "text-ink/65",
           )}>

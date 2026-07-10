@@ -3,7 +3,7 @@ import { Reveal } from "@/components/ui/Reveal";
 // The "define it" section - answers the first-five-seconds question, confidently.
 export function WhatThisIs() {
   return (
-    <section className="bg-paper py-20 text-ink sm:py-28">
+    <section className="bg-paper py-16 text-ink sm:py-28">
       <div className="container-mp">
         <div className="mx-auto max-w-3xl">
           <Reveal>

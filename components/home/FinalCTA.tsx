@@ -5,7 +5,7 @@ import { WA_MSG } from "@/lib/home-config";
 // One action, then the footer.
 export function FinalCTA() {
   return (
-    <section className="relative overflow-hidden bg-ink py-20 text-paper sm:py-28">
+    <section className="relative overflow-hidden bg-ink py-16 text-paper sm:py-28">
       <div aria-hidden="true" className="pointer-events-none absolute left-1/2 top-1/2 h-[380px] w-[680px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-deep-gold/10 blur-[130px]" />
       <div className="container-mp relative">
         <Reveal>
