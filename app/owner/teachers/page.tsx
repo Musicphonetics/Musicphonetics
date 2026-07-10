@@ -5,6 +5,7 @@ import { PortalShell } from "@/components/portal/PortalShell";
 import { OWNER_TABS } from "@/components/portal/tabs";
 import { Loading, formatMoney } from "@/components/portal/kit";
 import { ReportCardModal, type ReportStudent } from "@/components/portal/ReportCard";
+import { ParentLoginModal } from "@/components/portal/ParentLoginModal";
 import { isSupabaseConfigured } from "@/lib/supabase/client";
 import { loadOwnerData, type OwnerData } from "@/lib/supabase/owner";
 import { cn } from "@/lib/utils";
@@ -15,6 +16,7 @@ export default function OwnerTeachers() {
   const [sel, setSel] = useState<string | null>(null); // selected teacher id
   const [q, setQ] = useState("");
   const [report, setReport] = useState<{ student: ReportStudent; teacherName: string } | null>(null);
+  const [parent, setParent] = useState<{ id: string; name: string; email: string | null } | null>(null);
 
   useEffect(() => {
     if (!isSupabaseConfigured()) return;
@@ -95,6 +97,11 @@ export default function OwnerTeachers() {
                         className="rounded-full border border-ink/20 px-4 py-2 text-sm font-semibold text-ink hover:border-ink">
                         Report card
                       </button>
+                      <button
+                        onClick={() => setParent({ id: s.id, name: s.name, email: s.parent_email })}
+                        className="rounded-full border border-ink/20 px-4 py-2 text-sm font-semibold text-ink hover:border-ink">
+                        Parent login
+                      </button>
                     </div>
                   </div>
                 );
@@ -129,6 +136,7 @@ export default function OwnerTeachers() {
       )}
 
       {report && <ReportCardModal student={report.student} teacherName={report.teacherName} onClose={() => setReport(null)} />}
+      {parent && <ParentLoginModal studentId={parent.id} studentName={parent.name} defaultEmail={parent.email} onClose={() => setParent(null)} />}
     </PortalShell>
   );
 }

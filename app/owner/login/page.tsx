@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { getSupabaseSafe, isSupabaseConfigured } from "@/lib/supabase/client";
+import { sendPasswordReset } from "@/lib/supabase/auth";
 import { Stave } from "@/components/ui/Stave";
 
 const input =
@@ -33,6 +34,13 @@ export default function OwnerLogin() {
     } catch (e) { setBusy(false); setMsg(e instanceof Error ? e.message : "Sign-in failed"); }
   }
 
+  async function forgot() {
+    if (!/^\S+@\S+\.\S+$/.test(email.trim())) { setMsg("Enter your email above first, then tap reset."); return; }
+    setMsg("Sending reset link…");
+    const { error } = await sendPasswordReset(email);
+    setMsg(error ? error : "If that email has an account, a reset link is on its way.");
+  }
+
   return (
     <div className="grid min-h-screen place-items-center bg-ink px-5 py-10 text-paper">
       <div className="w-full max-w-sm">
@@ -50,6 +58,9 @@ export default function OwnerLogin() {
             {busy ? "Signing in…" : "Sign in"}
           </button>
           {msg && <p className="text-center text-sm text-paper/75">{msg}</p>}
+          <button type="button" onClick={forgot} className="w-full text-center text-xs font-medium text-gold/90 hover:text-gold">
+            Forgot password?
+          </button>
         </form>
       </div>
     </div>

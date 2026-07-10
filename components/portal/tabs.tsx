@@ -18,6 +18,7 @@ export const PARENT_TABS: Tab[] = [
   { href: "/parent/dashboard", label: "Home", icon: I("M3 11.5 12 4l9 7.5M5 10v9a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-9") },
   { href: "/parent/classes", label: "Classes", icon: I("M4 6h16M4 12h16M4 18h10") },
   { href: "/parent/progress", label: "Journey", icon: I("M4 19V5M4 19h16M8 16l3-4 3 2 4-6") },
+  { href: "/parent/reports", label: "Reports", icon: I("M7 3h7l5 5v11a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1ZM14 3v5h5M9 13h6M9 17h4") },
   { href: "/parent/payments", label: "Fees", icon: I("M3 7h18v10H3zM3 10h18M7 14h3") },
 ];
 

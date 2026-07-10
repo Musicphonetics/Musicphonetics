@@ -54,3 +54,20 @@ export async function signOut() {
   const { client } = getSupabaseSafe();
   if (client) await client.auth.signOut();
 }
+
+// Sends a password-reset email that returns the user to /auth/update-password.
+export async function sendPasswordReset(email: string): Promise<{ error: string | null }> {
+  const { client, error } = getSupabaseSafe();
+  if (!client) return { error: error || "Not configured" };
+  const redirectTo = typeof window !== "undefined" ? `${window.location.origin}/auth/update-password` : undefined;
+  const { error: e } = await client.auth.resetPasswordForEmail(email.trim(), { redirectTo });
+  return { error: e?.message ?? null };
+}
+
+// Sets a new password for the signed-in (or password-recovery) session.
+export async function updatePassword(password: string): Promise<{ error: string | null }> {
+  const { client, error } = getSupabaseSafe();
+  if (!client) return { error: error || "Not configured" };
+  const { error: e } = await client.auth.updateUser({ password });
+  return { error: e?.message ?? null };
+}

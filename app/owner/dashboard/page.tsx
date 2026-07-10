@@ -1,13 +1,13 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Link from "next/link";
 import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, LineChart, Line, ResponsiveContainer, Tooltip } from "recharts";
 import { PortalShell } from "@/components/portal/PortalShell";
 import { OWNER_TABS } from "@/components/portal/tabs";
 import { Loading, formatMoney } from "@/components/portal/kit";
 import { isSupabaseConfigured, getSupabase } from "@/lib/supabase/client";
 import { loadOwnerData, computeKpis, rollupTeachers, daysToBirthday, type OwnerData, type OwnerKpis, type TeacherRollup } from "@/lib/supabase/owner";
+import { computeFoundation } from "@/lib/foundation";
 import { cn } from "@/lib/utils";
 
 export default function OwnerDashboard() {
@@ -128,10 +128,54 @@ function Body({ data }: { data: OwnerData }) {
           items={inactiveTeachers.map((t) => t.name)} />
       )}
 
-      <p className="text-center text-xs text-ink/55">
-        Live - updates as teachers submit. Manage payouts under{" "}
-        <Link href="/owner/payouts" className="font-semibold text-[#7A5E0F] underline underline-offset-2">Payouts</Link>.
-      </p>
+      {/* Foundation upgrade pipeline - the ₹8k → ₹12k sales pipeline */}
+      <UpgradePipeline data={data} />
+    </div>
+  );
+}
+
+function UpgradePipeline({ data }: { data: OwnerData }) {
+  const completed = new Map<string, number>();
+  for (const c of data.classes) if (c.class_status === "Completed") completed.set(c.student_id, (completed.get(c.student_id) ?? 0) + 1);
+
+  const buckets = { 1: 0, 2: 0, 3: 0, 4: 0, ready: 0, upgraded: 0 };
+  const readyNames: string[] = [];
+  for (const s of data.students) {
+    if (s.status !== "active") continue;
+    const isMain = (s.fee_quoted ?? 8000) >= 12000;
+    if (isMain) { buckets.upgraded++; continue; }
+    const f = computeFoundation(completed.get(s.id) ?? 0, 1, false, false);
+    if (f.readyForUpgrade) { buckets.ready++; readyNames.push(s.name); }
+    else buckets[f.currentChapter.number as 1 | 2 | 3 | 4]++;
+  }
+
+  const cells = [
+    { label: "Chapter 1", n: buckets[1] },
+    { label: "Chapter 2", n: buckets[2] },
+    { label: "Chapter 3", n: buckets[3] },
+    { label: "Chapter 4", n: buckets[4] },
+    { label: "Ready to upgrade", n: buckets.ready, hot: true },
+    { label: "On Main Pathway", n: buckets.upgraded, green: true },
+  ];
+
+  return (
+    <div className="rounded-2xl border border-hairline bg-white p-4">
+      <p className="mb-3 text-sm font-semibold text-ink">Foundation upgrade pipeline</p>
+      <div className="grid grid-cols-3 gap-3 sm:grid-cols-6">
+        {cells.map((c) => (
+          <div key={c.label} className={cn("rounded-xl border p-3 text-center",
+            c.hot ? "border-gold/50 bg-gold/[0.08]" : c.green ? "border-feature-green/30 bg-feature-green/[0.06]" : "border-hairline bg-paper")}>
+            <p className={cn("font-display text-2xl font-semibold", c.hot ? "text-[#7A5E0F]" : c.green ? "text-feature-green" : "text-ink")}>{c.n}</p>
+            <p className="mt-0.5 text-[10px] uppercase leading-tight tracking-wide text-ink/55">{c.label}</p>
+          </div>
+        ))}
+      </div>
+      {readyNames.length > 0 && (
+        <p className="mt-3 text-xs text-ink/70">
+          <b className="text-[#7A5E0F]">Ready for the Main Pathway:</b> {readyNames.slice(0, 12).join(", ")}
+          {readyNames.length > 12 ? ` +${readyNames.length - 12} more` : ""}. Time for a founder call.
+        </p>
+      )}
     </div>
   );
 }
