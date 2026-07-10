@@ -72,3 +72,23 @@ export function studentView(d: ParentData, student: Student): StudentView {
 export function completedCount(d: ParentData, studentId: string): number {
   return d.classes.filter((c) => c.student_id === studentId && c.class_status === "Completed").length;
 }
+
+// Anonymised community headlines the owner publishes (community_updates). Falls
+// back to a curated set so the section is never empty. Best-effort - the table
+// may not exist yet.
+const FALLBACK_COMMUNITY = [
+  "Students across Musicphonetics complete hundreds of tracked classes every month.",
+  "Beginners are completing their first songs and stepping on stage at our open mics.",
+  "“The class updates help us stay connected” - a Musicphonetics parent.",
+];
+export async function loadCommunity(): Promise<string[]> {
+  try {
+    const { data } = await getSupabase()
+      .from("community_updates").select("headline").eq("is_published", true)
+      .order("created_at", { ascending: false }).limit(5);
+    const rows = (data as { headline: string }[] | null) ?? [];
+    return rows.length ? rows.map((r) => r.headline) : FALLBACK_COMMUNITY;
+  } catch {
+    return FALLBACK_COMMUNITY;
+  }
+}

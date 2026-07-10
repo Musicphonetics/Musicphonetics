@@ -6,9 +6,10 @@ import { PortalShell } from "@/components/portal/PortalShell";
 import { PARENT_TABS } from "@/components/portal/tabs";
 import { Loading, EmptyState } from "@/components/portal/kit";
 import { FoundationJourney } from "@/components/parent/FoundationJourney";
+import { FeedbackCard } from "@/components/parent/FeedbackCard";
 import { DirectorNote } from "@/components/portal/DirectorNote";
 import { isSupabaseConfigured } from "@/lib/supabase/client";
-import { loadParentData, studentView, completedCount, type ParentData } from "@/lib/supabase/parent";
+import { loadParentData, studentView, completedCount, loadCommunity, type ParentData } from "@/lib/supabase/parent";
 import { computeFoundation } from "@/lib/foundation";
 import { whatsappLink } from "@/lib/data";
 import { cn } from "@/lib/utils";
@@ -21,10 +22,12 @@ export default function ParentDashboard() {
   const [data, setData] = useState<ParentData | null>(null);
   const [err, setErr] = useState<string | null>(null);
   const [idx, setIdx] = useState(0);
+  const [community, setCommunity] = useState<string[]>([]);
 
   useEffect(() => {
     if (!isSupabaseConfigured()) return;
     loadParentData().then((d) => { setErr(d.error); setData(d); });
+    loadCommunity().then(setCommunity);
   }, []);
 
   const student = data?.students[idx] ?? null;
@@ -126,11 +129,12 @@ export default function ParentDashboard() {
           <Card>
             <Head>Musicphonetics community</Head>
             <ul className="space-y-1.5 text-sm text-ink/75">
-              <li>• Students across Musicphonetics complete hundreds of tracked classes every month.</li>
-              <li>• Beginners are completing their first songs and stepping on stage at our open mics.</li>
-              <li>• &ldquo;The class updates help us stay connected&rdquo; - a Musicphonetics parent.</li>
+              {(community.length ? community : []).map((c) => <li key={c}>• {c}</li>)}
             </ul>
           </Card>
+
+          {/* Parent feedback */}
+          <FeedbackCard studentId={student.id} studentName={student.name} />
 
           {/* A personal note from the Director */}
           <DirectorNote variant="parent" />
