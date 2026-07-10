@@ -6,19 +6,20 @@ import { REAL_MOMENTS } from "@/lib/home-config";
 // strongest, real photos across Delhi NCR.
 export function RealMoments() {
   return (
-    <section className="bg-paper py-16 text-ink sm:py-28">
+    <section className="bg-onyx py-16 text-paper sm:py-28">
       <div className="container-mp">
         <SectionHeader
           eyebrow="From our classes"
           title="Real students. Real stages."
           sub="No stock photos - our students, our recitals, our small wins from across Delhi NCR."
           center
+          invert
         />
 
         <div className="mt-10 gap-3 [column-fill:_balance] columns-2 sm:mt-12 sm:gap-4 lg:columns-3">
           {REAL_MOMENTS.slice(0, 5).map((m, i) => (
             <Reveal key={m.src} delay={(i % 3) * 90}>
-              <figure className="group relative mb-3 break-inside-avoid overflow-hidden rounded-xl border border-hairline shadow-card sm:mb-4 sm:rounded-2xl">
+              <figure className="group relative mb-3 break-inside-avoid overflow-hidden rounded-xl border border-white/10 sm:mb-4 sm:rounded-2xl">
                 <img
                   src={m.src}
                   alt={m.alt}
@@ -36,7 +37,7 @@ export function RealMoments() {
         </div>
 
         <Reveal delay={120}>
-          <p className="mt-8 text-center text-sm text-ink/60">
+          <p className="mt-8 text-center text-sm text-paper/60">
             Want your child in the next photo? It starts with one message.
           </p>
         </Reveal>

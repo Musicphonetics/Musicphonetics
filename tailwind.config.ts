@@ -11,11 +11,17 @@ const config: Config = {
         // Musicphonetics brand palette
         ink: "#161B26",
         gold: "#C9A227",
+        "gold-soft": "#E7C86A",
         "deep-gold": "#A8851B",
         paper: "#F6F4EF",
         mist: "#ECE8DF",
         "feature-green": "#1F3D2F",
         midnight: "#0B0F18",
+        // Dark, cinematic homepage surfaces (warm near-black + lifted cards)
+        onyx: "#0A0B0E",
+        "onyx-1": "#101217",
+        "onyx-2": "#161920",
+        forest: "#123024",
       },
       borderColor: {
         hairline: "rgba(22,27,38,.14)",

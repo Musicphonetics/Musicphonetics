@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
-import { FunnelHero } from "@/components/home/FunnelHero";
-import { WhatThisIs } from "@/components/home/WhatThisIs";
+import { NightHero } from "@/components/home/night/NightHero";
+import { NightTrustStrip } from "@/components/home/night/NightTrustStrip";
+import { NightFoundation } from "@/components/home/night/NightFoundation";
+import { NightReviewsTeaser } from "@/components/home/night/NightReviewsTeaser";
 import { HowItWorks } from "@/components/home/HowItWorks";
 import { FunnelPackages } from "@/components/home/FunnelPackages";
 import { RealMoments } from "@/components/home/RealMoments";
@@ -49,9 +51,12 @@ export default function HomePage() {
   return (
     <>
       <JsonLd data={localBusiness} />
-      {/* One clear argument: what it is → how it works → the paths → proof → place → founder → act. */}
-      <FunnelHero />
-      <WhatThisIs />
+      {/* Dark, cinematic mobile-first flow: hero + portal → why us → the journey →
+          proof → how it works → the paths → real moments → reviews → place → founder → act. */}
+      <NightHero />
+      <NightTrustStrip />
+      <NightFoundation />
+      <NightReviewsTeaser />
       <HowItWorks />
       <FunnelPackages />
       <RealMoments />

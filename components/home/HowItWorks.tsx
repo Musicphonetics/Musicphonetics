@@ -22,7 +22,7 @@ const STEPS = [
 
 export function HowItWorks() {
   return (
-    <section id="how" className="scroll-mt-20 bg-ink py-16 text-paper sm:py-28">
+    <section id="how" className="scroll-mt-20 bg-onyx py-16 text-paper sm:py-28">
       <div className="container-mp">
         <SectionHeader eyebrow="How it works" title="A clear path, not random classes." invert />
         <div className="mt-12 grid gap-x-8 gap-y-10 sm:grid-cols-2">

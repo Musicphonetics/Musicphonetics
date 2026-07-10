@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Logo } from "./Logo";
 import { Button } from "@/components/ui/Button";
@@ -10,6 +11,11 @@ import { cn } from "@/lib/utils";
 export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
+  // The homepage is a dark, cinematic experience - the nav floats transparently
+  // over the hero and turns into a solid onyx bar once you scroll (or open the
+  // menu). Chrome stays light-on-dark throughout on home.
+  const isHome = usePathname() === "/";
+  const solid = scrolled || open;
 
   // Sticky nav changes background on scroll
   useEffect(() => {
@@ -37,13 +43,17 @@ export function Navbar() {
     <header
       className={cn(
         "fixed inset-x-0 top-0 z-50 transition-all duration-300",
-        scrolled
+        isHome
+          ? solid
+            ? "border-b border-white/10 bg-onyx/95 shadow-lg backdrop-blur-md"
+            : "border-b border-transparent bg-transparent"
+          : scrolled
           ? "border-b border-hairline bg-paper/90 shadow-card backdrop-blur-md"
           : "border-b border-transparent bg-paper/60 backdrop-blur-sm"
       )}
     >
       <nav className="container-mp flex h-16 items-center justify-between gap-4">
-        <Logo />
+        <Logo invert={isHome} />
 
         {/* Desktop links */}
         <ul className="hidden items-center gap-7 lg:flex">
@@ -51,7 +61,10 @@ export function Navbar() {
             <li key={link.href}>
               <Link
                 href={link.href}
-                className="text-sm font-medium text-ink/75 transition-colors hover:text-ink"
+                className={cn(
+                  "text-sm font-medium transition-colors",
+                  isHome ? "text-paper/75 hover:text-paper" : "text-ink/75 hover:text-ink"
+                )}
               >
                 {link.label}
               </Link>
@@ -68,7 +81,10 @@ export function Navbar() {
         {/* Mobile hamburger */}
         <button
           type="button"
-          className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-hairline text-ink lg:hidden"
+          className={cn(
+            "inline-flex h-10 w-10 items-center justify-center rounded-full border lg:hidden",
+            isHome ? "border-white/20 text-paper" : "border-hairline text-ink"
+          )}
           aria-label={open ? "Close menu" : "Open menu"}
           aria-expanded={open}
           onClick={() => setOpen((v) => !v)}
@@ -89,7 +105,8 @@ export function Navbar() {
       {/* Mobile slide-down sheet */}
       <div
         className={cn(
-          "overflow-hidden border-t border-hairline bg-paper transition-[max-height] duration-300 lg:hidden",
+          "overflow-hidden border-t transition-[max-height] duration-300 lg:hidden",
+          isHome ? "border-white/10 bg-onyx" : "border-hairline bg-paper",
           open ? "max-h-[80vh]" : "max-h-0 border-t-transparent"
         )}
       >
@@ -99,7 +116,10 @@ export function Navbar() {
               key={link.href}
               href={link.href}
               onClick={() => setOpen(false)}
-              className="rounded-xl px-3 py-3 text-base font-medium text-ink/80 hover:bg-mist hover:text-ink"
+              className={cn(
+                "rounded-xl px-3 py-3 text-base font-medium",
+                isHome ? "text-paper/80 hover:bg-white/5 hover:text-paper" : "text-ink/80 hover:bg-mist hover:text-ink"
+              )}
             >
               {link.label}
             </Link>

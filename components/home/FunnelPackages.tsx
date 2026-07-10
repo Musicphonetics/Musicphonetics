@@ -45,7 +45,7 @@ const PROGRAMMES = [
 
 export function FunnelPackages() {
   return (
-    <section id="programmes" className="scroll-mt-20 bg-ink py-16 text-paper sm:py-28">
+    <section id="programmes" className="scroll-mt-20 bg-onyx py-16 text-paper sm:py-28">
       <div className="container-mp">
         <SectionHeader
           eyebrow="Programmes"
