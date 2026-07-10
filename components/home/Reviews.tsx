@@ -2,8 +2,6 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { WhatsAppCTA } from "./WhatsAppCTA";
-import { WA_MSG } from "@/lib/home-config";
 import { cn } from "@/lib/utils";
 
 function ReviewCard({ file, onOpen, carousel }: { file: string; onOpen: () => void; carousel?: boolean }) {
@@ -76,25 +74,21 @@ export function Reviews({ files, variant, showAllHref }: { files: string[]; vari
 // Homepage section wrapper.
 export function ReviewsSection({ files }: { files: string[] }) {
   return (
-    <section className="bg-ink py-20 text-paper sm:py-24">
+    <section className="bg-ink py-20 text-paper sm:py-28">
       <div className="container-mp">
-        <p className="eyebrow text-gold">Proof</p>
-        <h2 className="mt-3 max-w-2xl font-display text-3xl font-semibold leading-tight sm:text-4xl">
-          Real Parents. Real Students. Real Progress.
-        </h2>
-        <p className="mt-4 max-w-xl text-base leading-relaxed text-paper/75">
-          Musicphonetics is built on trust, structure and consistent progress. Here are real experiences shared through Google reviews.
-        </p>
-
-        <div className="mt-9">
-          <Reviews files={files} variant="carousel" showAllHref="/reviews" />
+        <div className="flex items-center gap-3">
+          <span aria-hidden="true" className="h-px w-10 bg-gold" />
+          <span className="text-[0.75rem] font-semibold uppercase tracking-[0.16em] text-gold">Proof</span>
         </div>
-
-        <p className="mt-4 text-xs text-paper/50">
-          Real Google reviews from parents and students · Screenshots shown as received from Google.
+        <h2 className="mt-4 max-w-2xl font-display text-[clamp(1.9rem,4vw,3rem)] font-medium leading-[1.06] text-paper">
+          Families who stayed.
+        </h2>
+        <p className="mt-4 max-w-xl text-[1.0625rem] leading-relaxed text-paper/70">
+          Real Google reviews from parents and students - shown exactly as received.
         </p>
-        <div className="mt-8">
-          <WhatsAppCTA label="Talk to us on WhatsApp" message={WA_MSG.reviews} />
+
+        <div className="mt-10">
+          <Reviews files={files} variant="carousel" showAllHref="/reviews" />
         </div>
       </div>
     </section>

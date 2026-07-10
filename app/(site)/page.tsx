@@ -1,28 +1,27 @@
 import type { Metadata } from "next";
 import { FunnelHero } from "@/components/home/FunnelHero";
-import { StatsBand } from "@/components/home/StatsBand";
-import { RealMoments } from "@/components/home/RealMoments";
-import { WhyMusicphonetics } from "@/components/home/WhyMusicphonetics";
+import { WhatThisIs } from "@/components/home/WhatThisIs";
+import { HowItWorks } from "@/components/home/HowItWorks";
 import { FunnelPackages } from "@/components/home/FunnelPackages";
+import { RealMoments } from "@/components/home/RealMoments";
 import { ReviewsSection } from "@/components/home/Reviews";
-import { ChoosePortal } from "@/components/home/ChoosePortal";
 import { CentreEvents } from "@/components/home/CentreEvents";
-import { FounderMission } from "@/components/home/FounderMission";
-import { GoldDivider } from "@/components/home/GoldDivider";
+import { FounderSection } from "@/components/home/FounderSection";
+import { FinalCTA } from "@/components/home/FinalCTA";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { REVIEWS, HOME_REVIEW_COUNT } from "@/lib/home-config";
 
 const SITE = "https://musicphonetics.com";
 
 export const metadata: Metadata = {
-  title: "Music Classes in Delhi NCR & Online - Guitar, Piano, Vocals | Musicphonetics",
+  title: "Music education, built like an institution | Musicphonetics",
   description:
-    "Structured music learning for children, beginners & serious learners - guitar, piano/keyboard & vocal classes at home and online across Delhi NCR. Teacher matching, progress tracking, Trinity exam preparation where applicable. Enquire on WhatsApp.",
+    "A structured, one-to-one music school in Delhi NCR and online - a matched teacher, a real curriculum, tracked progress, and a stage to perform on. Guitar, piano/keyboard & vocals. Book a free trial on WhatsApp.",
   alternates: { canonical: "/" },
   openGraph: {
-    title: "Music classes that don't feel random - Musicphonetics",
+    title: "Music education, built like an institution - Musicphonetics",
     description:
-      "Structured music learning - guitar, piano/keyboard & vocals. Delhi NCR + Online. Teacher matching and progress tracking. Enquire on WhatsApp.",
+      "A structured, one-to-one music school. Matched teacher, real curriculum, tracked progress, a stage to perform on. Delhi NCR + Online.",
     type: "website",
     siteName: "Musicphonetics",
     locale: "en_IN",
@@ -34,14 +33,14 @@ const localBusiness = {
   "@type": "LocalBusiness",
   name: "Musicphonetics",
   description:
-    "Structured music education - guitar, piano/keyboard and vocal classes for children, beginners and serious learners, at home and online across Delhi NCR.",
+    "A structured, one-to-one music school - guitar, piano/keyboard and vocal classes for children, beginners and serious learners, at home and online across Delhi NCR.",
   url: SITE,
   areaServed: "Delhi NCR",
   knowsAbout: ["Guitar classes", "Piano classes", "Keyboard classes", "Vocal classes", "Music theory", "Trinity music exam preparation"],
   address: { "@type": "PostalAddress", addressRegion: "Delhi NCR", addressCountry: "IN" },
   makesOffer: [
-    { "@type": "Offer", name: "Foundation", price: "8000", priceCurrency: "INR" },
-    { "@type": "Offer", name: "Main Musicphonetics Pathway", price: "12000", priceCurrency: "INR" },
+    { "@type": "Offer", name: "Foundation" },
+    { "@type": "Offer", name: "The Main Pathway" },
   ],
 };
 
@@ -50,18 +49,16 @@ export default function HomePage() {
   return (
     <>
       <JsonLd data={localBusiness} />
-      {/* Lean, story-led flow: what it is → why → paths → proof → system → close.
-          Light-dominant with a few dark sections for premium contrast. */}
+      {/* One clear argument: what it is → how it works → the paths → proof → place → founder → act. */}
       <FunnelHero />
-      <StatsBand />
-      <WhyMusicphonetics />
+      <WhatThisIs />
+      <HowItWorks />
       <FunnelPackages />
       <RealMoments />
-      <CentreEvents />
-      <ChoosePortal />
-      <GoldDivider />
       <ReviewsSection files={homeReviews} />
-      <FounderMission />
+      <CentreEvents />
+      <FounderSection />
+      <FinalCTA />
     </>
   );
 }

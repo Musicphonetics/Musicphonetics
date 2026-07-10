@@ -1,25 +1,22 @@
+import { SectionHeader } from "./SectionHeader";
 import { Reveal } from "@/components/ui/Reveal";
 import { REAL_MOMENTS } from "@/lib/home-config";
 
-// A warm, honest gallery - the "real students, real classes" moment from the
-// homepage. Deliberately unpolished, real photos across Delhi NCR.
+// A warm, honest gallery - the "real students, real stages" proof. The five
+// strongest, real photos across Delhi NCR.
 export function RealMoments() {
   return (
     <section className="bg-paper py-20 text-ink sm:py-28">
       <div className="container-mp">
-        <Reveal>
-          <p className="eyebrow text-center">Straight from our classes</p>
-          <h2 className="mx-auto mt-2 max-w-3xl text-center font-display text-3xl font-semibold leading-tight text-ink sm:text-4xl lg:text-[2.75rem]">
-            Real students. Real classes. <span className="text-[#7A5E0F]">Real music.</span>
-          </h2>
-          <p className="mx-auto mt-4 max-w-xl text-center text-base leading-relaxed text-ink/70">
-            No stock photos. These are our students, our recitals and our little
-            wins, from classrooms and stages across Delhi NCR.
-          </p>
-        </Reveal>
+        <SectionHeader
+          eyebrow="From our classes"
+          title="Real students. Real stages."
+          sub="No stock photos - our students, our recitals, our small wins from across Delhi NCR."
+          center
+        />
 
-        <div className="mt-10 gap-4 [column-fill:_balance] sm:columns-2 lg:columns-3">
-          {REAL_MOMENTS.map((m, i) => (
+        <div className="mt-12 gap-4 [column-fill:_balance] sm:columns-2 lg:columns-3">
+          {REAL_MOMENTS.slice(0, 5).map((m, i) => (
             <Reveal key={m.src} delay={(i % 3) * 90}>
               <figure className="group relative mb-4 break-inside-avoid overflow-hidden rounded-2xl border border-hairline shadow-card">
                 <img

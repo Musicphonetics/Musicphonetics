@@ -1,23 +1,20 @@
+import { SectionHeader } from "./SectionHeader";
 import { Reveal } from "@/components/ui/Reveal";
 import { WhatsAppCTA } from "./WhatsAppCTA";
 import { WA_MSG } from "@/lib/home-config";
 
-// "What's next" - the South Delhi centre and the events (open mics + showcases)
-// we run every few months to push students onto a stage.
+// The South Delhi centre and the events (open mics + showcases) we run every few
+// months to put students onto a stage.
 export function CentreEvents() {
   return (
     <section id="whats-next" className="bg-ink py-20 text-paper sm:py-28">
       <div className="container-mp">
-        <Reveal>
-          <p className="eyebrow text-gold">What&apos;s next for you</p>
-          <h2 className="mt-3 max-w-2xl font-display text-3xl font-semibold leading-tight sm:text-4xl lg:text-[2.9rem]">
-            A real centre. Real stages. Every few months.
-          </h2>
-          <p className="mt-4 max-w-xl text-base leading-relaxed text-paper/75">
-            Music shouldn&apos;t stay inside a room. We give every student a place to
-            learn and a stage to perform on.
-          </p>
-        </Reveal>
+        <SectionHeader
+          eyebrow="Where it happens"
+          title="A real centre. Real stages. Every few months."
+          sub="Music shouldn't stay inside a room. We give every student a place to learn and a stage to perform on."
+          invert
+        />
 
         <div className="mt-10 grid gap-5 lg:grid-cols-2">
           {/* South Delhi centre */}

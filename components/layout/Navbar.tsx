@@ -60,8 +60,8 @@ export function Navbar() {
         </ul>
 
         <div className="hidden lg:block">
-          <Button href="/start" size="md" variant="primary">
-            Book a Trial
+          <Button href={whatsappLink("Hi Musicphonetics, I'd like to book a free trial class.")} external size="md" variant="primary">
+            Book a free trial
           </Button>
         </div>
 
@@ -104,12 +104,9 @@ export function Navbar() {
               {link.label}
             </Link>
           ))}
-          <div className="mt-3 flex flex-col gap-2 px-1">
-            <Button href="/start" fullWidth size="lg" variant="light">
-              Book a Trial
-            </Button>
-            <Button href={whatsappLink()} external fullWidth size="lg" variant="primary">
-              Enquire on WhatsApp
+          <div className="mt-3 px-1">
+            <Button href={whatsappLink("Hi Musicphonetics, I'd like to book a free trial class.")} external fullWidth size="lg" variant="primary">
+              Book a free trial
             </Button>
           </div>
         </div>

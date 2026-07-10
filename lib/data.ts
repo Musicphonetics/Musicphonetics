@@ -73,10 +73,9 @@ export const BRAND = {
 // Primary navigation
 // ---------------------------------------------------------------------------
 export const NAV_LINKS = [
-  { label: "Programs", href: "/#programs" },
+  { label: "Programmes", href: "/#programmes" },
+  { label: "How it works", href: "/#how" },
   { label: "Faculty", href: "/teachers" },
-  { label: "Standards", href: "/standards" },
-  { label: "Centre", href: "/centre" },
   { label: "Reviews", href: "/reviews" },
   { label: "Founder", href: "/founder" },
 ];

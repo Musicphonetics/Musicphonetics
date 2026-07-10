@@ -41,40 +41,44 @@ export function FunnelHero() {
             )}
           />
         ))}
-        {/* Legibility overlays */}
-        <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/75 to-ink/45" />
-        <div className="absolute inset-0 bg-gradient-to-r from-ink/85 via-ink/40 to-transparent" />
+        {/* Legibility overlays - charcoal so the H1 always reads */}
+        <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/85 to-ink/60" />
+        <div className="absolute inset-0 bg-gradient-to-r from-ink/90 via-ink/55 to-ink/20" />
       </div>
 
       {/* Content */}
       <div className="container-mp relative flex min-h-[92vh] flex-col justify-end pb-28 pt-24 sm:min-h-[86vh] sm:justify-center sm:pb-24">
         <div className="max-w-2xl">
-          <span className="inline-flex w-fit items-center gap-2 rounded-full border border-gold/30 bg-black/30 px-4 py-1.5 text-sm text-paper/90 backdrop-blur">
-            <span aria-hidden="true">🙏</span>
-            <span className="font-display font-semibold text-gold">नमस्ते</span>
-            <span className="text-paper/85">Namaste, and welcome</span>
-          </span>
+          <div className="flex items-center gap-3">
+            <span aria-hidden="true" className="h-px w-10 bg-gold" />
+            <span className="text-[0.72rem] font-semibold uppercase tracking-[0.16em] text-gold">
+              Delhi NCR · At home, online &amp; our South Delhi centre
+            </span>
+          </div>
 
-          <h1 className="mt-5 font-display text-[2.7rem] font-semibold leading-[1.03] drop-shadow-sm sm:text-6xl lg:text-7xl">
-            Music classes that don&apos;t feel <span className="text-gold">random.</span>
+          <h1 className="mt-5 font-display text-[clamp(2.5rem,6vw,4.5rem)] font-medium leading-[1.05] drop-shadow-sm">
+            Music education, built like an <span className="text-gold">institution.</span>
           </h1>
 
-          <p className="mt-5 max-w-md text-lg leading-relaxed text-paper/85">
-            Structured guitar, piano &amp; vocal learning, with a teacher matched to your
-            child and every class tracked. Delhi NCR &amp; online.
+          <p className="mt-6 max-w-lg text-lg leading-relaxed text-paper/85">
+            One teacher matched to the student. One clear method. Every class tracked -
+            from first notes to the stage. Across Delhi NCR and online.
           </p>
 
-          <p className="mt-5 flex flex-wrap items-center gap-x-2.5 gap-y-1 text-sm font-medium text-paper/80">
-            <span>Teacher matching</span><Dot /><span>Class updates</span><Dot /><span>Parent portal</span><Dot /><span>Monthly reports</span>
-          </p>
-
-          <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-            <WhatsAppCTA label="Enquire on WhatsApp" message={WA_MSG.hero} />
-            <button type="button" onClick={() => scrollToId("programmes")}
-              className="inline-flex items-center justify-center rounded-full border border-white/25 px-7 py-4 text-base font-semibold text-paper transition-colors hover:border-white">
-              See Programmes &amp; Fees
+          <div className="mt-8 flex flex-col items-start gap-4 sm:flex-row sm:items-center">
+            <WhatsAppCTA label="Book a free trial" message={WA_MSG.trial} />
+            <button type="button" onClick={() => scrollToId("how")}
+              className="inline-flex items-center gap-1.5 text-base font-semibold text-paper/90 underline-offset-4 hover:text-paper hover:underline">
+              See how it works ↓
             </button>
           </div>
+
+          <p className="mt-10 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-paper/70">
+            <span><b className="font-semibold text-paper">10+</b> years</span><Dot />
+            <span><b className="font-semibold text-paper">1,100+</b> students</span><Dot />
+            <span><b className="font-semibold text-paper">200+</b> Trinity passes</span><Dot />
+            <span><b className="font-semibold text-paper">5.0★</b> Google</span>
+          </p>
         </div>
 
         {/* Slide dots */}

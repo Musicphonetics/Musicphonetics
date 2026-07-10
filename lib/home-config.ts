@@ -8,6 +8,8 @@ export { WHATSAPP_NUMBER, whatsappLink } from "@/lib/data";
 
 // Prefilled WhatsApp messages, varied by section so you can see what converts.
 export const WA_MSG = {
+  trial: "Hi Musicphonetics, I'd like to book a free trial class.",
+  fees: "Hi Musicphonetics, I'd like to know about the programmes and fees for my child.",
   hero: "Hi Musicphonetics, I'd like to know more about music classes.",
   why: "Hi Musicphonetics, I'd like help finding the right path for music classes.",
   foundation: "Hi Musicphonetics, I'd like to know about the Foundation plan.",
