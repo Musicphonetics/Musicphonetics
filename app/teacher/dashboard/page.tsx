@@ -5,6 +5,7 @@ import Link from "next/link";
 import { PortalShell } from "@/components/portal/PortalShell";
 import { TEACHER_TABS } from "@/components/portal/tabs";
 import { StatCard, Loading, formatMoney } from "@/components/portal/kit";
+import { DirectorNote } from "@/components/portal/DirectorNote";
 import { getSupabase, isSupabaseConfigured } from "@/lib/supabase/client";
 import { useAuth } from "@/lib/supabase/auth";
 
@@ -80,6 +81,10 @@ export default function TeacherDashboard() {
           <Action href="/teacher/payments" label="Add Payment" />
         </div>
         <Action href="/teacher/students" label="View My Students" />
+      </div>
+
+      <div className="mt-6">
+        <DirectorNote variant="teacher" />
       </div>
     </PortalShell>
   );

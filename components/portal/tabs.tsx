@@ -14,6 +14,13 @@ export const TEACHER_TABS: Tab[] = [
   { href: "/teacher/profile", label: "Profile", icon: I("M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8ZM5 20a7 7 0 0 1 14 0") },
 ];
 
+export const PARENT_TABS: Tab[] = [
+  { href: "/parent/dashboard", label: "Home", icon: I("M3 11.5 12 4l9 7.5M5 10v9a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-9") },
+  { href: "/parent/classes", label: "Classes", icon: I("M4 6h16M4 12h16M4 18h10") },
+  { href: "/parent/progress", label: "Journey", icon: I("M4 19V5M4 19h16M8 16l3-4 3 2 4-6") },
+  { href: "/parent/payments", label: "Fees", icon: I("M3 7h18v10H3zM3 10h18M7 14h3") },
+];
+
 export const OWNER_TABS: Tab[] = [
   { href: "/owner/dashboard", label: "Home", icon: I("M3 11.5 12 4l9 7.5M5 10v9a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-9") },
   { href: "/owner/applications", label: "Apply", icon: I("M9 12h6M9 16h4M7 3h7l5 5v11a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1ZM14 3v5h5") },

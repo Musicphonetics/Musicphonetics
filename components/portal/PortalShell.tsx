@@ -17,11 +17,11 @@ export interface Tab {
 // mobile bottom tab bar (teacher) or a wide top-nav command layout (owner).
 export function PortalShell({
   children, role, tabs, title, variant = "mobile",
-}: { children: ReactNode; role: "teacher" | "owner"; tabs: Tab[]; title?: string; variant?: "mobile" | "wide" }) {
+}: { children: ReactNode; role: "teacher" | "owner" | "parent"; tabs: Tab[]; title?: string; variant?: "mobile" | "wide" }) {
   const { loading, configured, userId, profile } = useAuth();
   const router = useRouter();
   const pathname = usePathname();
-  const loginPath = role === "owner" ? "/owner/login" : "/teacher/login";
+  const loginPath = role === "owner" ? "/owner/login" : role === "parent" ? "/parent/login" : "/teacher/login";
 
   useEffect(() => {
     if (!loading && configured && !userId) router.replace(loginPath);

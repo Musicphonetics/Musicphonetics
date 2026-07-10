@@ -1,6 +1,6 @@
 // Row shapes for the Teacher OS tables. Money is integer rupees.
 
-export type Role = "owner" | "teacher";
+export type Role = "owner" | "teacher" | "parent";
 
 export interface Profile {
   id: string;

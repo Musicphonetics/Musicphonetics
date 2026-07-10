@@ -42,16 +42,16 @@ export interface HomePackage {
 export const HOME_PACKAGES: HomePackage[] = [
   {
     key: "foundation",
-    name: "Foundation",
+    name: "Foundation Journey",
     price: "₹8,000",
     payAmount: 8000,
-    cadence: "8 classes / month · 1 hour each",
-    tagline: "Beginner-only pathway - a clean, correct start.",
+    cadence: "32-class beginner journey · 4 chapters",
+    tagline: "A 32-class beginner pathway, divided into 4 chapters.",
     bullets: [
       "Best for absolute beginners",
-      "Foundation learning only",
-      "No Trinity grades or exam preparation",
-      "No advanced progress track",
+      "4 chapters: Starting Right → Ready for Main Pathway",
+      "No Trinity grades or exam preparation in this plan",
+      "After Foundation, students move to the Main Pathway",
     ],
     forWho: [
       "Absolute beginners - children or adults",

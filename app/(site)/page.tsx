@@ -6,6 +6,7 @@ import { WhyMusicphonetics } from "@/components/home/WhyMusicphonetics";
 import { WhyTrust } from "@/components/home/WhyTrust";
 import { FunnelPackages } from "@/components/home/FunnelPackages";
 import { ReviewsSection } from "@/components/home/Reviews";
+import { ChoosePortal } from "@/components/home/ChoosePortal";
 import { CentreEvents } from "@/components/home/CentreEvents";
 import { SeeUsInAction } from "@/components/sections/SeeUsInAction";
 import { AfterYouJoin } from "@/components/home/AfterYouJoin";
@@ -59,6 +60,8 @@ export default function HomePage() {
       <WhyTrust />
       <GoldDivider />
       <FunnelPackages />
+      <GoldDivider />
+      <ChoosePortal />
       <GoldDivider />
       <ReviewsSection files={homeReviews} />
       <GoldDivider />

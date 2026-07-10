@@ -1,0 +1,74 @@
+"use client";
+
+import { getSupabase } from "./client";
+import type { Student, ClassUpdate, Payment, Profile } from "./types";
+
+// Everything a parent may see about THEIR own child/children. RLS restricts the
+// rows to students where students.parent_id = auth.uid() (see the SQL). We read
+// base tables only - the same class_updates the teacher wrote, never duplicated.
+export interface ParentData {
+  students: Student[];
+  classes: ClassUpdate[];
+  payments: Payment[];
+  teachers: Record<string, string>; // teacher_id -> name
+  error: string | null;
+}
+
+export async function loadParentData(): Promise<ParentData> {
+  const sb = getSupabase();
+  const sRes = await sb.from("students").select("*").order("name");
+  const students = (sRes.data as Student[]) ?? [];
+  const ids = students.map((s) => s.id);
+  const teacherIds = [...new Set(students.map((s) => s.teacher_id).filter(Boolean))];
+
+  const [cRes, pRes, tRes] = await Promise.all([
+    ids.length ? sb.from("class_updates").select("*").in("student_id", ids).order("class_date", { ascending: false }) : Promise.resolve({ data: [], error: null }),
+    ids.length ? sb.from("payments").select("*").in("student_id", ids).order("payment_date", { ascending: false }) : Promise.resolve({ data: [], error: null }),
+    teacherIds.length ? sb.from("profiles").select("id,full_name").in("id", teacherIds) : Promise.resolve({ data: [], error: null }),
+  ]);
+
+  const teachers: Record<string, string> = {};
+  for (const t of (tRes.data as Pick<Profile, "id" | "full_name">[]) ?? []) teachers[t.id] = t.full_name || "Your teacher";
+
+  return {
+    students,
+    classes: (cRes.data as ClassUpdate[]) ?? [],
+    payments: (pRes.data as Payment[]) ?? [],
+    teachers,
+    error: sRes.error?.message || cRes.error?.message || pRes.error?.message || null,
+  };
+}
+
+// Derived per-student view for the parent UI.
+export interface StudentView {
+  student: Student;
+  teacherName: string;
+  completed: number;
+  perMonth: number;
+  remaining: number;
+  nextClassDate: string | null;
+  latest: ClassUpdate | null;
+  paymentStatus: string;
+  renewalDue: boolean;
+}
+
+export function studentView(d: ParentData, student: Student): StudentView {
+  const cls = d.classes.filter((c) => c.student_id === student.id);
+  const completed = cls.filter((c) => c.class_status === "Completed").length;
+  const perMonth = student.classes_per_month ?? 8;
+  const remaining = Math.max(perMonth - (completed % perMonth || (completed && perMonth ? perMonth : 0)), 0);
+  const latest = cls[0] ?? null; // already sorted desc
+  const nextClassDate = cls.map((c) => c.next_class_date).find(Boolean) ?? null;
+  const pays = d.payments.filter((p) => p.student_id === student.id);
+  const paymentStatus = pays[0]?.payment_status ?? "Not recorded";
+  const renewalDue = student.status === "active" && remaining <= 2;
+  return {
+    student, teacherName: d.teachers[student.teacher_id] || "Your teacher",
+    completed, perMonth, remaining, nextClassDate, latest, paymentStatus, renewalDue,
+  };
+}
+
+// Total completed classes for the student (for the Foundation Journey count).
+export function completedCount(d: ParentData, studentId: string): number {
+  return d.classes.filter((c) => c.student_id === studentId && c.class_status === "Completed").length;
+}
