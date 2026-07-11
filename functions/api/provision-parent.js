@@ -62,13 +62,14 @@ export async function onRequestPost({ request, env }) {
     parentId = created.id || created.user?.id;
     tempPw = password;
   } else {
-    const msg = created.msg || created.error_description || created.error || "";
-    if (/registered|exists|already/i.test(msg)) {
-      const existing = await findUserByEmail(env, email);
-      if (!existing) return json({ ok: false, error: "That email already has a login, but it could not be located to link." }, 409);
-      parentId = existing.id; // link existing parent (siblings)
+    // Create failed - most often the email already has a login. Try to find and
+    // link it regardless of the exact error shape (GoTrue versions differ).
+    const existing = await findUserByEmail(env, email);
+    if (existing) {
+      parentId = existing.id; // link existing (sibling's parent, or a pre-made user)
     } else {
-      return json({ ok: false, error: "Could not create the parent login." }, 400);
+      const detail = created.msg || created.message || created.error_description || created.error || created.error_code || `HTTP ${cRes.status}`;
+      return json({ ok: false, error: `Could not create the parent login (${detail}).` }, 400);
     }
   }
 
