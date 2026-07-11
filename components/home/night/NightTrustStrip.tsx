@@ -27,16 +27,16 @@ const ITEMS = [
 // The three "why us" pillars, as a compact dark card with hairline dividers.
 export function NightTrustStrip() {
   return (
-    <section className="bg-onyx pb-4 pt-2">
+    <section className="bg-paper pb-2 pt-2">
       <div className="container-mp">
         <Reveal>
-          <div className="grid grid-cols-3 divide-x divide-white/10 rounded-2xl border border-white/10 bg-onyx-1 p-4 sm:p-6">
+          <div className="grid grid-cols-3 divide-x divide-hairline rounded-2xl border border-hairline bg-white p-4 shadow-card sm:p-6">
             {ITEMS.map((it) => (
               <div key={it.title} className="flex flex-col items-center px-2 text-center sm:flex-row sm:items-start sm:gap-3 sm:text-left">
-                <span className="text-gold">{it.icon}</span>
+                <span className="text-[#7A5E0F]">{it.icon}</span>
                 <span className="mt-2 sm:mt-0">
-                  <span className="block font-display text-[0.9rem] font-semibold leading-tight text-paper sm:text-base">{it.title}</span>
-                  <span className="mt-1 block text-[0.72rem] leading-snug text-paper/55 sm:text-[0.82rem]">{it.sub}</span>
+                  <span className="block font-display text-[0.9rem] font-semibold leading-tight text-ink sm:text-base">{it.title}</span>
+                  <span className="mt-1 block text-[0.72rem] leading-snug text-ink/60 sm:text-[0.82rem]">{it.sub}</span>
                 </span>
               </div>
             ))}

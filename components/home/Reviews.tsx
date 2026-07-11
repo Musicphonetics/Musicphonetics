@@ -61,7 +61,7 @@ export function Reviews({ files, variant, showAllHref }: { files: string[]; vari
       )}
       {showAllHref && (
         <div className="mt-6 text-center">
-          <Link href={showAllHref} className="text-sm font-semibold text-gold underline underline-offset-4 hover:text-deep-gold">
+          <Link href={showAllHref} className="text-sm font-semibold text-[#7A5E0F] underline underline-offset-4 hover:text-deep-gold">
             View all reviews →
           </Link>
         </div>
@@ -74,16 +74,16 @@ export function Reviews({ files, variant, showAllHref }: { files: string[]; vari
 // Homepage section wrapper.
 export function ReviewsSection({ files }: { files: string[] }) {
   return (
-    <section className="bg-onyx py-16 text-paper sm:py-28">
+    <section className="bg-paper py-14 text-ink sm:py-20">
       <div className="container-mp">
         <div className="flex items-center gap-3">
           <span aria-hidden="true" className="h-px w-10 bg-gold" />
-          <span className="text-[0.75rem] font-semibold uppercase tracking-[0.16em] text-gold">Proof</span>
+          <span className="text-[0.75rem] font-semibold uppercase tracking-[0.16em] text-[#7A5E0F]">Proof</span>
         </div>
-        <h2 className="mt-4 max-w-2xl font-display text-[clamp(1.9rem,4vw,3rem)] font-medium leading-[1.06] text-paper">
+        <h2 className="mt-4 max-w-2xl font-display text-[clamp(1.9rem,4vw,2.6rem)] font-medium leading-[1.06] text-ink">
           Families who stayed.
         </h2>
-        <p className="mt-4 max-w-xl text-[1.0625rem] leading-relaxed text-paper/70">
+        <p className="mt-4 max-w-xl text-[1.0625rem] leading-relaxed text-ink/65">
           Real Google reviews from parents and students - shown exactly as received.
         </p>
 

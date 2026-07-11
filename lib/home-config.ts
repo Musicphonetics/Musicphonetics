@@ -142,17 +142,14 @@ export const HERO_SLIDES: string[] = [
 // Delhi NCR. No stock photos - these are our people.
 export interface Moment { src: string; alt: string; caption: string }
 export const REAL_MOMENTS: Moment[] = [
-  { src: "/images/real/founder-redguitar.webp", alt: "Musicphonetics founder performing guitar live on a Delhi stage", caption: "Live on stage in Delhi - the same passion we teach with." },
-  { src: "/images/real/girls-stage.webp", alt: "Two Musicphonetics students singing at an Open Mic evening", caption: "Two students take the mic at our Open Mic evening." },
-  { src: "/images/real/boy-keyboard.webp", alt: "A young Musicphonetics student practising keyboard at home", caption: "Finding his notes on the keyboard - at home." },
+  { src: "/images/moments/02-openmic.webp", alt: "A student singing and playing guitar at an Open Mic and Chai evening", caption: "Open Mic & Chai - our students take the mic." },
   { src: "/images/moments/03-stage-guitar.webp", alt: "A Musicphonetics student performing guitar on a large stage", caption: "On the big stage, where months of practice pay off." },
-  { src: "/images/real/jam-duo.webp", alt: "Two Musicphonetics teachers jamming on guitars", caption: "Teachers jamming - the music never really stops here." },
-  { src: "/images/moments/02-openmic.webp", alt: "A student singing and playing guitar at an Open Mic and Chai evening", caption: "Open Mic and Chai - our students take the mic." },
-  { src: "/images/real/boy-guitar-home.webp", alt: "A young student learning guitar at home", caption: "At-home guitar lessons, right across Delhi NCR." },
-  { src: "/images/moments/05-group.webp", alt: "Musicphonetics students celebrating an award together in class", caption: "Student of the term, celebrated together." },
-  { src: "/images/moments/09-mentor.webp", alt: "A one-on-one music lesson between teacher and student", caption: "One student, one teacher, full attention." },
-  { src: "/images/moments/04-award.webp", alt: "Founder Abhishek Kumar receiving a certificate of appreciation as a judge", caption: "Invited to judge a Delhi cultural fest." },
-  { src: "/images/moments/08-stage.webp", alt: "A Musicphonetics student meeting a musician backstage", caption: "Learning from the musicians who inspire us." },
+  { src: "/images/moments/05-group.webp", alt: "Musicphonetics students celebrating an award together", caption: "Student of the term, celebrated together." },
+  { src: "/images/moments/09-mentor.webp", alt: "A Musicphonetics teacher performing on electric guitar", caption: "Taught by musicians who still perform." },
+  { src: "/images/moments/04-award.webp", alt: "Founder Abhishek Kumar giving a student an award", caption: "Recognising our students' progress." },
+  { src: "/images/moments/openmic-audience.webp", alt: "A full-house audience at a Musicphonetics Open Mic and Chai evening", caption: "A full house at Open Mic & Chai." },
+  { src: "/images/moments/01-celeb.webp", alt: "Founder Abhishek Kumar with a well-known musician", caption: "Rubbing shoulders with the artists who inspire us." },
+  { src: "/images/moments/08-stage.webp", alt: "Musicphonetics students and teacher backstage at an event", caption: "Backstage, together." },
 ];
 
 // "How it works" - a swipeable, app-like flow. Warm, clear copy, each with a
@@ -160,13 +157,13 @@ export const REAL_MOMENTS: Moment[] = [
 export interface HowStep { img: string; kicker: string; title: string; body: string }
 export const HOW_STEPS: HowStep[] = [
   {
-    img: "/images/moments/09-mentor.webp",
+    img: "/images/moments/07-office.webp",
     kicker: "The right fit",
     title: "A teacher matched to your child",
     body: "We personally pair a teacher to your child's age, instrument and goal - not whoever happens to be free that day.",
   },
   {
-    img: "/images/real/fret-bw.webp",
+    img: "/images/moments/03-stage-guitar.webp",
     kicker: "A real method",
     title: "Structure, not a pile of songs",
     body: "Technique, theory, rhythm and ear training - taught step by step, the way music is actually meant to be learnt.",
@@ -175,14 +172,24 @@ export const HOW_STEPS: HowStep[] = [
     img: "/images/portal-preview.webp",
     kicker: "Tracked for you",
     title: "Every class, written up",
-    body: "After each class you see what was taught, the homework and what's next - right inside your own parent portal. No guesswork.",
+    body: "After each class you see what was taught, the homework and what's next - right inside your own parent portal.",
   },
   {
-    img: "/images/real/girls-stage.webp",
+    img: "/images/moments/02-openmic.webp",
     kicker: "On to the stage",
     title: "All the way to a real stage",
-    body: "Open mics and student showcases every few months, so all that practice turns into real confidence on a real stage.",
+    body: "Open mics and student showcases every few months, so all that practice turns into real confidence.",
   },
+];
+
+// Short, punchy "what you'll achieve" cards - image with text over it. Replaces
+// the long Foundation section on the homepage.
+export interface Achievement { img: string; title: string; sub: string }
+export const ACHIEVEMENTS: Achievement[] = [
+  { img: "/images/moments/03-stage-guitar.webp", title: "Play your first song", sub: "In your early weeks, not someday." },
+  { img: "/images/moments/02-openmic.webp", title: "Perform on a real stage", sub: "Open mics every few months." },
+  { img: "/images/moments/05-group.webp", title: "Earn real recognition", sub: "Student-of-the-term & showcases." },
+  { img: "/images/moments/09-mentor.webp", title: "Grow with a mentor", sub: "One teacher who knows you." },
 ];
 
 // Foundation curriculum roadmap - what the student LEARNS in each chapter. This

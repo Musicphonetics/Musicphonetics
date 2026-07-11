@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Logo } from "./Logo";
 import { Button } from "@/components/ui/Button";
@@ -11,11 +10,9 @@ import { cn } from "@/lib/utils";
 export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
-  // The homepage is a dark, cinematic experience - the nav floats transparently
-  // over the hero and turns into a solid onyx bar once you scroll (or open the
-  // menu). Chrome stays light-on-dark throughout on home.
-  const isHome = usePathname() === "/";
-  const solid = scrolled || open;
+  // Light nav across the whole site now: transparent at the top, solid paper on
+  // scroll. (Kept as a flag so the branches below stay simple.)
+  const isHome = false;
 
   // Sticky nav changes background on scroll
   useEffect(() => {
@@ -43,11 +40,7 @@ export function Navbar() {
     <header
       className={cn(
         "fixed inset-x-0 top-0 z-50 transition-all duration-300",
-        isHome
-          ? solid
-            ? "border-b border-white/10 bg-onyx/95 shadow-lg backdrop-blur-md"
-            : "border-b border-transparent bg-transparent"
-          : scrolled
+        scrolled
           ? "border-b border-hairline bg-paper/90 shadow-card backdrop-blur-md"
           : "border-b border-transparent bg-paper/60 backdrop-blur-sm"
       )}

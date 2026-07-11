@@ -1,12 +1,13 @@
 import type { Metadata } from "next";
 import { NightDoodleHero } from "@/components/home/night/NightDoodleHero";
 import { NightTrustStrip } from "@/components/home/night/NightTrustStrip";
-import { NightFoundation } from "@/components/home/night/NightFoundation";
 import { NightReviewsTeaser } from "@/components/home/night/NightReviewsTeaser";
 import { NightPortalShowcase } from "@/components/home/night/NightPortalShowcase";
 import { NightOnlinePresence } from "@/components/home/night/NightOnlinePresence";
 import { HowItWorks } from "@/components/home/HowItWorks";
 import { FunnelPackages } from "@/components/home/FunnelPackages";
+import { PracticeCalculator } from "@/components/home/PracticeCalculator";
+import { AchievementsBand } from "@/components/home/AchievementsBand";
 import { RealMoments } from "@/components/home/RealMoments";
 import { ReviewsSection } from "@/components/home/Reviews";
 import { CentreEvents } from "@/components/home/CentreEvents";
@@ -59,7 +60,8 @@ export default function HomePage() {
       <NightTrustStrip />
       <HowItWorks />
       <FunnelPackages />
-      <NightFoundation />
+      <PracticeCalculator />
+      <AchievementsBand />
       <NightPortalShowcase />
       <RealMoments />
       <NightReviewsTeaser />
