@@ -79,5 +79,15 @@ export async function onRequestPost({ request, env }) {
   });
   if (!pRes.ok) return json({ ok: false, error: "Login ready, but linking the student failed." }, 400);
 
+  // Type this account as a parent so it's never treated as a teacher (many
+  // Supabase projects auto-create a 'teacher' profile row on signup). Best-effort.
+  try {
+    await fetch(`${env.SUPABASE_URL}/rest/v1/profiles?on_conflict=id`, {
+      method: "POST",
+      headers: { ...admin(env), Prefer: "resolution=merge-duplicates,return=minimal" },
+      body: JSON.stringify({ id: parentId, role: "parent" }),
+    });
+  } catch { /* ignore - login + link already succeeded */ }
+
   return json({ ok: true, parent_id: parentId, login_email: email, temp_password: tempPw, linked_existing: !tempPw });
 }

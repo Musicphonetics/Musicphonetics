@@ -45,7 +45,11 @@ export function PortalShell({
   if (loading) return <div className={cn("min-h-screen", night ? "bg-onyx" : "bg-paper")}><Loading dark={night} /></div>;
   if (!userId) return <div className={cn("min-h-screen", night ? "bg-onyx" : "bg-paper")}><Loading dark={night} label="Redirecting…" /></div>;
 
-  if (profile && profile.role !== role) {
+  // Parents are identified by students.parent_id (RLS), NOT by a profile role -
+  // many parent accounts have an auto-created 'teacher' profile row. So the
+  // parent portal never blocks on role; the dashboard shows "no student linked"
+  // if the account genuinely isn't a parent. Staff portals still enforce role.
+  if (role !== "parent" && profile && profile.role !== role) {
     return (
       <Centered>
         <h1 className="font-display text-xl font-semibold text-ink">Wrong area</h1>
