@@ -54,15 +54,21 @@ export function NightDoodleHero() {
           </div>
         )}
 
-        {/* The doodle wordmark */}
-        <div className="relative mx-auto mt-6 max-w-3xl">
-          <h1 className="font-display font-medium leading-[0.9] tracking-tight text-[clamp(2.9rem,13vw,6rem)]">
-            <span className="block text-paper">Music</span>
-            <span className="mp-shimmer block">phonetics</span>
+        {/* The brand logo - the real wordmark, never re-typeset or broken */}
+        <div className="relative mx-auto mt-7">
+          <h1 className="mx-auto w-full max-w-[min(86vw,560px)]">
+            <img
+              src="/logo-wordmark-light.webp"
+              alt="Musicphonetics"
+              // @ts-expect-error fetchpriority is a valid html attr
+              fetchpriority="high"
+              decoding="async"
+              className="mx-auto w-full drop-shadow-[0_8px_34px_rgba(201,162,39,0.28)]"
+            />
           </h1>
 
           {/* equalizer signature - a clean, animated music motif under the name */}
-          <div aria-hidden="true" className="mt-5 flex items-end justify-center gap-[5px]" style={{ height: 34 }}>
+          <div aria-hidden="true" className="mt-6 flex items-end justify-center gap-[5px]" style={{ height: 34 }}>
             {[14, 26, 10, 34, 20, 30, 12, 24, 16].map((h, i) => (
               <span key={i}
                 className="w-[5px] origin-bottom rounded-full bg-gradient-to-t from-gold/40 to-gold motion-safe:[animation:mp-wave_1.4s_ease-in-out_infinite]"
