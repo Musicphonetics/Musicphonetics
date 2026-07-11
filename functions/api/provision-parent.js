@@ -66,7 +66,17 @@ export async function onRequestPost({ request, env }) {
     // link it regardless of the exact error shape (GoTrue versions differ).
     const existing = await findUserByEmail(env, email);
     if (existing) {
-      parentId = existing.id; // link existing (sibling's parent, or a pre-made user)
+      // Never attach a child to a staff account - it would let that account see
+      // the teacher's/owner's data through the parent portal.
+      const rRes = await fetch(`${env.SUPABASE_URL}/rest/v1/profiles?id=eq.${existing.id}&select=role`, { headers: admin(env) });
+      const rRows = rRes.ok ? await rRes.json() : [];
+      const existingRole = rRows[0]?.role;
+      const teachesRes = await fetch(`${env.SUPABASE_URL}/rest/v1/students?teacher_id=eq.${existing.id}&select=id&limit=1`, { headers: admin(env) });
+      const teaches = teachesRes.ok ? await teachesRes.json() : [];
+      if (existingRole === "teacher" || existingRole === "owner" || teaches.length > 0) {
+        return json({ ok: false, error: "That email belongs to a staff (teacher/owner) account. Use the parent's own email address." }, 409);
+      }
+      parentId = existing.id; // link existing (e.g. sibling's parent)
     } else {
       const detail = created.msg || created.message || created.error_description || created.error || created.error_code || `HTTP ${cRes.status}`;
       return json({ ok: false, error: `Could not create the parent login (${detail}).` }, 400);
