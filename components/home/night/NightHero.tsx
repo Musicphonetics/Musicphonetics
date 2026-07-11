@@ -49,25 +49,26 @@ export function NightHero() {
           <span aria-hidden="true" className="mt-5 block h-1 w-16 rounded-full bg-gold" />
 
           <p className="mt-6 max-w-md text-[1.02rem] leading-relaxed text-paper/75 sm:text-lg">
-            Guitar, piano/keyboard &amp; vocal classes for children, beginners &amp;
-            serious learners in Delhi NCR and online.
+            A proper music school - not random classes. One matched teacher, a real
+            step-by-step method, and every class tracked. Guitar, piano/keyboard &amp;
+            vocals, at home &amp; online across Delhi NCR.
           </p>
 
-          {/* Portal card - the reference gives the parent/student login real weight */}
-          <div className="mt-8">
-            <NightPortalCard />
-          </div>
-
-          {/* Two primary actions */}
-          <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
-            <WhatsAppCTA label="Enquire on WhatsApp" message={WA_MSG.trial} fullWidth className="shadow-[0_10px_30px_-8px_rgba(201,162,39,0.5)]" />
+          {/* Two primary actions - Apply now leads to programmes → fees → payment */}
+          <div className="mt-7 grid grid-cols-1 gap-3 sm:grid-cols-2">
             <a
               href="#programmes"
-              className="inline-flex w-full items-center justify-center gap-2 rounded-full border border-gold/40 bg-gold/[0.06] px-6 py-4 text-base font-semibold text-gold transition-colors hover:border-gold/70 hover:bg-gold/10"
+              className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-gold px-6 py-4 text-base font-semibold text-ink shadow-[0_12px_34px_-8px_rgba(201,162,39,0.6)] transition-colors hover:bg-deep-gold"
             >
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3" y="4.5" width="18" height="16" rx="2.5" stroke="currentColor" strokeWidth="1.7" /><path d="M3 9h18M8 2.5v4M16 2.5v4" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" /></svg>
-              See Programmes &amp; Fees
+              Apply now
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>
             </a>
+            <WhatsAppCTA label="Enquire on WhatsApp" message={WA_MSG.trial} variant="outline" fullWidth />
+          </div>
+
+          {/* Parent / Student login */}
+          <div className="mt-4">
+            <NightPortalCard />
           </div>
         </div>
       </div>

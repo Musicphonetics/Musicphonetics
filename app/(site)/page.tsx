@@ -3,6 +3,7 @@ import { NightHero } from "@/components/home/night/NightHero";
 import { NightTrustStrip } from "@/components/home/night/NightTrustStrip";
 import { NightFoundation } from "@/components/home/night/NightFoundation";
 import { NightReviewsTeaser } from "@/components/home/night/NightReviewsTeaser";
+import { NightPortalShowcase } from "@/components/home/night/NightPortalShowcase";
 import { HowItWorks } from "@/components/home/HowItWorks";
 import { FunnelPackages } from "@/components/home/FunnelPackages";
 import { RealMoments } from "@/components/home/RealMoments";
@@ -55,11 +56,12 @@ export default function HomePage() {
           proof → how it works → the paths → real moments → reviews → place → founder → act. */}
       <NightHero />
       <NightTrustStrip />
-      <NightFoundation />
-      <NightReviewsTeaser />
       <HowItWorks />
       <FunnelPackages />
+      <NightFoundation />
+      <NightPortalShowcase />
       <RealMoments />
+      <NightReviewsTeaser />
       <ReviewsSection files={homeReviews} />
       <CentreEvents />
       <FounderSection />

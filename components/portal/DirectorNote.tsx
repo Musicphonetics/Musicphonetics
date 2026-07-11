@@ -7,15 +7,19 @@ const NOTES: Record<"parent" | "teacher", { eyebrow: string; body: string[] }> =
   parent: {
     eyebrow: "A note from the Director",
     body: [
-      "Thank you for trusting us with your child's music. My promise is simple: this will never feel random.",
-      "Every class is prepared, every week is tracked, and after each class you'll see exactly what was taught and what's next. If anything ever feels off, message me directly.",
+      "Namaste, and thank you for trusting us with something as personal as your child's music. I don't take that lightly.",
+      "When I started Musicphonetics, I'd seen too many children lose interest - not because they lacked talent, but because the classes were random. A few songs here, no direction there, and no one to answer to. I promised myself we'd be different.",
+      "So here's what I promise you. Every class your child takes is prepared, not improvised. Every week is tracked, and right here in this portal you'll see exactly what was taught, what the homework is, and what comes next. No guessing, no vague \"he's doing fine.\"",
+      "And no teacher ever reaches your child without my personal sign-off. If a class ever feels off, or you simply want to talk about your child's progress, message me directly. I'm not a call centre - I'm the person whose name is on the door.",
     ],
   },
   teacher: {
     eyebrow: "A note from the Director",
     body: [
-      "You're not freelancing here - you're part of a serious teaching network with a standard we hold from the top.",
-      "Update your classes honestly, look after every student, and your work is seen, tracked and paid transparently. Grow with us, and I'll back you.",
+      "Welcome. If you're reading this, it's because I personally chose you - you don't get here by filling a form.",
+      "You're not freelancing on the side here. You're part of a serious teaching network with a standard we hold from the very top, and a reputation that a thousand families have helped build over ten years.",
+      "My ask is simple: prepare every class, update it honestly, and look after every student as if their parent were watching - because through this portal, they are. In return, your work is seen, your progress is tracked, and you are paid transparently and on time.",
+      "Do that consistently, and I will back you - with better students, better pay and real growth. We rise together, or not at all.",
     ],
   },
 };

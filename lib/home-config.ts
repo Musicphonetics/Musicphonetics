@@ -142,12 +142,58 @@ export const HERO_SLIDES: string[] = [
 // Delhi NCR. No stock photos - these are our people.
 export interface Moment { src: string; alt: string; caption: string }
 export const REAL_MOMENTS: Moment[] = [
+  { src: "/images/real/founder-redguitar.webp", alt: "Musicphonetics founder performing guitar live on a Delhi stage", caption: "Live on stage in Delhi - the same passion we teach with." },
+  { src: "/images/real/girls-stage.webp", alt: "Two Musicphonetics students singing at an Open Mic evening", caption: "Two students take the mic at our Open Mic evening." },
+  { src: "/images/real/boy-keyboard.webp", alt: "A young Musicphonetics student practising keyboard at home", caption: "Finding his notes on the keyboard - at home." },
   { src: "/images/moments/03-stage-guitar.webp", alt: "A Musicphonetics student performing guitar on a large stage", caption: "On the big stage, where months of practice pay off." },
-  { src: "/images/moments/02-openmic.webp", alt: "A student singing and playing guitar at an Open Mic and Chai evening", caption: "Open Mic and Chai, our students take the mic." },
+  { src: "/images/real/jam-duo.webp", alt: "Two Musicphonetics teachers jamming on guitars", caption: "Teachers jamming - the music never really stops here." },
+  { src: "/images/moments/02-openmic.webp", alt: "A student singing and playing guitar at an Open Mic and Chai evening", caption: "Open Mic and Chai - our students take the mic." },
+  { src: "/images/real/boy-guitar-home.webp", alt: "A young student learning guitar at home", caption: "At-home guitar lessons, right across Delhi NCR." },
   { src: "/images/moments/05-group.webp", alt: "Musicphonetics students celebrating an award together in class", caption: "Student of the term, celebrated together." },
+  { src: "/images/moments/09-mentor.webp", alt: "A one-on-one music lesson between teacher and student", caption: "One student, one teacher, full attention." },
   { src: "/images/moments/04-award.webp", alt: "Founder Abhishek Kumar receiving a certificate of appreciation as a judge", caption: "Invited to judge a Delhi cultural fest." },
   { src: "/images/moments/08-stage.webp", alt: "A Musicphonetics student meeting a musician backstage", caption: "Learning from the musicians who inspire us." },
-  { src: "/images/moments/09-mentor.webp", alt: "A one-on-one music lesson between teacher and student", caption: "One student, one teacher, full attention." },
+];
+
+// "How it works" - a swipeable, app-like flow. Warm, personal, Indian-in-spirit
+// copy (a familiar phrase per step), each with a real photo.
+export interface HowStep { img: string; hindi: string; title: string; body: string }
+export const HOW_STEPS: HowStep[] = [
+  {
+    img: "/images/moments/09-mentor.webp",
+    hindi: "Sahi jodi",
+    title: "The right teacher, matched to your child",
+    body: "We personally pair a teacher to your child's age, instrument and goal - not whoever happens to be free that day.",
+  },
+  {
+    img: "/images/real/fret-bw.webp",
+    hindi: "Sahi tareeka",
+    title: "A real method, not a pile of songs",
+    body: "Technique, theory, rhythm and ear training - taught step by step, the way music is actually meant to be learnt.",
+  },
+  {
+    img: "/images/portal-preview.webp",
+    hindi: "Har class ka hisaab",
+    title: "Every class, tracked for you",
+    body: "After each class you see what was taught, the homework and what's next - right inside your own parent portal. No guesswork.",
+  },
+  {
+    img: "/images/real/girls-stage.webp",
+    hindi: "Stage tak",
+    title: "We take them all the way to the stage",
+    body: "Open mics and student showcases every few months, so all that practice turns into real confidence on a real stage.",
+  },
+];
+
+// Foundation curriculum roadmap - what the student LEARNS in each chapter. This
+// is a public overview, so it shows the path, never fake progress numbers (live
+// progress lives in the parent portal, where it is real).
+export interface RoadmapChapter { n: number; name: string; learn: string }
+export const FOUNDATION_ROADMAP: RoadmapChapter[] = [
+  { n: 1, name: "Starting Right", learn: "Getting comfortable with the instrument - posture, first clean sounds, basic rhythm and a daily practice habit." },
+  { n: 2, name: "Building Basics", learn: "First real notes, chords and scales - moving from just comfortable to actually in control." },
+  { n: 3, name: "Musical Confidence", learn: "Playing real songs and exercises with steady timing, and starting to practise independently." },
+  { n: 4, name: "Ready for the Next Level", learn: "A simple performance piece, a review of strengths and gaps, and a clear plan into the Main Pathway." },
 ];
 
 // Google review screenshots in public/reviews/. Reorder / swap freely.
