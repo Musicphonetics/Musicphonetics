@@ -7,7 +7,7 @@ import { TEACHER_TABS } from "@/components/portal/tabs";
 import { StatCard, Loading, formatMoney } from "@/components/portal/kit";
 import { DirectorNote } from "@/components/portal/DirectorNote";
 import { getSupabase, isSupabaseConfigured } from "@/lib/supabase/client";
-import { loadDirectorMessage, type DirectorMessage } from "@/lib/supabase/director";
+import { loadTeacherMessage, type DirectorMessage } from "@/lib/supabase/director";
 import { useAuth } from "@/lib/supabase/auth";
 
 function greeting() {
@@ -34,7 +34,7 @@ export default function TeacherDashboard() {
 
   useEffect(() => {
     if (!isSupabaseConfigured()) return;
-    loadDirectorMessage("teachers").then(setDirectorMsg);
+    loadTeacherMessage().then(setDirectorMsg);
     const sb = getSupabase();
     (async () => {
       // RLS scopes all of these to the signed-in teacher automatically.

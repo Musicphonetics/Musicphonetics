@@ -7,7 +7,7 @@ import { Loading, EmptyState } from "@/components/portal/kit";
 import { DashboardBody } from "@/components/parent/DashboardBody";
 import { isSupabaseConfigured } from "@/lib/supabase/client";
 import { loadParentData, studentView, completedCount, type ParentData } from "@/lib/supabase/parent";
-import { loadDirectorMessage, type DirectorMessage } from "@/lib/supabase/director";
+import { loadReadableMessages, pickParentMessage, type DirectorMessage } from "@/lib/supabase/director";
 import { computeFoundation } from "@/lib/foundation";
 import { cn } from "@/lib/utils";
 
@@ -19,12 +19,12 @@ export default function ParentDashboard() {
   const [err, setErr] = useState<string | null>(null);
   const [idx, setIdx] = useState(0);
   const [menu, setMenu] = useState(false);
-  const [directorMsg, setDirectorMsg] = useState<DirectorMessage | null>(null);
+  const [directorRows, setDirectorRows] = useState<DirectorMessage[]>([]);
 
   useEffect(() => {
     if (!isSupabaseConfigured()) return;
     loadParentData().then((d) => { setErr(d.error); setData(d); });
-    loadDirectorMessage("parents").then(setDirectorMsg);
+    loadReadableMessages().then(setDirectorRows);
   }, []);
 
   const student = data?.students[idx] ?? null;
@@ -34,6 +34,7 @@ export default function ParentDashboard() {
     return computeFoundation(completedCount(data, student.id), 1, false, !isFoundation(student.fee_quoted));
   }, [data, student]);
   const pay = useMemo(() => (data && student ? data.payments.find((p) => p.student_id === student.id) ?? null : null), [data, student]);
+  const directorMsg = useMemo(() => (student ? pickParentMessage(directorRows, student.id) : null), [directorRows, student]);
 
   const childMenu = student && data ? (
     <div className="relative">
