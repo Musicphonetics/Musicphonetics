@@ -6,12 +6,20 @@ import { activeDoodle } from "@/lib/doodle";
 // Positions for the floating festival/music accents - kept up around the
 // wordmark so they never crowd the buttons below.
 const SPOTS = [
-  { top: "12%", left: "8%", size: "1.6rem", delay: "0s" },
-  { top: "15%", right: "9%", size: "1.7rem", delay: "1.1s" },
-  { top: "27%", left: "5%", size: "1.5rem", delay: "2.2s" },
-  { top: "30%", right: "5%", size: "1.5rem", delay: "0.6s" },
-  { top: "20%", left: "22%", size: "1.1rem", delay: "1.7s" },
+  { top: "11%", left: "7%", size: "1.6rem", delay: "0s" },
+  { top: "13%", right: "8%", size: "1.7rem", delay: "1.1s" },
+  { top: "22%", left: "3%", size: "1.4rem", delay: "2.2s" },
+  { top: "24%", right: "3%", size: "1.4rem", delay: "0.6s" },
+  { top: "17%", left: "24%", size: "1.05rem", delay: "1.7s" },
 ];
+
+// Deterministic rain streaks (no Math.random - keeps SSR and client identical).
+const RAIN = Array.from({ length: 30 }, (_, i) => ({
+  left: `${(i * 37 + 5) % 100}%`,
+  h: `${14 + ((i * 13) % 22)}px`,
+  dur: `${(1.0 + ((i % 6) * 0.18)).toFixed(2)}s`,
+  delay: `${(((i * 29) % 24) / 10).toFixed(2)}s`,
+}));
 
 // The hero is a "doodle": the Musicphonetics name centre stage, on a soft glow,
 // with music (and, on festivals, festive) decorations floating around it. Change
@@ -26,6 +34,17 @@ export function NightDoodleHero() {
         {/* faint hairline grid for depth */}
         <div className="absolute inset-0 opacity-[0.04] mp-blueprint" />
       </div>
+
+      {/* monsoon: falling rain (hidden for reduced-motion users) */}
+      {d.rain && (
+        <div aria-hidden="true" className="pointer-events-none absolute inset-0 overflow-hidden motion-reduce:hidden">
+          {RAIN.map((r, i) => (
+            <span key={i}
+              className="absolute top-0 block w-px bg-gradient-to-b from-transparent via-sky-200/50 to-sky-200/10 motion-safe:[animation:mp-rain_linear_infinite]"
+              style={{ left: r.left, height: r.h, animationDuration: r.dur, animationDelay: r.delay }} />
+          ))}
+        </div>
+      )}
 
       {/* floating accents */}
       <div aria-hidden="true" className="pointer-events-none absolute inset-0">

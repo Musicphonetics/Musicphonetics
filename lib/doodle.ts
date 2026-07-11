@@ -6,19 +6,21 @@
 // ============================================================================
 
 export type DoodleKey =
-  | "music" | "diwali" | "holi" | "christmas" | "newyear" | "independence" | "republic";
+  | "music" | "monsoon" | "diwali" | "holi" | "christmas" | "newyear" | "independence" | "republic";
 
 // 👉 Change this one line for a festival/event. "music" is the everyday default.
-export const ACTIVE_DOODLE: DoodleKey = "music";
+export const ACTIVE_DOODLE: DoodleKey = "monsoon";
 
 export interface DoodleTheme {
   greeting: string | null; // small ribbon above the name (null = none)
   glow: string;            // radial background glow colour
   accents: string[];       // emoji that gently float around the wordmark
+  rain?: boolean;          // falling-rain layer (monsoon)
 }
 
 export const DOODLE_THEMES: Record<DoodleKey, DoodleTheme> = {
   music:        { greeting: null,                          glow: "rgba(201,162,39,0.20)", accents: ["🎵", "🎶", "🎸", "🎹", "🎤", "🥁"] },
+  monsoon:      { greeting: "Happy Monsoon 🌧️",            glow: "rgba(96,164,206,0.20)", accents: ["☔", "🌧️", "🍃", "🎶", "💧"], rain: true },
   diwali:       { greeting: "Happy Diwali ✨",              glow: "rgba(255,168,64,0.24)", accents: ["🪔", "✨", "🎇", "🌟", "🎵"] },
   holi:         { greeting: "Happy Holi 🎨",               glow: "rgba(220,110,190,0.22)", accents: ["🎨", "🌈", "💛", "💚", "🎶"] },
   christmas:    { greeting: "Merry Christmas 🎄",           glow: "rgba(120,200,160,0.20)", accents: ["🎄", "❄️", "⭐", "🎁", "🎵"] },

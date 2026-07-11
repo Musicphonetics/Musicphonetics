@@ -196,6 +196,13 @@
   50% { transform: scaleY(1); }
 }
 
+/* Monsoon doodle - falling rain streaks */
+@keyframes mp-rain {
+  0% { transform: translateY(-12vh); opacity: 0; }
+  12% { opacity: 0.6; }
+  100% { transform: translateY(112vh); opacity: 0; }
+}
+
 /* Glassmorphism surface */
 .mp-glass {
   background: rgba(255, 255, 255, 0.06);
