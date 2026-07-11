@@ -155,32 +155,32 @@ export const REAL_MOMENTS: Moment[] = [
   { src: "/images/moments/08-stage.webp", alt: "A Musicphonetics student meeting a musician backstage", caption: "Learning from the musicians who inspire us." },
 ];
 
-// "How it works" - a swipeable, app-like flow. Warm, personal, Indian-in-spirit
-// copy (a familiar phrase per step), each with a real photo.
-export interface HowStep { img: string; hindi: string; title: string; body: string }
+// "How it works" - a swipeable, app-like flow. Warm, clear copy, each with a
+// real photo.
+export interface HowStep { img: string; kicker: string; title: string; body: string }
 export const HOW_STEPS: HowStep[] = [
   {
     img: "/images/moments/09-mentor.webp",
-    hindi: "Sahi jodi",
-    title: "The right teacher, matched to your child",
+    kicker: "The right fit",
+    title: "A teacher matched to your child",
     body: "We personally pair a teacher to your child's age, instrument and goal - not whoever happens to be free that day.",
   },
   {
     img: "/images/real/fret-bw.webp",
-    hindi: "Sahi tareeka",
-    title: "A real method, not a pile of songs",
+    kicker: "A real method",
+    title: "Structure, not a pile of songs",
     body: "Technique, theory, rhythm and ear training - taught step by step, the way music is actually meant to be learnt.",
   },
   {
     img: "/images/portal-preview.webp",
-    hindi: "Har class ka hisaab",
-    title: "Every class, tracked for you",
+    kicker: "Tracked for you",
+    title: "Every class, written up",
     body: "After each class you see what was taught, the homework and what's next - right inside your own parent portal. No guesswork.",
   },
   {
     img: "/images/real/girls-stage.webp",
-    hindi: "Stage tak",
-    title: "We take them all the way to the stage",
+    kicker: "On to the stage",
+    title: "All the way to a real stage",
     body: "Open mics and student showcases every few months, so all that practice turns into real confidence on a real stage.",
   },
 ];

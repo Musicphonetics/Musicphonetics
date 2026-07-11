@@ -29,7 +29,7 @@ export function HowItWorks() {
               </div>
               {/* Copy */}
               <div className="p-5">
-                <span className="text-[0.7rem] font-semibold uppercase tracking-[0.16em] text-gold">{s.hindi}</span>
+                <span className="text-[0.7rem] font-semibold uppercase tracking-[0.16em] text-gold">{s.kicker}</span>
                 <h3 className="mt-1.5 font-display text-lg font-semibold leading-snug text-paper">{s.title}</h3>
                 <p className="mt-2 text-sm leading-relaxed text-paper/70">{s.body}</p>
               </div>
