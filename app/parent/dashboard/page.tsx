@@ -7,6 +7,7 @@ import { Loading, EmptyState } from "@/components/portal/kit";
 import { DashboardBody } from "@/components/parent/DashboardBody";
 import { isSupabaseConfigured } from "@/lib/supabase/client";
 import { loadParentData, studentView, completedCount, type ParentData } from "@/lib/supabase/parent";
+import { loadDirectorMessage, type DirectorMessage } from "@/lib/supabase/director";
 import { computeFoundation } from "@/lib/foundation";
 import { cn } from "@/lib/utils";
 
@@ -18,10 +19,12 @@ export default function ParentDashboard() {
   const [err, setErr] = useState<string | null>(null);
   const [idx, setIdx] = useState(0);
   const [menu, setMenu] = useState(false);
+  const [directorMsg, setDirectorMsg] = useState<DirectorMessage | null>(null);
 
   useEffect(() => {
     if (!isSupabaseConfigured()) return;
     loadParentData().then((d) => { setErr(d.error); setData(d); });
+    loadDirectorMessage("parents").then(setDirectorMsg);
   }, []);
 
   const student = data?.students[idx] ?? null;
@@ -65,7 +68,8 @@ export default function ParentDashboard() {
       {!data ? <Loading dark /> : data.students.length === 0 ? (
         <EmptyState dark title="No student linked yet" hint="Message us on WhatsApp and we'll link your child's profile to your login." />
       ) : view && student && foundation ? (
-        <DashboardBody student={student} view={view} foundation={foundation} pay={pay} />
+        <DashboardBody student={student} view={view} foundation={foundation} pay={pay}
+          directorMessage={directorMsg ? { title: directorMsg.title, body: directorMsg.body, date: directorMsg.created_at } : null} />
       ) : <Loading dark />}
     </PortalShell>
   );

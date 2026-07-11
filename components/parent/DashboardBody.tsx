@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { FeedbackCard } from "@/components/parent/FeedbackCard";
-import { DirectorNote } from "@/components/portal/DirectorNote";
+import { DirectorNote, type DirectorCustom } from "@/components/portal/DirectorNote";
 import type { StudentView } from "@/lib/supabase/parent";
 import type { Student, Payment } from "@/lib/supabase/types";
 import { FOUNDATION, type FoundationProgress, type ChapterState } from "@/lib/foundation";
@@ -31,8 +31,8 @@ const gcalLink = (iso: string, title: string) => {
 // The full parent-dashboard body (everything below the portal header). Kept as a
 // pure presentational component so it can be previewed with mock data.
 export function DashboardBody({
-  student, view, foundation, pay,
-}: { student: Student; view: StudentView; foundation: FoundationProgress; pay: Payment | null }) {
+  student, view, foundation, pay, directorMessage,
+}: { student: Student; view: StudentView; foundation: FoundationProgress; pay: Payment | null; directorMessage?: DirectorCustom | null }) {
   return (
     <div className="space-y-4">
       {/* Greeting */}
@@ -177,8 +177,8 @@ export function DashboardBody({
         <span className="shrink-0 whitespace-nowrap rounded-full border border-white/15 px-3 py-1.5 text-xs font-semibold text-gold">Chat Now →</span>
       </a>
 
-      {/* Director's note + feedback (kept, dark) */}
-      <DirectorNote variant="parent" dark />
+      {/* Director's note (live if the Director posted one) + feedback */}
+      <DirectorNote variant="parent" dark custom={directorMessage} />
       <FeedbackCard studentId={student.id} studentName={student.name} dark />
     </div>
   );

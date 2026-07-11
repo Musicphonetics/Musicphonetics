@@ -7,6 +7,7 @@ import { TEACHER_TABS } from "@/components/portal/tabs";
 import { StatCard, Loading, formatMoney } from "@/components/portal/kit";
 import { DirectorNote } from "@/components/portal/DirectorNote";
 import { getSupabase, isSupabaseConfigured } from "@/lib/supabase/client";
+import { loadDirectorMessage, type DirectorMessage } from "@/lib/supabase/director";
 import { useAuth } from "@/lib/supabase/auth";
 
 function greeting() {
@@ -29,9 +30,11 @@ export default function TeacherDashboard() {
   const first = (profile?.full_name || "").split(" ")[0] || "there";
   const [stats, setStats] = useState<{ students: number; week: number; received: number; pending: number } | null>(null);
   const [err, setErr] = useState<string | null>(null);
+  const [directorMsg, setDirectorMsg] = useState<DirectorMessage | null>(null);
 
   useEffect(() => {
     if (!isSupabaseConfigured()) return;
+    loadDirectorMessage("teachers").then(setDirectorMsg);
     const sb = getSupabase();
     (async () => {
       // RLS scopes all of these to the signed-in teacher automatically.
@@ -84,7 +87,7 @@ export default function TeacherDashboard() {
       </div>
 
       <div className="mt-6">
-        <DirectorNote variant="teacher" />
+        <DirectorNote variant="teacher" custom={directorMsg ? { title: directorMsg.title, body: directorMsg.body, date: directorMsg.created_at } : null} />
       </div>
     </PortalShell>
   );

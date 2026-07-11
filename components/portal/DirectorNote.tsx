@@ -24,8 +24,17 @@ const NOTES: Record<"parent" | "teacher", { eyebrow: string; body: string[] }> =
   },
 };
 
-export function DirectorNote({ variant, dark }: { variant: "parent" | "teacher"; dark?: boolean }) {
+// An optional live message the Director wrote from the owner portal. When
+// present it replaces the default note; otherwise the warm default is shown.
+export interface DirectorCustom { title?: string | null; body: string; date?: string }
+
+export function DirectorNote({ variant, dark, custom }: { variant: "parent" | "teacher"; dark?: boolean; custom?: DirectorCustom | null }) {
   const n = NOTES[variant];
+  const eyebrow = custom?.title?.trim() || n.eyebrow;
+  const paras = custom ? custom.body.split(/\n{1,}/).map((s) => s.trim()).filter(Boolean) : n.body;
+  const dateLabel = custom?.date
+    ? new Date(custom.date).toLocaleDateString("en-IN", { day: "numeric", month: "long", year: "numeric" })
+    : null;
   return (
     <figure className={dark
       ? "rounded-2xl border border-white/10 bg-onyx-1 p-5"
@@ -35,12 +44,14 @@ export function DirectorNote({ variant, dark }: { variant: "parent" | "teacher";
           <Image src={FOUNDER.photo} alt={FOUNDER.photoAlt} fill sizes="44px" className="object-cover object-top" />
         </div>
         <div>
-          <p className="text-[11px] font-semibold uppercase tracking-wide text-gold">{n.eyebrow}</p>
-          <p className={dark ? "font-display text-sm font-semibold text-paper" : "font-display text-sm font-semibold text-ink"}>{FOUNDER.name}</p>
+          <p className="text-[11px] font-semibold uppercase tracking-wide text-gold">{eyebrow}</p>
+          <p className={dark ? "font-display text-sm font-semibold text-paper" : "font-display text-sm font-semibold text-ink"}>
+            {FOUNDER.name}{custom && dateLabel ? <span className={dark ? "font-body text-xs font-normal text-paper/45" : "font-body text-xs font-normal text-ink/45"}> · {dateLabel}</span> : null}
+          </p>
         </div>
       </div>
       <blockquote className={dark ? "mt-3 space-y-2 text-sm leading-relaxed text-paper/75" : "mt-3 space-y-2 text-sm leading-relaxed text-ink/80"}>
-        {n.body.map((p) => <p key={p}>{p}</p>)}
+        {paras.map((p, i) => <p key={i}>{p}</p>)}
       </blockquote>
       <figcaption className={dark ? "mt-3 text-xs text-paper/50" : "mt-3 text-xs text-ink/55"}>- Abhishek Kumar, Founder &amp; Director</figcaption>
     </figure>
