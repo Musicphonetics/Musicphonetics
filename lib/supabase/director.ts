@@ -49,7 +49,8 @@ export async function saveDirectorMessage(m: { audience: DirectorAudience; title
 }
 
 export async function setDirectorMessagePublished(id: string, is_published: boolean) {
-  return getSupabase().from("director_messages").update({ is_published, updated_at: new Date().toISOString() }).eq("id", id);
+  // updated_at is maintained by a DB trigger.
+  return getSupabase().from("director_messages").update({ is_published }).eq("id", id);
 }
 
 export async function deleteDirectorMessage(id: string) {
