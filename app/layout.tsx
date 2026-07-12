@@ -7,6 +7,7 @@ import { organizationJsonLd, websiteJsonLd, OG_ORIGIN } from "@/lib/seo";
 const display = Fraunces({
   subsets: ["latin"],
   weight: ["600", "700"],
+  style: ["normal", "italic"],
   variable: "--font-display",
   display: "swap",
 });
