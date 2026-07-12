@@ -1,144 +1,156 @@
+"use client";
+
+import { useRef, useState } from "react";
 import Link from "next/link";
 import { SectionHeader } from "./SectionHeader";
-import { Reveal } from "@/components/ui/Reveal";
-import { WA_MSG } from "@/lib/home-config";
-import { whatsappLink } from "@/lib/data";
 import { cn } from "@/lib/utils";
 
-// Fees are the same size on every card; the flagship wins on border + elevation
-// + ribbon, never on a louder number. Mobile order lands the eye on Main first.
+interface Plan {
+  key: string;
+  slug: string;
+  flagship?: boolean;
+  ribbon?: string;
+  tag?: string;
+  name: string;
+  line: string;
+  fee: string;
+  feeNote: string;
+  facts: string[];
+  detailLabel: string;
+  secondaryLabel: string;
+  secondaryHref: string;
+}
+
+// DOM order: Main first, so the flagship is the first card in view on mobile.
+const PLANS: Plan[] = [
+  {
+    key: "main", slug: "main", flagship: true, ribbon: "Most chosen",
+    name: "The Main Pathway",
+    line: "The full Musicphonetics system, for real and lasting progress.",
+    fee: "₹12,000", feeNote: "8 one hour classes each month.",
+    facts: [
+      "Matched teacher and a structured curriculum.",
+      "Theory, ear training and stage work.",
+      "Trinity or graded exam prep when the student wants it.",
+    ],
+    detailLabel: "See full details", secondaryLabel: "Terms and conditions", secondaryHref: "/programmes/main#terms",
+  },
+  {
+    key: "foundation", slug: "foundation", tag: "The starting point",
+    name: "Foundation",
+    line: "A guided beginner pathway that builds a real foundation.",
+    fee: "₹8,000", feeNote: "a 4 chapter beginner journey.",
+    facts: [
+      "Best for absolute beginners.",
+      "Four chapters, first notes to ready for the Main Pathway.",
+      "Most students move up after a few months.",
+    ],
+    detailLabel: "See full details", secondaryLabel: "Terms and conditions", secondaryHref: "/programmes/foundation#terms",
+  },
+  {
+    key: "directors", slug: "directors-circle", tag: "By request only",
+    name: "Director's Circle",
+    line: "Direct, founder level mentoring for a select few.",
+    fee: "By request", feeNote: "limited availability.",
+    facts: [
+      "Personally guided by Abhishek.",
+      "Limited seats, about a one week waiting list.",
+      "By application.",
+    ],
+    detailLabel: "See full details", secondaryLabel: "How it works", secondaryHref: "/programmes/directors-circle",
+  },
+];
+
 export function FunnelPackages() {
+  const trackRef = useRef<HTMLDivElement>(null);
+  const [active, setActive] = useState(0);
+
+  function onScroll() {
+    const el = trackRef.current;
+    if (!el) return;
+    const i = Math.round(el.scrollLeft / (el.scrollWidth / PLANS.length));
+    setActive(Math.max(0, Math.min(PLANS.length - 1, i)));
+  }
+
   return (
     <section id="programmes" className="scroll-mt-16 bg-charcoal py-24 md:py-32">
       <div className="container-mp">
         <SectionHeader
           eyebrow="Programmes"
           title="Choose the path that fits the student."
-          sub="Clear plans, clear fees, and a short conversation first, so we match the right teacher before anything begins."
+          sub="Clear plans and clear fees. Full details, what is included, and the terms live on each plan's page."
           invert
         />
+      </div>
 
-        <div className="mt-12 grid items-center gap-5 md:grid-cols-3">
-          {/* FLAGSHIP, Main */}
-          <Reveal className="order-1 md:order-2">
-            <div className="relative z-10 flex h-full flex-col rounded-2xl border border-gold bg-charcoal-2 p-8 shadow-[0_24px_60px_-24px_rgba(0,0,0,0.55)] md:-my-2 md:scale-[1.05]">
-              <span className="absolute -top-3 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full bg-charcoal px-3 py-1 text-[0.7rem] font-medium uppercase tracking-[0.16em] text-ivory ring-1 ring-gold/40">Most chosen</span>
-              <h3 className="font-display text-2xl font-medium text-ivory">The Main Pathway</h3>
-              <p className="mt-2 text-sm leading-relaxed text-ivory/65">The full Musicphonetics system, for real, lasting progress.</p>
-              <Fee amount="₹12,000" note="8 one-hour classes" />
-              <Bullets items={[
-                "A matched teacher and a structured curriculum",
-                "Technique, theory, ear training, improvisation and stage confidence",
-                "Trinity / graded-exam preparation when the student wants it",
-                "Progress tracked, with founder oversight",
-              ]} />
-              <div className="mt-7 space-y-3">
-                <a href={whatsappLink(WA_MSG.main)} target="_blank" rel="noopener noreferrer"
-                  className="flex w-full items-center justify-center rounded-md bg-gold px-6 py-3 font-medium text-charcoal transition hover:brightness-105">
-                  Start with a free trial
-                </a>
-                <Details slug="main" pay="main" />
-              </div>
-            </div>
-          </Reveal>
+      {/* Mobile: snap carousel with a peek. Desktop: 3 column grid. */}
+      <div
+        ref={trackRef}
+        onScroll={onScroll}
+        className="mt-12 flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-px-6 px-6 pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden md:mx-auto md:max-w-content md:grid md:grid-cols-3 md:items-center md:gap-5 md:overflow-visible md:px-8 md:pb-0"
+      >
+        {PLANS.map((p) => <Card key={p.key} p={p} />)}
+      </div>
 
-          {/* Foundation */}
-          <Reveal className="order-2 md:order-1">
-            <QuietCard
-              tag="The starting point" name="Foundation"
-              line="A guided beginner pathway that builds a real foundation."
-              amount="₹8,000" note="a 4-chapter beginner journey"
-              items={[
-                "Best for absolute beginners",
-                "Four chapters, from first notes to ready for the Main Pathway",
-                "Most students move up after a few months",
-              ]}
-              cta={<OutlineCTA href={whatsappLink(WA_MSG.trial)}>Book a free trial</OutlineCTA>}
-              details={<Details slug="foundation" pay="foundation" />}
-            />
-          </Reveal>
+      {/* Dot indicators (mobile only) */}
+      <div className="mt-5 flex justify-center gap-2 md:hidden">
+        {PLANS.map((p, i) => (
+          <span key={p.key} className={cn("h-1.5 rounded-full transition-all", i === active ? "w-5 bg-gold" : "w-1.5 bg-ivory/25")} />
+        ))}
+      </div>
 
-          {/* Director's Circle */}
-          <Reveal className="order-3">
-            <QuietCard
-              tag="By request only" name="Director's Circle"
-              line="Direct, founder-level mentoring for a select few."
-              amount="By request" note="limited availability"
-              items={[
-                "Personally guided by Abhishek",
-                "Limited seats, about a one-week waiting list",
-                "An exclusive pathway, by application",
-              ]}
-              cta={<OutlineCTA href={whatsappLink(WA_MSG.directors)}>Request access on WhatsApp</OutlineCTA>}
-              details={<Details slug="directors-circle" />}
-            />
-          </Reveal>
-        </div>
-
-        <Reveal>
-          <p className="mx-auto mt-10 max-w-xl text-center text-sm leading-relaxed text-ivory/60">
-            Not sure which fits? Message us the student&apos;s age, instrument and goal, we&apos;ll match
-            the right teacher and the right plan first.
-          </p>
-        </Reveal>
+      <div className="container-mp">
+        <p className="mx-auto mt-8 max-w-xl text-center text-sm leading-relaxed text-ivory/60">
+          Every plan page explains what is included, how billing works, and the full terms.
+        </p>
       </div>
     </section>
   );
 }
 
-function QuietCard({ tag, name, line, amount, note, items, cta, details }: {
-  tag: string; name: string; line: string; amount: string; note: string; items: string[]; cta: React.ReactNode; details: React.ReactNode;
-}) {
+function Card({ p }: { p: Plan }) {
+  const order = p.key === "main" ? "order-1 md:order-2" : p.key === "foundation" ? "order-2 md:order-1" : "order-3";
   return (
-    <div className="flex h-full flex-col rounded-2xl border border-white/12 bg-charcoal-2/60 p-7">
-      <span className="text-[0.7rem] font-medium uppercase tracking-[0.16em] text-gold">{tag}</span>
-      <h3 className="mt-2 font-display text-2xl font-medium text-ivory">{name}</h3>
-      <p className="mt-2 text-sm leading-relaxed text-ivory/65">{line}</p>
-      <Fee amount={amount} note={note} />
-      <Bullets items={items} />
-      <div className="mt-7 space-y-3">{cta}{details}</div>
+    <div className={cn(
+      "flex min-w-[86%] shrink-0 snap-center flex-col rounded-2xl border p-7 md:min-w-0 md:p-8",
+      order,
+      p.flagship
+        ? "relative z-10 border-gold bg-charcoal-2 shadow-[0_24px_60px_-24px_rgba(0,0,0,0.55)] md:-my-2 md:scale-[1.05]"
+        : "border-white/12 bg-charcoal-2/60",
+    )}>
+      {p.ribbon && (
+        <span className="absolute -top-3 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full bg-charcoal px-3 py-1 text-[0.7rem] font-medium uppercase tracking-[0.16em] text-ivory ring-1 ring-gold/40">{p.ribbon}</span>
+      )}
+      {p.tag && <span className="text-[0.7rem] font-medium uppercase tracking-[0.16em] text-gold">{p.tag}</span>}
+      <h3 className={cn("font-display text-2xl font-medium text-ivory", p.tag && "mt-2")}>{p.name}</h3>
+      <p className="mt-2 text-sm leading-relaxed text-ivory/65">{p.line}</p>
+
+      <div className="mt-5 border-t border-white/10 pt-5">
+        <p className="font-display text-[1.6rem] leading-none text-ivory">
+          {p.fee}{p.fee.startsWith("₹") && <span className="ml-1 text-sm font-normal text-muted">/ month</span>}
+        </p>
+        <p className="mt-1.5 text-xs text-muted">{p.feeNote}</p>
+      </div>
+
+      <ul className="mt-5 flex-1 space-y-2.5">
+        {p.facts.map((f) => (
+          <li key={f} className="flex items-start gap-2.5 text-sm text-ivory/75">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true" className="mt-0.5 shrink-0 text-gold"><path d="M5 12l4 4 10-10" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" /></svg>
+            {f}
+          </li>
+        ))}
+      </ul>
+
+      <div className="mt-7 space-y-3">
+        <Link href={`/programmes/${p.slug}`}
+          className={cn("flex min-h-[48px] w-full items-center justify-center rounded-md px-6 text-sm font-medium transition",
+            p.flagship ? "bg-gold text-charcoal hover:brightness-105" : "border border-ivory/25 text-ivory hover:border-gold hover:text-gold")}>
+          {p.detailLabel}
+        </Link>
+        <Link href={p.secondaryHref} className="block text-center text-sm text-ivory/60 underline-offset-4 hover:text-gold hover:underline">
+          {p.secondaryLabel}
+        </Link>
+      </div>
     </div>
-  );
-}
-
-function Fee({ amount, note }: { amount: string; note: string }) {
-  return (
-    <div className="mt-5 border-t border-white/10 pt-5">
-      <p className="font-display text-[1.7rem] leading-none text-ivory">
-        {amount}{amount.startsWith("₹") && <span className="ml-1 text-sm font-normal text-muted">/ month</span>}
-      </p>
-      <p className="mt-1.5 text-xs text-muted">{note}</p>
-    </div>
-  );
-}
-
-function Bullets({ items }: { items: string[] }) {
-  return (
-    <ul className="mt-5 flex-1 space-y-2.5">
-      {items.map((b) => (
-        <li key={b} className="flex items-start gap-2.5 text-sm text-ivory/75">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true" className="mt-0.5 shrink-0 text-gold"><path d="M5 12l4 4 10-10" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" /></svg>
-          {b}
-        </li>
-      ))}
-    </ul>
-  );
-}
-
-function OutlineCTA({ href, children }: { href: string; children: React.ReactNode }) {
-  return (
-    <a href={href} target="_blank" rel="noopener noreferrer"
-      className="flex w-full items-center justify-center rounded-md border border-ivory/25 px-6 py-3 font-medium text-ivory transition hover:border-gold hover:text-gold">
-      {children}
-    </a>
-  );
-}
-
-function Details({ slug, pay }: { slug: string; pay?: string }) {
-  return (
-    <p className="text-center text-sm">
-      <Link href={`/programmes/${slug}`} className="text-ivory/70 underline-offset-4 hover:text-gold hover:underline">See full details →</Link>
-      {pay && <><span className="text-ivory/30"> · </span><Link href={`/pay?plan=${pay}`} className="text-xs text-muted hover:text-gold">apply &amp; pay online</Link></>}
-    </p>
   );
 }

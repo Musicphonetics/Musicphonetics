@@ -1,13 +1,15 @@
 import { WA_MSG } from "@/lib/home-config";
 import { whatsappLink } from "@/lib/data";
 
-// The homepage hero: one confident argument. The promise is the H1 (not the
-// brand name), one primary action (Book a free trial), a quiet secondary link,
-// and a single-line stat strip. Real photo, charcoal gradient so text always reads.
+// App-onboarding hero: full screen, content in the lower third for thumb reach,
+// a big rounded primary, and a quiet secondary. Safe-area aware.
 export function HeroInstitution() {
   return (
-    <section className="relative -mt-16 flex min-h-[85vh] items-center overflow-hidden bg-charcoal md:min-h-screen">
-      {/* Background photo + overlays */}
+    <section
+      className="relative -mt-16 flex min-h-[100svh] flex-col justify-end overflow-hidden bg-charcoal"
+      style={{ paddingTop: "env(safe-area-inset-top)" }}
+    >
+      {/* LCP background image + bottom-weighted overlay */}
       <div aria-hidden="true" className="absolute inset-0">
         <img
           src="/images/moments/03-stage-guitar.webp"
@@ -15,43 +17,43 @@ export function HeroInstitution() {
           // @ts-expect-error fetchpriority is a valid html attribute
           fetchpriority="high"
           decoding="async"
-          className="h-full w-full object-cover object-[62%_28%]"
+          className="h-full w-full object-cover object-[60%_22%]"
         />
-        <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(22,27,38,0.94),rgba(22,27,38,0.62)_60%,rgba(22,27,38,0.35))]" />
-        <div className="absolute inset-0 bg-[linear-gradient(to_top,rgba(22,27,38,0.9),transparent_45%)]" />
+        <div className="absolute inset-0 bg-[linear-gradient(to_top,rgba(22,27,38,0.96),rgba(22,27,38,0.55)_42%,rgba(22,27,38,0.25))]" />
       </div>
 
-      <div className="container-mp relative w-full pb-16 pt-24 md:pb-24">
-        <div className="max-w-2xl">
-          <div className="flex items-center gap-2.5">
-            <span aria-hidden="true" className="h-px w-[22px] bg-gold" />
-            <span className="text-[0.72rem] font-medium uppercase tracking-[0.18em] text-gold">
-              Delhi NCR · at home, online &amp; our South Delhi centre
-            </span>
-          </div>
+      <div
+        className="container-mp relative w-full"
+        style={{ paddingBottom: "calc(104px + env(safe-area-inset-bottom))" }}
+      >
+        <div className="max-w-[640px]">
+          <span className="inline-flex items-center rounded-full border border-gold/40 px-3 py-1 text-[0.7rem] uppercase tracking-[0.14em] text-gold">
+            Delhi NCR, at home, online, and our South Delhi centre
+          </span>
 
-          <h1 className="mt-6 font-display text-[clamp(2.5rem,6vw,4.75rem)] font-medium leading-[1.03] text-ivory">
+          <h1 className="mt-5 font-display text-[clamp(2.25rem,8vw,3.75rem)] font-medium leading-[1.05] text-ivory">
             Music education, built like an institution.
           </h1>
 
-          <p className="mt-6 max-w-[46ch] text-[1.05rem] leading-relaxed text-ivory/80 sm:text-[1.15rem]">
-            A teacher matched to your child, a real method, and a stage to perform on.
-            Guitar, piano/keyboard and vocals, across Delhi NCR and online.
+          <p className="mt-4 max-w-[40ch] text-[1.0625rem] leading-relaxed text-ivory/85">
+            A matched teacher, a real method, and a real stage. Guitar, piano and vocals,
+            across Delhi NCR and online.
           </p>
 
-          <div className="mt-9 flex flex-wrap items-center gap-x-7 gap-y-4">
-            <a href={whatsappLink(WA_MSG.trial)} target="_blank" rel="noopener noreferrer"
-              className="rounded-md bg-gold px-6 py-3 font-medium text-charcoal transition hover:brightness-105">
-              Book a free trial
+          <div className="mt-8 flex flex-col items-start gap-4">
+            <a href="#programmes"
+              className="flex w-full items-center justify-center gap-2 rounded-xl bg-gold py-4 font-medium text-charcoal transition hover:brightness-105 md:w-auto md:px-8">
+              Explore programmes
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 5v14M6 13l6 6 6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>
             </a>
-            <a href="#how" className="group inline-flex items-center gap-1.5 text-[0.95rem] text-ivory/85 transition-colors hover:text-gold">
-              See how it works
-              <span aria-hidden="true" className="transition-transform group-hover:translate-y-0.5">↓</span>
+            <a href={whatsappLink(WA_MSG.trial)} target="_blank" rel="noopener noreferrer"
+              className="text-[0.95rem] text-ivory/80 underline-offset-4 transition-colors hover:text-gold hover:underline">
+              Or book a free trial on WhatsApp
             </a>
           </div>
 
-          <p className="mt-12 text-[0.8rem] tracking-wide text-ivory/60">
-            10+ years · 1,100+ students · 4.8★ Google &amp; JustDial
+          <p className="mt-9 text-[0.8rem] tracking-wide text-ivory/60">
+            10+ years&nbsp;&nbsp;·&nbsp;&nbsp;1,100+ students&nbsp;&nbsp;·&nbsp;&nbsp;4.8 on Google and JustDial
           </p>
         </div>
       </div>

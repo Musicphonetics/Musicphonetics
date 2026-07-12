@@ -15,9 +15,9 @@ export function generateMetadata({ params }: { params: { slug: string } }): Meta
   const p = getProgramme(params.slug);
   if (!p) return { title: "Programme" };
   return {
-    title: `${p.name} - Music Classes | Musicphonetics`,
+    title: `${p.name} · Music Classes | Musicphonetics`,
     description: p.intro,
-    openGraph: { title: `${p.name} - Musicphonetics`, description: p.intro },
+    openGraph: { title: `${p.name} · Musicphonetics`, description: p.intro },
   };
 }
 
@@ -171,14 +171,33 @@ export default function ProgrammePage({ params }: { params: { slug: string } }) 
         </div>
       </Section>
 
+      {/* Terms and conditions */}
+      <Section background="white" spacing="lg">
+        <div id="terms" className="scroll-mt-24">
+          <p className="eyebrow">Terms and conditions</p>
+          <h2 className="mt-2 font-display text-3xl font-semibold text-ink">Fees, billing and the fine print.</h2>
+          <div className="mt-8 grid gap-4 lg:grid-cols-2">
+            <PolicyCard title="Class schedule" items={SCHEDULE_POLICY} />
+            <PolicyCard title="Fees and billing" items={BILLING_POLICY} />
+          </div>
+          <div className="mt-4 rounded-2xl border border-hairline bg-paper p-6 text-sm leading-relaxed text-ink/70">
+            <p className="font-semibold text-ink">Refunds and withdrawal</p>
+            <p className="mt-2">
+              Fees are billed monthly and in advance. A missed class is rescheduled where possible, subject to teacher availability. To pause or withdraw, let us know before your next billing date and we will stop the next cycle. Completed months are non refundable. There are no hidden charges, and all fees are billed only in the Musicphonetics name through a secure gateway.
+            </p>
+            <p className="mt-3">Questions about billing or the terms? Message us and we reply immediately.</p>
+          </div>
+        </div>
+      </Section>
+
       {/* Final CTA */}
-      <section className="bg-ink py-16 text-paper sm:py-20">
+      <section className="bg-charcoal py-16 text-ivory sm:py-20">
         <div className="container-mp text-center">
           <h2 className="mx-auto max-w-xl font-display text-3xl font-semibold sm:text-4xl">
             {p.payAmount ? "Ready to begin?" : "Think you're a fit?"}
           </h2>
-          <p className="mx-auto mt-3 max-w-lg text-paper/75">
-            {p.payAmount ? "Enrol now and pay securely, or ask us anything on WhatsApp first." : "Request access and we'll take it from there - personally."}
+          <p className="mx-auto mt-3 max-w-lg text-ivory/75">
+            {p.payAmount ? "Enrol now and pay securely, or ask us anything on WhatsApp first." : "Request access and we'll take it from there, personally."}
           </p>
           <div className="mt-7 flex flex-col justify-center gap-3 sm:flex-row">
             {enrolHref ? (
