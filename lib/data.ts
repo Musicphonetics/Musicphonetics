@@ -1,5 +1,5 @@
 // ============================================================================
-// Musicphonetics - Public Content & Brand Constants
+// Musicphonetics, Public Content & Brand Constants
 // Edit copy, prices, reviews, and the WhatsApp number here.
 // ============================================================================
 
@@ -12,7 +12,7 @@ import type {
 } from "./types";
 
 // ---------------------------------------------------------------------------
-// WHATSAPP - change this single constant to update every CTA on the site.
+// WHATSAPP, change this single constant to update every CTA on the site.
 // Format: country code + number, digits only. e.g. "918796199188"
 // TODO(integration): confirm final business WhatsApp number before launch.
 // ---------------------------------------------------------------------------
@@ -26,7 +26,7 @@ export function whatsappLink(text: string = WHATSAPP_DEFAULT_TEXT): string {
   return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(text)}`;
 }
 
-/** Prefilled "Book a Trial" WhatsApp link - used by the primary CTA. */
+/** Prefilled "Book a Trial" WhatsApp link, used by the primary CTA. */
 export const WHATSAPP_TRIAL_TEXT =
   "Hi Musicphonetics, I'd like to book a trial class.";
 export function whatsappTrialLink(): string {
@@ -37,17 +37,17 @@ export function whatsappTrialLink(): string {
 export const PHONE_DISPLAY = "+91 87961 99188";
 export const phoneLink = `tel:+${WHATSAPP_NUMBER}`;
 
-/** Social - Instagram. */
+/** Social, Instagram. */
 export const INSTAGRAM_HANDLE = "abhisheksessions";
 export const INSTAGRAM_URL = "https://instagram.com/abhisheksessions";
 
 /**
- * Google Business Profile - fill these once the profile exists and the section
+ * Google Business Profile, fill these once the profile exists and the section
  * appears automatically (renders nothing while `profileUrl` is empty).
- *  - profileUrl:   your public GBP page (share link)
- *  - reviewUrl:    the "write a review" / reviews link (g.page/…/review or the
+ * , profileUrl:   your public GBP page (share link)
+ * , reviewUrl:    the "write a review" / reviews link (g.page/…/review or the
  *                  Place-ID review link)
- *  - mapEmbedSrc:  Google Maps "Embed a map" iframe src (optional)
+ * , mapEmbedSrc:  Google Maps "Embed a map" iframe src (optional)
  */
 export const GOOGLE_BUSINESS = {
   profileUrl: "",
@@ -62,7 +62,7 @@ export const BRAND = {
   name: "Musicphonetics",
   tagline: "Across Delhi NCR & online.",
   positioning:
-    "An education-first music company founded in India, built for structured music learning across cities - and eventually across countries.",
+    "An education-first music company founded in India, built for structured music learning across cities, and eventually across countries.",
   region: "Delhi NCR",
   founder: "Abhishek Kumar",
   yearsExperience: "10+",
@@ -216,9 +216,9 @@ export const PROGRAMS: ProgramCard[] = [
 ];
 
 // ---------------------------------------------------------------------------
-// Reviews - REAL, verified reviews collected after real classes.
+// Reviews, REAL, verified reviews collected after real classes.
 // Privacy (child safety): for under-18 students we publish first name + last
-// initial + age + broad area only - never building names. Keep written
+// initial + age + broad area only, never building names. Keep written
 // consent on file for every published review.
 // ---------------------------------------------------------------------------
 export const REVIEWS: Review[] = [
@@ -283,7 +283,7 @@ export const REVIEWS: Review[] = [
     rating: 5,
     onFees: true,
     quote:
-      "As parents, we value discipline, punctuality and professionalism - and that is exactly what we have experienced. The fees may be higher than average, but the personalised coaching, structured approach and consistent communication make them completely worthwhile.",
+      "As parents, we value discipline, punctuality and professionalism, and that is exactly what we have experienced. The fees may be higher than average, but the personalised coaching, structured approach and consistent communication make them completely worthwhile.",
   },
   {
     name: "Col.",
@@ -317,7 +317,7 @@ export const REVIEWS: Review[] = [
 ];
 
 // ---------------------------------------------------------------------------
-// Packages / Learning Paths - exact copy per spec.
+// Packages / Learning Paths, exact copy per spec.
 // TODO(pricing): update prices here when packages change.
 // ---------------------------------------------------------------------------
 export const PACKAGES: Package[] = [
@@ -338,7 +338,7 @@ export const PACKAGES: Package[] = [
   {
     key: "Signature",
     name: "Signature",
-    tagline: "Our most-chosen path - senior faculty and dedicated exam prep.",
+    tagline: "Our most-chosen path, senior faculty and dedicated exam prep.",
     priceFrom: "from ₹18,000",
     unit: "/month · 8 classes (₹2,250/class)",
     featured: true,
@@ -354,7 +354,7 @@ export const PACKAGES: Package[] = [
   {
     key: "Director's Circle",
     name: "Director's Circle",
-    tagline: "Personally with the Director - full artist development.",
+    tagline: "Personally with the Director, full artist development.",
     priceFrom: "By application",
     unit: "limited seats · from ₹28,000/mo",
     premium: true,
@@ -379,7 +379,7 @@ export const PACKAGES_NOTE =
 export const FAQS: FaqItem[] = [
   {
     q: "How does the trial class work?",
-    a: "You begin with a short guided conversation on WhatsApp so we understand the learner. We then arrange a trial class with a matched teacher - no long commitment to start. After the trial, we recommend a clear learning path.",
+    a: "You begin with a short guided conversation on WhatsApp so we understand the learner. We then arrange a trial class with a matched teacher, no long commitment to start. After the trial, we recommend a clear learning path.",
   },
   {
     q: "Do you offer online music classes?",
@@ -387,7 +387,7 @@ export const FAQS: FaqItem[] = [
   },
   {
     q: "Do you offer home music classes?",
-    a: "Yes. Home classes are available across Delhi NCR, delivered by carefully selected, verified teachers - with more cities opening as we expand.",
+    a: "Yes. Home classes are available across Delhi NCR, delivered by carefully selected, verified teachers, with more cities opening as we expand.",
   },
   {
     q: "Which cities do you serve?",
@@ -403,7 +403,7 @@ export const FAQS: FaqItem[] = [
   },
   {
     q: "How are teachers selected?",
-    a: "Every teacher passes a seven-stage quality pipeline - application, interview, skill assessment, teaching evaluation, background verification, founder approval - before they teach a single class.",
+    a: "Every teacher passes a seven-stage quality pipeline, application, interview, skill assessment, teaching evaluation, background verification, founder approval, before they teach a single class.",
   },
   {
     q: "How many classes are included in one cycle?",
@@ -420,7 +420,7 @@ export const FAQS: FaqItem[] = [
 ];
 
 // ---------------------------------------------------------------------------
-// Public teacher profiles - PLACEHOLDER data.
+// Public teacher profiles, PLACEHOLDER data.
 // TODO(content): replace with verified real teacher data before launch.
 // ---------------------------------------------------------------------------
 export const PUBLIC_TEACHERS: Teacher[] = [

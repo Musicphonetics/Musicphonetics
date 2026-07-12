@@ -1,7 +1,7 @@
 // ============================================================================
-// Musicphonetics - Founder, Ecosystem & Vision content
+// Musicphonetics, Founder, Ecosystem & Vision content
 // Truthful achievements only. Future initiatives are explicitly labelled as
-// vision / roadmap - never presented as existing operations.
+// vision / roadmap, never presented as existing operations.
 // ============================================================================
 
 export const FOUNDER = {
@@ -9,7 +9,7 @@ export const FOUNDER = {
   role: "Founder · Musicphonetics",
   photo: "/founder.webp",
   photoAlt:
-    "Abhishek Kumar, founder of Musicphonetics - guitarist, vocalist, and music educator",
+    "Abhishek Kumar, founder of Musicphonetics, guitarist, vocalist, and music educator",
 };
 
 // Truthful highlights (as provided by the founder).
@@ -22,10 +22,10 @@ export const FOUNDER_HIGHLIGHTS: string[] = [
   "Experience teaching children, teenagers, and adults",
   "Focused on long-term musical growth, not short-term song learning",
   "Invited as a judge at colleges across Delhi NCR",
-  "Trusted by accomplished students - including ministers, IAS officers, and high-profile professionals",
+  "Trusted by accomplished students, including ministers, IAS officers, and high-profile professionals",
 ];
 
-// Cinematic story chapters - revealed one at a time on scroll.
+// Cinematic story chapters, revealed one at a time on scroll.
 export interface StoryChapter {
   key: string;
   label: string;
@@ -40,7 +40,7 @@ export const FOUNDER_STORY: StoryChapter[] = [
     title: "One guitar. Three chords. One student.",
     body: [
       "It began in 2015 with one guitar, three basic chords, one student, and one dream. No office. No company. Only a desire to teach well.",
-      "There was nothing impressive about the setup - just a conviction that a child given the right start could carry music for the rest of their life.",
+      "There was nothing impressive about the setup, just a conviction that a child given the right start could carry music for the rest of their life.",
     ],
   },
   {
@@ -49,7 +49,7 @@ export const FOUNDER_STORY: StoryChapter[] = [
     title: "Faith built this journey.",
     body: [
       "Every step was taken on faith long before there was proof it would work. The belief came first; the company followed.",
-      "“Commit your work to the Lord, and your plans will be established.” - Proverbs 16:3",
+      "“Commit your work to the Lord, and your plans will be established.”, Proverbs 16:3",
     ],
   },
   {
@@ -57,8 +57,8 @@ export const FOUNDER_STORY: StoryChapter[] = [
     label: "The realisation",
     title: "The problem was never the teachers.",
     body: [
-      "After more than 1,100 one-on-one students - children, teenagers, and adults - one pattern became impossible to ignore. Talent was not the problem.",
-      "It was the system. The same lesson could transform one student and lose another - not because of skill, but because of structure.",
+      "After more than 1,100 one-on-one students, children, teenagers, and adults, one pattern became impossible to ignore. Talent was not the problem.",
+      "It was the system. The same lesson could transform one student and lose another, not because of skill, but because of structure.",
     ],
   },
   {
@@ -66,7 +66,7 @@ export const FOUNDER_STORY: StoryChapter[] = [
     label: "Today",
     title: "From one student to a company.",
     body: [
-      "Today, Musicphonetics is a growing education company - teaching across cities, expanding globally, and built on systems, standards, and documentation.",
+      "Today, Musicphonetics is a growing education company, teaching across cities, expanding globally, and built on systems, standards, and documentation.",
       "Faith first. Music second. Business third. In that order, deliberately.",
     ],
   },
@@ -75,8 +75,8 @@ export const FOUNDER_STORY: StoryChapter[] = [
     label: "The future",
     title: "Train up a child in the way he should go.",
     body: [
-      "The mission is bigger than lessons: to give every learner a teacher, a structure, and a path - and to build a company that still serves families decades from now.",
-      "“Train up a child in the way he should go; even when he is old he will not depart from it.” - Proverbs 22:6",
+      "The mission is bigger than lessons: to give every learner a teacher, a structure, and a path, and to build a company that still serves families decades from now.",
+      "“Train up a child in the way he should go; even when he is old he will not depart from it.”, Proverbs 22:6",
     ],
   },
 ];
@@ -102,7 +102,7 @@ export const FOUNDER_TIMELINE: TimelineItem[] = [
   {
     period: "2015",
     title: "One guitar, one student",
-    body: "Three chords, one dream, and a desire to teach well - with no office and no company.",
+    body: "Three chords, one dream, and a desire to teach well, with no office and no company.",
   },
   {
     period: "Building the method",
@@ -112,7 +112,7 @@ export const FOUNDER_TIMELINE: TimelineItem[] = [
   {
     period: "1,100+ students",
     title: "A decade of one-on-one teaching",
-    body: "Children, teenagers, and adults - including accomplished public figures and professionals.",
+    body: "Children, teenagers, and adults, including accomplished public figures and professionals.",
   },
   {
     period: "Today",
@@ -127,12 +127,12 @@ export const FOUNDER_TIMELINE: TimelineItem[] = [
   {
     period: "Roadmap",
     title: "Expanding the ecosystem",
-    body: "Group academies, artist development, studios, and new regions - built step by step.",
+    body: "Group academies, artist development, studios, and new regions, built step by step.",
     roadmap: true,
   },
 ];
 
-// The Musicphonetics Ecosystem - interconnected divisions.
+// The Musicphonetics Ecosystem, interconnected divisions.
 // status: "current" = real today · "growing" = forming now · "vision" = roadmap.
 export interface EcoNode {
   label: string;
@@ -169,10 +169,10 @@ export const ECO_LEGEND: { status: EcoNode["status"]; label: string }[] = [
   { status: "vision", label: "Long-term vision" },
 ];
 
-// Future brand architecture - examples of where the company could grow.
+// Future brand architecture, examples of where the company could grow.
 // Clearly examples of future divisions, not current products.
 export const FUTURE_DIVISIONS: { name: string; body: string }[] = [
-  { name: "Musicphonetics Learn", body: "The structured learning platform - the heart of everything." },
+  { name: "Musicphonetics Learn", body: "The structured learning platform, the heart of everything." },
   { name: "Musicphonetics Artists", body: "Artist development for serious musicians and creators." },
   { name: "Musicphonetics Studios", body: "Spaces to record, practise, and produce." },
   { name: "Musicphonetics Live", body: "Performances, recitals, and events." },
@@ -182,7 +182,7 @@ export const FUTURE_DIVISIONS: { name: string; body: string }[] = [
   { name: "Musicphonetics Media", body: "Stories, content, and the voice of the movement." },
 ];
 
-// Global vision - founded in India, designed for global growth.
+// Global vision, founded in India, designed for global growth.
 export interface VisionRegion {
   label: string;
   note: string;
@@ -195,6 +195,6 @@ export interface VisionRegion {
 export const VISION_REGIONS: VisionRegion[] = [
   { label: "Delhi NCR", note: "Home & online classes", status: "current", x: 68, y: 40 },
   { label: "Online (anywhere)", note: "Learn from any city", status: "current", x: 50, y: 55 },
-  { label: "Pan-India", note: "Regional leadership - roadmap", status: "vision", x: 70, y: 52 },
-  { label: "Global", note: "International growth - roadmap", status: "vision", x: 28, y: 38 },
+  { label: "Pan-India", note: "Regional leadership, roadmap", status: "vision", x: 70, y: 52 },
+  { label: "Global", note: "International growth, roadmap", status: "vision", x: 28, y: 38 },
 ];

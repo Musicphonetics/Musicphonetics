@@ -15,7 +15,7 @@ export function FinalCTA() {
               Start with one message.
             </h2>
             <p className="mx-auto mt-4 max-w-md text-base leading-relaxed text-ivory/75">
-              Tell us the student&apos;s age, instrument and goal - we&apos;ll match the right teacher.
+              Tell us the student&apos;s age, instrument and goal, we&apos;ll match the right teacher.
             </p>
             <div className="mt-8 flex justify-center">
               <WhatsAppCTA label="Enquire on WhatsApp" message={WA_MSG.final} />

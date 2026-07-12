@@ -2,8 +2,8 @@ import { SectionHeader } from "../SectionHeader";
 import { Reveal } from "@/components/ui/Reveal";
 
 const PROFILES = [
-  { img: "/images/presence/google-business.webp", label: "Google", caption: "4.8★ · Music school · Delhi Cantonment", alt: "Musicphonetics Google Business Profile - 4.8 stars, music school in Delhi" },
-  { img: "/images/presence/justdial.webp", label: "JustDial", caption: "4.8★ · 22 ratings · 9 years in business", alt: "Musicphonetics JustDial profile - 4.8 stars, 22 ratings, 9 years in business" },
+  { img: "/images/presence/google-business.webp", label: "Google", caption: "4.8★ · Music school · Delhi Cantonment", alt: "Musicphonetics Google Business Profile, 4.8 stars, music school in Delhi" },
+  { img: "/images/presence/justdial.webp", label: "JustDial", caption: "4.8★ · 22 ratings · 9 years in business", alt: "Musicphonetics JustDial profile, 4.8 stars, 22 ratings, 9 years in business" },
   { img: "/images/presence/google-reviews.webp", label: "Google reviews", caption: "Real reviews from real families", alt: "Musicphonetics Google review summary showing mostly 5-star reviews" },
 ];
 
@@ -15,7 +15,7 @@ export function NightOnlinePresence() {
       <div className="container-mp">
         <SectionHeader
           eyebrow="Find us online"
-          title="A real, established school - see for yourself."
+          title="A real, established school. See for yourself."
           sub="Not a pop-up operation. Here are our actual Google and JustDial profiles, exactly as they appear."
           center
           invert

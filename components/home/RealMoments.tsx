@@ -4,14 +4,14 @@ import { REAL_MOMENTS } from "@/lib/home-config";
 
 // The six strongest real photos, one consistent treatment.
 export function RealMoments() {
-  const moments = REAL_MOMENTS.slice(0, 6);
+  const moments = REAL_MOMENTS;
   return (
     <section className="bg-charcoal py-24 md:py-32">
       <div className="container-mp">
         <SectionHeader
           eyebrow="From our classes"
           title="Real students. Real stages."
-          sub="No stock photos — our people, our recitals and our small wins from across Delhi NCR."
+          sub="No stock photos, our people, our recitals and our small wins from across Delhi NCR."
           invert
         />
 

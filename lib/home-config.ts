@@ -1,5 +1,5 @@
 // ============================================================================
-// Musicphonetics homepage funnel - edit content here without touching components.
+// Musicphonetics homepage funnel, edit content here without touching components.
 // ============================================================================
 
 // WhatsApp (shared with the rest of the site via lib/data). Edit the number
@@ -32,7 +32,7 @@ export interface HomePackage {
   secondaryBadge?: string;
   tagline: string;
   bullets: string[];
-  forWho: string[];          // "View details" - who it's for
+  forWho: string[];          // "View details", who it's for
   notForWho: string[];       // who it's NOT for
   note?: string;
   ctaLabel: string;
@@ -56,7 +56,7 @@ export const HOME_PACKAGES: HomePackage[] = [
       "After Foundation, students move to the Main Pathway",
     ],
     forWho: [
-      "Absolute beginners - children or adults",
+      "Absolute beginners, children or adults",
       "Anyone wanting a calm, correct first start",
       "Casual learners exploring an instrument",
       "Parents testing if their child enjoys music",
@@ -77,7 +77,7 @@ export const HOME_PACKAGES: HomePackage[] = [
     cadence: "8 classes / month · 1 hour each",
     badge: "Most Recommended",
     secondaryBadge: "Main Pathway",
-    tagline: "The full system - for real, lasting progress.",
+    tagline: "The full system, for real, lasting progress.",
     bullets: [
       "Serious progress with a strong foundation",
       "Stage confidence, theory, ear training & improvisation",
@@ -129,7 +129,7 @@ export const HOME_PACKAGES: HomePackage[] = [
   },
 ];
 
-// Hero slideshow - real student & performance photos, text overlaid.
+// Hero slideshow, real student & performance photos, text overlaid.
 export const HERO_SLIDES: string[] = [
   "/images/hero/slide-1.webp",
   "/images/hero/slide-2.webp",
@@ -139,40 +139,40 @@ export const HERO_SLIDES: string[] = [
 ];
 
 // Real, unstaged moments from our classes, recitals and student wins across
-// Delhi NCR. No stock photos - these are our people.
+// Delhi NCR. Real students and real stages only. No founder-network photos here.
 export interface Moment { src: string; alt: string; caption: string }
 export const REAL_MOMENTS: Moment[] = [
-  { src: "/images/moments/02-openmic.webp", alt: "A student singing and playing guitar at an Open Mic and Chai evening", caption: "Open Mic & Chai - our students take the mic." },
+  { src: "/images/moments/02-openmic.webp", alt: "A student singing and playing guitar at an Open Mic and Chai evening", caption: "Open Mic and Chai. Our students take the mic." },
   { src: "/images/moments/03-stage-guitar.webp", alt: "A Musicphonetics student performing guitar on a large stage", caption: "On the big stage, where months of practice pay off." },
+  { src: "/images/hero/slide-1.webp", alt: "A group of Musicphonetics students together after a class", caption: "Our students, together after class." },
   { src: "/images/moments/05-group.webp", alt: "Musicphonetics students celebrating an award together", caption: "Student of the term, celebrated together." },
   { src: "/images/moments/09-mentor.webp", alt: "A Musicphonetics teacher performing on electric guitar", caption: "Taught by musicians who still perform." },
-  { src: "/images/moments/04-award.webp", alt: "Founder Abhishek Kumar giving a student an award", caption: "Recognising our students' progress." },
-  { src: "/images/moments/openmic-audience.webp", alt: "A full-house audience at a Musicphonetics Open Mic and Chai evening", caption: "A full house at Open Mic & Chai." },
-  { src: "/images/moments/01-celeb.webp", alt: "Founder Abhishek Kumar with a well-known musician", caption: "Rubbing shoulders with the artists who inspire us." },
-  { src: "/images/moments/08-stage.webp", alt: "Musicphonetics students and teacher backstage at an event", caption: "Backstage, together." },
+  { src: "/images/moments/04-award.webp", alt: "A Musicphonetics student receiving an award", caption: "Recognising a student's progress." },
+  { src: "/images/moments/openmic-audience.webp", alt: "A full house at a Musicphonetics Open Mic and Chai evening", caption: "A full house at Open Mic and Chai." },
+  { src: "/images/moments/08-stage.webp", alt: "Musicphonetics students and teacher backstage at an event", caption: "Backstage with our students." },
 ];
 
-// "How it works" - a swipeable, app-like flow. Warm, clear copy, each with a
-// real photo.
+// "How it works". Teaching-story photos only: real students and teachers, never
+// the founder-network credibility shots.
 export interface HowStep { img: string; kicker: string; title: string; body: string }
 export const HOW_STEPS: HowStep[] = [
   {
-    img: "/images/moments/07-office.webp",
+    img: "/images/moments/08-stage.webp",
     kicker: "The right fit",
     title: "A teacher matched to your child",
-    body: "We personally pair a teacher to your child's age, instrument and goal - not whoever happens to be free that day.",
+    body: "We personally pair a teacher to your child's age, instrument and goal, not whoever happens to be free that day.",
   },
   {
-    img: "/images/moments/03-stage-guitar.webp",
+    img: "/images/moments/09-mentor.webp",
     kicker: "A real method",
     title: "Structure, not a pile of songs",
-    body: "Technique, theory, rhythm and ear training - taught step by step, the way music is actually meant to be learnt.",
+    body: "Technique, theory, rhythm and ear training, taught step by step, the way music is actually meant to be learnt.",
   },
   {
     img: "/images/portal-preview.webp",
     kicker: "Tracked for you",
     title: "Every class, written up",
-    body: "After each class you see what was taught, the homework and what's next - right inside your own parent portal.",
+    body: "After each class you see what was taught, the homework and what comes next, right inside your own parent portal.",
   },
   {
     img: "/images/moments/02-openmic.webp",
@@ -182,23 +182,30 @@ export const HOW_STEPS: HowStep[] = [
   },
 ];
 
-// Short, punchy "what you'll achieve" cards - image with text over it. Replaces
-// the long Foundation section on the homepage.
+// Short milestone cards, image with text over it. Teaching-story photos only.
 export interface Achievement { img: string; title: string; sub: string }
 export const ACHIEVEMENTS: Achievement[] = [
-  { img: "/images/moments/03-stage-guitar.webp", title: "Play your first song", sub: "In your early weeks, not someday." },
-  { img: "/images/moments/02-openmic.webp", title: "Perform on a real stage", sub: "Open mics every few months." },
-  { img: "/images/moments/05-group.webp", title: "Earn real recognition", sub: "Student-of-the-term & showcases." },
+  { img: "/images/moments/05-group.webp", title: "Play your first song", sub: "In your early weeks, not someday." },
+  { img: "/images/moments/openmic-audience.webp", title: "Perform on a real stage", sub: "Open mics every few months." },
+  { img: "/images/moments/04-award.webp", title: "Earn real recognition", sub: "Student of the term and showcases." },
   { img: "/images/moments/09-mentor.webp", title: "Grow with a mentor", sub: "One teacher who knows you." },
 ];
 
-// Foundation curriculum roadmap - what the student LEARNS in each chapter. This
+// Founder credibility (network photos live here, never in the teaching story).
+export interface CredibilityShot { src: string; alt: string; caption: string }
+export const FOUNDER_CREDIBILITY: CredibilityShot[] = [
+  { src: "/images/moments/01-celeb.webp", alt: "Founder Abhishek Kumar with a well-known musician", caption: "With musicians from the wider Delhi scene." },
+  { src: "/images/moments/06-speech.webp", alt: "Founder Abhishek Kumar speaking at an event", caption: "Invited to speak and judge at Delhi events." },
+  { src: "/images/moments/07-office.webp", alt: "Founder Abhishek Kumar with IAS officer Armstrong Pame", caption: "With IAS officer Armstrong Pame." },
+];
+
+// Foundation curriculum roadmap, what the student LEARNS in each chapter. This
 // is a public overview, so it shows the path, never fake progress numbers (live
 // progress lives in the parent portal, where it is real).
 export interface RoadmapChapter { n: number; name: string; learn: string }
 export const FOUNDATION_ROADMAP: RoadmapChapter[] = [
-  { n: 1, name: "Starting Right", learn: "Getting comfortable with the instrument - posture, first clean sounds, basic rhythm and a daily practice habit." },
-  { n: 2, name: "Building Basics", learn: "First real notes, chords and scales - moving from just comfortable to actually in control." },
+  { n: 1, name: "Starting Right", learn: "Getting comfortable with the instrument, posture, first clean sounds, basic rhythm and a daily practice habit." },
+  { n: 2, name: "Building Basics", learn: "First real notes, chords and scales, moving from just comfortable to actually in control." },
   { n: 3, name: "Musical Confidence", learn: "Playing real songs and exercises with steady timing, and starting to practise independently." },
   { n: 4, name: "Ready for the Next Level", learn: "A simple performance piece, a review of strengths and gaps, and a clear plan into the Main Pathway." },
 ];

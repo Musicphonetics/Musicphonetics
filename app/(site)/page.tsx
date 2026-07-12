@@ -10,6 +10,7 @@ import { RealMoments } from "@/components/home/RealMoments";
 import { ReviewsSection } from "@/components/home/Reviews";
 import { CentreEvents } from "@/components/home/CentreEvents";
 import { FounderSection } from "@/components/home/FounderSection";
+import { FounderCredibility } from "@/components/home/FounderCredibility";
 import { FinalCTA } from "@/components/home/FinalCTA";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { REVIEWS, HOME_REVIEW_COUNT } from "@/lib/home-config";
@@ -65,6 +66,7 @@ export default function HomePage() {
       <NightOnlinePresence />
       <CentreEvents />
       <FounderSection />
+      <FounderCredibility />
       <FinalCTA />
     </>
   );

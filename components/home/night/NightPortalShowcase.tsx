@@ -2,7 +2,7 @@ import Link from "next/link";
 import { Reveal } from "@/components/ui/Reveal";
 
 const INSIDE = [
-  { t: "Every class, written up", d: "What was taught, the homework and what's next - after each class." },
+  { t: "Every class, written up", d: "What was taught, the homework and what's next, after each class." },
   { t: "Live progress tracking", d: "See exactly where your child is on their journey." },
   { t: "Monthly reports", d: "Attendance, performance and your teacher's honest feedback." },
   { t: "Pay & renew online", d: "Handle fees securely, right from the portal." },
@@ -20,7 +20,7 @@ export function NightPortalShowcase() {
             <div className="relative mx-auto w-full max-w-[280px]">
               <span aria-hidden="true" className="pointer-events-none absolute -inset-6 rounded-[3rem] bg-gold/15 blur-3xl" />
               <div className="relative rounded-[2.2rem] border-[6px] border-[#0b0e15] bg-[#0b0e15] p-1 shadow-[0_40px_90px_-30px_rgba(22,27,38,0.5)]">
-                <img src="/images/portal-preview.webp" alt="The Musicphonetics parent portal - a child's learning journey, class updates and fees"
+                <img src="/images/portal-preview.webp" alt="The Musicphonetics parent portal, a child's learning journey, class updates and fees"
                   loading="lazy" decoding="async" className="w-full rounded-[1.8rem]" />
               </div>
             </div>
@@ -37,7 +37,7 @@ export function NightPortalShowcase() {
                 Know exactly how your child is doing.
               </h2>
               <p className="mt-3 max-w-md text-[0.95rem] leading-relaxed text-ivory/65 sm:text-base">
-                The moment your child joins, you get your own login - a calm, clear window into their music, updated by their teacher every single class.
+                The moment your child joins, you get your own login, a calm, clear window into their music, updated by their teacher every single class.
               </p>
             </Reveal>
             <Reveal delay={100}>

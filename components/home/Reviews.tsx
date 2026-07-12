@@ -84,7 +84,7 @@ export function ReviewsSection({ files }: { files: string[] }) {
           Families who stayed.
         </h2>
         <p className="mt-4 max-w-xl text-[1.0625rem] leading-relaxed text-ivory/70">
-          Real Google reviews from parents and students — shown exactly as received.
+          Real Google reviews from parents and students, shown exactly as received.
         </p>
 
         <div className="mt-10">

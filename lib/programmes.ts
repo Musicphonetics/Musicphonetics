@@ -1,5 +1,5 @@
 // ============================================================================
-// Detailed programme content - powers the /programmes/[slug] pages.
+// Detailed programme content, powers the /programmes/[slug] pages.
 // Edit copy here without touching the page template.
 // ============================================================================
 
@@ -37,9 +37,9 @@ export const PROGRAMMES: Programme[] = [
     cadence: "8 classes / month · 1 hour each",
     heroImage: "/images/hero/slide-2.webp",
     intro:
-      "A calm, correct first start on your instrument - designed for absolute beginners who want to learn properly, without pressure.",
+      "A calm, correct first start on your instrument, designed for absolute beginners who want to learn properly, without pressure.",
     whoStudents: [
-      "Complete beginners - children (6+) and adults",
+      "Complete beginners, children (6+) and adults",
       "Anyone who tried learning randomly and wants real structure",
       "Hobby learners exploring guitar, piano/keyboard or vocals",
       "Nervous first-timers who want a gentle, guided start",
@@ -65,8 +65,8 @@ export const PROGRAMMES: Programme[] = [
     ],
     howItWorks: [
       { t: "A quick consultation", d: "We chat on WhatsApp to understand the student's age, goal and comfort level." },
-      { t: "The right teacher, matched", d: "We assign a teacher who fits the learner - not whoever is free." },
-      { t: "8 one-hour classes a month", d: "At home, online, or at our South Delhi centre - you choose." },
+      { t: "The right teacher, matched", d: "We assign a teacher who fits the learner, not whoever is free." },
+      { t: "8 one-hour classes a month", d: "At home, online, or at our South Delhi centre, you choose." },
       { t: "Simple progress notes", d: "After classes, so you always know how things are going." },
     ],
     duration: "8 classes per month · 1 hour each · billed monthly.",
@@ -74,14 +74,14 @@ export const PROGRAMMES: Programme[] = [
     whatToExpect: [
       { when: "Month 1", t: "Comfortable & confident", d: "Holding the instrument correctly, first notes and chords, steady hands." },
       { when: "Month 2", t: "Your first song", d: "Playing a simple piece with steady rhythm and growing confidence." },
-      { when: "Month 3", t: "Ready to grow", d: "A small piece start-to-finish - and a clear decision on the Main Pathway." },
+      { when: "Month 3", t: "Ready to grow", d: "A small piece start-to-finish, and a clear decision on the Main Pathway." },
     ],
     faq: [
-      { q: "Is this really for complete beginners?", a: "Yes - Foundation is built for people starting from zero, children and adults alike." },
+      { q: "Is this really for complete beginners?", a: "Yes, Foundation is built for people starting from zero, children and adults alike." },
       { q: "Does it include exams or grades?", a: "No. Trinity grades and exam preparation are part of the Main Pathway, not Foundation." },
-      { q: "Home or online?", a: "Both - plus our South Delhi centre. You choose what suits you." },
+      { q: "Home or online?", a: "Both, plus our South Delhi centre. You choose what suits you." },
       { q: "What age can start?", a: "Children from around 6 years, and adults of any age." },
-      { q: "Can I move to the Main Pathway later?", a: "Yes - most serious students move up after about 4 months." },
+      { q: "Can I move to the Main Pathway later?", a: "Yes, most serious students move up after about 4 months." },
     ],
     ctaMsg: "Hi Musicphonetics, I'd like to enrol in the Foundation plan.",
   },
@@ -94,7 +94,7 @@ export const PROGRAMMES: Programme[] = [
     badge: "Most Recommended",
     heroImage: "/images/hero/slide-3.webp",
     intro:
-      "The full Musicphonetics system - structure, theory, performance and real, tracked progress. This is where serious students are built.",
+      "The full Musicphonetics system, structure, theory, performance and real, tracked progress. This is where serious students are built.",
     whoStudents: [
       "Serious learners of any age who want to genuinely get good",
       "Students preparing for Trinity or graded exams",
@@ -124,7 +124,7 @@ export const PROGRAMMES: Programme[] = [
       { t: "Consultation & assessment", d: "We understand the student's level and goals, then build a personalised plan." },
       { t: "A specialist teacher, matched", d: "Chosen for the student's instrument, level and ambition." },
       { t: "8 structured one-hour classes a month", d: "Following the graded Musicphonetics curriculum and Trinity pathway." },
-      { t: "Tracked, with oversight", d: "Class updates, progress notes and founder oversight - plus performance opportunities." },
+      { t: "Tracked, with oversight", d: "Class updates, progress notes and founder oversight, plus performance opportunities." },
     ],
     duration: "8 classes per month · 1 hour each · billed monthly, ongoing.",
     format: "At home across Delhi NCR · Online anywhere · At our South Delhi centre.",
@@ -135,10 +135,10 @@ export const PROGRAMMES: Programme[] = [
       { when: "6 months +", t: "Confident & stage-ready", d: "Graded progress, real performance confidence, a clear onward path." },
     ],
     faq: [
-      { q: "How is this different from Foundation?", a: "Structure, theory, exam preparation, performance and full progress tracking - it's the complete system." },
-      { q: "Do you prepare students for Trinity exams?", a: "Yes, where applicable - the curriculum follows the Trinity pathway." },
+      { q: "How is this different from Foundation?", a: "Structure, theory, exam preparation, performance and full progress tracking, it's the complete system." },
+      { q: "Do you prepare students for Trinity exams?", a: "Yes, where applicable, the curriculum follows the Trinity pathway." },
       { q: "Which instruments?", a: "Guitar, Piano/Keyboard and Vocals, with more across our faculty." },
-      { q: "Is online the same quality?", a: "Yes - the same structured curriculum and tracking, delivered live online." },
+      { q: "Is online the same quality?", a: "Yes, the same structured curriculum and tracking, delivered live online." },
       { q: "How soon will I see progress?", a: "You'll have structured milestones from the very first month." },
     ],
     ctaMsg: "Hi Musicphonetics, I'd like to enrol in the Main Pathway.",
@@ -176,22 +176,22 @@ export const PROGRAMMES: Programme[] = [
       "Direct founder-level mentorship",
     ],
     howItWorks: [
-      { t: "Request access", d: "Message us on WhatsApp - a short conversation to understand your goals." },
+      { t: "Request access", d: "Message us on WhatsApp, a short conversation to understand your goals." },
       { t: "We assess fit", d: "The Director's Circle is selective; we make sure it's right for you." },
-      { t: "Join the waitlist", d: "Limited seats - a typical wait of about a week." },
+      { t: "Join the waitlist", d: "Limited seats, a typical wait of about a week." },
       { t: "A bespoke plan begins", d: "Designed with you directly, under founder-level oversight." },
     ],
     duration: "By arrangement · limited seats.",
-    format: "Personally arranged - in person and/or online.",
+    format: "Personally arranged, in person and/or online.",
     whatToExpect: [
       { when: "Step 1", t: "A personal conversation", d: "We understand exactly where you are and what you're aiming for." },
       { when: "Step 2", t: "A bespoke plan", d: "Your journey is designed around your level, goals and timeline." },
       { when: "Ongoing", t: "Founder-level mentoring", d: "Closely guided progress toward performance, audition or mastery." },
     ],
     faq: [
-      { q: "How do I join?", a: "By request only - message us and we'll assess fit for the programme." },
-      { q: "Is there a waitlist?", a: "Yes - seats are limited, with a typical wait of about a week." },
-      { q: "Is it for beginners?", a: "No - the Director's Circle is for advanced, highly committed students." },
+      { q: "How do I join?", a: "By request only, message us and we'll assess fit for the programme." },
+      { q: "Is there a waitlist?", a: "Yes, seats are limited, with a typical wait of about a week." },
+      { q: "Is it for beginners?", a: "No, the Director's Circle is for advanced, highly committed students." },
       { q: "What is the fee?", a: "Shared on request, based on your bespoke plan." },
     ],
     ctaMsg: "Hi Musicphonetics, I'd like to request access to the Director's Circle.",

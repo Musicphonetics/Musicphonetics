@@ -36,7 +36,7 @@ export function HeroInstitution() {
 
           <p className="mt-6 max-w-[46ch] text-[1.05rem] leading-relaxed text-ivory/80 sm:text-[1.15rem]">
             A teacher matched to your child, a real method, and a stage to perform on.
-            Guitar, piano/keyboard and vocals — across Delhi NCR and online.
+            Guitar, piano/keyboard and vocals, across Delhi NCR and online.
           </p>
 
           <div className="mt-9 flex flex-wrap items-center gap-x-7 gap-y-4">

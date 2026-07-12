@@ -14,17 +14,17 @@ export function FunnelPackages() {
         <SectionHeader
           eyebrow="Programmes"
           title="Choose the path that fits the student."
-          sub="Clear plans, clear fees — and a short conversation first, so we match the right teacher before anything begins."
+          sub="Clear plans, clear fees, and a short conversation first, so we match the right teacher before anything begins."
           invert
         />
 
         <div className="mt-12 grid items-center gap-5 md:grid-cols-3">
-          {/* FLAGSHIP — Main */}
+          {/* FLAGSHIP, Main */}
           <Reveal className="order-1 md:order-2">
             <div className="relative z-10 flex h-full flex-col rounded-2xl border border-gold bg-charcoal-2 p-8 shadow-[0_24px_60px_-24px_rgba(0,0,0,0.55)] md:-my-2 md:scale-[1.05]">
               <span className="absolute -top-3 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full bg-charcoal px-3 py-1 text-[0.7rem] font-medium uppercase tracking-[0.16em] text-ivory ring-1 ring-gold/40">Most chosen</span>
               <h3 className="font-display text-2xl font-medium text-ivory">The Main Pathway</h3>
-              <p className="mt-2 text-sm leading-relaxed text-ivory/65">The full Musicphonetics system — for real, lasting progress.</p>
+              <p className="mt-2 text-sm leading-relaxed text-ivory/65">The full Musicphonetics system, for real, lasting progress.</p>
               <Fee amount="₹12,000" note="8 one-hour classes" />
               <Bullets items={[
                 "A matched teacher and a structured curriculum",
@@ -77,7 +77,7 @@ export function FunnelPackages() {
 
         <Reveal>
           <p className="mx-auto mt-10 max-w-xl text-center text-sm leading-relaxed text-ivory/60">
-            Not sure which fits? Message us the student&apos;s age, instrument and goal — we&apos;ll match
+            Not sure which fits? Message us the student&apos;s age, instrument and goal, we&apos;ll match
             the right teacher and the right plan first.
           </p>
         </Reveal>

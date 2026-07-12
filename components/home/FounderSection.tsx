@@ -29,12 +29,12 @@ export function FounderSection() {
                 <span className="text-[0.75rem] font-semibold uppercase tracking-[0.16em] text-gold">The founder</span>
               </div>
               <blockquote className="mt-5 font-display text-[clamp(1.5rem,3.4vw,2.1rem)] font-medium leading-[1.18] text-ivory">
-                &ldquo;I started with one guitar and one student. Today it&apos;s a proper school - but every family still gets my personal sign-off.&rdquo;
+                &ldquo;I started with one guitar and one student. Today it&apos;s a proper school, but every family still gets my personal sign-off.&rdquo;
               </blockquote>
             </Reveal>
             <Reveal delay={100}>
               <div className="mt-6 space-y-3.5 text-[0.95rem] leading-relaxed text-ivory/70 sm:text-base">
-                <p>Ten years ago I was teaching a single student in Delhi. What bothered me was how random music classes were - a few songs, no structure, no direction, and no stage.</p>
+                <p>Ten years ago I was teaching a single student in Delhi. What bothered me was how random music classes were: a few songs, no structure, no direction, and no stage.</p>
                 <p>So I built Musicphonetics to fix exactly that: a teacher matched to each student, a real method that goes step by step, and open mics where practice finally turns into confidence. Over 1,100 students later, that promise hasn&apos;t changed.</p>
                 <p className="font-medium text-ivory">If your child joins us, you&apos;re not one of a hundred. You&apos;re mine to look after.</p>
               </div>

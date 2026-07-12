@@ -33,7 +33,7 @@ export function PracticeCalculator() {
         <SectionHeader
           eyebrow="Try it · 30 seconds"
           title="See what you could achieve."
-          sub="Adjust the plan and watch your six-month journey add up — this is the plan we'd build with you."
+          sub="Adjust the plan and watch your six-month journey add up, this is the plan we'd build with you."
           invert
         />
 
@@ -62,7 +62,7 @@ export function PracticeCalculator() {
             </div>
 
             <div className="mt-5">
-              <WhatsAppCTA fullWidth label="Start this plan" message={`Hi Musicphonetics, I'd like to start ${INSTRUMENTS[instrument]} - about ${days} days a week, ${mins} mins a day. My goal: ${GOALS[goal]}.`} />
+              <WhatsAppCTA fullWidth label="Start this plan" message={`Hi Musicphonetics, I'd like to start ${INSTRUMENTS[instrument]}, about ${days} days a week, ${mins} mins a day. My goal: ${GOALS[goal]}.`} />
             </div>
           </div>
         </div>

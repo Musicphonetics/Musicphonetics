@@ -100,7 +100,7 @@ export default function OwnerMessages() {
             <span className="mb-1.5 block text-sm font-semibold text-ink">Student</span>
             <select value={studentId} onChange={(e) => setStudentId(e.target.value)} className={SELECT}>
               <option value="">Select a student…</option>
-              {people.students.map((s) => <option key={s.id} value={s.id}>{s.name}{s.sub ? ` — ${s.sub}` : ""}</option>)}
+              {people.students.map((s) => <option key={s.id} value={s.id}>{s.name}{s.sub ? `, ${s.sub}` : ""}</option>)}
             </select>
             {people.students.length === 0 && <span className="mt-1 block text-xs text-ink/50">No students found yet.</span>}
           </label>
@@ -157,7 +157,7 @@ export default function OwnerMessages() {
       {/* Existing */}
       <div className="mt-6">
         <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-ink/55">Sent messages</p>
-        {err && <div className="mb-3 rounded-xl border border-red-300 bg-red-50 p-3 text-sm text-red-700">{err} — have you run the director_messages.sql migration?</div>}
+        {err && <div className="mb-3 rounded-xl border border-red-300 bg-red-50 p-3 text-sm text-red-700">{err}, have you run the director_messages.sql migration?</div>}
         {!rows ? <Loading /> : rows.length === 0 ? (
           <p className="rounded-2xl border border-dashed border-hairline bg-paper p-6 text-sm text-ink/55">No messages yet.</p>
         ) : (
