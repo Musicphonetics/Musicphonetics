@@ -22,12 +22,12 @@ export const BILLING_POLICY: string[] = [
   "Fees are aligned to the calendar month so billing is simple and predictable.",
   "If you join mid-month, your first payment is pro-rated for the remaining days only.",
   "From then on, the monthly fee is due at the start of each month (1st or 2nd).",
-  "Payments are made only through the official Musicphonetics Cashfree link.",
+  "Payments are made only through the official Musicphonetics secure payment link.",
 ];
 
 // The terms a family reads and agrees to BEFORE paying.
 export const TERMS_AGREED: string[] = [
-  "Fees are paid only through the official Musicphonetics Cashfree link.",
+  "Fees are paid only through the official Musicphonetics secure payment link.",
   "8 classes per month, to be completed within 35 days of the cycle start.",
   "Unused classes lapse after 35 days; the cycle must be renewed to continue.",
   "Rescheduling is allowed with advance notice, subject to teacher availability.",

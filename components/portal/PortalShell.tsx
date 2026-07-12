@@ -75,21 +75,25 @@ export function PortalShell({
     return (
       <div className="min-h-screen bg-paper">
         <header className="sticky top-0 z-30 border-b border-hairline bg-ink text-paper">
-          <div className="mx-auto flex max-w-6xl flex-wrap items-center gap-x-6 gap-y-2 px-4 py-3">
-            <p className="font-display text-base font-semibold">Musicphonetics <span className="text-gold">Owner</span></p>
-            <nav className="flex flex-1 flex-wrap items-center gap-1">
+          <div className="mx-auto max-w-6xl px-4 py-3">
+            {/* Brand + sign out */}
+            <div className="flex items-center justify-between gap-3">
+              <p className="font-display text-base font-semibold">Musicphonetics <span className="text-gold">Owner</span></p>
+              <button onClick={() => signOut()} className="shrink-0 rounded-full border border-white/15 px-3 py-1 text-sm text-paper/70 hover:text-paper">Sign out</button>
+            </div>
+            {/* Tabs: horizontally scrollable on mobile, wrap on desktop */}
+            <nav className="-mx-1 mt-2.5 flex items-center gap-1 overflow-x-auto px-1 pb-0.5 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden md:mt-2 md:flex-wrap md:overflow-visible">
               {tabs.map((t) => {
                 const active = pathname === t.href;
                 return (
                   <Link key={t.href} href={t.href}
-                    className={cn("rounded-full px-3 py-1.5 text-sm font-medium transition-colors",
-                      active ? "bg-gold text-ink" : "text-paper/70 hover:text-paper")}>
+                    className={cn("shrink-0 whitespace-nowrap rounded-full px-3 py-1.5 text-sm font-medium transition-colors",
+                      active ? "bg-gold text-ink" : "text-paper/70 hover:bg-white/10 hover:text-paper")}>
                     {t.label}
                   </Link>
                 );
               })}
             </nav>
-            <button onClick={() => signOut()} className="text-sm text-paper/60 hover:text-paper">Sign out</button>
           </div>
         </header>
         <main className="mx-auto max-w-6xl px-4 py-6">

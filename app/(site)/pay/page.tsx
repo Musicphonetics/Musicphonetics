@@ -4,7 +4,7 @@ import { PayClient } from "@/components/pay/PayClient";
 
 export const metadata: Metadata = {
   title: "Pay securely",
-  description: "Pay for your Musicphonetics plan securely with Cashfree.",
+  description: "Pay for your Musicphonetics plan securely through the official payment link.",
   robots: { index: false, follow: false },
 };
 
