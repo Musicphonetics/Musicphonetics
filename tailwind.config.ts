@@ -15,6 +15,8 @@ const config: Config = {
         "deep-gold": "#A8851B",
         paper: "#F6F4EF",
         mist: "#ECE8DF",
+        cream: "#F6F0E4",
+        "cream-2": "#F1E8D6",
         "feature-green": "#1F3D2F",
         midnight: "#0B0F18",
         // Institution palette (revamp brief): charcoal surfaces, ivory text,
@@ -36,6 +38,7 @@ const config: Config = {
       fontFamily: {
         display: ["var(--font-display)", "Fraunces", "Georgia", "serif"],
         body: ["var(--font-body)", "Hanken Grotesk", "system-ui", "sans-serif"],
+        script: ["var(--font-script)", "cursive"],
       },
       maxWidth: {
         content: "1200px",

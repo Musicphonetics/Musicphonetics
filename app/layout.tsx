@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Fraunces, Hanken_Grotesk } from "next/font/google";
+import { Fraunces, Hanken_Grotesk, Dancing_Script } from "next/font/google";
 import "@/styles/globals.css";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { organizationJsonLd, websiteJsonLd, OG_ORIGIN } from "@/lib/seo";
@@ -14,8 +14,15 @@ const display = Fraunces({
 
 const body = Hanken_Grotesk({
   subsets: ["latin"],
-  weight: ["400", "500", "600"],
+  weight: ["400", "500", "600", "700", "800"],
   variable: "--font-body",
+  display: "swap",
+});
+
+const script = Dancing_Script({
+  subsets: ["latin"],
+  weight: ["600", "700"],
+  variable: "--font-script",
   display: "swap",
 });
 
@@ -63,12 +70,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${display.variable} ${body.variable}`}>
+    <html lang="en" className={`${display.variable} ${body.variable} ${script.variable}`}>
       <body>
         {/* Preload the first hero image so it's ready the instant the intro
             flash lifts - critical for the reel-first opening. */}
         {/* eslint-disable-next-line @next/next/no-page-custom-font */}
-        <link rel="preload" as="image" href="/images/hero/slide-1.webp" fetchPriority="high" />
+        <link rel="preload" as="image" href="/images/hero/piano-girl.webp" fetchPriority="high" />
         {/* Mark that JS is available so scroll-reveal styles apply; without this
             (JS disabled/blocked) content renders fully visible, never blank. */}
         <script dangerouslySetInnerHTML={{ __html: "document.documentElement.classList.add('js')" }} />
