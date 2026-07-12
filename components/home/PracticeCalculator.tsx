@@ -28,7 +28,7 @@ export function PracticeCalculator() {
   const consistency = Math.min(100, Math.round((weeklyMin / 210) * 100));
 
   return (
-    <section className="bg-charcoal py-24 md:py-32">
+    <section className="bg-charcoal pb-24 pt-14 md:pb-32 md:pt-20">
       <div className="container-mp">
         <SectionHeader
           eyebrow="Try it · 30 seconds"
