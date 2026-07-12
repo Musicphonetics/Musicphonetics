@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 
 /**
@@ -9,6 +10,8 @@ import { cn } from "@/lib/utils";
  */
 export function StickyTrialBar() {
   const [show, setShow] = useState(false);
+  // The bar leads into the homepage programmes section, so only show it there.
+  const onHome = usePathname() === "/";
 
   useEffect(() => {
     const onScroll = () => setShow(window.scrollY > window.innerHeight * 0.8);
@@ -16,6 +19,8 @@ export function StickyTrialBar() {
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
+
+  if (!onHome) return null;
 
   return (
     <div

@@ -7,7 +7,7 @@ import { Stave } from "@/components/ui/Stave";
 import { InstrumentIcon } from "@/components/ui/InstrumentIcon";
 import { INSTRUMENTS, EXPERIENCE, MODES } from "@/lib/onboarding";
 import { WEEK_DAYS, saveEnrolment } from "@/lib/enrolment";
-import { computeProrata, SCHEDULE_POLICY, TERMS_AGREED } from "@/lib/policy";
+import { computeProrata, SCHEDULE_POLICY, BILLING_POLICY, TERMS_AGREED } from "@/lib/policy";
 import { loadRazorpay, createOrder, verifyPayment } from "@/lib/razorpay";
 import { cn } from "@/lib/utils";
 
@@ -45,6 +45,8 @@ export function PayClient() {
   const [agreed, setAgreed] = useState(false);
   const [paying, setPaying] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  // Two-step booking: 1 = details, 2 = read the terms and pay.
+  const [step, setStep] = useState<1 | 2>(1);
 
   // Warm up the Razorpay script as soon as the page loads, so the pay click is
   // instant and any load problem shows up before the customer commits.
@@ -64,6 +66,17 @@ export function PayClient() {
 
   const detailsReady = Boolean(name.trim() && instrument && days.length > 0 && startDate);
   const ready = detailsReady && agreed && payNow > 0;
+
+  function goToTerms() {
+    if (!detailsReady) return;
+    setError(null);
+    setStep(2);
+    window.scrollTo({ top: 0, behavior: "auto" });
+  }
+  function backToDetails() {
+    setStep(1);
+    window.scrollTo({ top: 0, behavior: "auto" });
+  }
 
   async function proceed() {
     if (!ready || paying) return;
@@ -142,7 +155,7 @@ export function PayClient() {
     <div className="mx-auto w-full max-w-lg">
       <div className="rounded-3xl border border-white/12 bg-white/[0.05] p-6 shadow-card-hover backdrop-blur-md sm:p-8">
         <Stave className="w-16 opacity-70" />
-        <p className="mt-5 eyebrow text-gold">Enrol &amp; pay</p>
+        <p className="mt-5 eyebrow text-gold">{step === 1 ? "Step 1 of 2 · Your details" : "Step 2 of 2 · Terms & payment"}</p>
         <h1 className="mt-2 font-display text-2xl font-semibold text-paper sm:text-3xl">{planName}</h1>
         {monthly > 0 && (
           <p className="mt-1 text-sm text-paper/70">
@@ -150,10 +163,13 @@ export function PayClient() {
           </p>
         )}
 
+        {step === 1 && (
+        <>
         {/* Student name */}
         <Group n={1} label="Who is enrolling?">
           <input
             value={name} onChange={(e) => setName(e.target.value)}
+            aria-label="Student's full name"
             placeholder="Student's full name"
             className="w-full rounded-xl border border-white/15 bg-white/[0.04] px-4 py-3 text-sm text-paper placeholder:text-paper/40 focus-visible:outline-2 focus-visible:outline-gold focus:outline-none"
           />
@@ -201,7 +217,7 @@ export function PayClient() {
         {/* Start date */}
         <Group n={6} label="When would you like to start?" hint="Your fee plan is built around this date.">
           <input
-            type="date" value={startDate} min={todayISO()} onChange={(e) => setStartDate(e.target.value)}
+            type="date" aria-label="Preferred start date" value={startDate} min={todayISO()} onChange={(e) => setStartDate(e.target.value)}
             className="w-full rounded-xl border border-white/15 bg-white/[0.04] px-4 py-3 text-sm text-paper [color-scheme:dark] focus-visible:outline-2 focus-visible:outline-gold focus:outline-none"
           />
         </Group>
@@ -237,29 +253,61 @@ export function PayClient() {
           </div>
         )}
 
-        {/* Please read before paying - class schedule */}
-        <div className="mt-7 rounded-2xl border border-white/12 bg-white/[0.03] p-5">
-          <p className="text-xs font-semibold uppercase tracking-wide text-paper/60">Please read before you pay · Class schedule</p>
-          <ul className="mt-3 space-y-2">
-            {SCHEDULE_POLICY.map((s) => (
-              <li key={s} className="flex items-start gap-2.5 text-sm leading-relaxed text-paper/80">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true" className="mt-0.5 shrink-0 text-gold"><path d="M5 12l4 4 10-10" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" /></svg>
-                {s}
-              </li>
-            ))}
-          </ul>
+        {/* Continue to the terms step */}
+        <button
+          type="button" onClick={goToTerms} disabled={!detailsReady}
+          className={cn("mt-7 inline-flex min-h-[54px] w-full items-center justify-center gap-2 rounded-full px-6 text-base font-semibold transition-all active:scale-[0.99]",
+            detailsReady ? "bg-gold text-ink shadow-card hover:bg-deep-gold" : "cursor-not-allowed bg-white/10 text-paper/40")}>
+          {detailsReady ? "Continue to terms" : "Fill your details to continue"}
+          {detailsReady && <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>}
+        </button>
+        {!detailsReady && (
+          <p className="mt-2 text-center text-xs text-paper/50">Name, instrument, at least one day and a start date are needed.</p>
+        )}
+        </>
+        )}
+
+        {step === 2 && (
+        <>
+        {/* Booking summary */}
+        <button type="button" onClick={backToDetails} className="mt-6 inline-flex items-center gap-1.5 text-sm text-paper/60 transition-colors hover:text-gold">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>
+          Edit your details
+        </button>
+        <div className="mt-4 grid grid-cols-2 gap-3 rounded-2xl border border-white/12 bg-white/[0.04] p-4 text-sm">
+          <SummaryItem label="Student" value={name.trim()} />
+          <SummaryItem label="Instrument" value={instrument} />
+          <SummaryItem label="Preferred days" value={days.join(", ")} />
+          <SummaryItem label="Start date" value={prettyDate(startDate)} />
+          <SummaryItem label="Pay now to enrol" value={inr(payNow)} highlight />
         </div>
 
-        {/* Terms & conditions */}
+        <h2 className="mt-7 font-display text-xl font-semibold text-paper">The terms, in full</h2>
+        <p className="mt-1.5 text-sm leading-relaxed text-paper/70">
+          Please read these carefully. When you enrol you are agreeing to them, so we explain everything clearly here before any payment is taken.
+        </p>
+
+        {/* Class schedule, explained */}
+        <TermsBlock title="How your classes work">
+          {SCHEDULE_POLICY.map((s) => <TermsLine key={s}>{s}</TermsLine>)}
+        </TermsBlock>
+
+        {/* Fees & billing, explained */}
+        <TermsBlock title="Fees and billing">
+          {BILLING_POLICY.map((s) => <TermsLine key={s}>{s}</TermsLine>)}
+        </TermsBlock>
+
+        {/* The agreement terms */}
+        <TermsBlock title="What you're agreeing to">
+          {TERMS_AGREED.map((t) => <TermsLine key={t}>{t}</TermsLine>)}
+        </TermsBlock>
+
+        {/* Refunds & withdrawal */}
         <div className="mt-4 rounded-2xl border border-white/12 bg-white/[0.03] p-5">
-          <p className="text-xs font-semibold uppercase tracking-wide text-paper/60">Terms &amp; conditions</p>
-          <ol className="mt-3 space-y-2">
-            {TERMS_AGREED.map((t, i) => (
-              <li key={t} className="flex gap-2.5 text-sm leading-relaxed text-paper/80">
-                <span className="font-semibold text-gold">{i + 1}.</span> {t}
-              </li>
-            ))}
-          </ol>
+          <p className="text-xs font-semibold uppercase tracking-wide text-paper/60">Refunds and withdrawal</p>
+          <p className="mt-2.5 text-sm leading-relaxed text-paper/80">
+            Fees are billed monthly and in advance. A missed class is rescheduled where possible, subject to teacher availability. To pause or withdraw, tell us before your next billing date and we will stop the next cycle. Completed months are non refundable. There are no hidden charges, and all fees are billed only in the Musicphonetics name through a secure gateway.
+          </p>
           <p className="mt-3 text-xs text-paper/55">
             Full documents:{" "}
             <Link href="/standards/terms-conditions" className="font-semibold text-gold underline underline-offset-2">Terms &amp; Conditions</Link>{" · "}
@@ -268,11 +316,11 @@ export function PayClient() {
         </div>
 
         {/* Agreement */}
-        <label className="mt-4 flex cursor-pointer items-start gap-3 rounded-2xl border border-white/12 bg-white/[0.04] p-4">
+        <label className="mt-5 flex cursor-pointer items-start gap-3 rounded-2xl border border-gold/30 bg-gold/[0.06] p-4">
           <input type="checkbox" checked={agreed} onChange={(e) => setAgreed(e.target.checked)}
             className="mt-0.5 h-5 w-5 shrink-0 accent-gold" />
-          <span className="text-sm leading-relaxed text-paper/85">
-            I have read and agree to the class schedule, fees and terms &amp; conditions above.
+          <span className="text-sm leading-relaxed text-paper/90">
+            I have read and I agree to the class schedule, fees, refund policy and terms &amp; conditions above.
           </span>
         </label>
 
@@ -303,9 +351,11 @@ export function PayClient() {
           Encrypted &amp; secure · UPI, cards &amp; netbanking
         </p>
         <p className="mt-3 text-center text-xs leading-relaxed text-paper/50">
-          A secure payment window opens for {payNow > 0 ? inr(payNow) : "your amount"}. Your details above
+          A secure payment window opens for {payNow > 0 ? inr(payNow) : "your amount"}. Your details
           are saved, so your welcome document is ready the moment payment succeeds.
         </p>
+        </>
+        )}
       </div>
 
       <p className="mt-5 text-center text-sm text-paper/60">
@@ -323,11 +373,38 @@ function Group({ n, label, hint, optional, children }: {
       <div className="mb-2.5 flex items-baseline gap-2">
         <span className="grid h-5 w-5 shrink-0 place-items-center rounded-full bg-gold/15 text-[11px] font-semibold text-gold">{n}</span>
         <label className="text-sm font-semibold text-paper">{label}</label>
-        {optional && <span className="text-[11px] text-paper/45">optional</span>}
+        {optional && <span className="text-[11px] text-paper/60">optional</span>}
       </div>
       {hint && <p className="mb-2.5 text-xs leading-relaxed text-paper/55">{hint}</p>}
       {children}
     </div>
+  );
+}
+
+function SummaryItem({ label, value, highlight }: { label: string; value: string; highlight?: boolean }) {
+  return (
+    <div className={cn(highlight && "col-span-2 border-t border-white/10 pt-2.5")}>
+      <p className="text-[11px] uppercase tracking-wide text-paper/50">{label}</p>
+      <p className={cn("mt-0.5 font-medium", highlight ? "text-lg text-gold" : "text-paper")}>{value || "—"}</p>
+    </div>
+  );
+}
+
+function TermsBlock({ title, children }: { title: string; children: React.ReactNode }) {
+  return (
+    <div className="mt-4 rounded-2xl border border-white/12 bg-white/[0.03] p-5">
+      <p className="text-xs font-semibold uppercase tracking-wide text-paper/60">{title}</p>
+      <ul className="mt-3 space-y-2">{children}</ul>
+    </div>
+  );
+}
+
+function TermsLine({ children }: { children: React.ReactNode }) {
+  return (
+    <li className="flex items-start gap-2.5 text-sm leading-relaxed text-paper/80">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true" className="mt-0.5 shrink-0 text-gold"><path d="M5 12l4 4 10-10" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" /></svg>
+      <span>{children}</span>
+    </li>
   );
 }
 
