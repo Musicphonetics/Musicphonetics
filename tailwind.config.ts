@@ -17,11 +17,18 @@ const config: Config = {
         mist: "#ECE8DF",
         "feature-green": "#1F3D2F",
         midnight: "#0B0F18",
-        // Dark, cinematic homepage surfaces (warm near-black + lifted cards)
+        // Institution palette (revamp brief): charcoal surfaces, ivory text,
+        // gold as accent only, muted/line for secondary + hairlines.
+        charcoal: "#161B26",
+        "charcoal-2": "#10141D",
+        ivory: "#F5F1E8",
+        muted: "#8A8578",
+        line: "#DED6C4",
+        forest: "#2C4636",
+        // legacy dark tokens (kept so older components still compile)
         onyx: "#0A0B0E",
         "onyx-1": "#101217",
         "onyx-2": "#161920",
-        forest: "#123024",
       },
       borderColor: {
         hairline: "rgba(22,27,38,.14)",

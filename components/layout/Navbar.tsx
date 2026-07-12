@@ -1,20 +1,22 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Logo } from "./Logo";
-import { Button } from "@/components/ui/Button";
 import { NAV_LINKS, whatsappLink } from "@/lib/data";
 import { cn } from "@/lib/utils";
 
+const TRIAL = whatsappLink("Hi Musicphonetics, I'd like to book a free trial class.");
+
+// Institution nav: transparent over the dark hero, solid charcoal on scroll.
+// Right cluster is a quiet "Parent login" text link + the single gold action.
 export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
-  // Light nav across the whole site now: transparent at the top, solid paper on
-  // scroll. (Kept as a flag so the branches below stay simple.)
-  const isHome = false;
+  // Transparent only over the home hero; solid charcoal elsewhere and on scroll.
+  const transparent = usePathname() === "/" && !scrolled && !open;
 
-  // Sticky nav changes background on scroll
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 12);
     onScroll();
@@ -22,105 +24,82 @@ export function Navbar() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // Lock body scroll + close on Escape when the mobile sheet is open
   useEffect(() => {
     document.body.style.overflow = open ? "hidden" : "";
     if (!open) return;
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setOpen(false);
-    };
+    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") setOpen(false); };
     document.addEventListener("keydown", onKey);
-    return () => {
-      document.body.style.overflow = "";
-      document.removeEventListener("keydown", onKey);
-    };
+    return () => { document.body.style.overflow = ""; document.removeEventListener("keydown", onKey); };
   }, [open]);
 
   return (
     <header
       className={cn(
         "fixed inset-x-0 top-0 z-50 transition-all duration-300",
-        scrolled
-          ? "border-b border-hairline bg-paper/90 shadow-card backdrop-blur-md"
-          : "border-b border-transparent bg-paper/60 backdrop-blur-sm"
+        transparent
+          ? "border-b border-transparent bg-transparent"
+          : "border-b border-white/10 bg-charcoal/95 backdrop-blur-md"
       )}
     >
       <nav className="container-mp flex h-16 items-center justify-between gap-4">
-        <Logo invert={isHome} />
+        <Logo invert />
 
-        {/* Desktop links */}
-        <ul className="hidden items-center gap-7 lg:flex">
+        <ul className="hidden items-center gap-8 lg:flex">
           {NAV_LINKS.map((link) => (
             <li key={link.href}>
-              <Link
-                href={link.href}
-                className={cn(
-                  "text-sm font-medium transition-colors",
-                  isHome ? "text-paper/75 hover:text-paper" : "text-ink/75 hover:text-ink"
-                )}
-              >
+              <Link href={link.href} className="text-sm text-ivory/75 transition-colors hover:text-gold">
                 {link.label}
               </Link>
             </li>
           ))}
         </ul>
 
-        <div className="hidden lg:block">
-          <Button href={whatsappLink("Hi Musicphonetics, I'd like to book a free trial class.")} external size="md" variant="primary">
+        <div className="hidden items-center gap-5 lg:flex">
+          <Link href="/parent/login" className="text-sm text-ivory/75 transition-colors hover:text-gold">Parent login</Link>
+          <a href={TRIAL} target="_blank" rel="noopener noreferrer"
+            className="rounded-md bg-gold px-4 py-2 text-sm font-medium text-charcoal transition hover:brightness-105">
             Book a free trial
-          </Button>
+          </a>
         </div>
 
         {/* Mobile hamburger */}
         <button
           type="button"
-          className={cn(
-            "inline-flex h-10 w-10 items-center justify-center rounded-full border lg:hidden",
-            isHome ? "border-white/20 text-paper" : "border-hairline text-ink"
-          )}
+          className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/20 text-ivory lg:hidden"
           aria-label={open ? "Close menu" : "Open menu"}
           aria-expanded={open}
           onClick={() => setOpen((v) => !v)}
         >
           <span className="sr-only">{open ? "Close menu" : "Open menu"}</span>
           {open ? (
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-              <path d="M6 6l12 12M18 6L6 18" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
-            </svg>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" /></svg>
           ) : (
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-              <path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
-            </svg>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" /></svg>
           )}
         </button>
       </nav>
 
-      {/* Mobile slide-down sheet */}
-      <div
-        className={cn(
-          "overflow-hidden border-t transition-[max-height] duration-300 lg:hidden",
-          isHome ? "border-white/10 bg-onyx" : "border-hairline bg-paper",
-          open ? "max-h-[80vh]" : "max-h-0 border-t-transparent"
-        )}
-      >
+      {/* Mobile sheet */}
+      <div className={cn(
+        "overflow-hidden border-t border-white/10 bg-charcoal transition-[max-height] duration-300 lg:hidden",
+        open ? "max-h-[85vh]" : "max-h-0 border-t-transparent"
+      )}>
         <div className="container-mp flex flex-col gap-1 py-4">
           {NAV_LINKS.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              onClick={() => setOpen(false)}
-              className={cn(
-                "rounded-xl px-3 py-3 text-base font-medium",
-                isHome ? "text-paper/80 hover:bg-white/5 hover:text-paper" : "text-ink/80 hover:bg-mist hover:text-ink"
-              )}
-            >
+            <Link key={link.href} href={link.href} onClick={() => setOpen(false)}
+              className="rounded-xl px-3 py-3 text-base text-ivory/85 hover:bg-white/5 hover:text-gold">
               {link.label}
             </Link>
           ))}
+          <Link href="/parent/login" onClick={() => setOpen(false)}
+            className="rounded-xl px-3 py-3 text-base text-ivory/85 hover:bg-white/5 hover:text-gold">
+            Parent login
+          </Link>
           <div className="mt-3 px-1">
-            <Button href={whatsappLink("Hi Musicphonetics, I'd like to book a free trial class.")} external fullWidth size="lg" variant="primary">
+            <a href={TRIAL} target="_blank" rel="noopener noreferrer"
+              className="flex w-full items-center justify-center rounded-md bg-gold px-4 py-3.5 text-base font-medium text-charcoal">
               Book a free trial
-            </Button>
+            </a>
           </div>
         </div>
       </div>

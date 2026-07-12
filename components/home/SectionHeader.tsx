@@ -13,14 +13,14 @@ export function SectionHeader({
   return (
     <Reveal>
       <div className={cn(center && "text-center", className)}>
-        <div className={cn("flex items-center gap-3", center && "justify-center")}>
-          <span aria-hidden="true" className="h-px w-10 bg-gold" />
-          <span className="text-[0.75rem] font-semibold uppercase tracking-[0.16em] text-[#7A5E0F]">{eyebrow}</span>
+        <div className={cn("flex items-center gap-2.5", center && "justify-center")}>
+          <span aria-hidden="true" className="h-px w-[22px] bg-gold" />
+          <span className={cn("text-[0.72rem] font-medium uppercase tracking-[0.18em]", invert ? "text-gold" : "text-[#7A5E0F]")}>{eyebrow}</span>
         </div>
         <h2 className={cn(
           "mt-4 font-display font-medium leading-[1.06]",
           "text-[clamp(1.9rem,4vw,3rem)]",
-          invert ? "text-paper" : "text-ink",
+          invert ? "text-ivory" : "text-ink",
         )}>
           {title}
         </h2>
@@ -28,7 +28,7 @@ export function SectionHeader({
           <p className={cn(
             "mt-4 max-w-xl text-[0.95rem] leading-relaxed sm:text-[1.0625rem]",
             center && "mx-auto",
-            invert ? "text-paper/70" : "text-ink/65",
+            invert ? "text-ivory/70" : "text-ink/65",
           )}>
             {sub}
           </p>

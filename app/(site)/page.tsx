@@ -1,7 +1,5 @@
 import type { Metadata } from "next";
-import { NightDoodleHero } from "@/components/home/night/NightDoodleHero";
-import { NightTrustStrip } from "@/components/home/night/NightTrustStrip";
-import { NightReviewsTeaser } from "@/components/home/night/NightReviewsTeaser";
+import { HeroInstitution } from "@/components/home/HeroInstitution";
 import { NightPortalShowcase } from "@/components/home/night/NightPortalShowcase";
 import { NightOnlinePresence } from "@/components/home/night/NightOnlinePresence";
 import { HowItWorks } from "@/components/home/HowItWorks";
@@ -56,15 +54,13 @@ export default function HomePage() {
       <JsonLd data={localBusiness} />
       {/* Dark, cinematic mobile-first flow: hero + portal → why us → the journey →
           proof → how it works → the paths → real moments → reviews → place → founder → act. */}
-      <NightDoodleHero />
-      <NightTrustStrip />
+      <HeroInstitution />
       <HowItWorks />
       <FunnelPackages />
       <PracticeCalculator />
       <AchievementsBand />
       <NightPortalShowcase />
       <RealMoments />
-      <NightReviewsTeaser />
       <ReviewsSection files={homeReviews} />
       <NightOnlinePresence />
       <CentreEvents />
