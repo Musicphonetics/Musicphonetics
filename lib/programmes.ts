@@ -35,7 +35,7 @@ export const PROGRAMMES: Programme[] = [
     price: "₹8,000",
     payAmount: 8000,
     cadence: "8 classes / month · 1 hour each",
-    heroImage: "/images/hero/slide-2.webp",
+    heroImage: "/images/hero/slide-1.webp",
     intro:
       "A calm, correct first start on your instrument, designed for absolute beginners who want to learn properly, without pressure.",
     whoStudents: [

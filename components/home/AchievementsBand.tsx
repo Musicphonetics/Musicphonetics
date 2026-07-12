@@ -15,7 +15,7 @@ export function AchievementsBand() {
         {ACHIEVEMENTS.map((a, i) => (
           <Reveal key={a.title} delay={(i % 4) * 70}>
             <figure className="relative h-[360px] w-[74vw] max-w-[260px] shrink-0 snap-center overflow-hidden rounded-3xl border border-white/10 sm:w-[240px]">
-              <img src={a.img} alt="" loading="lazy" decoding="async" className="absolute inset-0 h-full w-full object-cover" />
+              <img src={a.img} alt="" loading="lazy" decoding="async" style={{ objectPosition: a.objectPos ?? "center" }} className="absolute inset-0 h-full w-full object-cover" />
               <span aria-hidden="true" className="absolute inset-0 bg-gradient-to-t from-ink/90 via-ink/25 to-transparent" />
               <figcaption className="absolute inset-x-0 bottom-0 p-5">
                 <span className="grid h-8 w-8 place-items-center rounded-full bg-gold font-display text-sm font-bold text-ink">{i + 1}</span>

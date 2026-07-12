@@ -153,29 +153,34 @@ export const REAL_MOMENTS: Moment[] = [
 ];
 
 // "How it works". Teaching-story photos only: real students and teachers, never
-// the founder-network credibility shots.
-export interface HowStep { img: string; kicker: string; title: string; body: string }
+// the founder-network credibility shots. objectPos tunes each crop so no faces
+// are cut off.
+export interface HowStep { img: string; objectPos?: string; kicker: string; title: string; body: string }
 export const HOW_STEPS: HowStep[] = [
   {
     img: "/images/moments/08-stage.webp",
+    objectPos: "50% 32%",
     kicker: "The right fit",
     title: "A teacher matched to your child",
     body: "We personally pair a teacher to your child's age, instrument and goal, not whoever happens to be free that day.",
   },
   {
-    img: "/images/moments/09-mentor.webp",
+    img: "/images/moments/02-openmic.webp",
+    objectPos: "50% 40%",
     kicker: "A real method",
     title: "Structure, not a pile of songs",
     body: "Technique, theory, rhythm and ear training, taught step by step, the way music is actually meant to be learnt.",
   },
   {
-    img: "/images/portal-preview.webp",
-    kicker: "Tracked for you",
-    title: "Every class, written up",
-    body: "After each class you see what was taught, the homework and what comes next, right inside your own parent portal.",
+    img: "/images/hero/slide-1.webp",
+    objectPos: "50% 28%",
+    kicker: "Real progress",
+    title: "Milestones you can see",
+    body: "Progress notes after every class and real recognition along the way, all tracked inside your own parent portal.",
   },
   {
-    img: "/images/moments/02-openmic.webp",
+    img: "/images/moments/openmic-audience.webp",
+    objectPos: "50% 45%",
     kicker: "On to the stage",
     title: "All the way to a real stage",
     body: "Open mics and student showcases every few months, so all that practice turns into real confidence.",
@@ -183,12 +188,12 @@ export const HOW_STEPS: HowStep[] = [
 ];
 
 // Short milestone cards, image with text over it. Teaching-story photos only.
-export interface Achievement { img: string; title: string; sub: string }
+export interface Achievement { img: string; objectPos?: string; title: string; sub: string }
 export const ACHIEVEMENTS: Achievement[] = [
-  { img: "/images/moments/05-group.webp", title: "Play your first song", sub: "In your early weeks, not someday." },
-  { img: "/images/moments/openmic-audience.webp", title: "Perform on a real stage", sub: "Open mics every few months." },
-  { img: "/images/moments/04-award.webp", title: "Earn real recognition", sub: "Student of the term and showcases." },
-  { img: "/images/moments/09-mentor.webp", title: "Grow with a mentor", sub: "One teacher who knows you." },
+  { img: "/images/moments/02-openmic.webp", objectPos: "50% 38%", title: "Play your first song", sub: "In your early weeks, not someday." },
+  { img: "/images/moments/openmic-audience.webp", objectPos: "50% 45%", title: "Perform on a real stage", sub: "Open mics every few months." },
+  { img: "/images/hero/slide-1.webp", objectPos: "50% 30%", title: "Earn real recognition", sub: "Student of the term and showcases." },
+  { img: "/images/moments/08-stage.webp", objectPos: "50% 32%", title: "Grow with a mentor", sub: "One teacher who knows you." },
 ];
 
 // Founder credibility (network photos live here, never in the teaching story).

@@ -21,8 +21,10 @@ const config: Config = {
         midnight: "#0B0F18",
         // Institution palette (revamp brief): charcoal surfaces, ivory text,
         // gold as accent only, muted/line for secondary + hairlines.
-        charcoal: "#161B26",
-        "charcoal-2": "#10141D",
+        // Balanced dark: warm slate surfaces, lifted off near-black so the site
+        // reads rich and premium rather than heavy.
+        charcoal: "#232834",
+        "charcoal-2": "#1B202A",
         ivory: "#F5F1E8",
         muted: "#8A8578",
         line: "#DED6C4",

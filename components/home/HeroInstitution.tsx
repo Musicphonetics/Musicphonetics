@@ -49,14 +49,14 @@ export function HeroInstitution() {
           }}
         >
           <img
-            src="/images/hero/piano-girl.webp"
-            alt="A young Musicphonetics student playing piano in warm evening light"
+            src="/images/moments/03-stage-guitar.webp"
+            alt="A Musicphonetics student performing guitar on a real stage"
             // @ts-expect-error fetchpriority is a valid html attribute
             fetchpriority="high"
             decoding="async"
-            width={1024}
-            height={1536}
-            className="h-full w-full object-cover object-[56%_16%]"
+            width={900}
+            height={1200}
+            className="h-full w-full object-cover object-[46%_16%]"
           />
         </div>
       </div>

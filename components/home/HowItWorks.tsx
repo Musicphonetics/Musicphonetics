@@ -14,7 +14,7 @@ export function HowItWorks() {
             <Reveal key={s.title} delay={(i % 4) * 70}>
               <article className="flex h-full w-[78vw] max-w-[300px] shrink-0 snap-center flex-col overflow-hidden rounded-2xl border border-white/10 bg-charcoal sm:w-auto sm:max-w-none">
                 <div className="relative aspect-[4/3] w-full overflow-hidden">
-                  <img src={s.img} alt="" loading="lazy" decoding="async" className="h-full w-full object-cover" />
+                  <img src={s.img} alt="" loading="lazy" decoding="async" style={{ objectPosition: s.objectPos ?? "center" }} className="h-full w-full object-cover" />
                   <span className="absolute inset-0 bg-[linear-gradient(to_top,rgba(16,20,29,0.6),transparent_55%)]" />
                   <span className="absolute left-4 top-4 font-display text-2xl font-medium text-gold">{String(i + 1).padStart(2, "0")}</span>
                 </div>
