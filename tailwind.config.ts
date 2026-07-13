@@ -29,10 +29,11 @@ const config: Config = {
         muted: "#8A8578",
         line: "#DED6C4",
         forest: "#2C4636",
-        // legacy dark tokens (kept so older components still compile)
-        onyx: "#0A0B0E",
-        "onyx-1": "#101217",
-        "onyx-2": "#161920",
+        // Parent-portal "night" surfaces. Balanced dark (not near-black) so the
+        // portal reads rich rather than heavy, in step with the rest of the site.
+        onyx: "#1C212C",
+        "onyx-1": "#161A23",
+        "onyx-2": "#252C3A",
       },
       borderColor: {
         hairline: "rgba(22,27,38,.14)",

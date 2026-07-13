@@ -138,18 +138,18 @@ export const HERO_SLIDES: string[] = [
   "/images/hero/slide-5.webp",
 ];
 
-// Real, unstaged moments from our classes, recitals and student wins across
-// Delhi NCR. Real students and real stages only. No founder-network photos here.
-export interface Moment { src: string; alt: string; caption: string }
+// Real, unstaged moments from our classes and student wins across Delhi NCR.
+// Real students and real teaching only. Founder-only and network photos live in
+// the Founder section, never here.
+export interface Moment { src: string; alt: string; caption: string; objectPos?: string }
 export const REAL_MOMENTS: Moment[] = [
-  { src: "/images/moments/02-openmic.webp", alt: "A student singing and playing guitar at an Open Mic and Chai evening", caption: "Open Mic and Chai. Our students take the mic." },
-  { src: "/images/moments/03-stage-guitar.webp", alt: "A Musicphonetics student performing guitar on a large stage", caption: "On the big stage, where months of practice pay off." },
-  { src: "/images/hero/slide-1.webp", alt: "A group of Musicphonetics students together after a class", caption: "Our students, together after class." },
-  { src: "/images/moments/05-group.webp", alt: "Musicphonetics students celebrating an award together", caption: "Student of the term, celebrated together." },
-  { src: "/images/moments/09-mentor.webp", alt: "A Musicphonetics teacher performing on electric guitar", caption: "Taught by musicians who still perform." },
-  { src: "/images/moments/04-award.webp", alt: "A Musicphonetics student receiving an award", caption: "Recognising a student's progress." },
-  { src: "/images/moments/openmic-audience.webp", alt: "A full house at a Musicphonetics Open Mic and Chai evening", caption: "A full house at Open Mic and Chai." },
-  { src: "/images/moments/08-stage.webp", alt: "Musicphonetics students and teacher backstage at an event", caption: "Backstage with our students." },
+  { src: "/images/classes/ukulele.webp", objectPos: "50% 20%", alt: "A young Musicphonetics student learning the ukulele one to one", caption: "One to one, from the very first note." },
+  { src: "/images/classes/keys-duet.webp", objectPos: "50% 35%", alt: "A student and teacher at the keyboard in a Musicphonetics class", caption: "Real lessons, real attention." },
+  { src: "/images/hero/slide-1.webp", objectPos: "50% 32%", alt: "A group of Musicphonetics students together after class", caption: "Our students, celebrated together." },
+  { src: "/images/classes/duet.webp", objectPos: "50% 22%", alt: "A student learning guitar alongside their teacher", caption: "Learning to play, side by side." },
+  { src: "/images/classes/jam.webp", objectPos: "50% 40%", alt: "A student and teacher jamming on keyboard and guitar", caption: "Where practice becomes fun." },
+  { src: "/images/classes/trio.webp", objectPos: "50% 30%", alt: "Two students making music together with their teacher", caption: "Making music as a group." },
+  { src: "/images/moments/openmic-audience.webp", objectPos: "50% 50%", alt: "A full house at a Musicphonetics Open Mic and Chai evening", caption: "A full house at Open Mic and Chai." },
 ];
 
 // "How it works". Teaching-story photos only: real students and teachers, never
@@ -158,29 +158,29 @@ export const REAL_MOMENTS: Moment[] = [
 export interface HowStep { img: string; objectPos?: string; kicker: string; title: string; body: string }
 export const HOW_STEPS: HowStep[] = [
   {
-    img: "/images/moments/08-stage.webp",
-    objectPos: "50% 32%",
+    img: "/images/classes/keys-duet.webp",
+    objectPos: "50% 35%",
     kicker: "The right fit",
     title: "A teacher matched to your child",
     body: "We personally pair a teacher to your child's age, instrument and goal, not whoever happens to be free that day.",
   },
   {
-    img: "/images/moments/02-openmic.webp",
-    objectPos: "50% 40%",
+    img: "/images/classes/duet.webp",
+    objectPos: "50% 20%",
     kicker: "A real method",
     title: "Structure, not a pile of songs",
     body: "Technique, theory, rhythm and ear training, taught step by step, the way music is actually meant to be learnt.",
   },
   {
     img: "/images/hero/slide-1.webp",
-    objectPos: "50% 28%",
+    objectPos: "50% 30%",
     kicker: "Real progress",
     title: "Milestones you can see",
     body: "Progress notes after every class and real recognition along the way, all tracked inside your own parent portal.",
   },
   {
     img: "/images/moments/openmic-audience.webp",
-    objectPos: "50% 45%",
+    objectPos: "50% 48%",
     kicker: "On to the stage",
     title: "All the way to a real stage",
     body: "Open mics and student showcases every few months, so all that practice turns into real confidence.",
@@ -190,17 +190,18 @@ export const HOW_STEPS: HowStep[] = [
 // Short milestone cards, image with text over it. Teaching-story photos only.
 export interface Achievement { img: string; objectPos?: string; title: string; sub: string }
 export const ACHIEVEMENTS: Achievement[] = [
-  { img: "/images/moments/02-openmic.webp", objectPos: "50% 38%", title: "Play your first song", sub: "In your early weeks, not someday." },
-  { img: "/images/moments/openmic-audience.webp", objectPos: "50% 45%", title: "Perform on a real stage", sub: "Open mics every few months." },
+  { img: "/images/classes/ukulele.webp", objectPos: "50% 18%", title: "Play your first song", sub: "In your early weeks, not someday." },
+  { img: "/images/classes/trio.webp", objectPos: "50% 28%", title: "Play alongside others", sub: "Group sessions and jams." },
   { img: "/images/hero/slide-1.webp", objectPos: "50% 30%", title: "Earn real recognition", sub: "Student of the term and showcases." },
-  { img: "/images/moments/08-stage.webp", objectPos: "50% 32%", title: "Grow with a mentor", sub: "One teacher who knows you." },
+  { img: "/images/moments/openmic-audience.webp", objectPos: "50% 50%", title: "Perform on a real stage", sub: "Open mics every few months." },
 ];
 
 // Founder credibility (network photos live here, never in the teaching story).
 export interface CredibilityShot { src: string; alt: string; caption: string }
 export const FOUNDER_CREDIBILITY: CredibilityShot[] = [
-  { src: "/images/moments/01-celeb.webp", alt: "Founder Abhishek Kumar with a well-known musician", caption: "With musicians from the wider Delhi scene." },
-  { src: "/images/moments/06-speech.webp", alt: "Founder Abhishek Kumar speaking at an event", caption: "Invited to speak and judge at Delhi events." },
+  { src: "/images/moments/01-celeb.webp", alt: "Founder Abhishek Kumar with playback singer Shaan", caption: "With playback singer Shaan." },
+  { src: "/images/moments/08-stage.webp", alt: "Founder Abhishek Kumar with acclaimed musician Benny Prasad", caption: "With acclaimed musician Benny Prasad." },
+  { src: "/images/moments/06-speech.webp", alt: "Founder Abhishek Kumar invited to speak and judge at an event", caption: "Invited to speak and judge at Delhi events." },
   { src: "/images/moments/07-office.webp", alt: "Founder Abhishek Kumar with IAS officer Armstrong Pame", caption: "With IAS officer Armstrong Pame." },
 ];
 

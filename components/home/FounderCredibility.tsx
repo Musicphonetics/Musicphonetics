@@ -15,7 +15,7 @@ export function FounderCredibility() {
           invert
         />
 
-        <div className="mt-12 grid gap-5 sm:grid-cols-3">
+        <div className="mt-12 grid grid-cols-2 gap-4 lg:grid-cols-4">
           {FOUNDER_CREDIBILITY.map((s, i) => (
             <Reveal key={s.src} delay={(i % 3) * 80}>
               <figure className="overflow-hidden rounded-2xl border border-white/10 bg-charcoal">

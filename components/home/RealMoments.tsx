@@ -19,7 +19,7 @@ export function RealMoments() {
           {moments.map((m, i) => (
             <Reveal key={m.src} delay={(i % 3) * 60}>
               <figure className="group relative aspect-[3/4] w-[62vw] max-w-[240px] shrink-0 snap-center overflow-hidden rounded-2xl border border-white/10 sm:w-auto sm:max-w-none">
-                <img src={m.src} alt={m.alt} loading="lazy" decoding="async" className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105" />
+                <img src={m.src} alt={m.alt} loading="lazy" decoding="async" style={{ objectPosition: m.objectPos ?? "center" }} className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105" />
                 <span aria-hidden="true" className="absolute inset-0 bg-[linear-gradient(to_top,rgba(16,20,29,0.85),transparent_55%)]" />
                 <figcaption className="absolute inset-x-0 bottom-0 p-4 text-[13px] leading-snug text-ivory drop-shadow">{m.caption}</figcaption>
               </figure>

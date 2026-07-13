@@ -35,7 +35,7 @@ export const PROGRAMMES: Programme[] = [
     price: "₹8,000",
     payAmount: 8000,
     cadence: "8 classes / month · 1 hour each",
-    heroImage: "/images/hero/slide-1.webp",
+    heroImage: "/images/classes/keys-duet.webp",
     intro:
       "A calm, correct first start on your instrument, designed for absolute beginners who want to learn properly, without pressure.",
     whoStudents: [
@@ -92,7 +92,7 @@ export const PROGRAMMES: Programme[] = [
     payAmount: 12000,
     cadence: "8 classes / month · 1 hour each",
     badge: "Most Recommended",
-    heroImage: "/images/hero/slide-3.webp",
+    heroImage: "/images/classes/duet.webp",
     intro:
       "The full Musicphonetics system, structure, theory, performance and real, tracked progress. This is where serious students are built.",
     whoStudents: [
@@ -150,7 +150,7 @@ export const PROGRAMMES: Programme[] = [
     payAmount: null,
     cadence: "By request · limited seats",
     badge: "By request only",
-    heroImage: "/images/hero/slide-4.webp",
+    heroImage: "/images/classes/ukulele.webp",
     intro:
       "Direct, founder-level mentoring for a select few. A bespoke, closely-guided path for the most committed students.",
     whoStudents: [
