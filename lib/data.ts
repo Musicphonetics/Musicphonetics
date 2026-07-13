@@ -96,7 +96,7 @@ export const FOOTER_NAV = [
   { label: "Home", href: "/" },
   { label: "Programmes", href: "/#programmes" },
   { label: "Open Mic & Chai", href: "/open-mic" },
-  { label: "Student fees & renewals", href: "/renew" },
+  { label: "Student activation", href: "/activate" },
   { label: "Curriculum", href: "/curriculum" },
   { label: "Standards", href: "/standards" },
   { label: "South Delhi Centre", href: "/centre" },
