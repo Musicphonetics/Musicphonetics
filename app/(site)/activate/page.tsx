@@ -8,7 +8,7 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
-const WA = whatsappLink("Hi Abhishek, I have a question about activating my Musicphonetics account.");
+const WA = whatsappLink("Hi Musicphonetics, I have a question about activating my student account.");
 
 function Chevron() {
   return (
@@ -25,13 +25,13 @@ export default function ActivatePage() {
       <section className="border-b border-white/10 bg-charcoal-2">
         <div className="container-mp grid gap-10 py-16 sm:py-20 lg:grid-cols-2 lg:items-center lg:gap-16">
           <div>
-            <p className="text-[0.72rem] font-semibold uppercase tracking-[0.18em] text-gold">Student activation</p>
+            <p className="text-[0.72rem] font-semibold uppercase tracking-[0.18em] text-gold">Director&apos;s package</p>
             <h1 className="mt-4 font-display text-4xl font-semibold leading-[1.06] sm:text-5xl">Activate your account.</h1>
             <p className="mt-5 max-w-md text-lg leading-relaxed text-ivory/80">
-              Set it up once, then follow everything in one place: your classes, your progress and your fees.
-              I look after this batch personally.
+              You are part of our Director&apos;s package. Share your details below to get your login, then
+              follow your classes, progress and fees in one place.
             </p>
-            <p className="mt-4 text-sm font-medium text-ivory/60">Abhishek Kumar, your teacher and director.</p>
+            <p className="mt-4 text-sm font-medium text-ivory/60">A privileged programme, looked after personally by the director.</p>
 
             <div className="mt-8 space-y-3">
               {[
@@ -73,8 +73,8 @@ export default function ActivatePage() {
                 The system <Chevron />
               </summary>
               <p className="mt-3 leading-relaxed text-ivory/75">
-                You are on a proper path now, a set curriculum with clear milestones, not random songs. I keep an
-                eye on all of it so nothing slips.
+                You are on a proper path now, a set curriculum with clear milestones, not random songs. The
+                director keeps an eye on all of it so nothing slips.
               </p>
             </details>
 
@@ -112,7 +112,7 @@ export default function ActivatePage() {
                 Missed classes and questions <Chevron />
               </summary>
               <p className="mt-3 leading-relaxed text-ivory/75">
-                Miss a class? We reschedule where we can, with a little notice. Anything at all, message me directly on{" "}
+                Miss a class? We reschedule where we can, with a little notice. Anything at all, message us on{" "}
                 <a href={WA} target="_blank" rel="noopener noreferrer" className="font-semibold text-gold underline underline-offset-4">WhatsApp</a>.
               </p>
             </details>
