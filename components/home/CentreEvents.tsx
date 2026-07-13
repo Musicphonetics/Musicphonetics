@@ -82,9 +82,14 @@ export function CentreEvents() {
         </div>
 
         <Reveal delay={120}>
-          <p className="mt-8 text-center text-sm text-ivory/60">
-            Every student is invited to the stage. This is where practice becomes confidence.
-          </p>
+          <div className="mt-8 text-center">
+            <p className="text-sm text-ivory/60">Every student is invited to the stage. This is where practice becomes confidence.</p>
+            <a href="/open-mic"
+              className="mt-5 inline-flex items-center justify-center gap-2 rounded-full bg-gold px-7 py-3.5 text-sm font-semibold text-charcoal transition hover:brightness-105">
+              See Open Mic &amp; Chai
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>
+            </a>
+          </div>
         </Reveal>
       </div>
     </section>

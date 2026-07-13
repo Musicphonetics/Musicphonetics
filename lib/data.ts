@@ -37,6 +37,13 @@ export function whatsappTrialLink(): string {
 export const PHONE_DISPLAY = "+91 87961 99188";
 export const phoneLink = `tel:+${WHATSAPP_NUMBER}`;
 
+/**
+ * Universal Razorpay payment link (razorpay.me). Existing students and renewals
+ * enter any amount and pay securely in the Musicphonetics name. This is NOT tied
+ * to a programme; programme enrolment uses the /pay checkout instead.
+ */
+export const RAZORPAY_PAY_LINK = "https://razorpay.me/@musicphonetics";
+
 /** Social, Instagram. */
 export const INSTAGRAM_HANDLE = "abhisheksessions";
 export const INSTAGRAM_URL = "https://instagram.com/abhisheksessions";
@@ -75,6 +82,7 @@ export const BRAND = {
 export const NAV_LINKS = [
   { label: "Programmes", href: "/#programmes" },
   { label: "How it works", href: "/#how" },
+  { label: "Open Mic", href: "/open-mic" },
   { label: "Faculty", href: "/teachers" },
   { label: "Reviews", href: "/reviews" },
   { label: "Founder", href: "/founder" },
@@ -86,7 +94,9 @@ export const TRUST_LINE = `${BRAND.yearsExperience} years · ${BRAND.studentsTau
 // Simplified footer navigation per go-live spec.
 export const FOOTER_NAV = [
   { label: "Home", href: "/" },
-  { label: "Programs", href: "/#programs" },
+  { label: "Programmes", href: "/#programmes" },
+  { label: "Open Mic & Chai", href: "/open-mic" },
+  { label: "Student fees & renewals", href: "/renew" },
   { label: "Curriculum", href: "/curriculum" },
   { label: "Standards", href: "/standards" },
   { label: "South Delhi Centre", href: "/centre" },

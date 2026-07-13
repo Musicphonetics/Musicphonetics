@@ -30,8 +30,11 @@ export function AchievementsBand() {
 
       <div className="container-mp mt-4">
         <p className="flex items-center gap-2 text-xs text-ivory/60 lg:justify-center">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M14 7l5 5-5 5M5 7l5 5-5 5" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" /></svg>
-          Swipe · your live progress lives inside the parent portal
+          <span className="flex items-center gap-2 lg:hidden">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M14 7l5 5-5 5M5 7l5 5-5 5" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" /></svg>
+            Swipe ·
+          </span>
+          Your live progress lives inside the parent portal
         </p>
       </div>
     </section>
