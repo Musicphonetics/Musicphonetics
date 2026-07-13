@@ -84,5 +84,37 @@ export async function onRequestPost({ request, env }) {
     });
   } catch { /* login already created; linking role is best-effort */ }
 
-  return json({ ok: true, login_id: email, password });
+  // Create the child's student record and link it to this parent, so the parent
+  // sees a profile straight away (not a dead-end) for the office to fill in.
+  // teacher_id is required, so we use DIRECTOR_TEACHER_ID if set, else the owner.
+  let studentLinked = false;
+  try {
+    let teacherId = String(env.DIRECTOR_TEACHER_ID || "").trim();
+    if (!teacherId) {
+      const oRes = await fetch(`${env.SUPABASE_URL}/rest/v1/profiles?role=eq.owner&select=id&limit=1`, { headers: admin(env) });
+      const oRows = oRes.ok ? await oRes.json() : [];
+      teacherId = oRows[0]?.id || "";
+    }
+    if (teacherId) {
+      const providedEmail = /^\S+@\S+\.\S+$/.test(String(b.email || "").trim()) ? String(b.email || "").trim().toLowerCase() : null;
+      const sRes = await fetch(`${env.SUPABASE_URL}/rest/v1/students`, {
+        method: "POST",
+        headers: { ...admin(env), Prefer: "return=minimal" },
+        body: JSON.stringify({
+          teacher_id: teacherId,
+          parent_id: id,
+          name,
+          parent_name: parent || null,
+          parent_phone: phone || null,
+          parent_email: providedEmail,
+          instrument: instrument || null,
+          status: "active",
+          classes_per_month: 8,
+        }),
+      });
+      studentLinked = sRes.ok;
+    }
+  } catch { /* login is created; the office can link the student manually */ }
+
+  return json({ ok: true, login_id: email, password, student_linked: studentLinked });
 }
