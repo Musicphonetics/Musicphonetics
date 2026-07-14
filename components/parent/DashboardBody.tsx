@@ -1,7 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { DirectorNote, type DirectorCustom } from "@/components/portal/DirectorNote";
+import type { DirectorCustom } from "@/components/portal/DirectorNote";
+import { DirectorNotification } from "@/components/parent/DirectorNotification";
+import { FeedbackCard } from "@/components/parent/FeedbackCard";
 import type { StudentView } from "@/lib/supabase/parent";
 import type { Student, Payment } from "@/lib/supabase/types";
 import { FOUNDATION, type FoundationProgress, type ChapterState } from "@/lib/foundation";
@@ -42,8 +44,8 @@ export function DashboardBody({
         <p className="mt-1 text-sm text-ink/70">Keep up the great progress.</p>
       </div>
 
-      {/* Director's note, only when there is one */}
-      {directorMessage && <DirectorNote variant="parent" custom={directorMessage} />}
+      {/* Director's message, shown like a notification (only when there is one) */}
+      {directorMessage && <DirectorNotification message={directorMessage} />}
 
       {/* Progress */}
       {isFoundation(student.fee_quoted) ? (
@@ -164,6 +166,9 @@ export function DashboardBody({
         </span>
         <span className={cn("shrink-0 whitespace-nowrap text-xs font-semibold", GOLD)}>Chat →</span>
       </a>
+
+      {/* Rate the classes / leave a review */}
+      <FeedbackCard studentId={student.id} studentName={student.name} />
     </div>
   );
 }
