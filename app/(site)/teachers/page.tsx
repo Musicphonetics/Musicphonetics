@@ -50,7 +50,7 @@ export default function TeachersPage() {
                 </span>
                 <span className="min-w-0">
                   <span className="block font-display text-lg font-semibold text-ink">{m.name}</span>
-                  <span className="block text-sm text-ink/60">{m.instruments.join(", ")}</span>
+                  <span className="block text-sm text-ink/60">{m.role ?? m.title ?? ""}</span>
                   <span className="mt-1 inline-flex items-center gap-1 text-sm font-semibold text-[#7A5E0F]">View profile
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true" className="transition-transform group-hover:translate-x-0.5"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>
                   </span>
