@@ -139,31 +139,64 @@ export function OfferLetter({ data: d, loginEmail, agreementId }: {
           <SectionHead n="5">Fee collection &amp; revenue share</SectionHead>
           <p className="text-sm leading-relaxed text-ink/80">
             All student fees are billed and collected <b>only</b> through the official Musicphonetics payment
-            account or approved payment gateway. Teachers must not collect, request or accept fees directly
-            from students or parents.
+            account or approved payment gateway/interface. Teachers must not collect, request or accept fees
+            directly from students or parents by cash, UPI, bank transfer or any other means.
           </p>
 
-          {/* Boxed 70/30 model */}
+          {/* How the share is calculated: gross -> minus ~3% interface -> net -> 70/30 */}
           <div className="avoid-break mt-4 overflow-hidden rounded-xl border border-gold/40">
-            <div className="bg-ink px-4 py-2.5 text-xs font-semibold uppercase tracking-wider text-gold">Revenue share model</div>
-            <div className="grid grid-cols-2 divide-x divide-hairline">
+            <div className="bg-ink px-4 py-2.5 text-xs font-semibold uppercase tracking-wider text-gold">How your share is calculated</div>
+            <div className="divide-y divide-hairline">
+              <div className="flex items-center justify-between px-4 py-2.5 text-sm">
+                <span className="text-ink/70">Fee paid by the student/parent</span>
+                <span className="font-semibold text-ink">Gross amount (100%)</span>
+              </div>
+              <div className="flex items-center justify-between px-4 py-2.5 text-sm">
+                <span className="text-ink/70">Less: payment interface / gateway charge</span>
+                <span className="font-semibold text-[#7A5E0F]">approx. 3% deducted</span>
+              </div>
+              <div className="flex items-center justify-between bg-paper px-4 py-2.5 text-sm">
+                <span className="font-semibold text-ink">= Net settled amount</span>
+                <span className="font-semibold text-ink">shared 70 / 30</span>
+              </div>
+            </div>
+            <div className="grid grid-cols-2 divide-x divide-hairline border-t border-hairline">
               <div className="p-4 text-center">
                 <p className="font-display text-4xl font-bold text-ink">70%</p>
                 <p className="mt-1 text-xs font-semibold text-ink/70">Teacher share</p>
-                <p className="mt-1 text-[11px] leading-snug text-ink/55">of the net settled amount, after payment-gateway charges</p>
+                <p className="mt-1 text-[11px] leading-snug text-ink/65">of the net settled amount (after the ~3% interface charge)</p>
               </div>
               <div className="p-4 text-center">
                 <p className="font-display text-4xl font-bold text-[#7A5E0F]">30%</p>
                 <p className="mt-1 text-xs font-semibold text-ink/70">Musicphonetics</p>
-                <p className="mt-1 text-[11px] leading-snug text-ink/55">brand, leads, student management, operations, support &amp; platform</p>
+                <p className="mt-1 text-[11px] leading-snug text-ink/65">brand, leads, student management, operations, support &amp; platform</p>
               </div>
             </div>
           </div>
+
           <p className="mt-4 text-sm leading-relaxed text-ink/80">
-            For every confirmed student payment, the teacher&apos;s share is <b>70% of the net settled amount</b> after
-            applicable payment-gateway charges; Musicphonetics retains <b>30%</b>. Teacher payouts are processed
-            <b> after</b> the payment is successfully received/settled in the Musicphonetics account and verified by
-            the owner/admin.
+            For every confirmed student payment, the payment interface / gateway first deducts its processing
+            charge of <b>approximately 3%</b> of the fee. From the <b>net settled amount</b> that remains, the
+            teacher&apos;s share is <b>70%</b> and Musicphonetics retains <b>30%</b>. The exact interface charge is
+            whatever the payment provider actually applies to that transaction; the 70/30 split is always
+            calculated on the net amount received in the Musicphonetics account.
+          </p>
+
+          {/* Worked example so the math is unambiguous */}
+          <div className="avoid-break mt-3 rounded-xl border border-hairline bg-paper p-4">
+            <p className="mb-2 text-[11px] font-bold uppercase tracking-wider text-ink/65">Worked example (illustration only)</p>
+            <ul className="space-y-1 text-sm leading-relaxed text-ink/80">
+              <li>• Student pays a monthly fee of <b>₹4,000</b>.</li>
+              <li>• Payment interface charge (~3%) = <b>₹120</b> → net settled = <b>₹3,880</b>.</li>
+              <li>• Teacher share (70% of ₹3,880) = <b>₹2,716</b>.</li>
+              <li>• Musicphonetics share (30% of ₹3,880) = <b>₹1,164</b>.</li>
+            </ul>
+            <p className="mt-2 text-[11px] leading-snug text-ink/65">Figures are for illustration; actual amounts depend on the fee and the exact charge applied by the provider.</p>
+          </div>
+
+          <p className="mt-4 text-sm leading-relaxed text-ink/80">
+            Teacher payouts are processed <b>only after</b> the payment is successfully received and settled in the
+            Musicphonetics account and verified by the owner/admin.
           </p>
 
           <SectionHead n="6">Payout details</SectionHead>

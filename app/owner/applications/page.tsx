@@ -5,6 +5,7 @@ import { PortalShell } from "@/components/portal/PortalShell";
 import { OWNER_TABS } from "@/components/portal/tabs";
 import { Loading, EmptyState } from "@/components/portal/kit";
 import { OfferLetter } from "@/components/teach/OfferLetter";
+import { JoiningLetter } from "@/components/teach/JoiningLetter";
 import { getSupabase, isSupabaseConfigured } from "@/lib/supabase/client";
 import { cn } from "@/lib/utils";
 
@@ -27,7 +28,8 @@ export default function OwnerApplications() {
   const [err, setErr] = useState<string | null>(null);
   const [sel, setSel] = useState<AppRow | null>(null);
   const [busy, setBusy] = useState(false);
-  const [creds, setCreds] = useState<{ email: string; password: string; teacherId: string } | null>(null);
+  const [doc, setDoc] = useState<"offer" | "joining">("offer");
+  const [creds, setCreds] = useState<{ email: string; password: string; teacherId: string; emailed: boolean; emailNote: string } | null>(null);
 
   async function load() {
     if (!isSupabaseConfigured()) return;
@@ -48,10 +50,10 @@ export default function OwnerApplications() {
       headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
       body: JSON.stringify({ application_id: app.id }),
     });
-    const d = (await res.json().catch(() => ({}))) as { ok?: boolean; login_email?: string; temp_password?: string; teacher_id?: string; error?: string };
+    const d = (await res.json().catch(() => ({}))) as { ok?: boolean; login_email?: string; temp_password?: string; teacher_id?: string; emailed?: boolean; email_note?: string; error?: string };
     setBusy(false);
     if (!res.ok || !d.ok) { setErr(d.error || "Could not approve."); return; }
-    setCreds({ email: d.login_email || app.email, password: d.temp_password || "", teacherId: d.teacher_id || "" });
+    setCreds({ email: d.login_email || app.email, password: d.temp_password || "", teacherId: d.teacher_id || "", emailed: !!d.emailed, emailNote: d.email_note || "" });
     setSel({ ...app, status: "approved", teacher_id: d.teacher_id || null });
     load();
   }
@@ -113,28 +115,47 @@ export default function OwnerApplications() {
                 <Cred k="Login email" v={creds.email} />
                 <Cred k="Temporary password" v={creds.password} />
               </div>
-              <p className="mt-2 text-xs text-ink/60">Send these on WhatsApp/email. Ask them to change the password after first login.</p>
+              <div className={cn("mt-3 flex items-start gap-2 rounded-xl border p-3 text-xs",
+                creds.emailed ? "border-feature-green/30 bg-feature-green/10 text-feature-green" : "border-hairline bg-white text-ink/70")}>
+                <span aria-hidden="true">{creds.emailed ? "✓" : "ℹ"}</span>
+                {creds.emailed
+                  ? <span>The offer letter with these login details was <b>emailed to {creds.email}</b> automatically.</span>
+                  : <span>Email not sent automatically ({creds.emailNote || "no mail provider configured"}). Send the details above on WhatsApp/email yourself. To auto-email teachers, set <b>RESEND_API_KEY</b> (and <b>MAIL_FROM</b>) in the Pages environment.</span>}
+              </div>
+              <p className="mt-2 text-xs text-ink/60">Ask them to change the password after first login.</p>
             </div>
           )}
 
-          {/* Offer letter for this applicant */}
-          {(sel.status === "approved" || creds) && (
-            <div className="mt-6">
-              <p className="mb-3 text-sm font-semibold text-ink">Offer Letter</p>
-              <OfferLetter
-                data={{
-                  fullName: s(sel.full_name), dob: s(sel.dob), gender: s(sel.gender), city: s(sel.city), address: s(sel.address),
-                  phone: s(sel.phone), email: s(sel.email), languages: s(sel.languages),
-                  instruments: arr(sel.instruments), yearsTeaching: s(sel.years_teaching), yearsPerforming: s(sel.years_performing),
-                  qualification: s(sel.qualification), grade: s(sel.grade),
-                  commitment: s(sel.commitment), days: arr(sel.days), timeBands: arr(sel.time_bands), modes: arr(sel.modes), areas: arr(sel.areas), transport: s(sel.transport),
-                  bankHolder: s(sel.bank_holder), bankName: s(sel.bank_name), bankAccount: s(sel.bank_account), bankIfsc: s(sel.bank_ifsc), bankUpi: s(sel.bank_upi),
-                }}
-                loginEmail={creds?.email ?? sel.email}
-                agreementId={sel.teacher_id ?? creds?.teacherId ?? null}
-              />
-            </div>
-          )}
+          {/* Documents for this applicant */}
+          {(sel.status === "approved" || creds) && (() => {
+            const docData = {
+              fullName: s(sel.full_name), dob: s(sel.dob), gender: s(sel.gender), city: s(sel.city), address: s(sel.address),
+              phone: s(sel.phone), email: s(sel.email), languages: s(sel.languages),
+              instruments: arr(sel.instruments), yearsTeaching: s(sel.years_teaching), yearsPerforming: s(sel.years_performing),
+              qualification: s(sel.qualification), grade: s(sel.grade),
+              commitment: s(sel.commitment), days: arr(sel.days), timeBands: arr(sel.time_bands), modes: arr(sel.modes), areas: arr(sel.areas), transport: s(sel.transport),
+              bankHolder: s(sel.bank_holder), bankName: s(sel.bank_name), bankAccount: s(sel.bank_account), bankIfsc: s(sel.bank_ifsc), bankUpi: s(sel.bank_upi),
+            };
+            const loginEmail = creds?.email ?? sel.email;
+            const agreementId = sel.teacher_id ?? creds?.teacherId ?? null;
+            return (
+              <div className="mt-6">
+                <div className="mb-4 inline-flex rounded-full border border-hairline bg-white p-1">
+                  <button onClick={() => setDoc("offer")}
+                    className={cn("rounded-full px-4 py-1.5 text-sm font-semibold transition", doc === "offer" ? "bg-ink text-paper" : "text-ink/60 hover:text-ink")}>
+                    Offer letter
+                  </button>
+                  <button onClick={() => setDoc("joining")}
+                    className={cn("rounded-full px-4 py-1.5 text-sm font-semibold transition", doc === "joining" ? "bg-ink text-paper" : "text-ink/60 hover:text-ink")}>
+                    Joining agreement
+                  </button>
+                </div>
+                {doc === "offer"
+                  ? <OfferLetter data={docData} loginEmail={loginEmail} agreementId={agreementId} />
+                  : <JoiningLetter data={docData} loginEmail={loginEmail} agreementId={agreementId} />}
+              </div>
+            );
+          })()}
         </div>
       ) : (rows.length === 0) ? (
         <EmptyState title="No applications yet" hint="Applications from the Apply Now form will appear here for your review." />

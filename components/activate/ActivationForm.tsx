@@ -15,12 +15,13 @@ export function ActivationForm() {
   const [email, setEmail] = useState("");
   const [instrument, setInstrument] = useState("");
   const [code, setCode] = useState("");
+  const [agreed, setAgreed] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [creds, setCreds] = useState<Creds | null>(null);
   const [copied, setCopied] = useState(false);
 
-  const ready = student.trim().length > 1 && phone.trim().length >= 8 && code.trim().length > 0;
+  const ready = student.trim().length > 1 && phone.trim().length >= 8 && code.trim().length > 0 && agreed;
 
   async function submit() {
     if (!ready || busy) return;
@@ -30,7 +31,7 @@ export function ActivationForm() {
       const res = await fetch("/api/activate-student", {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ name: student.trim(), parent: parent.trim(), phone: phone.trim(), email: email.trim(), instrument, code: code.trim() }),
+        body: JSON.stringify({ name: student.trim(), parent: parent.trim(), phone: phone.trim(), email: email.trim(), instrument, code: code.trim(), agreed_terms: agreed }),
       });
       const data = await res.json().catch(() => ({}));
       if (res.ok && data.ok) {
@@ -110,8 +111,17 @@ export function ActivationForm() {
         <input value={code} onChange={(e) => setCode(e.target.value)} placeholder="Enter your code" className={inputCls} />
       </Field>
 
+      <label className="mt-6 flex cursor-pointer items-start gap-3 text-sm text-ivory/75">
+        <input type="checkbox" checked={agreed} onChange={(e) => setAgreed(e.target.checked)} className="mt-0.5 h-4 w-4 shrink-0 accent-gold" />
+        <span>
+          I have read and agree to the{" "}
+          <Link href="/enrolment-agreement" target="_blank" className="font-semibold text-gold underline underline-offset-4">Enrolment Agreement &amp; Parent Acknowledgement</Link>
+          {" "}(fees, safety, teacher verification and liability).
+        </span>
+      </label>
+
       <button type="button" onClick={submit} disabled={!ready || busy}
-        className={cn("mt-7 inline-flex min-h-[54px] w-full items-center justify-center gap-2 rounded-full px-6 text-base font-semibold transition-all",
+        className={cn("mt-5 inline-flex min-h-[54px] w-full items-center justify-center gap-2 rounded-full px-6 text-base font-semibold transition-all",
           ready && !busy ? "bg-gold text-charcoal shadow-[0_16px_40px_-14px_rgba(201,162,39,0.7)] hover:brightness-105" : "cursor-not-allowed bg-white/10 text-ivory/40")}>
         {busy ? "Activating…" : "Activate my account"}
         {!busy && <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>}

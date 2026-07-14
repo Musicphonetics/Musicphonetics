@@ -40,6 +40,9 @@ export async function onRequestPost({ request, env }) {
   const code = String(b.code || "").trim();
   if (code !== String(env.ACTIVATION_CODE).trim()) return json({ ok: false, error: "That access code is not right. Please check with the office." }, 403);
 
+  if (!b.agreed_terms) return json({ ok: false, error: "Please read and accept the Enrolment Agreement to continue." }, 400);
+  const agreedAt = new Date().toISOString();
+
   const name = String(b.name || "").trim();
   const parent = String(b.parent || "").trim();
   const instrument = String(b.instrument || "").trim();
@@ -64,7 +67,7 @@ export async function onRequestPost({ request, env }) {
       email,
       password,
       email_confirm: true,
-      user_metadata: { role: "parent", full_name: name, parent_name: parent, phone, instrument, package: "directors", activated_at: new Date().toISOString() },
+      user_metadata: { role: "parent", full_name: name, parent_name: parent, phone, instrument, package: "directors", activated_at: agreedAt, agreed_terms: true, agreed_terms_at: agreedAt },
     }),
   });
   const created = await cRes.json().catch(() => ({}));

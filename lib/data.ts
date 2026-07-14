@@ -105,6 +105,7 @@ export const FOOTER_NAV = [
   { label: "Teach With Us", href: "/teach-with-us" },
   { label: "Contact", href: "/contact" },
   { label: "Support", href: "/support" },
+  { label: "Enrolment Agreement", href: "/enrolment-agreement" },
 ];
 
 // ---------------------------------------------------------------------------
