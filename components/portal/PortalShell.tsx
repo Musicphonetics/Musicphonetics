@@ -145,9 +145,20 @@ export function PortalShell({
 
   return (
     <div className="min-h-screen bg-paper pb-24">
-      {title && (
+      {(title || headerRight) && (
         <header className="sticky top-0 z-30 border-b border-hairline bg-paper/90 px-4 py-3 backdrop-blur">
-          <p className="font-display text-base font-semibold text-ink">{title}</p>
+          <div className="mx-auto flex max-w-md items-center justify-between gap-3">
+            <div className="flex items-center gap-2.5">
+              <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full border border-gold/40 bg-gold/10 text-[#7A5E0F]">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9 18V6l8-2v10" stroke="currentColor" strokeWidth="1.7" strokeLinejoin="round" /><circle cx="6.5" cy="18" r="2.5" stroke="currentColor" strokeWidth="1.7" /><circle cx="14.5" cy="14" r="2.5" stroke="currentColor" strokeWidth="1.7" /></svg>
+              </span>
+              <span className="leading-tight">
+                <span className="block font-display text-sm font-semibold text-ink">{title || "Musicphonetics"}</span>
+                {subtitle && <span className="block text-[0.6rem] font-semibold uppercase tracking-[0.18em] text-[#7A5E0F]">{subtitle}</span>}
+              </span>
+            </div>
+            {headerRight}
+          </div>
         </header>
       )}
       <main className="mx-auto max-w-md px-4 py-5">{children}</main>
