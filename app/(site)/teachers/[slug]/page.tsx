@@ -35,6 +35,7 @@ const PATHS: Record<string, string> = {
   chat: "M21 12a8 8 0 01-11.5 7.2L3 21l1.8-6.5A8 8 0 1121 12z",
   book: "M4 5a2 2 0 012-2h9v16H6a2 2 0 01-2-2V5zM15 3h3a2 2 0 012 2v12a2 2 0 01-2 2h-3",
   check: "M5 12l4 4 10-10",
+  screen: "M4 5h16v10H4zM9 20h6M12 15v5",
 };
 
 function Ic({ name, className = "h-5 w-5 text-gold", fill = false }: { name: string; className?: string; fill?: boolean }) {
@@ -73,6 +74,7 @@ export default function FacultyProfile({ params }: { params: { slug: string } })
   if (typeof m.experienceYears === "number") heroFacts.push({ icon: "calendar", text: `${m.experienceYears}+ years teaching` });
   if (m.studentsTaught) heroFacts.push({ icon: "users", text: `${m.studentsTaught} students taught` });
   if (m.location) heroFacts.push({ icon: "pin", text: m.location });
+  if (m.modes && m.modes.length) heroFacts.push({ icon: "screen", text: m.modes.join(" and ") });
   if (m.languages && m.languages.length) heroFacts.push({ icon: "chat", text: `Teaches in ${m.languages.join(", ")}` });
 
   return (
@@ -264,6 +266,30 @@ export default function FacultyProfile({ params }: { params: { slug: string } })
               {m.gallery.map((g) => (
                 <div key={g} className="relative aspect-square overflow-hidden rounded-xl border border-line/60">
                   <img src={g} alt="" loading="lazy" decoding="async" className="h-full w-full object-cover" />
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* ADVICE */}
+        {m.advice && (
+          <figure className={`${card} p-6 sm:p-8`}>
+            <span className="font-display text-4xl leading-none text-gold">&ldquo;</span>
+            <blockquote className="mt-1 font-display text-xl font-medium leading-relaxed text-ink sm:text-2xl">{m.advice}</blockquote>
+            <figcaption className="mt-3 text-sm font-semibold text-[#7A5E0F]">{first}&apos;s advice for beginners</figcaption>
+          </figure>
+        )}
+
+        {/* FUN FACTS */}
+        {m.funFacts && m.funFacts.length > 0 && (
+          <div className={`${card} p-6 sm:p-7`}>
+            <p className={eyebrow}>A little more about {first}</p>
+            <div className="mt-4 grid gap-x-10 gap-y-1 sm:grid-cols-2">
+              {m.funFacts.map((f) => (
+                <div key={f.q} className="flex items-baseline justify-between gap-4 border-b border-line/60 py-3">
+                  <span className="text-sm text-ink/70">{f.q}</span>
+                  <span className="text-right text-sm font-semibold text-ink">{f.a}</span>
                 </div>
               ))}
             </div>

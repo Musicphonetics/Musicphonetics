@@ -62,16 +62,85 @@ export interface FacultyMember {
   achievements?: string[];
   videos?: FacultyVideo[];
   gallery?: string[]; // /images/... student moments
+  funFacts?: { q: string; a: string }[];
+  advice?: string; // one line of advice for beginners, shown as a quote
   verified?: boolean; // passed the seven-stage selection
 }
 
 export const FACULTY_PUBLIC_THRESHOLD = 10;
 
 export const FACULTY: FacultyMember[] = [
+  {
+    slug: "isaac-timothy",
+    published: true,
+    name: "Isaac Timothy",
+    role: "Guitar Instructor",
+    title: "Guitar Instructor | Music Educator | Worship Musician & Director",
+    // photo: "/images/faculty/isaac-timothy.webp", // add when available
+    experienceYears: 3,
+    studentsTaught: "600+",
+    modes: ["Online", "In person"],
+    ageGroup: "6 - 40",
+    stats: [
+      { value: "3+", label: "Years Teaching" },
+      { value: "600+", label: "Students Taught" },
+      { value: "200+", label: "Live Performances" },
+      { value: "6 - 40", label: "Age Group" },
+      { value: "Trinity", label: "Exam Prep" },
+    ],
+    bio: [
+      "I'm a passionate guitar instructor dedicated to helping students of all ages build confidence and enjoy making music. Whether you're picking up a guitar for the first time or looking to improve your skills, my lessons are tailored to your goals and learning style.",
+      "With experience teaching in schools, private lessons, and serving as a worship musician and music director, I focus on practical learning that develops strong technique, musicality and creativity. I teach acoustic and electric guitar, covering chords, rhythm, lead guitar, fingerstyle, scales, improvisation, music theory and playing by ear.",
+      "My goal is to make learning fun, engaging and easy to understand, helping every student grow into a confident musician.",
+    ],
+    approach:
+      "My lessons are personalised, practical and enjoyable. I focus on helping students understand music rather than just memorising songs, teaching the songs they love, setting achievable goals and celebrating every milestone. My strength is simplifying complex ideas so students actually enjoy consistent practice.",
+    specialties: [
+      "Acoustic & Electric Guitar",
+      "Lead Guitar & Soloing",
+      "Rhythm & Chord Techniques",
+      "Fingerstyle Guitar",
+      "Bass Guitar",
+      "Worship Guitar",
+      "Music Theory Made Simple",
+      "Song Learning & Performance",
+      "Band Playing",
+    ],
+    highlights: [
+      { title: "Music Director & Worship Leader", sub: "3+ years, Kingdomcity Church" },
+      { title: "200+ Live Performances", sub: "Churches, events, competitions & bands" },
+      { title: "School Music Teacher", sub: "St Xavier's & Bethesda Christian Academy" },
+      { title: "600+ Students Taught", sub: "Ages 6 to 40, all levels" },
+    ],
+    qualifications: [
+      "Music Teacher at St Xavier's Senior High School and Bethesda Christian Academy",
+      "Music Director and Worship Musician at Kingdomcity Church",
+      "Experience with the Trinity College London syllabus",
+      "Ongoing worship music and band training",
+    ],
+    examPrep: ["Trinity College London"],
+    achievements: [
+      "Students perform at school functions, church services and special events",
+      "Students learn to play complete songs confidently, with strong rhythm and timing",
+      "Several students have gone on to serve in church worship teams",
+      "Students have prepared for graded music examinations",
+    ],
+    funFacts: [
+      { q: "Favourite guitarists", a: "John Mayer and Slash" },
+      { q: "Favourite genres", a: "Worship, rock, blues and contemporary pop" },
+      { q: "Favourite song to teach", a: "Love Yourself, Justin Bieber" },
+      { q: "Favourite guitar brand", a: "PRS" },
+    ],
+    advice:
+      "Don't rush to play fast. Build a strong foundation, practise 20 to 30 minutes every day, and enjoy the journey. Great guitarists are made through consistency, not speed.",
+    videos: [],
+    gallery: [],
+    verified: true,
+  },
   // --------------------------------------------------------------------------
-  // SAMPLE — shows the layout. Replace it with a real teacher, or delete it once
-  // you add real profiles. It is `published: false`, so it never shows in the
-  // public grid; preview it at /teachers/sample.
+  // SAMPLE — shows the layout. Copy this block for a new teacher. It is
+  // `published: false`, so it never shows in the public grid; preview it at
+  // /teachers/sample.
   // --------------------------------------------------------------------------
   {
     slug: "sample",
