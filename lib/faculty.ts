@@ -76,7 +76,7 @@ export const FACULTY: FacultyMember[] = [
     name: "Isaac Timothy",
     role: "Guitar Instructor",
     title: "Guitar Instructor | Music Educator | Worship Musician & Director",
-    // photo: "/images/faculty/isaac-timothy.webp", // add when available
+    photo: "/images/faculty/isaac-timothy.webp",
     experienceYears: 3,
     studentsTaught: "600+",
     modes: ["Online", "In person"],
