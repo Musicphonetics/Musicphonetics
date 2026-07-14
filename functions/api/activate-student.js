@@ -116,6 +116,18 @@ export async function onRequestPost({ request, env }) {
         }),
       });
       studentLinked = sRes.ok;
+      // Activated students are on the Director's package. Stamp the plan
+      // separately so a pre-migration schema (no `plan` column) can't fail the
+      // linking above - this is a best-effort update.
+      if (sRes.ok) {
+        try {
+          await fetch(`${env.SUPABASE_URL}/rest/v1/students?parent_id=eq.${id}`, {
+            method: "PATCH",
+            headers: { ...admin(env), Prefer: "return=minimal" },
+            body: JSON.stringify({ plan: "directors" }),
+          });
+        } catch { /* plan column may not exist yet; harmless */ }
+      }
     }
   } catch { /* login is created; the office can link the student manually */ }
 

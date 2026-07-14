@@ -9,9 +9,9 @@ import { isSupabaseConfigured } from "@/lib/supabase/client";
 import { loadParentData, studentView, completedCount, type ParentData } from "@/lib/supabase/parent";
 import { loadReadableMessages, pickParentMessage, type DirectorMessage } from "@/lib/supabase/director";
 import { computeFoundation } from "@/lib/foundation";
+import { studentPlan } from "@/lib/plan";
 import { cn } from "@/lib/utils";
 
-const isFoundation = (fee: number | null) => (fee ?? 8000) < 12000;
 const firstName = (n: string) => n.split(" ")[0];
 
 export default function ParentDashboard() {
@@ -31,7 +31,7 @@ export default function ParentDashboard() {
   const view = useMemo(() => (data && student ? studentView(data, student) : null), [data, student]);
   const foundation = useMemo(() => {
     if (!data || !student) return null;
-    return computeFoundation(completedCount(data, student.id), 1, false, !isFoundation(student.fee_quoted));
+    return computeFoundation(completedCount(data, student.id), 1, false, studentPlan(student) !== "foundation");
   }, [data, student]);
   const pay = useMemo(() => (data && student ? data.payments.find((p) => p.student_id === student.id) ?? null : null), [data, student]);
   const directorMsg = useMemo(() => (student ? pickParentMessage(directorRows, student.id) : null), [directorRows, student]);
@@ -64,7 +64,7 @@ export default function ParentDashboard() {
   ) : null;
 
   return (
-    <PortalShell role="parent" tabs={PARENT_TABS} title="Musicphonetics" subtitle="Parent Portal" headerRight={childMenu}>
+    <PortalShell role="parent" tabs={PARENT_TABS} title="Musicphonetics" subtitle="Student Portal" headerRight={childMenu}>
       {err && <div className="mb-4 rounded-xl border border-red-300 bg-red-50 p-3 text-sm text-red-700">{err}</div>}
       {!data ? <Loading /> : data.students.length === 0 ? (
         <EmptyState title="No student linked yet" hint="Message us on WhatsApp and we'll link your child's profile to your login." />

@@ -7,11 +7,11 @@ import { FeedbackCard } from "@/components/parent/FeedbackCard";
 import type { StudentView } from "@/lib/supabase/parent";
 import type { Student, Payment } from "@/lib/supabase/types";
 import { FOUNDATION, type FoundationProgress, type ChapterState } from "@/lib/foundation";
+import { studentPlan, PLAN_LABEL, type Plan } from "@/lib/plan";
 import { whatsappLink } from "@/lib/data";
 import { cn } from "@/lib/utils";
 
 const clamp = (n: number, lo: number, hi: number) => Math.max(lo, Math.min(hi, n));
-const isFoundation = (fee: number | null) => (fee ?? 8000) < 12000;
 const firstName = (n: string) => n.split(" ")[0];
 
 const prettyDate = (iso: string | null) =>
@@ -36,6 +36,7 @@ const GOLD = "text-[#7A5E0F]"; // gold that reads on white
 export function DashboardBody({
   student, view, foundation, pay, directorMessage,
 }: { student: Student; view: StudentView; foundation: FoundationProgress; pay: Payment | null; directorMessage?: DirectorCustom | null }) {
+  const plan = studentPlan(student);
   return (
     <div className="space-y-4">
       {/* Greeting */}
@@ -47,8 +48,9 @@ export function DashboardBody({
       {/* Director's message, shown like a notification (only when there is one) */}
       {directorMessage && <DirectorNotification message={directorMessage} />}
 
-      {/* Progress */}
-      {isFoundation(student.fee_quoted) ? (
+      {/* Progress bar - Foundation only. Foundation + Main also get a monthly
+          goal. Director's Circle gets a bespoke card (no progress bar). */}
+      {plan === "foundation" && (
         <Panel>
           <div className="flex items-center gap-5">
             <Ring pct={foundation.progressPercent} size={104} stroke={9}>
@@ -84,24 +86,14 @@ export function DashboardBody({
             <Link href="/parent/progress" className={cn("shrink-0 whitespace-nowrap text-sm font-semibold", GOLD)}>View journey →</Link>
           </div>
         </Panel>
-      ) : (
-        <Panel>
-          <div className="flex items-center gap-5">
-            <Ring pct={clamp(Math.round((view.completed / (view.perMonth || 8)) * 100), 0, 100)} size={104} stroke={9}>
-              <span className="font-display text-2xl font-semibold text-ink">{view.completed}</span>
-              <span className="mt-0.5 text-[10px] text-ink/65">Classes</span>
-            </Ring>
-            <div className="min-w-0 flex-1">
-              <p className={cn("text-[0.68rem] font-semibold uppercase tracking-[0.16em]", GOLD)}>Main Pathway</p>
-              <h2 className="mt-1 font-display text-lg font-semibold text-ink">Structured progress, tracked every class</h2>
-            </div>
-          </div>
-          <div className="mt-4 flex items-center justify-between border-t border-hairline pt-3.5">
-            <p className="flex items-center gap-2 text-sm text-ink/70"><span className="text-gold">★</span> Great momentum this month.</p>
-            <Link href="/parent/progress" className={cn("text-sm font-semibold", GOLD)}>View journey →</Link>
-          </div>
-        </Panel>
       )}
+
+      {/* Monthly goal - Foundation (supplementary, when set) + Main Pathway (primary) */}
+      {plan === "main" && <GoalPanel plan={plan} student={student} />}
+      {plan === "foundation" && student.monthly_goal?.trim() && <GoalPanel plan={plan} student={student} />}
+
+      {/* Director's Circle - bespoke plan, no progress bar */}
+      {plan === "directors" && <DirectorsPanel />}
 
       {/* Next class + last update */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
@@ -218,6 +210,52 @@ function ChapterNode({ state, pct }: { state: ChapterState; pct: number }) {
     <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full border border-line text-ink/40">
       <svg width="13" height="13" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2" stroke="currentColor" strokeWidth="1.8" /><path d="M8 11V8a4 4 0 0 1 8 0v3" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" /></svg>
     </span>
+  );
+}
+
+// This month's goal, set by the teacher. Shown for Foundation + Main Pathway.
+function GoalPanel({ plan, student }: { plan: Plan; student: Student }) {
+  const goal = student.monthly_goal?.trim();
+  const monthTxt = student.goal_month
+    ? new Date(student.goal_month + "-01T00:00:00").toLocaleDateString("en-IN", { month: "long", year: "numeric" })
+    : monthLabel();
+  return (
+    <Panel>
+      <div className="flex items-start gap-4">
+        <span className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-gold/12 text-[#7A5E0F]">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="8" stroke="currentColor" strokeWidth="1.7" /><circle cx="12" cy="12" r="3.4" stroke="currentColor" strokeWidth="1.7" /><path d="M12 2v3M12 19v3M2 12h3M19 12h3" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" /></svg>
+        </span>
+        <div className="min-w-0 flex-1">
+          <p className={cn("text-[0.68rem] font-semibold uppercase tracking-[0.16em]", GOLD)}>{PLAN_LABEL[plan]} · This month</p>
+          <h2 className="mt-1 font-display text-lg font-semibold text-ink">{monthTxt} goal</h2>
+          {goal
+            ? <p className="mt-1.5 text-sm leading-relaxed text-ink/80">{goal}</p>
+            : <p className="mt-1.5 text-sm leading-relaxed text-ink/65">Your teacher will set this month&apos;s goal soon.</p>}
+        </div>
+      </div>
+      <div className="mt-4 flex items-center justify-between gap-3 border-t border-hairline pt-3.5">
+        <p className="flex items-center gap-2 text-sm text-ink/70"><span className="text-gold">★</span> A little practice every day gets you there.</p>
+        <Link href="/parent/classes" className={cn("shrink-0 whitespace-nowrap text-sm font-semibold", GOLD)}>View updates →</Link>
+      </div>
+    </Panel>
+  );
+}
+
+// Director's Circle - a bespoke, personally-guided plan (no progress bar).
+function DirectorsPanel() {
+  return (
+    <Panel>
+      <div className="flex items-center gap-4">
+        <span className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-gold/12 text-[#7A5E0F]">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 8l4 4 4-6 4 6 4-4v9a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V8Z" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" /></svg>
+        </span>
+        <div className="min-w-0 flex-1">
+          <p className={cn("text-[0.68rem] font-semibold uppercase tracking-[0.16em]", GOLD)}>Director&apos;s Circle</p>
+          <h2 className="mt-1 font-display text-lg font-semibold text-ink">A bespoke, personally-guided plan</h2>
+          <p className="mt-1 text-sm leading-relaxed text-ink/70">Your learning is guided personally — follow each class update and note below.</p>
+        </div>
+      </div>
+    </Panel>
   );
 }
 

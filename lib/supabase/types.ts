@@ -46,6 +46,12 @@ export interface Student {
   media_consent: boolean | null;
   birthday_gift_notes: string | null;
   notes: string | null;
+  // Plan (batch) + rolling monthly goal. Optional: columns added by
+  // supabase/student_plan_goals.sql; older rows / pre-migration read undefined.
+  plan?: "foundation" | "main" | "directors" | null;
+  monthly_goal?: string | null;
+  goal_month?: string | null;
+  goal_set_at?: string | null;
   created_at: string;
   updated_at: string;
 }

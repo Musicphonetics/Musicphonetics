@@ -119,7 +119,7 @@ export default function OwnerApplications() {
                 creds.emailed ? "border-feature-green/30 bg-feature-green/10 text-feature-green" : "border-hairline bg-white text-ink/70")}>
                 <span aria-hidden="true">{creds.emailed ? "✓" : "ℹ"}</span>
                 {creds.emailed
-                  ? <span>The offer letter with these login details was <b>emailed to {creds.email}</b> automatically.</span>
+                  ? <span>The offer letter, joining agreement and login details were <b>emailed to {creds.email}</b> automatically.</span>
                   : <span>Email not sent automatically ({creds.emailNote || "no mail provider configured"}). Send the details above on WhatsApp/email yourself. To auto-email teachers, set <b>RESEND_API_KEY</b> (and <b>MAIL_FROM</b>) in the Pages environment.</span>}
               </div>
               <p className="mt-2 text-xs text-ink/60">Ask them to change the password after first login.</p>

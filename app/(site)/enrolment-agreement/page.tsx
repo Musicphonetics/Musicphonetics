@@ -23,7 +23,7 @@ const SECTIONS: { h: string; p?: string[]; li?: string[] }[] = [
     h: "Classes & scheduling",
     li: [
       "Classes are delivered one-to-one, at home or online, on a schedule agreed with you.",
-      "You will be told what your child is learning through the parent portal after classes, including homework and the next-class plan.",
+      "You will be told what your child is learning through the student portal after classes, including homework and the next-class plan.",
       "If you need to reschedule or pause, please give us reasonable notice through the official Musicphonetics contact. Repeated no-shows may affect scheduling.",
     ],
   },

@@ -50,8 +50,8 @@ export default function ParentLogin() {
     <div className="grid min-h-screen place-items-center bg-ink px-5 py-10 text-paper">
       <div className="w-full max-w-sm">
         <div className="flex justify-center"><Stave className="w-16 opacity-80" /></div>
-        <h1 className="mt-6 text-center font-display text-2xl font-semibold">Parent Portal</h1>
-        <p className="mt-1.5 text-center text-sm text-paper/60">Follow your child&apos;s learning journey.</p>
+        <h1 className="mt-6 text-center font-display text-2xl font-semibold">Student Portal</h1>
+        <p className="mt-1.5 text-center text-sm text-paper/60">Follow your learning journey.</p>
 
         {!isSupabaseConfigured() && (
           <p className="mt-6 rounded-xl border border-red-400/40 bg-red-500/10 p-3 text-center text-sm text-red-200">

@@ -31,7 +31,7 @@ export function NightPortalShowcase() {
             <Reveal>
               <div className="flex items-center gap-3">
                 <span aria-hidden="true" className="h-px w-10 bg-gold" />
-                <span className="text-[0.75rem] font-semibold uppercase tracking-[0.16em] text-gold">Your parent portal</span>
+                <span className="text-[0.75rem] font-semibold uppercase tracking-[0.16em] text-gold">Your student portal</span>
               </div>
               <h2 className="mt-4 font-display text-[clamp(1.7rem,4.5vw,2.4rem)] font-medium leading-tight text-ivory">
                 Know exactly how your child is doing.

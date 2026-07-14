@@ -20,7 +20,34 @@ const json = (obj, status = 200) =>
 
 const esc = (v) => String(v ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 
-// Branded offer-letter email with login details. Returns { sent, note }.
+// The full Joining Agreement, mirrored from components/teach/JoiningLetter.tsx so
+// the teacher receives every clause by email, not just the offer summary.
+const JOINING_CLAUSES = [
+  ["Nature of engagement", "You are engaged as an independent teaching partner, not an employee, and are solely responsible for your own conduct, acts and omissions."],
+  ["Term & review", "The engagement begins on signing and continues until ended under the Termination clause. The first 60 days are a review period."],
+  ["Duties & standard", "Teach professionally and punctually to the Musicphonetics standard, update the portal after every class, keep accurate progress notes, and report any concern immediately."],
+  ["Fees & revenue share", "All fees are collected only through the official Musicphonetics payment interface. From each fee, ~3% is deducted as the interface/gateway charge; from the net, your share is 70% and Musicphonetics retains 30%. Never collect fees directly from a student or parent."],
+  ["Verification (good faith, not a guarantee)", "You warrant that all information, identity and bank details you gave are true. Musicphonetics verifies teachers in good faith; this is not a guarantee of anyone's conduct, and you alone are responsible for your actions."],
+  ["Liability & indemnity", "You are solely responsible for your own acts. Musicphonetics is not liable for any theft, damage, injury, harassment, unauthorised recording or misconduct committed by you, and you indemnify Musicphonetics against any loss or claim arising from your breach, negligence or unlawful act."],
+  ["Confidentiality", "Keep all student, parent, payment and internal information strictly confidential, during and after the engagement."],
+  ["Intellectual property & recordings", "Musicphonetics materials remain its property and are used only for Musicphonetics classes. Do not photograph or record any student or class without prior written consent from Musicphonetics and the parent."],
+  ["Safeguarding", "Maintain the highest child-safety standards: no inappropriate contact, no private late-night messaging with minors, guardian awareness at all times, and immediate reporting of any concern."],
+  ["Non-solicitation", "During the engagement and for 6 months after, do not privately teach, solicit or accept payment from any student, parent, teacher or staff introduced through Musicphonetics."],
+  ["Conduct & anti-fraud", "No misrepresentation, unauthorised commitments, side deals, or dishonest or unlawful activity."],
+  ["Termination", "Either party may end the engagement with 15 days' notice. Musicphonetics may terminate immediately for cause - including theft, fraud, a safeguarding breach, unauthorised recording, direct fee collection or serious misconduct."],
+  ["Governing law", "This engagement is governed by the laws of India; the courts at Delhi NCR have jurisdiction. Confidentiality and non-solicitation survive termination."],
+];
+
+const DECLARATIONS = [
+  "All information, qualifications, identity and bank details I provided are true and current.",
+  "I am an independent teaching partner, solely responsible for my own conduct and acts.",
+  "I understand verification is done in good faith but is not a guarantee of anyone's conduct.",
+  "I will collect no fees directly and will use only the official payment interface.",
+  "I agree to the confidentiality, safeguarding, IP and non-solicitation terms.",
+  "I will indemnify Musicphonetics against loss from my breach, negligence, misconduct or unlawful act.",
+];
+
+// Branded offer + joining email with login details. Returns { sent, note }.
 async function emailTeacherOffer(env, { name, email, password }) {
   if (!env.RESEND_API_KEY) return { sent: false, note: "email provider not configured (set RESEND_API_KEY)" };
   const from = env.MAIL_FROM || "Musicphonetics <onboarding@resend.dev>";
@@ -57,10 +84,21 @@ async function emailTeacherOffer(env, { name, email, password }) {
         registered bank/UPI account after each payment is received and verified.
       </p>
 
-      <p style="margin:0 0 14px;font-size:14px;line-height:1.6;color:#3a3f4a">
-        Your full <b>Offer &amp; Engagement Letter</b> and <b>Joining Agreement</b> (with the complete terms,
-        responsibilities, safeguarding, confidentiality and non-solicitation clauses) will be shared with you to
-        read, sign and return. Please sign in, review your profile, and reply to confirm you accept the terms.
+      <hr style="border:0;border-top:1px solid #e7e2d6;margin:20px 0" />
+      <p style="margin:0 0 4px;font-size:15px;font-weight:800;color:#161b26">Your Joining Agreement — full terms</p>
+      <p style="margin:0 0 12px;font-size:13px;line-height:1.6;color:#3a3f4a">Please read every clause below. By signing in and continuing, and by returning the signed agreement, you accept these terms.</p>
+      <ol style="margin:0 0 8px;padding-left:18px;font-size:13px;line-height:1.6;color:#3a3f4a">
+        ${JOINING_CLAUSES.map(([h, t]) => `<li style="margin:0 0 8px"><b style="color:#161b26">${esc(h)}.</b> ${esc(t)}</li>`).join("")}
+      </ol>
+
+      <p style="margin:16px 0 6px;font-size:13px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:#7a5e0f">Your declaration</p>
+      <ul style="margin:0 0 8px;padding-left:18px;font-size:13px;line-height:1.6;color:#3a3f4a">
+        ${DECLARATIONS.map((t) => `<li style="margin:0 0 6px">${esc(t)}</li>`).join("")}
+      </ul>
+
+      <p style="margin:16px 0 14px;font-size:14px;line-height:1.6;color:#3a3f4a">
+        A formatted PDF of your Offer &amp; Engagement Letter and this Joining Agreement will also be shared with you to
+        sign and return. Please <b>reply to this email to confirm you accept the terms</b>, then sign in below.
       </p>
 
       <a href="${portal}" style="display:inline-block;background:#161b26;color:#fff;text-decoration:none;font-weight:700;font-size:14px;padding:12px 22px;border-radius:999px">Sign in to your portal →</a>
@@ -77,7 +115,7 @@ async function emailTeacherOffer(env, { name, email, password }) {
       body: JSON.stringify({
         from,
         to: [email],
-        subject: "Your Musicphonetics teacher offer & login details",
+        subject: "Your Musicphonetics teacher offer, joining agreement & login details",
         html,
         reply_to: "guitaristabhishek07@gmail.com",
       }),

@@ -176,7 +176,7 @@ export const HOW_STEPS: HowStep[] = [
     objectPos: "50% 30%",
     kicker: "Real progress",
     title: "Milestones you can see",
-    body: "Progress notes after every class and real recognition along the way, all tracked inside your own parent portal.",
+    body: "Progress notes after every class and real recognition along the way, all tracked inside your own student portal.",
   },
   {
     img: "/images/moments/openmic-audience.webp",

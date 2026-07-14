@@ -9,7 +9,10 @@ import { ReportCardModal, type ReportStudent } from "@/components/portal/ReportC
 import { getSupabase, isSupabaseConfigured } from "@/lib/supabase/client";
 import { loadRoster } from "@/lib/supabase/roster";
 import type { StudentStat, ClassUpdate, Payment } from "@/lib/supabase/types";
+import { studentPlan, PLAN_LABEL, type Plan } from "@/lib/plan";
 import { cn } from "@/lib/utils";
+
+const PLANS: Plan[] = ["foundation", "main", "directors"];
 
 export default function MyStudents() {
   const [rows, setRows] = useState<StudentStat[] | null>(null);
@@ -101,6 +104,8 @@ function StudentDetail({ stat, onReport }: { stat: StudentStat; onReport: () => 
         Progress report card
       </button>
 
+      <GoalEditor studentId={stat.student_id} feeQuoted={stat.fee_quoted} />
+
       <p className="mt-4 text-xs font-semibold uppercase tracking-wide text-ink/60">Recent classes</p>
       {!classes ? <p className="mt-1 text-xs text-ink/50">Loading…</p> :
         classes.length === 0 ? <p className="mt-1 text-xs text-ink/50">No classes logged yet.</p> : (
@@ -125,6 +130,94 @@ function StudentDetail({ stat, onReport }: { stat: StudentStat; onReport: () => 
             </li>
           ))}
         </ul>
+      )}
+    </div>
+  );
+}
+
+// Set the student's plan (batch) and this month's goal. Foundation shows the
+// curriculum progress bar; Foundation + Main show this goal; Director's Circle
+// shows neither. What you save here is what the family sees in the portal.
+function GoalEditor({ studentId, feeQuoted }: { studentId: string; feeQuoted: number | null }) {
+  const [plan, setPlan] = useState<Plan>("foundation");
+  const [goal, setGoal] = useState("");
+  const [month, setMonth] = useState(() => new Date().toISOString().slice(0, 7));
+  const [loaded, setLoaded] = useState(false);
+  const [needsMigration, setNeedsMigration] = useState(false);
+  const [busy, setBusy] = useState(false);
+  const [msg, setMsg] = useState<string | null>(null);
+  const [err, setErr] = useState<string | null>(null);
+
+  useEffect(() => {
+    getSupabase().from("students").select("plan,monthly_goal,goal_month").eq("id", studentId).single()
+      .then(({ data, error }) => {
+        if (error) {
+          if (/column|does not exist|schema cache/i.test(error.message)) setNeedsMigration(true);
+          setPlan(studentPlan({ plan: null, fee_quoted: feeQuoted }));
+        } else {
+          const row = data as { plan: string | null; monthly_goal: string | null; goal_month: string | null };
+          setPlan(studentPlan({ plan: row?.plan, fee_quoted: feeQuoted }));
+          if (row?.monthly_goal) setGoal(row.monthly_goal);
+          if (row?.goal_month) setMonth(row.goal_month);
+        }
+        setLoaded(true);
+      });
+  }, [studentId, feeQuoted]);
+
+  async function save() {
+    setBusy(true); setErr(null); setMsg(null);
+    const payload: Record<string, unknown> = { plan, goal_set_at: new Date().toISOString() };
+    if (plan === "directors") { payload.monthly_goal = null; payload.goal_month = null; }
+    else { payload.monthly_goal = goal.trim() || null; payload.goal_month = month; }
+    const { error } = await getSupabase().from("students").update(payload).eq("id", studentId);
+    setBusy(false);
+    if (error) {
+      if (/column|does not exist|schema cache/i.test(error.message)) { setNeedsMigration(true); setErr(null); }
+      else setErr(error.message);
+    } else setMsg("Saved. The family sees this in the student portal.");
+  }
+
+  return (
+    <div className="mt-4 rounded-xl border border-hairline bg-white p-3.5">
+      <p className="text-xs font-semibold uppercase tracking-wide text-[#7A5E0F]">Plan &amp; this month&apos;s goal</p>
+      {needsMigration ? (
+        <p className="mt-2 text-xs leading-relaxed text-ink/60">Run <code className="rounded bg-mist px-1">supabase/student_plan_goals.sql</code> once in Supabase to enable plans &amp; monthly goals.</p>
+      ) : !loaded ? (
+        <p className="mt-2 text-xs text-ink/50">Loading…</p>
+      ) : (
+        <>
+          <div className="mt-2 flex flex-wrap gap-1.5">
+            {PLANS.map((p) => (
+              <button key={p} type="button" onClick={() => { setPlan(p); setMsg(null); }}
+                className={cn("rounded-full border px-3 py-1.5 text-xs font-semibold transition",
+                  plan === p ? "border-ink bg-ink text-paper" : "border-hairline text-ink/70 hover:border-ink/40")}>
+                {PLAN_LABEL[p]}
+              </button>
+            ))}
+          </div>
+
+          {plan === "directors" ? (
+            <p className="mt-2.5 text-xs leading-relaxed text-ink/60">Director&apos;s Circle shows no progress bar and no monthly goal — a bespoke, personally-guided plan.</p>
+          ) : (
+            <>
+              <div className="mt-2.5 flex items-center gap-2">
+                <label className="text-xs text-ink/60">Month</label>
+                <input type="month" value={month} onChange={(e) => { setMonth(e.target.value); setMsg(null); }}
+                  className="rounded-lg border border-hairline bg-white px-2.5 py-1.5 text-xs text-ink focus-visible:outline-2 focus-visible:outline-gold focus:outline-none" />
+              </div>
+              <textarea value={goal} onChange={(e) => { setGoal(e.target.value); setMsg(null); }} rows={2}
+                placeholder="e.g. Play the C, G and Am chords cleanly and switch between them in time."
+                className="mt-2 w-full rounded-lg border border-hairline bg-white px-3 py-2 text-sm text-ink placeholder:text-ink/40 focus-visible:outline-2 focus-visible:outline-gold focus:outline-none" />
+            </>
+          )}
+
+          {err && <p className="mt-2 text-xs text-red-600">{err}</p>}
+          {msg && <p className="mt-2 text-xs font-semibold text-feature-green">{msg}</p>}
+          <button onClick={save} disabled={busy}
+            className="mt-2.5 w-full rounded-lg bg-gold py-2 text-sm font-semibold text-charcoal hover:brightness-105 disabled:opacity-50">
+            {busy ? "Saving…" : "Save plan & goal"}
+          </button>
+        </>
       )}
     </div>
   );
