@@ -2,6 +2,7 @@
 
 import { getSupabase } from "./client";
 import type { Student, ClassUpdate, Payment, Profile } from "./types";
+import { isValidCompleted } from "@/lib/attendance";
 
 // Everything a parent may see about THEIR own child/children. RLS restricts the
 // rows to students where students.parent_id = auth.uid() (see the SQL). We read
@@ -54,7 +55,7 @@ export interface StudentView {
 
 export function studentView(d: ParentData, student: Student): StudentView {
   const cls = d.classes.filter((c) => c.student_id === student.id);
-  const completed = cls.filter((c) => c.class_status === "Completed").length;
+  const completed = cls.filter(isValidCompleted).length;
   const perMonth = student.classes_per_month ?? 8;
   const remaining = Math.max(perMonth - (completed % perMonth || (completed && perMonth ? perMonth : 0)), 0);
   const latest = cls[0] ?? null; // already sorted desc
@@ -70,7 +71,7 @@ export function studentView(d: ParentData, student: Student): StudentView {
 
 // Total completed classes for the student (for the Foundation Journey count).
 export function completedCount(d: ParentData, studentId: string): number {
-  return d.classes.filter((c) => c.student_id === studentId && c.class_status === "Completed").length;
+  return d.classes.filter((c) => c.student_id === studentId && isValidCompleted(c)).length;
 }
 
 // Anonymised community headlines the owner publishes (community_updates). Falls

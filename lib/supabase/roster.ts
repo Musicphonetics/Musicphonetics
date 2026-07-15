@@ -2,6 +2,7 @@
 
 import { getSupabase } from "./client";
 import type { Student, StudentStat } from "./types";
+import { isValidCompleted } from "@/lib/attendance";
 
 // Loads the signed-in teacher's roster with computed stats, reading the BASE
 // tables (students, class_updates, payments) rather than the student_stats
@@ -13,7 +14,7 @@ export async function loadRoster(): Promise<{ rows: StudentStat[]; error: string
 
   const [studentsRes, classesRes, paymentsRes] = await Promise.all([
     sb.from("students").select("*").order("name"),
-    sb.from("class_updates").select("student_id,class_status"),
+    sb.from("class_updates").select("student_id,class_status,attendance_status,counts_toward_cycle"),
     sb.from("payments").select("student_id,amount_paid,teacher_share"),
   ]);
 
@@ -22,7 +23,7 @@ export async function loadRoster(): Promise<{ rows: StudentStat[]; error: string
 
   const completed = new Map<string, number>();
   for (const c of classesRes.data ?? []) {
-    if (c.class_status === "Completed") completed.set(c.student_id, (completed.get(c.student_id) ?? 0) + 1);
+    if (isValidCompleted(c)) completed.set(c.student_id, (completed.get(c.student_id) ?? 0) + 1);
   }
   const paid = new Map<string, number>();
   const share = new Map<string, number>();
@@ -36,6 +37,7 @@ export async function loadRoster(): Promise<{ rows: StudentStat[]; error: string
     const per = s.classes_per_month ?? 0;
     return {
       student_id: s.id,
+      student_code: s.student_code ?? null,
       teacher_id: s.teacher_id,
       name: s.name,
       instrument: s.instrument,
