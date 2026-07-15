@@ -40,22 +40,19 @@ export interface AuditEntry {
 }
 
 // Best-effort: an audit write must never block the actual operation.
+// Clients cannot insert into audit_logs directly (no RLS insert policy). We call
+// the SECURITY DEFINER function public.mp_audit, which pins actor_id/actor_role
+// to the caller's real identity so entries cannot be fabricated or impersonated.
 export async function logAudit(e: AuditEntry): Promise<void> {
   try {
-    const { data: { session } } = await getSupabase().auth.getSession();
-    const uid = session?.user?.id;
-    if (!uid) return;
-    const role = (session?.user?.user_metadata?.role as string) || null;
-    await getSupabase().from("audit_logs").insert({
-      actor_id: uid,
-      actor_role: role,
-      action: e.action,
-      entity_type: e.entity_type ?? null,
-      entity_id: e.entity_id ?? null,
-      student_id: e.student_id ?? null,
-      teacher_id: e.teacher_id ?? null,
-      summary: e.summary ?? null,
-      meta: e.meta ?? null,
+    await getSupabase().rpc("mp_audit", {
+      p_action: e.action,
+      p_entity_type: e.entity_type ?? null,
+      p_entity_id: e.entity_id ?? null,
+      p_student_id: e.student_id ?? null,
+      p_teacher_id: e.teacher_id ?? null,
+      p_summary: e.summary ?? null,
+      p_meta: e.meta ?? null,
     });
   } catch {
     /* audit is best-effort */

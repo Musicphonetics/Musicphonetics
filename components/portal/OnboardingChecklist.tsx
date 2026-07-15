@@ -52,9 +52,16 @@ export function OnboardingChecklist({ mode, teacherId }: { mode: "teacher" | "ow
 
   async function setStatus(it: TeacherOnboardingItem, status: OnboardingStatus, rejection_reason?: string) {
     setBusy(it.id);
-    await getSupabase().from("teacher_onboarding_items").update({
-      status, rejection_reason: rejection_reason ?? null, reviewed_at: new Date().toISOString(), updated_at: new Date().toISOString(),
-    }).eq("id", it.id);
+    // The DB trigger enforces field-level rules; we send only what each role owns.
+    // Teacher may submit; owner records the review decision + reviewer.
+    let payload: Record<string, unknown>;
+    if (mode === "owner") {
+      const { data } = await getSupabase().auth.getUser();
+      payload = { status, rejection_reason: rejection_reason ?? null, reviewed_by: data.user?.id ?? null, reviewed_at: new Date().toISOString(), updated_at: new Date().toISOString() };
+    } else {
+      payload = { status, updated_at: new Date().toISOString() };
+    }
+    await getSupabase().from("teacher_onboarding_items").update(payload).eq("id", it.id);
     if (mode === "owner") logAudit({ action: "onboarding_reviewed", teacher_id: teacherId, entity_type: "onboarding_item", entity_id: it.id, summary: `${it.label}: ${status}` });
     setBusy(null); load();
   }
