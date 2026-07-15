@@ -7,7 +7,10 @@ import { PARENT_TABS } from "@/components/portal/tabs";
 import { Loading, EmptyState, formatMoney } from "@/components/portal/kit";
 import { isSupabaseConfigured } from "@/lib/supabase/client";
 import { loadParentData, studentView, type ParentData } from "@/lib/supabase/parent";
+import { PaymentDoc } from "@/components/portal/PaymentDoc";
+import { studentPlan, PLAN_LABEL } from "@/lib/plan";
 import { whatsappLink } from "@/lib/data";
+import type { Payment } from "@/lib/supabase/types";
 import { cn } from "@/lib/utils";
 
 const pretty = (iso: string) => new Date(iso + "T00:00:00").toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" });
@@ -23,6 +26,7 @@ export default function ParentPayments() {
   const [err, setErr] = useState<string | null>(null);
   const [idx, setIdx] = useState(0);
   const [planKey, setPlanKey] = useState<string>("");
+  const [receipt, setReceipt] = useState<Payment | null>(null);
 
   useEffect(() => {
     if (!isSupabaseConfigured()) return;
@@ -121,9 +125,12 @@ export default function ParentPayments() {
                       <p className="text-sm font-semibold text-ink">{pretty(p.payment_date)}</p>
                       <p className="mt-0.5 text-xs text-ink/65">{p.billing_cycle || "Monthly"}</p>
                     </div>
-                    <div className="text-right">
-                      <p className="font-semibold text-ink">{formatMoney(p.amount_paid)}</p>
-                      <span className={cn("text-[11px] font-semibold", p.payment_status === "Received" ? "text-emerald-700" : "text-[#7A5E0F]")}>{p.payment_status}</span>
+                    <div className="flex items-center gap-3 text-right">
+                      <div>
+                        <p className="font-semibold text-ink">{formatMoney(p.amount_paid)}</p>
+                        <span className={cn("text-[11px] font-semibold", p.payment_status === "Received" ? "text-emerald-700" : "text-[#7A5E0F]")}>{p.payment_status}</span>
+                      </div>
+                      <button onClick={() => setReceipt(p)} className="rounded-full border border-hairline px-3 py-1.5 text-xs font-semibold text-ink/70 hover:border-ink/40" aria-label="View receipt">Receipt</button>
                     </div>
                   </div>
                 ))}
@@ -132,6 +139,21 @@ export default function ParentPayments() {
           </div>
         </div>
       ) : <Loading />}
+
+      {receipt && student && (
+        <div className="fixed inset-0 z-[70] grid place-items-start overflow-y-auto bg-charcoal/50 p-4 backdrop-blur-sm">
+          <div className="mx-auto w-full max-w-2xl py-6">
+            <PaymentDoc
+              payment={receipt}
+              kind={/received/i.test(receipt.payment_status) ? "receipt" : "invoice"}
+              studentName={student.name}
+              studentCode={student.student_code}
+              planName={PLAN_LABEL[studentPlan(student)]}
+              onClose={() => setReceipt(null)}
+            />
+          </div>
+        </div>
+      )}
     </PortalShell>
   );
 }
