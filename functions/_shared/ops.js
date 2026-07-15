@@ -77,15 +77,17 @@ export function rateLimit(key, limit, windowMs) {
 export const clientIp = (request) =>
   request.headers.get("cf-connecting-ip") || request.headers.get("x-forwarded-for") || "unknown";
 
-// Basic same-origin / method guard for public POST endpoints.
+// Optional same-origin guard. OFF by default (returns false = allow) so it can
+// never block legitimate traffic or a future custom domain. Only enforces when
+// ALLOWED_ORIGIN_HOSTS is configured; *.pages.dev and localhost stay allowed.
 export function badOrigin(request, env) {
+  const allow = (env.ALLOWED_ORIGIN_HOSTS || "").split(",").map((s) => s.trim()).filter(Boolean);
+  if (allow.length === 0) return false; // not configured → never block
   const origin = request.headers.get("origin") || "";
-  if (!origin) return false; // non-browser callers (curl) have no Origin; allow (still validated elsewhere)
+  if (!origin) return false; // non-browser callers have no Origin
   try {
     const host = new URL(origin).host;
-    const allow = (env.ALLOWED_ORIGIN_HOSTS || "").split(",").map((s) => s.trim()).filter(Boolean);
-    const ok = host.endsWith(".pages.dev") || host.endsWith("musicphonetics.pages.dev") ||
-      host.includes("localhost") || allow.includes(host);
+    const ok = host.endsWith(".pages.dev") || host.includes("localhost") || allow.includes(host);
     return !ok;
   } catch {
     return false;

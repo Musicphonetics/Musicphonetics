@@ -16,6 +16,17 @@ function json(body, status = 200) {
   });
 }
 
+// Generous per-isolate rate limit — enough headroom to never block a real
+// verification, but stops brute-force signature guessing.
+const HITS = new Map();
+function rl(key, limit, windowMs) {
+  const now = Date.now();
+  const rec = HITS.get(key);
+  if (!rec || now > rec.reset) { HITS.set(key, { count: 1, reset: now + windowMs }); return true; }
+  if (rec.count >= limit) return false;
+  rec.count += 1; return true;
+}
+
 // HMAC-SHA256 -> lowercase hex, using the Workers Web Crypto API.
 async function hmacSha256Hex(secret, message) {
   const enc = new TextEncoder();
@@ -45,6 +56,9 @@ export async function onRequestPost(context) {
   if (!keySecret) {
     return json({ ok: false, error: "Payments are not configured yet." }, 503);
   }
+
+  const ip = request.headers.get("cf-connecting-ip") || "unknown";
+  if (!rl(`verify:${ip}`, 60, 60000)) return json({ ok: false, error: "Too many attempts." }, 429);
 
   let body;
   try {

@@ -101,6 +101,7 @@ export function PayClient() {
         currency: "INR",
         receipt: `mp_${Date.now()}`,
         plan: planName,
+        plan_key: planKey,
         name: name.trim(),
       });
 

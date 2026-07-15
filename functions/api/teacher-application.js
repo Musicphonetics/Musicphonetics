@@ -18,9 +18,24 @@ const json = (obj, status = 200) =>
 const clean = (v, n = 300) => String(v ?? "").trim().slice(0, n);
 const arr = (v) => (Array.isArray(v) ? v.map((x) => clean(x, 60)).slice(0, 30) : []);
 
+// Tiny per-isolate rate limiter (abuse protection for a public endpoint).
+const HITS = new Map();
+function rl(key, limit, windowMs) {
+  const now = Date.now();
+  const rec = HITS.get(key);
+  if (!rec || now > rec.reset) { HITS.set(key, { count: 1, reset: now + windowMs }); return true; }
+  if (rec.count >= limit) return false;
+  rec.count += 1; return true;
+}
+
 export async function onRequestPost({ request, env }) {
+  const ip = request.headers.get("cf-connecting-ip") || "unknown";
+  if (!rl(`apply:${ip}`, 8, 60000)) return json({ ok: false, error: "Too many attempts. Please wait a moment." }, 429);
+
+  const raw = await request.text();
+  if (raw.length > 12000) return json({ ok: false, error: "Bad request" }, 400);
   let b;
-  try { b = await request.json(); } catch { return json({ ok: false, error: "Bad request" }, 400); }
+  try { b = JSON.parse(raw); } catch { return json({ ok: false, error: "Bad request" }, 400); }
 
   const full_name = clean(b.full_name, 120);
   const email = clean(b.email, 160).toLowerCase();

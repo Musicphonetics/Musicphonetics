@@ -19,11 +19,32 @@
 const MIN_AMOUNT = 100;
 const MAX_AMOUNT = 20000000; // ₹2,00,000
 
+// Server-side price authority: a known plan's monthly fee (paise) is the CEILING
+// for that plan's order. A pro-rated first month is <= the monthly fee, so we
+// allow anything from MIN up to the plan price; we never trust an amount above
+// the plan's real price. Unknown/no plan falls back to the MIN/MAX bounds.
+const PLAN_PRICE_PAISE = {
+  foundation: 800000,     // ₹8,000
+  main: 1200000,          // ₹12,000
+  "directors-circle": 2800000, // ₹28,000 (bespoke ceiling)
+};
+
 function json(body, status = 200) {
   return new Response(JSON.stringify(body), {
     status,
     headers: { "content-type": "application/json" },
   });
+}
+
+// Tiny per-isolate rate limiter. Blunts bursts/abuse without extra infra.
+const HITS = new Map();
+function rl(key, limit, windowMs) {
+  const now = Date.now();
+  const rec = HITS.get(key);
+  if (!rec || now > rec.reset) { HITS.set(key, { count: 1, reset: now + windowMs }); return true; }
+  if (rec.count >= limit) return false;
+  rec.count += 1;
+  return true;
 }
 
 export async function onRequestPost(context) {
@@ -37,9 +58,16 @@ export async function onRequestPost(context) {
     return json({ ok: false, error: "Payments are not configured yet." }, 503);
   }
 
+  // Basic abuse protection.
+  const ip = request.headers.get("cf-connecting-ip") || "unknown";
+  if (!rl(`order:${ip}`, 20, 60000)) return json({ ok: false, error: "Too many attempts. Please wait a moment." }, 429);
+
+  // Cap the body so a huge payload can't be forced through.
+  const raw = await request.text();
+  if (raw.length > 4000) return json({ ok: false, error: "Invalid request." }, 400);
   let body;
   try {
-    body = await request.json();
+    body = JSON.parse(raw);
   } catch {
     return json({ ok: false, error: "Invalid request." }, 400);
   }
@@ -47,9 +75,17 @@ export async function onRequestPost(context) {
   const amount = Math.round(Number(body.amount)); // paise
   const currency = String(body.currency || "INR").toUpperCase().slice(0, 3);
   const receipt = String(body.receipt || `mp_${Date.now()}`).slice(0, 40);
+  const planKey = String(body.plan_key || body.planKey || "").toLowerCase().trim();
 
   if (!Number.isFinite(amount) || amount < MIN_AMOUNT || amount > MAX_AMOUNT) {
     return json({ ok: false, error: "Invalid amount." }, 400);
+  }
+
+  // Server-side price validation: for a known plan, the amount may not exceed
+  // that plan's real monthly fee (pro-rata is always <=). Blocks URL tampering.
+  const ceiling = PLAN_PRICE_PAISE[planKey];
+  if (ceiling && amount > ceiling) {
+    return json({ ok: false, error: "Amount does not match the selected plan." }, 400);
   }
 
   // Small, non-sensitive labels to help reconcile the order in the dashboard.

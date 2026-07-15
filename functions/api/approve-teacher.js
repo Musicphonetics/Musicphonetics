@@ -150,7 +150,15 @@ async function assertOwner(env, token) {
   const pRes = await fetch(`${env.SUPABASE_URL}/rest/v1/profiles?id=eq.${user.id}&select=role`, { headers: admin(env) });
   const rows = pRes.ok ? await pRes.json() : [];
   if (rows[0]?.role !== "owner") return { ok: false, status: 403, error: "Owner access required" };
-  return { ok: true };
+  return { ok: true, user };
+}
+
+async function audit(env, entry) {
+  try {
+    await fetch(`${env.SUPABASE_URL}/rest/v1/audit_logs`, {
+      method: "POST", headers: { ...admin(env), Prefer: "return=minimal" }, body: JSON.stringify(entry),
+    });
+  } catch { /* best-effort */ }
 }
 
 export async function onRequestPost({ request, env }) {
@@ -222,6 +230,13 @@ export async function onRequestPost({ request, env }) {
 
   // 5) Email the teacher their offer + login details (best-effort).
   const mail = await emailTeacherOffer(env, { name: app.full_name, email: app.email, password });
+
+  // 6) Audit (never include the password).
+  await audit(env, {
+    actor_id: guard.user?.id ?? null, actor_role: "owner",
+    action: "teacher_application_approved", entity_type: "teacher", entity_id: teacherId, teacher_id: teacherId,
+    summary: `Approved teacher application for ${app.full_name}`, meta: { emailed: mail.sent },
+  });
 
   return json({
     ok: true,

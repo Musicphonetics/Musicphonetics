@@ -21,7 +21,15 @@ async function assertOwner(env, token) {
   const pRes = await fetch(`${env.SUPABASE_URL}/rest/v1/profiles?id=eq.${user.id}&select=role`, { headers: admin(env) });
   const rows = pRes.ok ? await pRes.json() : [];
   if (rows[0]?.role !== "owner") return { ok: false, status: 403, error: "Owner access required" };
-  return { ok: true };
+  return { ok: true, user };
+}
+
+async function audit(env, entry) {
+  try {
+    await fetch(`${env.SUPABASE_URL}/rest/v1/audit_logs`, {
+      method: "POST", headers: { ...admin(env), Prefer: "return=minimal" }, body: JSON.stringify(entry),
+    });
+  } catch { /* best-effort */ }
 }
 
 export async function onRequestPost({ request, env }) {
@@ -51,5 +59,11 @@ export async function onRequestPost({ request, env }) {
     const detail = await uRes.text().catch(() => `HTTP ${uRes.status}`);
     return json({ ok: false, error: `Could not assign the teacher (${detail.slice(0, 120)}).` }, 400);
   }
+  await audit(env, {
+    actor_id: guard.user?.id ?? null, actor_role: "owner",
+    action: teacherId ? "teacher_assigned" : "teacher_changed",
+    entity_type: "student", entity_id: studentId, student_id: studentId, teacher_id: teacherId,
+    summary: teacherId ? "Assigned a teacher to a student" : "Unassigned the student's teacher",
+  });
   return json({ ok: true });
 }

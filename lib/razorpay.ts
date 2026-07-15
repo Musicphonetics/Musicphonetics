@@ -12,6 +12,7 @@ export interface CreateOrderInput {
   currency?: string;
   receipt?: string;
   plan?: string;
+  plan_key?: string; // stable key for server-side price validation
   name?: string;
 }
 export interface CreateOrderResult {
