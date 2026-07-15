@@ -21,9 +21,9 @@ export const metadata: Metadata = {
 const WELCOME_VIDEO_ID = "";
 
 const NEXT_STEPS = [
-  { n: 1, t: "We message you immediately", d: "A WhatsApp from our team is already on its way." },
-  { n: 2, t: "Your first class is scheduled", d: "A teacher matched personally to you, at a time that fits." },
-  { n: 3, t: "Your personalised plan begins", d: "Structured, tracked, and built around the student." },
+  { n: 1, t: "We message you immediately", d: "A WhatsApp from our team is already on its way to schedule your first class." },
+  { n: 2, t: "Activate your Student Portal", d: "Use Student Activation with your access code to create your own login — it isn't issued here, not even a temporary one." },
+  { n: 3, t: "Track every class", d: "See progress, class notes, your monthly goal and fees in your Student Portal." },
 ];
 
 export default function WelcomePage() {
@@ -67,6 +67,47 @@ export default function WelcomePage() {
         <Suspense fallback={<div className="mx-auto max-w-2xl rounded-3xl border border-hairline bg-white p-10 text-center text-ink/50">Loading your enrolment…</div>}>
           <OnboardingDocument />
         </Suspense>
+      </Section>
+
+      {/* One required step: activate the Student Portal. No login is issued at
+          payment - everyone activates themselves via /activate with an access code. */}
+      <Section background="white" spacing="lg">
+        <Reveal>
+          <div className="mx-auto max-w-2xl overflow-hidden rounded-3xl border border-gold/40 bg-gradient-to-b from-gold/[0.08] to-white shadow-card">
+            <div className="border-b border-gold/25 bg-gold/[0.06] px-7 py-5 sm:px-10">
+              <p className="eyebrow">One more step</p>
+              <h2 className="mt-1.5 font-display text-2xl font-semibold text-ink sm:text-3xl">Activate your Student Portal</h2>
+            </div>
+            <div className="px-7 py-7 sm:px-10">
+              <p className="text-sm leading-relaxed text-ink/75">
+                Your login is <b>not</b> created automatically at payment — not even a temporary one. To see your
+                progress, class notes, monthly goal and fees, you activate your own login through the
+                <b> Student Activation</b> page using the access code shared with your batch.
+              </p>
+              <ol className="mt-5 space-y-3">
+                {[
+                  "Open the Student Activation page.",
+                  "Enter your details and your access code.",
+                  "Get your login id and an easy password on screen — save them, and sign in.",
+                ].map((t, i) => (
+                  <li key={t} className="flex items-start gap-3 text-sm text-ink/80">
+                    <span className="grid h-6 w-6 shrink-0 place-items-center rounded-full bg-ink text-[11px] font-bold text-gold">{i + 1}</span>
+                    {t}
+                  </li>
+                ))}
+              </ol>
+              <div className="mt-6 flex flex-col gap-3 sm:flex-row">
+                <Link href="/activate" className="inline-flex min-h-[52px] flex-1 items-center justify-center gap-2 rounded-full bg-ink px-6 text-sm font-semibold text-paper transition hover:bg-[#0f131c]">
+                  Go to Student Activation
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>
+                </Link>
+                <Link href="/support" className="inline-flex min-h-[52px] flex-1 items-center justify-center rounded-full border border-hairline px-6 text-sm font-semibold text-ink/80 transition hover:border-ink/40">
+                  Don&apos;t have your access code?
+                </Link>
+              </div>
+            </div>
+          </div>
+        </Reveal>
       </Section>
 
       {/* A personal message from the Director - a signed note */}

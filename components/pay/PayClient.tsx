@@ -310,8 +310,9 @@ export function PayClient() {
           </p>
           <p className="mt-3 text-xs text-paper/55">
             Full documents:{" "}
-            <Link href="/standards/terms-conditions" className="font-semibold text-gold underline underline-offset-2">Terms &amp; Conditions</Link>{" · "}
-            <Link href="/standards/refund-payment" className="font-semibold text-gold underline underline-offset-2">Refund &amp; Payment</Link>.
+            <Link href="/enrolment-agreement" target="_blank" className="font-semibold text-gold underline underline-offset-2">Enrolment Agreement</Link>{" · "}
+            <Link href="/standards/terms-conditions" target="_blank" className="font-semibold text-gold underline underline-offset-2">Terms &amp; Conditions</Link>{" · "}
+            <Link href="/standards/refund-payment" target="_blank" className="font-semibold text-gold underline underline-offset-2">Refund &amp; Payment</Link>.
           </p>
         </div>
 
@@ -320,7 +321,9 @@ export function PayClient() {
           <input type="checkbox" checked={agreed} onChange={(e) => setAgreed(e.target.checked)}
             className="mt-0.5 h-5 w-5 shrink-0 accent-gold" />
           <span className="text-sm leading-relaxed text-paper/90">
-            I have read and I agree to the class schedule, fees, refund policy and terms &amp; conditions above.
+            I have read and I agree to the class schedule, fees, refund policy and the{" "}
+            <Link href="/enrolment-agreement" target="_blank" className="font-semibold text-gold underline underline-offset-2">Enrolment Agreement &amp; Parent Acknowledgement</Link>{" "}
+            above. I understand a login is not issued at payment — I will activate it myself through Student Activation.
           </span>
         </label>
 

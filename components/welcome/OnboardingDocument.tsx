@@ -18,12 +18,13 @@ const prettyDate = (iso: string) =>
 const inr = (n: number) => "₹" + n.toLocaleString("en-IN");
 
 // Post-payment confirmation. The schedule, fees and terms were shown and
-// agreed BEFORE payment (on the pay page). This document simply confirms the
-// enrolment and sets out the family's schedule and assigned teacher.
+// agreed BEFORE payment (on the pay page). This document confirms the enrolment,
+// restates that the terms were agreed, and points the family to Student
+// Activation - no login is issued at payment.
 export function OnboardingDocument() {
   const params = useSearchParams();
 
-  // The enrolment the family filled on /pay carries through Cashfree via
+  // The enrolment the family filled on /pay carries through the checkout via
   // localStorage - the source of truth here. URL params are an office fallback.
   const [en, setEn] = useState<Enrolment | null>(null);
   useEffect(() => setEn(loadEnrolment()), []);
@@ -42,6 +43,9 @@ export function OnboardingDocument() {
 
   const today = new Date().toLocaleDateString("en-IN", { day: "numeric", month: "long", year: "numeric" });
   const ref = "MP-" + new Date().toISOString().slice(0, 10).replace(/-/g, "") + "-" + Math.floor(1000 + Math.random() * 9000);
+  const agreedLabel = en?.agreedAt
+    ? new Date(en.agreedAt).toLocaleString("en-IN", { day: "numeric", month: "long", year: "numeric", hour: "numeric", minute: "2-digit" })
+    : "";
 
   return (
     <div className="mx-auto max-w-2xl">
@@ -97,18 +101,39 @@ export function OnboardingDocument() {
           </p>
         </div>
 
-        {/* Terms reference - already agreed, not re-agreed here */}
-        <div className="mt-8 border-t border-hairline pt-6">
-          <p className="text-sm leading-relaxed text-ink/75">
-            You read and agreed to our class schedule, fees and terms &amp; conditions at enrolment, before payment. This document confirms that enrolment and your schedule above.
-          </p>
-          <p className="mt-2 text-xs text-ink/60">
-            For reference: <Link href="/standards/terms-conditions" className="font-semibold text-[#7A5E0F] underline underline-offset-2">Terms &amp; Conditions</Link> · <Link href="/standards/refund-payment" className="font-semibold text-[#7A5E0F] underline underline-offset-2">Refund &amp; Payment</Link>.
-          </p>
-          <div className="mt-6">
-            <p className="font-display text-base font-semibold text-[#7A5E0F]">Abhishek Kumar</p>
-            <p className="text-xs text-ink/60">Founder &amp; Director, Musicphonetics · Delhi NCR</p>
+        {/* Terms restated - agreed before payment, confirmed here */}
+        <SectionTitle>Terms you agreed to</SectionTitle>
+        <div className="rounded-2xl border border-hairline bg-paper p-5">
+          <div className="flex items-start gap-2.5">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true" className="mt-0.5 shrink-0 text-emerald-600"><path d="M5 12l4 4 10-10" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" /></svg>
+            <p className="text-sm leading-relaxed text-ink/80">
+              Before paying, you read and <b>agreed</b> to the class schedule, fees, refund policy and the
+              Enrolment Agreement &amp; Parent Acknowledgement{agreedLabel ? <> on <b>{agreedLabel}</b></> : null}. By
+              completing payment you confirmed that agreement. This document records it.
+            </p>
           </div>
+          <p className="mt-3 text-xs text-ink/65">
+            Read again in full:{" "}
+            <Link href="/enrolment-agreement" className="font-semibold text-[#7A5E0F] underline underline-offset-2">Enrolment Agreement</Link>{" · "}
+            <Link href="/standards/terms-conditions" className="font-semibold text-[#7A5E0F] underline underline-offset-2">Terms &amp; Conditions</Link>{" · "}
+            <Link href="/standards/refund-payment" className="font-semibold text-[#7A5E0F] underline underline-offset-2">Refund &amp; Payment</Link>.
+          </p>
+        </div>
+
+        {/* Access - no login issued here; activate via /activate */}
+        <SectionTitle>Getting your portal login</SectionTitle>
+        <div className="rounded-2xl border border-gold/35 bg-gold/[0.06] p-5">
+          <p className="text-sm leading-relaxed text-ink/80">
+            A login is <b>not</b> issued at payment — not even a temporary one. To access your Student Portal and
+            follow progress, activate your own login on the{" "}
+            <Link href="/activate" className="font-semibold text-[#7A5E0F] underline underline-offset-2">Student Activation</Link>{" "}
+            page using your batch access code.
+          </p>
+        </div>
+
+        <div className="mt-8 border-t border-hairline pt-6">
+          <p className="font-display text-base font-semibold text-[#7A5E0F]">Abhishek Kumar</p>
+          <p className="text-xs text-ink/60">Founder &amp; Director, Musicphonetics · Delhi NCR</p>
         </div>
       </div>
 
