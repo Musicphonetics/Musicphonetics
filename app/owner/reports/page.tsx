@@ -5,6 +5,7 @@ import { PortalShell } from "@/components/portal/PortalShell";
 import { OWNER_TABS } from "@/components/portal/tabs";
 import { Loading } from "@/components/portal/kit";
 import { OwnerTable, type Col } from "@/components/portal/OwnerTable";
+import { OwnerReportReview } from "@/components/portal/OwnerReportReview";
 import { isSupabaseConfigured, getSupabase } from "@/lib/supabase/client";
 import type { ClassUpdate, Student, Profile } from "@/lib/supabase/types";
 import { cn } from "@/lib/utils";
@@ -84,6 +85,7 @@ export default function OwnerReports() {
 
   return (
     <PortalShell role="owner" tabs={OWNER_TABS} variant="wide" title="Monthly reports">
+      <OwnerReportReview />
       <div className="mb-5 flex flex-wrap items-center gap-3">
         <label className="text-sm font-medium text-ink/70">Month</label>
         <input type="month" value={ym} max={thisMonth()} onChange={(e) => setYm(e.target.value)}
