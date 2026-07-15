@@ -27,7 +27,8 @@ async function assertOwner(env, token) {
 async function audit(env, entry) {
   try {
     await fetch(`${env.SUPABASE_URL}/rest/v1/audit_logs`, {
-      method: "POST", headers: { ...admin(env), Prefer: "return=minimal" }, body: JSON.stringify(entry),
+      method: "POST", headers: { ...admin(env), Prefer: "return=minimal" },
+      body: JSON.stringify({ ...entry, source: "server" }),
     });
   } catch { /* best-effort */ }
 }

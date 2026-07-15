@@ -82,6 +82,27 @@ export async function onRequestPost(context) {
     return json({ ok: false, verified: false, error: "Payment could not be verified." }, 400);
   }
 
+  // Authoritative server-side audit of a verified payment (best-effort). The
+  // payer is unauthenticated here, so actor_id is null; no PII is stored.
+  if (env.SUPABASE_URL && env.SUPABASE_SERVICE_ROLE_KEY) {
+    try {
+      await fetch(`${env.SUPABASE_URL}/rest/v1/audit_logs`, {
+        method: "POST",
+        headers: {
+          apikey: env.SUPABASE_SERVICE_ROLE_KEY,
+          Authorization: `Bearer ${env.SUPABASE_SERVICE_ROLE_KEY}`,
+          "content-type": "application/json",
+          Prefer: "return=minimal",
+        },
+        body: JSON.stringify({
+          actor_id: null, actor_role: "system", action: "payment_verified",
+          entity_type: "payment", entity_id: String(paymentId), summary: "Razorpay signature verified",
+          meta: { order_id: orderId, payment_id: paymentId }, source: "server",
+        }),
+      });
+    } catch { /* audit is best-effort */ }
+  }
+
   return json({
     ok: true,
     verified: true,

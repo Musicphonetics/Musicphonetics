@@ -91,6 +91,9 @@ export default function TeacherReports() {
   }
 
   const published = existing?.status === "published";
+  // Per the report workflow: once submitted, the teacher can view but not edit
+  // until the owner reviews; published reports are owner-only.
+  const locked = existing?.status === "submitted" || existing?.status === "published";
 
   return (
     <PortalShell role="teacher" tabs={TEACHER_TABS} title="Monthly reports">
@@ -124,7 +127,9 @@ export default function TeacherReports() {
               {existing && (
                 <div className={cn("rounded-xl px-3 py-2 text-xs font-semibold",
                   published ? "bg-feature-green/12 text-feature-green" : existing.status === "submitted" ? "bg-gold/15 text-[#7A5E0F]" : "bg-ink/5 text-ink/60")}>
-                  Status: {existing.status}{published ? " — visible to the family" : ""}
+                  {published ? "Published — visible to the family."
+                    : existing.status === "submitted" ? "Submitted — awaiting owner review. You can't edit until it's reviewed."
+                    : "Draft — edit and submit when ready."}
                 </div>
               )}
 
@@ -140,16 +145,16 @@ export default function TeacherReports() {
               <TextArea label="Homework completion (e.g. 8/8, mostly done)" value={f.homework_completion} onChange={(v) => set("homework_completion", v)} />
 
               <div className="flex gap-3">
-                <button disabled={busy || published} onClick={() => save("draft")}
+                <button disabled={busy || locked} onClick={() => save("draft")}
                   className="flex-1 rounded-full border border-hairline bg-white py-3 text-sm font-semibold text-ink/80 disabled:opacity-50">
                   Save draft
                 </button>
-                <button disabled={busy || published} onClick={() => save("submitted")}
+                <button disabled={busy || locked} onClick={() => save("submitted")}
                   className="flex-1 rounded-full bg-ink py-3 text-sm font-semibold text-paper disabled:opacity-50">
-                  {published ? "Published" : "Submit for review"}
+                  {published ? "Published" : existing?.status === "submitted" ? "Submitted" : "Submit for review"}
                 </button>
               </div>
-              <p className="text-xs text-ink/55">Once submitted, the owner reviews and publishes it — then the family can read and print it.</p>
+              <p className="text-xs text-ink/55">Once submitted, the report locks for review. The owner reviews and publishes it — then the family can read and print it.</p>
             </>
           ))}
         </div>

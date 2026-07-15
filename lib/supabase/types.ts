@@ -282,6 +282,7 @@ export interface AuditLog {
   teacher_id: string | null;
   summary: string | null;
   meta: Record<string, unknown> | null;
+  source?: "client" | "server";
   created_at: string;
 }
 

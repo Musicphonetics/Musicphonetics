@@ -146,5 +146,18 @@ export async function onRequestPost({ request, env }) {
     }
   } catch { /* login is created; the office can link the student manually */ }
 
+  // Authoritative server-side audit (best-effort). No PII (no email/phone/password).
+  try {
+    await fetch(`${env.SUPABASE_URL}/rest/v1/audit_logs`, {
+      method: "POST",
+      headers: { ...admin(env), Prefer: "return=minimal" },
+      body: JSON.stringify({
+        actor_id: null, actor_role: "system", action: "student_activated",
+        entity_type: "student", summary: "Student self-activated via access code",
+        meta: { instrument: instrument || null, student_linked: studentLinked }, source: "server",
+      }),
+    });
+  } catch { /* audit is best-effort */ }
+
   return json({ ok: true, login_id: email, password, student_linked: studentLinked });
 }

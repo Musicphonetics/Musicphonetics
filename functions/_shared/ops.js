@@ -52,6 +52,7 @@ export async function audit(env, entry) {
         teacher_id: entry.teacher_id ?? null,
         summary: entry.summary ?? null,
         meta: entry.meta ?? null,
+        source: "server", // authoritative server-side write
       }),
     });
   } catch {

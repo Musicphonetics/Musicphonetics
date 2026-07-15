@@ -315,7 +315,9 @@ create index if not exists student_report_topics_report_idx on public.student_re
 
 -- ----------------------------------------------------------------------------
 -- 10) AUDIT LOG (append-only, owner-visible). Entity refs use ON DELETE SET NULL
---     so history survives entity removal.
+--     so history survives entity removal. `source` distinguishes authoritative
+--     server-side writes ('server') from non-authoritative client activity
+--     ('client').
 -- ----------------------------------------------------------------------------
 create table if not exists public.audit_logs (
   id          uuid primary key default gen_random_uuid(),
@@ -330,6 +332,16 @@ create table if not exists public.audit_logs (
   meta        jsonb,
   created_at  timestamptz not null default now()
 );
+alter table public.audit_logs add column if not exists source text not null default 'client';
+do $$ begin
+  if not exists (
+    select 1 from pg_constraint
+    where conname = 'audit_logs_source_check' and conrelid = 'public.audit_logs'::regclass
+  ) then
+    alter table public.audit_logs add constraint audit_logs_source_check
+      check (source in ('client','server'));
+  end if;
+end $$;
 create index if not exists audit_logs_created_idx on public.audit_logs (created_at desc);
 create index if not exists audit_logs_action_idx on public.audit_logs (action);
 create index if not exists audit_logs_student_idx on public.audit_logs (student_id);
@@ -376,13 +388,15 @@ drop trigger if exists trg_guard_onboarding on public.teacher_onboarding_items;
 create trigger trg_guard_onboarding before insert or update on public.teacher_onboarding_items
   for each row execute function public.mp_guard_onboarding();
 
--- Reports: a teacher may create/edit drafts and submit, but may NOT publish,
--- set the director note, or edit a published report. Only the owner may.
+-- Reports: DB-enforced workflow.
+--   draft      → teacher may edit and submit
+--   submitted  → teacher read-only (cannot modify or return to draft); owner reviews
+--   published  → owner only
 create or replace function public.mp_guard_report() returns trigger
 language plpgsql security definer set search_path = public as $$
 begin
   if public.mp_is_owner() then
-    return new;                       -- owner may publish / edit director note
+    return new;                       -- owner may edit / publish / set director note
   end if;
 
   if tg_op = 'INSERT' then
@@ -391,17 +405,23 @@ begin
     if new.status not in ('draft','submitted') then
       new.status := 'draft';
     end if;
+    if new.status = 'submitted' then
+      new.submitted_at := coalesce(new.submitted_at, now());
+    end if;
     return new;
   end if;
 
-  -- UPDATE by the teacher.
-  if old.status = 'published' then
-    raise exception 'A published report can only be changed by the owner.';
+  -- UPDATE by a teacher: only DRAFT reports are editable; submitting is one-way.
+  if old.status <> 'draft' then
+    raise exception 'A submitted or published report can only be changed by the owner.';
   end if;
-  new.director_note := old.director_note;
-  new.published_at := old.published_at;
+  new.director_note := old.director_note;    -- teacher cannot set the director note
+  new.published_at := old.published_at;      -- teacher cannot publish
   if new.status not in ('draft','submitted') then
-    new.status := old.status;         -- cannot publish
+    new.status := old.status;                -- teacher may only keep draft or submit
+  end if;
+  if new.status = 'submitted' then
+    new.submitted_at := coalesce(new.submitted_at, now());
   end if;
   return new;
 end $$;
@@ -411,12 +431,14 @@ create trigger trg_guard_report before insert or update on public.student_report
   for each row execute function public.mp_guard_report();
 
 -- ============================================================================
--- SECURE AUDIT WRITER
--- Clients may NOT insert into audit_logs directly (no insert policy). They call
--- this SECURITY DEFINER function, which pins actor_id/actor_role to the caller's
--- real identity — so audit entries cannot be fabricated or impersonated.
--- (Cloudflare Functions keep writing via the service role, which bypasses RLS.)
+-- CONTROLLED WRITER FUNCTIONS (SECURITY DEFINER)
 -- ============================================================================
+
+-- Non-authoritative CLIENT activity log. This ONLY guarantees that actor_id is
+-- the real caller — it does NOT verify the truthfulness of the action details,
+-- so these rows are recorded as source='client'. Sensitive/administrative
+-- actions are refused here; they are logged only by server-side service-role
+-- code or controlled definer functions (e.g. mp_publish_report).
 create or replace function public.mp_audit(
   p_action text,
   p_entity_type text default null,
@@ -431,18 +453,89 @@ begin
   if auth.uid() is null then
     return;                           -- never log for an unauthenticated caller
   end if;
-  insert into public.audit_logs (actor_id, actor_role, action, entity_type, entity_id, student_id, teacher_id, summary, meta)
+  -- Whitelist of non-sensitive, non-authoritative client actions.
+  if coalesce(p_action, '') not in (
+    'class_logged','attendance_changed','schedule_changed','monthly_goal_changed',
+    'plan_changed','report_submitted','document_created','notification_sent','onboarding_reviewed'
+  ) then
+    return;                           -- refuse sensitive/unknown actions from clients
+  end if;
+  insert into public.audit_logs (actor_id, actor_role, action, entity_type, entity_id, student_id, teacher_id, summary, meta, source)
   values (
     auth.uid(),
     (select role from public.profiles where id = auth.uid()),
-    left(coalesce(p_action, 'unknown'), 80),
+    left(p_action, 80),
     p_entity_type, p_entity_id, p_student_id, p_teacher_id,
-    p_summary, p_meta
+    p_summary, p_meta, 'client'
   );
 end $$;
-
 revoke all on function public.mp_audit(text,text,text,uuid,uuid,text,jsonb) from public;
 grant execute on function public.mp_audit(text,text,text,uuid,uuid,text,jsonb) to authenticated;
+
+-- Publish a monthly report: owner-only, authoritative. Publishes the report,
+-- notifies the family, and writes a server-authoritative audit entry. This is
+-- the only client-reachable path to publish (report publication is sensitive).
+create or replace function public.mp_publish_report(p_report_id uuid) returns void
+language plpgsql security definer set search_path = public as $$
+declare v_student uuid; v_teacher uuid; v_month text; v_parent uuid;
+begin
+  if not public.mp_is_owner() then
+    raise exception 'Only the owner may publish reports.';
+  end if;
+  update public.student_reports
+    set status = 'published', published_at = now(), updated_at = now()
+    where id = p_report_id
+    returning student_id, teacher_id, report_month into v_student, v_teacher, v_month;
+  if v_student is null then
+    raise exception 'Report not found.';
+  end if;
+  select parent_id into v_parent from public.students where id = v_student;
+  if v_parent is not null then
+    insert into public.notifications (recipient_id, role, type, title, body, action_url, entity_type, entity_id, created_by)
+    values (v_parent, 'parent', 'monthly_report_ready', 'Your monthly report is ready',
+      'A new progress report is now available.', '/parent/reports', 'student_report', p_report_id::text, auth.uid());
+  end if;
+  insert into public.audit_logs (actor_id, actor_role, action, entity_type, entity_id, student_id, teacher_id, summary, source)
+  values (auth.uid(), 'owner', 'report_published', 'student_report', p_report_id::text, v_student, v_teacher,
+    'Published ' || coalesce(v_month, '') || ' report', 'server');
+end $$;
+revoke all on function public.mp_publish_report(uuid) from public;
+grant execute on function public.mp_publish_report(uuid) to authenticated;
+
+-- Notification state changes: recipients change ONLY read/ack state, and ONLY
+-- on their own notifications. No direct table UPDATE grant is given.
+create or replace function public.mp_mark_notification_read(p_notification_id uuid) returns void
+language plpgsql security definer set search_path = public as $$
+begin
+  if auth.uid() is null then return; end if;
+  update public.notifications
+    set is_read = true
+    where id = p_notification_id and recipient_id = auth.uid();
+end $$;
+revoke all on function public.mp_mark_notification_read(uuid) from public;
+grant execute on function public.mp_mark_notification_read(uuid) to authenticated;
+
+create or replace function public.mp_ack_notification(p_notification_id uuid) returns void
+language plpgsql security definer set search_path = public as $$
+begin
+  if auth.uid() is null then return; end if;
+  update public.notifications
+    set is_read = true, acked_at = now()
+    where id = p_notification_id and recipient_id = auth.uid() and must_ack = true;
+end $$;
+revoke all on function public.mp_ack_notification(uuid) from public;
+grant execute on function public.mp_ack_notification(uuid) to authenticated;
+
+create or replace function public.mp_mark_all_notifications_read() returns void
+language plpgsql security definer set search_path = public as $$
+begin
+  if auth.uid() is null then return; end if;
+  update public.notifications
+    set is_read = true
+    where recipient_id = auth.uid() and is_read = false;
+end $$;
+revoke all on function public.mp_mark_all_notifications_read() from public;
+grant execute on function public.mp_mark_all_notifications_read() to authenticated;
 
 -- ============================================================================
 -- ROW-LEVEL SECURITY
@@ -451,17 +544,18 @@ grant execute on function public.mp_audit(text,text,text,uuid,uuid,text,jsonb) t
 -- ============================================================================
 
 -- ---- notifications --------------------------------------------------------
--- Recipient reads & marks their own; owner reads all. Owner may create any
--- notification. A teacher may create ONLY non-forced, non-system notifications
--- to the families of THEIR OWN students. Parents cannot create any.
+-- Recipient reads their own; owner reads all. Owner may create any notification.
+-- A teacher may create ONLY non-forced, non-system notifications to the families
+-- of THEIR OWN students. Parents cannot create any. There is NO direct UPDATE:
+-- read/ack happen only through mp_mark_notification_read / mp_ack_notification /
+-- mp_mark_all_notifications_read (SECURITY DEFINER), which touch only the
+-- intended columns on the caller's own rows.
 alter table public.notifications enable row level security;
 drop policy if exists "notif read own" on public.notifications;
 create policy "notif read own" on public.notifications for select
   using (recipient_id = auth.uid() or public.mp_is_owner());
-drop policy if exists "notif update own" on public.notifications;
-create policy "notif update own" on public.notifications for update
-  using (recipient_id = auth.uid()) with check (recipient_id = auth.uid());
-drop policy if exists "notif insert as self" on public.notifications;      -- remove old permissive policy
+drop policy if exists "notif update own" on public.notifications;            -- removed: no direct recipient UPDATE
+drop policy if exists "notif insert as self" on public.notifications;        -- removed: old permissive policy
 drop policy if exists "notif insert owner" on public.notifications;
 create policy "notif insert owner" on public.notifications for insert
   with check (public.mp_is_owner() and created_by = auth.uid());
@@ -547,7 +641,7 @@ create policy "onb owner delete" on public.teacher_onboarding_items for delete
 
 -- ---- student reports ------------------------------------------------------
 -- Row access split; field-level rules (teacher can't publish / set director
--- note / edit published) are enforced by trg_guard_report above.
+-- note / edit a submitted or published report) are enforced by trg_guard_report.
 alter table public.student_reports enable row level security;
 drop policy if exists "rep teacher rw" on public.student_reports;           -- remove old for-all policy
 drop policy if exists "rep parent read" on public.student_reports;
@@ -571,22 +665,39 @@ drop policy if exists "rep owner delete" on public.student_reports;
 create policy "rep owner delete" on public.student_reports for delete
   using (public.mp_is_owner());
 
+-- ---- student report topics ------------------------------------------------
+-- SELECT: teacher (own report) / owner / parents of a PUBLISHED report.
+-- INSERT/UPDATE/DELETE by a teacher only while the report is still a DRAFT.
+-- Owner: full management.
 alter table public.student_report_topics enable row level security;
-drop policy if exists "rep topics rw" on public.student_report_topics;
-create policy "rep topics rw" on public.student_report_topics for all
-  using (report_id in (select id from public.student_reports r
-      where r.teacher_id = auth.uid() or public.mp_is_owner()))
-  with check (report_id in (select id from public.student_reports r
-      where r.teacher_id = auth.uid() or public.mp_is_owner()));
+drop policy if exists "rep topics rw" on public.student_report_topics;        -- remove old for-all policy
 drop policy if exists "rep topics parent read" on public.student_report_topics;
-create policy "rep topics parent read" on public.student_report_topics for select
-  using (report_id in (select id from public.student_reports r
-      where r.status = 'published'
-        and r.student_id in (select id from public.students where parent_id = auth.uid())));
+drop policy if exists "topics select" on public.student_report_topics;
+create policy "topics select" on public.student_report_topics for select
+  using (
+    report_id in (select id from public.student_reports r where r.teacher_id = auth.uid() or public.mp_is_owner())
+    or report_id in (select id from public.student_reports r
+        where r.status = 'published'
+          and r.student_id in (select id from public.students where parent_id = auth.uid()))
+  );
+drop policy if exists "topics owner all" on public.student_report_topics;
+create policy "topics owner all" on public.student_report_topics for all
+  using (public.mp_is_owner()) with check (public.mp_is_owner());
+drop policy if exists "topics teacher insert" on public.student_report_topics;
+create policy "topics teacher insert" on public.student_report_topics for insert
+  with check (report_id in (select id from public.student_reports r where r.teacher_id = auth.uid() and r.status = 'draft'));
+drop policy if exists "topics teacher update" on public.student_report_topics;
+create policy "topics teacher update" on public.student_report_topics for update
+  using (report_id in (select id from public.student_reports r where r.teacher_id = auth.uid() and r.status = 'draft'))
+  with check (report_id in (select id from public.student_reports r where r.teacher_id = auth.uid() and r.status = 'draft'));
+drop policy if exists "topics teacher delete" on public.student_report_topics;
+create policy "topics teacher delete" on public.student_report_topics for delete
+  using (report_id in (select id from public.student_reports r where r.teacher_id = auth.uid() and r.status = 'draft'));
 
 -- ---- audit logs -----------------------------------------------------------
 -- Owner reads. NO insert/update/delete policy for clients: writes go only
--- through public.mp_audit() (SECURITY DEFINER) or the service role. Append-only.
+-- through public.mp_audit()/mp_publish_report() (SECURITY DEFINER) or the
+-- service role. Append-only.
 alter table public.audit_logs enable row level security;
 drop policy if exists "audit append self" on public.audit_logs;             -- remove old direct-insert policy
 drop policy if exists "audit owner read" on public.audit_logs;

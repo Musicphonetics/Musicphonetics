@@ -4,8 +4,6 @@ import { useEffect, useState } from "react";
 import { getSupabase } from "@/lib/supabase/client";
 import { loadOwnerData } from "@/lib/supabase/owner";
 import { MonthlyReportDoc } from "@/components/portal/MonthlyReportDoc";
-import { sendNotifications } from "@/lib/notify";
-import { logAudit, AUDIT } from "@/lib/audit";
 import type { StudentReport } from "@/lib/supabase/types";
 import { cn } from "@/lib/utils";
 
@@ -37,18 +35,11 @@ export function OwnerReportReview() {
 
   async function publish(r: StudentReport) {
     setBusyId(r.id); setNote(null);
-    const { error } = await getSupabase().from("student_reports")
-      .update({ status: "published", published_at: new Date().toISOString() }).eq("id", r.id);
+    // Publishing is a sensitive action: it goes through the owner-only
+    // mp_publish_report function, which also notifies the family and writes an
+    // authoritative (server-side) audit entry.
+    const { error } = await getSupabase().rpc("mp_publish_report", { p_report_id: r.id });
     if (error) { setBusyId(null); setNote(error.message); return; }
-    const parentId = info[r.student_id]?.parent_id;
-    if (parentId) {
-      await sendNotifications([{
-        recipient_id: parentId, role: "parent", type: "monthly_report_ready",
-        title: "Your monthly report is ready", body: `${info[r.student_id]?.name || "Your child"}'s progress report is now available.`,
-        action_url: "/parent/reports", entity_type: "student_report", entity_id: r.id,
-      }]);
-    }
-    logAudit({ action: AUDIT.REPORT_PUBLISHED, student_id: r.student_id, teacher_id: r.teacher_id, entity_type: "student_report", entity_id: r.id, summary: `Published ${r.report_month} report` });
     setBusyId(null);
     load();
   }
