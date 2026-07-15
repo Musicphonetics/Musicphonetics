@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { PortalShell } from "@/components/portal/PortalShell";
 import { OWNER_TABS } from "@/components/portal/tabs";
 import { Loading } from "@/components/portal/kit";
+import { OwnerNotifyCard } from "@/components/portal/OwnerNotifyCard";
 import { isSupabaseConfigured } from "@/lib/supabase/client";
 import {
   loadDirectorMessages, saveDirectorMessage, setDirectorMessagePublished, deleteDirectorMessage,
@@ -152,6 +153,11 @@ export default function OwnerMessages() {
           </button>
           {note && <span className="text-sm text-ink/70">{note}</span>}
         </div>
+      </div>
+
+      {/* In-app notifications (bell feed) */}
+      <div className="mt-6">
+        <OwnerNotifyCard />
       </div>
 
       {/* Existing */}

@@ -25,6 +25,7 @@ export interface Student {
   id: string;
   student_code?: string | null; // MP-YYYY-000001, generated server-side
   teacher_id: string;
+  parent_id?: string | null; // linked auth user (the family login)
   name: string;
   dob: string | null;
   school: string | null;

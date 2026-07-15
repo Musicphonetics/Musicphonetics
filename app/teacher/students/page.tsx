@@ -26,7 +26,11 @@ export default function MyStudents() {
     loadRoster().then(({ rows, error }) => { setRows(rows); setErr(error); });
   }, []);
 
-  const filtered = (rows ?? []).filter((r) => r.name.toLowerCase().includes(q.toLowerCase()));
+  const filtered = (rows ?? []).filter((r) => {
+    const needle = q.trim().toLowerCase();
+    if (!needle) return true;
+    return [r.name, r.student_code, r.instrument, r.level].filter(Boolean).join(" ").toLowerCase().includes(needle);
+  });
 
   return (
     <PortalShell role="teacher" tabs={TEACHER_TABS} title="My Students">
@@ -48,7 +52,7 @@ export default function MyStudents() {
                   className="flex w-full items-center justify-between gap-3 p-4 text-left">
                   <div className="min-w-0">
                     <p className="truncate font-semibold text-ink">{s.name}</p>
-                    <p className="mt-0.5 text-xs text-ink/60">{s.instrument || "-"} · {s.level || "-"}</p>
+                    <p className="mt-0.5 text-xs text-ink/60"><span className="font-mono">{s.student_code || "—"}</span> · {s.instrument || "-"} · {s.level || "-"}</p>
                   </div>
                   <div className="text-right">
                     <span className={cn("inline-block rounded-full px-2 py-0.5 text-[11px] font-semibold",

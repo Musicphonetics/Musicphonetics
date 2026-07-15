@@ -9,8 +9,8 @@ import { isSupabaseConfigured, getSupabase } from "@/lib/supabase/client";
 import { loadOwnerData } from "@/lib/supabase/owner";
 
 interface Row extends Record<string, unknown> {
-  id: string; teacher_id: string; name: string; instrument: string; level: string; status: string;
-  fee: number | null; days: string; parent: string; phone: string;
+  id: string; code: string; teacher_id: string; name: string; instrument: string; level: string; status: string;
+  fee: number | null; days: string; parent: string; phone: string; email: string;
 }
 interface TeacherOpt { id: string; name: string }
 
@@ -27,9 +27,10 @@ export default function OwnerStudents() {
       setErr(d.error);
       setTeachers(d.teachers.map((t) => ({ id: t.id, name: t.full_name || "Unnamed teacher" })));
       setRows(d.students.map((s) => ({
-        id: s.id, teacher_id: s.teacher_id ?? "",
+        id: s.id, code: s.student_code ?? "-", teacher_id: s.teacher_id ?? "",
         name: s.name, instrument: s.instrument ?? "-", level: s.level ?? "-", status: s.status,
         fee: s.fee_quoted, days: s.class_day ?? "-", parent: s.parent_name ?? "-", phone: s.parent_phone ?? "-",
+        email: s.parent_email ?? "-",
       })));
     });
   }, []);
@@ -61,6 +62,7 @@ export default function OwnerStudents() {
   }
 
   const cols: Col<Row>[] = [
+    { key: "code", label: "Code", render: (r) => <span className="whitespace-nowrap font-mono text-xs">{r.code}</span> },
     { key: "name", label: "Student" },
     {
       key: "teacher_id", label: "Teacher",
@@ -99,7 +101,7 @@ export default function OwnerStudents() {
         </div>
       )}
       {!rows ? <Loading /> : (
-        <OwnerTable rows={rows} cols={cols} searchKeys={["name", "instrument", "phone", "parent"]} filename="students" title="students" />
+        <OwnerTable rows={rows} cols={cols} searchKeys={["name", "code", "parent", "phone", "email", "instrument"]} filename="students" title="students" />
       )}
     </PortalShell>
   );

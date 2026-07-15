@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useAuth, signOut } from "@/lib/supabase/auth";
 import { Loading } from "./kit";
+import { NotificationBell } from "./NotificationBell";
 import { cn } from "@/lib/utils";
 
 export interface Tab {
@@ -79,7 +80,10 @@ export function PortalShell({
             {/* Brand + sign out */}
             <div className="flex items-center justify-between gap-3">
               <p className="font-display text-base font-semibold">Musicphonetics <span className="text-gold">Owner</span></p>
-              <button onClick={() => signOut()} className="shrink-0 rounded-full border border-white/15 px-3 py-1 text-sm text-paper/70 hover:text-paper">Sign out</button>
+              <div className="flex items-center gap-2">
+                <NotificationBell tone="dark" />
+                <button onClick={() => signOut()} className="shrink-0 rounded-full border border-white/15 px-3 py-1 text-sm text-paper/70 hover:text-paper">Sign out</button>
+              </div>
             </div>
             {/* Tabs: horizontally scrollable on mobile, wrap on desktop */}
             <nav className="-mx-1 mt-2.5 flex items-center gap-1 overflow-x-auto px-1 pb-0.5 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden md:mt-2 md:flex-wrap md:overflow-visible">
@@ -118,7 +122,10 @@ export function PortalShell({
                 {subtitle && <span className="block text-[0.6rem] font-semibold uppercase tracking-[0.18em] text-gold">{subtitle}</span>}
               </span>
             </div>
-            {headerRight}
+            <div className="flex items-center gap-2">
+              <NotificationBell tone="dark" allHref={role === "parent" ? "/parent/notifications" : undefined} />
+              {headerRight}
+            </div>
           </div>
         </header>
         <main className="mx-auto max-w-md px-4 py-5">{children}</main>
@@ -157,7 +164,10 @@ export function PortalShell({
                 {subtitle && <span className="block text-[0.6rem] font-semibold uppercase tracking-[0.18em] text-[#7A5E0F]">{subtitle}</span>}
               </span>
             </div>
-            {headerRight}
+            <div className="flex items-center gap-2">
+              <NotificationBell tone="light" allHref={role === "parent" ? "/parent/notifications" : undefined} />
+              {headerRight}
+            </div>
           </div>
         </header>
       )}

@@ -42,7 +42,10 @@ export function DashboardBody({
       {/* Greeting */}
       <div>
         <h1 className="font-display text-[1.6rem] font-semibold leading-tight text-ink">{firstName(student.name)}&apos;s learning journey</h1>
-        <p className="mt-1 text-sm text-ink/70">Keep up the great progress.</p>
+        <p className="mt-1 text-sm text-ink/70">
+          Keep up the great progress.
+          {student.student_code && <span className="ml-2 rounded-full bg-ink/[0.05] px-2 py-0.5 font-mono text-[11px] text-ink/60">{student.student_code}</span>}
+        </p>
       </div>
 
       {/* Director's message, shown like a notification (only when there is one) */}
