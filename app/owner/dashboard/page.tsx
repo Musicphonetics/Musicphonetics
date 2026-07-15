@@ -6,8 +6,10 @@ import { PortalShell } from "@/components/portal/PortalShell";
 import { OWNER_TABS } from "@/components/portal/tabs";
 import { Loading, formatMoney } from "@/components/portal/kit";
 import { isSupabaseConfigured, getSupabase } from "@/lib/supabase/client";
-import { loadOwnerData, computeKpis, rollupTeachers, daysToBirthday, type OwnerData, type OwnerKpis, type TeacherRollup } from "@/lib/supabase/owner";
+import { loadOwnerData, computeKpis, computeOps, rollupTeachers, daysToBirthday, type OwnerData, type OwnerKpis, type TeacherRollup } from "@/lib/supabase/owner";
 import { computeFoundation } from "@/lib/foundation";
+import { isValidCompleted } from "@/lib/attendance";
+import { inr } from "@/lib/money";
 import { cn } from "@/lib/utils";
 
 export default function OwnerDashboard() {
@@ -35,7 +37,9 @@ export default function OwnerDashboard() {
 
 function Body({ data }: { data: OwnerData }) {
   const k: OwnerKpis = computeKpis(data);
+  const ops = computeOps(data);
   const teachers: TeacherRollup[] = rollupTeachers(data).sort((a, b) => b.revenue - a.revenue);
+  const momPct = ops.revenuePrevMonth > 0 ? Math.round(((ops.grossMonth - ops.revenuePrevMonth) / ops.revenuePrevMonth) * 100) : null;
 
   if (data.error) {
     return <div className="rounded-xl border border-red-300 bg-red-50 p-4 text-sm text-red-700">Couldn&apos;t load data: {data.error}</div>;
@@ -68,6 +72,64 @@ function Body({ data }: { data: OwnerData }) {
         <Kpi label="Renewals due" value={String(k.renewalsDue)} tone={k.renewalsDue ? "red" : "ink"} />
         <Kpi label="Birthdays ≤30d" value={String(k.birthdays30)} />
       </div>
+
+      {/* Money this month — gross → charge → net → 70/30 (real data) */}
+      <Card title="Money this month">
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
+          <Stat label="Collected today" value={inr(ops.revenueToday)} />
+          <Stat label="Gross (month)" value={inr(ops.grossMonth)} sub={momPct !== null ? `${momPct >= 0 ? "▲" : "▼"} ${Math.abs(momPct)}% vs last mo` : undefined} />
+          <Stat label="Gateway charge" value={inr(ops.chargeMonth)} tone="gold" />
+          <Stat label="Net settled" value={inr(ops.netMonth)} />
+          <Stat label="Teacher 70%" value={inr(ops.teacherNetMonth)} />
+          <Stat label="Company 30%" value={inr(ops.companyNetMonth)} tone="green" />
+          <Stat label="Outstanding" value={inr(ops.outstanding)} tone={ops.outstanding ? "red" : "ink"} />
+          <Stat label="Pending settlements" value={String(ops.pendingSettlements)} />
+          <Stat label="Pending payout" value={inr(ops.pendingPayout)} tone={ops.pendingPayout ? "gold" : "ink"} />
+        </div>
+      </Card>
+
+      {/* Operational grids */}
+      <div className="grid gap-4 lg:grid-cols-2">
+        <Card title="Students">
+          <div className="grid grid-cols-3 gap-3 sm:grid-cols-4">
+            <Stat label="Foundation" value={String(ops.planFoundation)} />
+            <Stat label="Main Pathway" value={String(ops.planMain)} />
+            <Stat label="Director's Circle" value={String(ops.planDirectors)} />
+            <Stat label="New this month" value={String(ops.newThisMonth)} tone="green" />
+            <Stat label="Paused" value={String(ops.paused)} />
+            <Stat label="Unpaid (month)" value={String(ops.unpaidThisMonth)} tone={ops.unpaidThisMonth ? "red" : "ink"} />
+            <Stat label="No recent update" value={String(ops.noRecentUpdate)} tone={ops.noRecentUpdate ? "red" : "ink"} />
+            <Stat label="Renewals due" value={String(k.renewalsDue)} />
+          </div>
+        </Card>
+        <Card title="Teachers & reports">
+          <div className="grid grid-cols-3 gap-3 sm:grid-cols-4">
+            <Stat label="Active" value={String(k.activeTeachers)} />
+            <Stat label="With students" value={String(ops.teachersWithStudents)} />
+            <Stat label="Without students" value={String(ops.teachersWithout)} tone={ops.teachersWithout ? "gold" : "ink"} />
+            <Stat label="Pending applications" value={String(ops.pendingApplications)} tone={ops.pendingApplications ? "gold" : "ink"} />
+            <Stat label="Classes delivered" value={String(ops.classesDeliveredMonth)} />
+            <Stat label="Reports draft" value={String(ops.reportsDraft)} />
+            <Stat label="Reports submitted" value={String(ops.reportsSubmitted)} tone={ops.reportsSubmitted ? "gold" : "ink"} />
+            <Stat label="Reports published" value={String(ops.reportsPublished)} tone="green" />
+          </div>
+        </Card>
+      </div>
+
+      {/* Classes today & attendance */}
+      <Card title="Classes today & attendance (this month)">
+        <div className="grid grid-cols-3 gap-3 sm:grid-cols-4 lg:grid-cols-8">
+          <Stat label="Today" value={String(ops.classesToday)} />
+          <Stat label="Present" value={String(ops.presentToday)} tone="green" />
+          <Stat label="Absent" value={String(ops.absentToday)} tone={ops.absentToday ? "red" : "ink"} />
+          <Stat label="Cancel (parent)" value={String(ops.cancelledParent)} />
+          <Stat label="Cancel (teacher)" value={String(ops.cancelledTeacher)} />
+          <Stat label="Rescheduled" value={String(ops.rescheduledCount)} />
+          <Stat label="No-show" value={String(ops.noShow)} tone={ops.noShow ? "red" : "ink"} />
+          <Stat label="Makeups due" value={String(ops.makeupsPending)} tone={ops.makeupsPending ? "gold" : "ink"} />
+        </div>
+        <p className="mt-3 text-sm text-ink/70">Attendance this month: <b className="text-ink">{ops.attendancePercentMonth}%</b> present of attended classes.</p>
+      </Card>
 
       {/* Charts */}
       <div className="grid gap-4 lg:grid-cols-3">
@@ -136,7 +198,7 @@ function Body({ data }: { data: OwnerData }) {
 
 function UpgradePipeline({ data }: { data: OwnerData }) {
   const completed = new Map<string, number>();
-  for (const c of data.classes) if (c.class_status === "Completed") completed.set(c.student_id, (completed.get(c.student_id) ?? 0) + 1);
+  for (const c of data.classes) if (isValidCompleted(c)) completed.set(c.student_id, (completed.get(c.student_id) ?? 0) + 1);
 
   const buckets = { 1: 0, 2: 0, 3: 0, 4: 0, ready: 0, upgraded: 0 };
   const readyNames: string[] = [];
@@ -182,7 +244,7 @@ function UpgradePipeline({ data }: { data: OwnerData }) {
 
 function renewalItems(data: OwnerData): string[] {
   const completed = new Map<string, number>();
-  for (const c of data.classes) if (c.class_status === "Completed") completed.set(c.student_id, (completed.get(c.student_id) ?? 0) + 1);
+  for (const c of data.classes) if (isValidCompleted(c)) completed.set(c.student_id, (completed.get(c.student_id) ?? 0) + 1);
   return data.students
     .filter((s) => s.status === "active" && (s.classes_per_month ?? 0) - (completed.get(s.id) ?? 0) <= 2)
     .slice(0, 8)
@@ -215,6 +277,17 @@ function Kpi({ label, value, tone = "ink" }: { label: string; value: string; ton
     <div className="rounded-2xl border border-hairline bg-white p-4">
       <p className="text-[11px] font-medium uppercase tracking-wide text-ink/60">{label}</p>
       <p className={cn("mt-1 font-display text-2xl font-semibold", c)}>{value}</p>
+    </div>
+  );
+}
+
+function Stat({ label, value, sub, tone = "ink" }: { label: string; value: string; sub?: string; tone?: "ink" | "gold" | "green" | "red" }) {
+  const c = { ink: "text-ink", gold: "text-[#7A5E0F]", green: "text-feature-green", red: "text-red-600" }[tone];
+  return (
+    <div className="rounded-xl border border-hairline bg-paper p-3">
+      <p className="text-[10px] font-medium uppercase tracking-wide text-ink/60">{label}</p>
+      <p className={cn("mt-0.5 font-display text-lg font-semibold", c)}>{value}</p>
+      {sub && <p className="mt-0.5 text-[10px] text-ink/55">{sub}</p>}
     </div>
   );
 }
