@@ -162,8 +162,26 @@ export function DashboardBody({
         <span className={cn("shrink-0 whitespace-nowrap text-xs font-semibold", GOLD)}>Chat →</span>
       </a>
 
+      {/* More sections */}
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+        {[
+          { href: "/parent/homework", label: "Homework" },
+          { href: "/parent/reports", label: "Reports" },
+          { href: "/parent/documents", label: "Documents" },
+          { href: "/parent/notifications", label: "Notifications" },
+        ].map((l) => (
+          <Link key={l.href} href={l.href} className="rounded-2xl border border-hairline bg-white p-3.5 text-center text-sm font-semibold text-ink/80 transition hover:border-ink/30">
+            {l.label}
+          </Link>
+        ))}
+      </div>
+
       {/* Rate the classes / leave a review */}
       <FeedbackCard studentId={student.id} studentName={student.name} />
+
+      <div className="pt-1 text-center">
+        <Link href="/parent/support" className={cn("text-sm font-semibold", GOLD)}>Need help? Visit Support →</Link>
+      </div>
     </div>
   );
 }

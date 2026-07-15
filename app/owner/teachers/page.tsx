@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { PortalShell } from "@/components/portal/PortalShell";
+import { OnboardingChecklist } from "@/components/portal/OnboardingChecklist";
 import { OWNER_TABS } from "@/components/portal/tabs";
 import { Loading, formatMoney } from "@/components/portal/kit";
 import { ReportCardModal, type ReportStudent } from "@/components/portal/ReportCard";
@@ -73,6 +74,8 @@ export default function OwnerTeachers() {
               <Kpi label="Revenue" value={formatMoney(selected.revenue)} />
             </div>
           </div>
+
+          <div className="mb-5"><OnboardingChecklist mode="owner" teacherId={selected.t.id} /></div>
 
           <p className="mb-2 text-sm font-semibold text-ink">Students</p>
           {selected.students.length === 0 ? (

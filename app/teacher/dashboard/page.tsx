@@ -6,6 +6,7 @@ import { PortalShell } from "@/components/portal/PortalShell";
 import { TEACHER_TABS } from "@/components/portal/tabs";
 import { StatCard, Loading, formatMoney } from "@/components/portal/kit";
 import { DirectorNote } from "@/components/portal/DirectorNote";
+import { TeacherOnboardingSelf } from "@/components/portal/OnboardingChecklist";
 import { getSupabase, isSupabaseConfigured } from "@/lib/supabase/client";
 import { loadTeacherMessage, type DirectorMessage } from "@/lib/supabase/director";
 import { useAuth } from "@/lib/supabase/auth";
@@ -84,6 +85,17 @@ export default function TeacherDashboard() {
           <Action href="/teacher/payments" label="Add Payment" />
         </div>
         <Action href="/teacher/students" label="View My Students" />
+      </div>
+
+      <div className="mt-6 grid grid-cols-2 gap-3">
+        <Action href="/teacher/today" label="Today's Classes" />
+        <Action href="/teacher/schedule" label="Schedule" />
+        <Action href="/teacher/reports" label="Monthly Reports" />
+        <Action href="/teacher/earnings" label="Earnings" />
+      </div>
+
+      <div className="mt-6">
+        <TeacherOnboardingSelf />
       </div>
 
       <div className="mt-6">

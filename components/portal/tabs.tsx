@@ -28,7 +28,11 @@ export const OWNER_TABS: Tab[] = [
   { href: "/owner/messages", label: "Messages", icon: I("M4 5h16v11H8l-4 4V5Z") },
   { href: "/owner/teachers", label: "Teachers", icon: I("M16 19v-1a4 4 0 0 0-8 0v1M12 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z") },
   { href: "/owner/students", label: "Students", icon: I("M4 19V5a1 1 0 0 1 1-1h11l4 4v11a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1Z") },
+  { href: "/owner/schedule", label: "Schedule", icon: I("M3.5 5h17v15h-17zM3.5 9.5h17M8 3v4M16 3v4") },
   { href: "/owner/payments", label: "Payments", icon: I("M3 7h18v10H3zM3 10h18M7 14h3") },
   { href: "/owner/reports", label: "Reports", icon: I("M4 4h16v16H4zM8 4v16M4 9h4M4 14h4") },
   { href: "/owner/payouts", label: "Payouts", icon: I("M12 3v18M17 7H9.5a2.5 2.5 0 0 0 0 5h5a2.5 2.5 0 0 1 0 5H6") },
+  { href: "/owner/documents", label: "Documents", icon: I("M7 3h7l5 5v11a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1ZM14 3v5h5") },
+  { href: "/owner/audit", label: "Audit", icon: I("M4 5h16M4 12h16M4 19h10M18 16l2 2 3-3") },
+  { href: "/owner/settings", label: "Settings", icon: I("M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM19 12a7 7 0 0 0-.1-1l2-1.5-2-3.5-2.4 1a7 7 0 0 0-1.7-1L14.5 2h-5l-.3 2.5a7 7 0 0 0-1.7 1l-2.4-1-2 3.5L5 11a7 7 0 0 0 0 2l-2 1.5 2 3.5 2.4-1a7 7 0 0 0 1.7 1l.3 2.5h5l.3-2.5a7 7 0 0 0 1.7-1l2.4 1 2-3.5-2-1.5a7 7 0 0 0 .1-1Z") },
 ];
