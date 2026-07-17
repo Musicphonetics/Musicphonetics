@@ -341,7 +341,51 @@ create policy "evidence owner read" on storage.objects for select
 --     where schemaname = 'storage' and tablename = 'objects'
 --       and policyname in ('evidence teacher rw','evidence owner read');
 
--- ---- 9) Seed / refresh onboarding for all existing teachers ----------------
+-- ---- 9) DB-ENFORCED resync: approved never survives a data change ----------
+-- The approved→submitted reset lives in mp__ob_upsert, but it only takes effect
+-- when mp_sync_onboarding runs. Relying on the app to call it means a change made
+-- through any other path could leave an item "approved forever". These triggers
+-- make the resync automatic: whenever a teacher's profile, private details, or
+-- availability change, the checklist is re-derived and any owner-verified item
+-- whose fingerprint moved drops back to 'submitted' for re-approval.
+create or replace function public.mp__resync_onboarding() returns trigger
+language plpgsql security definer set search_path = public as $$
+declare v_id uuid;
+begin
+  if tg_table_name = 'profiles' then
+    -- Only teacher rows carry onboarding; skip everyone else.
+    if new.role is distinct from 'teacher' then return null; end if;
+    v_id := new.id;
+  elsif tg_op = 'DELETE' then
+    v_id := old.teacher_id;   -- private_details / availability, keyed by teacher_id
+  else
+    v_id := new.teacher_id;
+  end if;
+  if v_id is not null then
+    perform public.mp_sync_onboarding(v_id);
+  end if;
+  return null;  -- AFTER trigger: return value ignored
+end $$;
+revoke all on function public.mp__resync_onboarding() from public;
+
+drop trigger if exists trg_resync_onb_profiles on public.profiles;
+create trigger trg_resync_onb_profiles
+  after insert or update on public.profiles
+  for each row execute function public.mp__resync_onboarding();
+
+drop trigger if exists trg_resync_onb_private on public.teacher_private_details;
+create trigger trg_resync_onb_private
+  after insert or update or delete on public.teacher_private_details
+  for each row execute function public.mp__resync_onboarding();
+
+drop trigger if exists trg_resync_onb_avail on public.teacher_availability;
+create trigger trg_resync_onb_avail
+  after insert or update or delete on public.teacher_availability
+  for each row execute function public.mp__resync_onboarding();
+
+-- ---- 10) Seed / refresh onboarding for all existing teachers ---------------
+-- Also realigns any items that were approved under the pre-trigger logic and
+-- have since drifted from the current data (they reset to submitted here).
 do $$
 declare t record;
 begin
