@@ -7,8 +7,6 @@ import type { TeacherOnboardingItem, TeacherPrivateDetails } from "@/lib/supabas
 import { metaFor, statusCopy, completion, STATE_COPY, maskAccount, maskPan } from "@/lib/teacher-profile";
 import { cn } from "@/lib/utils";
 
-const SENSITIVE = new Set(["bank_account", "ifsc", "pan", "identity_verification", "bank_proof"]);
-
 export function OnboardingChecklist({ mode, teacherId }: { mode: "teacher" | "owner"; teacherId: string }) {
   const [items, setItems] = useState<TeacherOnboardingItem[] | null>(null);
   const [busy, setBusy] = useState<string | null>(null);
