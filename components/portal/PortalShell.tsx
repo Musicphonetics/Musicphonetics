@@ -33,6 +33,28 @@ export function PortalShell({
     if (!loading && configured && !userId) router.replace(loginPath);
   }, [loading, configured, userId, router, loginPath]);
 
+  // A staff account (owner/teacher) must never use the Student (parent) portal:
+  // the students table has teacher/owner SELECT policies, so it would surface
+  // their assigned students. Send them to their own portal instead.
+  useEffect(() => {
+    if (role === "parent" && profile && (profile.role === "owner" || profile.role === "teacher")) {
+      router.replace(profile.role === "owner" ? "/owner/dashboard" : "/teacher/dashboard");
+    }
+  }, [role, profile, router]);
+
+  // Clear per-user portal state when the signed-in account changes, so a
+  // previous user's selection / read-state can never carry over to another.
+  useEffect(() => {
+    if (typeof window === "undefined" || !userId) return;
+    const KEY = "mp-portal-uid";
+    const prev = window.localStorage.getItem(KEY);
+    if (prev && prev !== userId) {
+      window.localStorage.removeItem("mp-director-read");
+      window.localStorage.removeItem("mp-selected-student");
+    }
+    window.localStorage.setItem(KEY, userId);
+  }, [userId]);
+
   if (!configured) {
     return (
       <Centered>
@@ -46,10 +68,29 @@ export function PortalShell({
   if (loading) return <div className={cn("min-h-screen", night ? "bg-onyx" : "bg-paper")}><Loading dark={night} /></div>;
   if (!userId) return <div className={cn("min-h-screen", night ? "bg-onyx" : "bg-paper")}><Loading dark={night} label="Redirecting…" /></div>;
 
-  // Parents are identified by students.parent_id (RLS), NOT by a profile role -
-  // many parent accounts have an auto-created 'teacher' profile row. So the
-  // parent portal never blocks on role; the dashboard shows "no student linked"
-  // if the account genuinely isn't a parent. Staff portals still enforce role.
+  // A staff account (owner/teacher) must never render the Student (parent)
+  // portal — it would expose their teacher/owner-visible student rows. Block it
+  // (an effect above also redirects them to their own portal).
+  if (role === "parent" && profile && (profile.role === "owner" || profile.role === "teacher")) {
+    return (
+      <Centered>
+        <h1 className="font-display text-xl font-semibold text-ink">Staff account</h1>
+        <p className="mt-2 max-w-sm text-sm text-ink/65">
+          This is a <b>{profile.role}</b> account, so the Student Portal isn&apos;t available here.
+          Use your {profile.role} portal instead.
+        </p>
+        <div className="mt-5 flex justify-center gap-3">
+          <Link href={profile.role === "owner" ? "/owner/dashboard" : "/teacher/dashboard"}
+            className="rounded-full bg-ink px-6 py-3 text-sm font-semibold text-paper">Go to my portal</Link>
+          <button onClick={() => signOut()} className="rounded-full border border-hairline px-6 py-3 text-sm font-semibold text-ink">Sign out</button>
+        </div>
+      </Centered>
+    );
+  }
+
+  // Parents are identified by students.parent_id (RLS + explicit query filter),
+  // NOT by a profile role. The parent portal doesn't block a role='parent' or
+  // roleless account; staff accounts are handled above. Staff portals enforce role.
   if (role !== "parent" && profile && profile.role !== role) {
     return (
       <Centered>

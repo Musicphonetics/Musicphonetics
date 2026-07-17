@@ -17,8 +17,18 @@ export interface ParentData {
 
 export async function loadParentData(): Promise<ParentData> {
   const sb = getSupabase();
-  const sRes = await sb.from("students").select("*").order("name");
-  const students = (sRes.data as Student[]) ?? [];
+  // TENANT ISOLATION: the Student Portal must only ever load the signed-in
+  // family's own children. We filter explicitly on parent_id = auth.uid() and
+  // do NOT rely on RLS alone — the students table also has teacher/owner SELECT
+  // policies, so a broad select() would leak teacher-assigned students to any
+  // staff account that opened this portal.
+  const { data: { session } } = await sb.auth.getSession();
+  const uid = session?.user?.id;
+  if (!uid) return { students: [], classes: [], payments: [], teachers: {}, error: null };
+
+  const sRes = await sb.from("students").select("*").eq("parent_id", uid).order("name");
+  // Defensive: drop any row that somehow isn't this parent's (belt and braces).
+  const students = ((sRes.data as Student[]) ?? []).filter((s) => s.parent_id === uid);
   const ids = students.map((s) => s.id);
   const teacherIds = [...new Set(students.map((s) => s.teacher_id).filter(Boolean))];
 

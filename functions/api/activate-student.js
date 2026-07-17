@@ -41,6 +41,17 @@ async function findUserByEmail(env, email) {
   return users.find((u) => (u.email || "").toLowerCase() === email.toLowerCase()) || null;
 }
 
+// Look up a profile's role by auth user id. Returns 'owner'|'teacher'|'parent'|null.
+async function getProfileRole(env, id) {
+  try {
+    const res = await fetch(`${env.SUPABASE_URL}/rest/v1/profiles?id=eq.${id}&select=role`, { headers: admin(env) });
+    const rows = res.ok ? await res.json() : [];
+    return rows[0]?.role ?? null;
+  } catch {
+    return null;
+  }
+}
+
 export async function onRequestPost({ request, env }) {
   if (!env.SUPABASE_URL || !env.SUPABASE_SERVICE_ROLE_KEY) return json({ ok: false, error: "Server not configured." }, 503);
   if (!env.ACTIVATION_CODE) return json({ ok: false, error: "Activation is not open yet." }, 503);
@@ -71,8 +82,17 @@ export async function onRequestPost({ request, env }) {
   if (!email) email = `s${phone}@students.musicphonetics.com`;
   if (!/^\S+@\S+\.\S+$/.test(email)) return json({ ok: false, error: "Please enter a valid email." }, 400);
 
+  // If an account already uses this email, NEVER silently reuse it. Reject
+  // staff accounts outright (they must never become a student login), and tell a
+  // returning family to sign in — we do not re-link or overwrite anything.
   const existing = await findUserByEmail(env, email);
-  if (existing) return json({ ok: false, error: "You already have a login for this. Please sign in, or reset your password from the login page." }, 409);
+  if (existing) {
+    const existingRole = await getProfileRole(env, existing.id);
+    if (existingRole === "owner" || existingRole === "teacher") {
+      return json({ ok: false, error: "This email belongs to a Musicphonetics staff account and can't be used for student activation. Please use a different email, or contact the office." }, 409);
+    }
+    return json({ ok: false, error: "You already have a login for this. Please sign in, or reset your password from the login page." }, 409);
+  }
 
   const password = easyPassword();
   const cRes = await fetch(`${env.SUPABASE_URL}/auth/v1/admin/users`, {
@@ -92,14 +112,18 @@ export async function onRequestPost({ request, env }) {
   }
   const id = created.id || created.user?.id;
 
-  // Type this account as a parent so it is never treated as staff (some projects
-  // auto-create a 'teacher' profile row on signup). Best-effort.
+  // Type this fresh account as a parent. `id` is a brand-new auth user, but we
+  // still refuse to overwrite an existing owner/teacher role as a safety net —
+  // activation must NEVER demote a staff profile.
   try {
-    await fetch(`${env.SUPABASE_URL}/rest/v1/profiles?on_conflict=id`, {
-      method: "POST",
-      headers: { ...admin(env), Prefer: "resolution=merge-duplicates,return=minimal" },
-      body: JSON.stringify({ id, role: "parent" }),
-    });
+    const roleNow = await getProfileRole(env, id);
+    if (roleNow !== "owner" && roleNow !== "teacher") {
+      await fetch(`${env.SUPABASE_URL}/rest/v1/profiles?on_conflict=id`, {
+        method: "POST",
+        headers: { ...admin(env), Prefer: "resolution=merge-duplicates,return=minimal" },
+        body: JSON.stringify({ id, role: "parent" }),
+      });
+    }
   } catch { /* login already created; linking role is best-effort */ }
 
   // Create the child's student record and link it to this parent, so the parent

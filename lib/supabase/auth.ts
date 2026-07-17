@@ -52,6 +52,14 @@ export function useAuth(): AuthState {
 
 export async function signOut() {
   const { client } = getSupabaseSafe();
+  // Clear any per-user portal state so it can't carry into the next account.
+  if (typeof window !== "undefined") {
+    try {
+      window.localStorage.removeItem("mp-director-read");
+      window.localStorage.removeItem("mp-selected-student");
+      window.localStorage.removeItem("mp-portal-uid");
+    } catch { /* ignore */ }
+  }
   if (client) await client.auth.signOut();
 }
 
