@@ -17,7 +17,49 @@ export interface Profile {
   status: "active" | "inactive" | "blacklisted";
   blacklist_until: string | null;
   photo_url: string | null;
+  // Teacher onboarding v2 (teacher_onboarding_v2.sql). All optional.
+  legal_name?: string | null;
+  alternate_phone?: string | null;
+  dob?: string | null;
+  address_line_1?: string | null;
+  address_line_2?: string | null;
+  city?: string | null;
+  state?: string | null;
+  postal_code?: string | null;
+  primary_instrument?: string | null;
+  teaching_levels?: string[] | null;
+  languages?: string | null;
+  certifications?: string | null;
+  short_bio?: string | null;
+  full_biography?: string | null;
+  demo_video_url?: string | null;
+  public_slug?: string | null;       // owner-controlled
+  public_visible?: boolean | null;   // owner-controlled
+  bank_account_holder?: string | null;
+  bank_account_last4?: string | null;
+  bank_name?: string | null;
+  bank_branch?: string | null;
+  ifsc?: string | null;
+  upi_id?: string | null;
+  pan_masked?: string | null;
+  safeguarding_acknowledged_at?: string | null;
+  safeguarding_version?: string | null;
+  joining_agreement_acknowledged_at?: string | null;
+  joining_agreement_version?: string | null;
+  typed_signature?: string | null;
+  profile_updated_at?: string | null;
   created_at: string;
+  updated_at: string;
+}
+
+// Restricted table: full sensitive values (owner-read, teacher-write-own).
+export interface TeacherPrivateDetails {
+  teacher_id: string;
+  bank_account_number: string | null;
+  pan: string | null;
+  identity_proof_path: string | null;
+  pan_proof_path: string | null;
+  bank_proof_path: string | null;
   updated_at: string;
 }
 
@@ -232,6 +274,7 @@ export interface TeacherOnboardingItem {
   evidence_url: string | null;
   reviewed_by: string | null;
   reviewed_at: string | null;
+  value_fingerprint?: string | null;
   created_at: string;
   updated_at: string;
 }
