@@ -19,6 +19,12 @@
 -- (boolean, created by musicphonetics_operations_upgrade.sql) — there is no is_active.
 -- ============================================================================
 
+-- ---- 0) Role helper (SECURITY DEFINER so it ignores profiles RLS) ----------
+create or replace function public.mp_is_teacher() returns boolean
+language sql stable security definer set search_path = public as $$
+  select exists (select 1 from public.profiles p where p.id = auth.uid() and p.role = 'teacher');
+$$;
+
 -- ---- 1) Additive profile columns (reuse existing where possible) -----------
 alter table public.profiles add column if not exists legal_name text;
 alter table public.profiles add column if not exists alternate_phone text;
@@ -67,7 +73,8 @@ create table if not exists public.teacher_private_details (
 alter table public.teacher_private_details enable row level security;
 drop policy if exists "tpd teacher rw" on public.teacher_private_details;
 create policy "tpd teacher rw" on public.teacher_private_details for all
-  using (teacher_id = auth.uid()) with check (teacher_id = auth.uid());
+  using (teacher_id = auth.uid() and public.mp_is_teacher())
+  with check (teacher_id = auth.uid() and public.mp_is_teacher());
 drop policy if exists "tpd owner read" on public.teacher_private_details;
 create policy "tpd owner read" on public.teacher_private_details for select
   using (public.mp_is_owner());
@@ -189,16 +196,26 @@ declare
   av int;
   digits text;
 begin
-  -- Resolve target: teachers may only sync themselves; owner or an elevated
-  -- (no-auth, e.g. seeding) caller may target a specific teacher.
+  -- Resolve target securely:
+  --   • unauthenticated (migration seeding) → explicit p_teacher_id only;
+  --   • owner → any teacher (or self, which then fails the teacher check below);
+  --   • authenticated non-owner MUST be role='teacher' and may sync ONLY itself;
+  --   • anyone else → no-op.
   if auth.uid() is null then
     v_target := p_teacher_id;
   elsif public.mp_is_owner() then
     v_target := coalesce(p_teacher_id, auth.uid());
-  else
+  elsif public.mp_is_teacher() then
     v_target := auth.uid();
+  else
+    return;
   end if;
   if v_target is null then return; end if;
+
+  -- The target profile must itself be a teacher.
+  if not exists (select 1 from public.profiles where id = v_target and role = 'teacher') then
+    return;
+  end if;
 
   select * into pr from public.profiles where id = v_target;
   if not found then return; end if;
@@ -312,8 +329,8 @@ insert into storage.buckets (id, name, public)
 
 drop policy if exists "evidence teacher rw" on storage.objects;
 create policy "evidence teacher rw" on storage.objects for all
-  using (bucket_id = 'teacher-evidence' and (storage.foldername(name))[1] = auth.uid()::text)
-  with check (bucket_id = 'teacher-evidence' and (storage.foldername(name))[1] = auth.uid()::text);
+  using (bucket_id = 'teacher-evidence' and (storage.foldername(name))[1] = auth.uid()::text and public.mp_is_teacher())
+  with check (bucket_id = 'teacher-evidence' and (storage.foldername(name))[1] = auth.uid()::text and public.mp_is_teacher());
 drop policy if exists "evidence owner read" on storage.objects;
 create policy "evidence owner read" on storage.objects for select
   using (bucket_id = 'teacher-evidence' and public.mp_is_owner());
