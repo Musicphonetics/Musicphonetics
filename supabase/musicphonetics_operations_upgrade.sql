@@ -4,16 +4,25 @@
 -- table-specific constraint blocks. NO DROP TABLE, no destructive type changes,
 -- no broad data updates. Existing data is preserved.
 --
+-- Idempotency note: because CREATE TABLE IF NOT EXISTS does NOT add newly
+-- declared constraints when the table already exists (e.g. it was created by an
+-- earlier version of this migration), every CHECK constraint is added by a
+-- separate table-specific guarded DO block (conname + conrelid). Re-running the
+-- file therefore backfills any missing constraint.
+--
 -- Schema facts this migration relies on (verified against the app + prior SQL):
 --   • Users live in public.profiles; profiles.id = auth.users.id.
 --   • Teachers are profiles rows with role='teacher'; every *.teacher_id column
 --     stores that auth user id (= auth.uid()). So RLS "teacher_id = auth.uid()"
 --     is correct. Teacher FKs therefore reference public.profiles(id).
---   • students.parent_id = the family's auth.uid() (added by an earlier
---     migration; re-asserted below so this file is self-contained).
+--   • public.students.teacher_id ALREADY EXISTS (uuid, the assigned teacher's
+--     auth user id) and public.students.parent_id = the family's auth.uid()
+--     (added by an earlier migration; re-asserted below). This migration does
+--     NOT create or retype students.teacher_id — it only reads it in policies.
 -- ============================================================================
 
 -- Self-contained: make sure the columns other sections depend on exist.
+-- (students.teacher_id is intentionally NOT touched — it already exists.)
 alter table public.students add column if not exists parent_id uuid;
 create index if not exists students_parent_id_idx on public.students (parent_id);
 
@@ -108,6 +117,7 @@ end $$;
 -- 4) TEACHER SCHEDULE & AVAILABILITY
 --    teacher_id → profiles(id) (a teacher is a profile). No cascade (restrict)
 --    so a teacher can't be deleted out from under live schedule data.
+--    Named CHECK constraints are added via guarded blocks below the tables.
 -- ----------------------------------------------------------------------------
 create table if not exists public.teacher_availability (
   id          uuid primary key default gen_random_uuid(),
@@ -117,10 +127,14 @@ create table if not exists public.teacher_availability (
   end_time    time not null,
   mode        text,
   active      boolean not null default true,
-  created_at  timestamptz not null default now(),
-  constraint teacher_availability_time_valid check (end_time > start_time)
+  created_at  timestamptz not null default now()
 );
 create index if not exists teacher_availability_teacher_idx on public.teacher_availability (teacher_id);
+do $$ begin
+  if not exists (select 1 from pg_constraint where conname = 'teacher_availability_time_valid' and conrelid = 'public.teacher_availability'::regclass) then
+    alter table public.teacher_availability add constraint teacher_availability_time_valid check (end_time > start_time);
+  end if;
+end $$;
 
 create table if not exists public.teacher_time_off (
   id          uuid primary key default gen_random_uuid(),
@@ -128,10 +142,14 @@ create table if not exists public.teacher_time_off (
   start_date  date not null,
   end_date    date not null,
   reason      text,
-  created_at  timestamptz not null default now(),
-  constraint teacher_time_off_range_valid check (end_date >= start_date)
+  created_at  timestamptz not null default now()
 );
 create index if not exists teacher_time_off_teacher_idx on public.teacher_time_off (teacher_id);
+do $$ begin
+  if not exists (select 1 from pg_constraint where conname = 'teacher_time_off_range_valid' and conrelid = 'public.teacher_time_off'::regclass) then
+    alter table public.teacher_time_off add constraint teacher_time_off_range_valid check (end_date >= start_date);
+  end if;
+end $$;
 
 create table if not exists public.scheduled_classes (
   id             uuid primary key default gen_random_uuid(),
@@ -148,13 +166,21 @@ create table if not exists public.scheduled_classes (
   notes          text,
   created_by     uuid references auth.users(id) on delete set null,
   created_at     timestamptz not null default now(),
-  updated_at     timestamptz not null default now(),
-  constraint scheduled_classes_status_check check (status in
-    ('scheduled','present','absent','cancelled_by_parent','cancelled_by_teacher','rescheduled','holiday','no_show')),
-  constraint scheduled_classes_time_valid check (end_time > start_time)
+  updated_at     timestamptz not null default now()
 );
 create index if not exists scheduled_classes_teacher_date_idx on public.scheduled_classes (teacher_id, scheduled_date);
 create index if not exists scheduled_classes_student_idx on public.scheduled_classes (student_id);
+do $$ begin
+  if not exists (select 1 from pg_constraint where conname = 'scheduled_classes_status_check' and conrelid = 'public.scheduled_classes'::regclass) then
+    alter table public.scheduled_classes add constraint scheduled_classes_status_check check (status in
+      ('scheduled','present','absent','cancelled_by_parent','cancelled_by_teacher','rescheduled','holiday','no_show'));
+  end if;
+end $$;
+do $$ begin
+  if not exists (select 1 from pg_constraint where conname = 'scheduled_classes_time_valid' and conrelid = 'public.scheduled_classes'::regclass) then
+    alter table public.scheduled_classes add constraint scheduled_classes_time_valid check (end_time > start_time);
+  end if;
+end $$;
 
 create table if not exists public.holidays (
   id           uuid primary key default gen_random_uuid(),
@@ -183,14 +209,22 @@ create table if not exists public.notifications (
   acked_at     timestamptz,
   expires_at   timestamptz,
   created_by   uuid references auth.users(id) on delete set null,
-  created_at   timestamptz not null default now(),
-  constraint notifications_type_check check (type in
-    ('class_reminder','homework_added','class_rescheduled','class_cancelled','payment_due',
-     'payment_received','monthly_report_ready','teacher_assigned','teacher_changed',
-     'director_message','general_announcement')),
-  constraint notifications_role_check check (role is null or role in ('owner','teacher','parent'))
+  created_at   timestamptz not null default now()
 );
 create index if not exists notifications_recipient_idx on public.notifications (recipient_id, is_read, created_at desc);
+do $$ begin
+  if not exists (select 1 from pg_constraint where conname = 'notifications_type_check' and conrelid = 'public.notifications'::regclass) then
+    alter table public.notifications add constraint notifications_type_check check (type in
+      ('class_reminder','homework_added','class_rescheduled','class_cancelled','payment_due',
+       'payment_received','monthly_report_ready','teacher_assigned','teacher_changed',
+       'director_message','general_announcement'));
+  end if;
+end $$;
+do $$ begin
+  if not exists (select 1 from pg_constraint where conname = 'notifications_role_check' and conrelid = 'public.notifications'::regclass) then
+    alter table public.notifications add constraint notifications_role_check check (role is null or role in ('owner','teacher','parent'));
+  end if;
+end $$;
 
 -- ----------------------------------------------------------------------------
 -- 6) PAYMENTS — invoices, receipts, settlement (extend payments)
@@ -241,13 +275,21 @@ create table if not exists public.student_documents (
   internal_route text,           -- e.g. /parent/reports?month=2026-07
   generated     boolean not null default false,
   created_by    uuid references auth.users(id) on delete set null,
-  created_at    timestamptz not null default now(),
-  constraint student_documents_visibility_check check (visibility in ('owner_only','owner_teacher','parent_visible')),
-  constraint student_documents_type_check check (type in
-    ('enrolment_confirmation','enrolment_agreement','invoice','receipt','monthly_report',
-     'progress_report','certificate','uploaded_document','internal_document'))
+  created_at    timestamptz not null default now()
 );
 create index if not exists student_documents_student_idx on public.student_documents (student_id, created_at desc);
+do $$ begin
+  if not exists (select 1 from pg_constraint where conname = 'student_documents_visibility_check' and conrelid = 'public.student_documents'::regclass) then
+    alter table public.student_documents add constraint student_documents_visibility_check check (visibility in ('owner_only','owner_teacher','parent_visible'));
+  end if;
+end $$;
+do $$ begin
+  if not exists (select 1 from pg_constraint where conname = 'student_documents_type_check' and conrelid = 'public.student_documents'::regclass) then
+    alter table public.student_documents add constraint student_documents_type_check check (type in
+      ('enrolment_confirmation','enrolment_agreement','invoice','receipt','monthly_report',
+       'progress_report','certificate','uploaded_document','internal_document'));
+  end if;
+end $$;
 
 -- ----------------------------------------------------------------------------
 -- 8) TEACHER ONBOARDING CHECKLIST
@@ -266,10 +308,14 @@ create table if not exists public.teacher_onboarding_items (
   reviewed_at   timestamptz,
   created_at    timestamptz not null default now(),
   updated_at    timestamptz not null default now(),
-  unique (teacher_id, item_key),
-  constraint teacher_onboarding_status_check check (status in ('pending','submitted','approved','rejected','not_required'))
+  unique (teacher_id, item_key)
 );
 create index if not exists teacher_onboarding_teacher_idx on public.teacher_onboarding_items (teacher_id);
+do $$ begin
+  if not exists (select 1 from pg_constraint where conname = 'teacher_onboarding_status_check' and conrelid = 'public.teacher_onboarding_items'::regclass) then
+    alter table public.teacher_onboarding_items add constraint teacher_onboarding_status_check check (status in ('pending','submitted','approved','rejected','not_required'));
+  end if;
+end $$;
 
 -- ----------------------------------------------------------------------------
 -- 9) MONTHLY REPORTS
@@ -298,12 +344,20 @@ create table if not exists public.student_reports (
   published_at      timestamptz,
   created_at        timestamptz not null default now(),
   updated_at        timestamptz not null default now(),
-  unique (student_id, report_month),
-  constraint student_reports_status_check check (status in ('draft','submitted','published')),
-  constraint student_reports_month_format check (report_month ~ '^\d{4}-\d{2}$')
+  unique (student_id, report_month)
 );
 create index if not exists student_reports_student_idx on public.student_reports (student_id, report_month desc);
 create index if not exists student_reports_teacher_idx on public.student_reports (teacher_id);
+do $$ begin
+  if not exists (select 1 from pg_constraint where conname = 'student_reports_status_check' and conrelid = 'public.student_reports'::regclass) then
+    alter table public.student_reports add constraint student_reports_status_check check (status in ('draft','submitted','published'));
+  end if;
+end $$;
+do $$ begin
+  if not exists (select 1 from pg_constraint where conname = 'student_reports_month_format' and conrelid = 'public.student_reports'::regclass) then
+    alter table public.student_reports add constraint student_reports_month_format check (report_month ~ '^\d{4}-\d{2}$');
+  end if;
+end $$;
 
 create table if not exists public.student_report_topics (
   id         uuid primary key default gen_random_uuid(),
