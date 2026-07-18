@@ -180,9 +180,37 @@ Capture from the **live production site/portals using demo accounts**. Crop to c
 
 ---
 
-## Deliverable 9 — Newspaper Edition
+## Deliverable 9 — Newspaper Edition  *(v2 — PRINT-READY)*
 
-Delivered: `newspaper-insert.html` (4pp A4, folds to A5). Same brand system, condensed copy, one shared QR. Print on newsprint 45–52 gsm; mono-safe.
+Delivered: `newspaper-insert.html` + **`newspaper-insert.pdf`** (4pp, verified **A4 595×842 pt**). Same brand system, real assets, one shared QR. Print on newsprint 45–52 gsm; mono-safe.
+
+**Real assets used (no placeholders):**
+- **Cover:** authentic performance photo `public/images/moments/03-stage-guitar.webp` (full-bleed, ink gradient for legibility).
+- **Portal proof:** the real Parent Portal image `public/images/portal-preview.webp` — **demo student “Aarav”, demo data, no private information** — already published on the live site. Shows dashboard, curriculum progress, next class (attendance), homework, teacher notes, monthly report and payment status in one view.
+- **Testimonial:** verified 5★ Google review — *Suruchi Jain* (`public/reviews/review-01.webp`), quoted from the visible public text.
+- **Logo:** real wordmark (`logo-wordmark-light/dark.webp`). **QR:** live `wa.me/918796199188` with a “book a personal learning consultation” prefill.
+
+**Screenshot register (this edition):**
+
+| ID | Shown | Source | Account | Privacy | Status |
+|---|---|---|---|---|---|
+| P3-portal | Full portal (dashboard + progress + next class + homework + report + payment) | `portal-preview.webp` | Demo “Aarav” | No real data | ✅ placed |
+| — | Dedicated *Attendance history* screen | — | Demo | scrub name | ⏳ optional future capture for a v3 |
+
+**Every factual claim used in the insert (all verified against the repo / live site):**
+
+1. Plans: **The Foundation ₹8,000/mo**, **The Transformation ₹12,000/mo**, **Director’s Circle (by consultation)** — `lib/plan.ts`, `lib/foundation.ts`, and the public Parent Handbook naming in `lib/standards-data.ts`.
+2. Every plan includes attendance, homework, parent visibility, secure company payments — portal features in the codebase.
+3. **10+ years** teaching; **1,000+** students taught — `lib/founder.ts` / `lib/data.ts` (used the conservative 1,000+, consistent with the Standards’ “over a thousand”).
+4. **Trinity** exam preparation — authorised Trinity College London exam-centre claim in `lib/standards-data.ts` + `programs` page.
+5. Teacher selection: *interview, demo lesson, identity/document/background verification before meeting a student* — `lib/standards-data.ts` (Teacher Selection & Verification). **The earlier “7-stage” label was inaccurate and has been removed.**
+6. Instruments: **Guitar, Piano, Vocals, Ukulele, Drums, Violin** — verified faculty/programmes only.
+7. Modes: **Home, Online, South Delhi centre** (centre confirmed live, min. batch of 5) — founder-confirmed.
+8. Trust line: **GST Registered · Udyam Registered · Trademarked Brand · Secure Company Payments** — `lib/trust.ts` (Udyam Active, GST Active, Trademark on record).
+9. Contact: **+91 87961 99188**, **musicphonetics.com**, **Instagram @musicphonetics** — founder-confirmed / `lib/data.ts` / `lib/seo.ts`.
+10. Journey ends at **“Performance readiness”**; “showcases &amp; stage opportunities subject to programme and event availability” — softened per instruction; consistent with `founder.ts` roadmap labelling.
+
+**Print checks:** A4 verified; body 9.5–10.5 pt, labels ≥ 8 pt (newsprint-safe); QR ≥ 22 mm at placed size; premium black/white/cream/gold retained; pages uncrowded. **Before the press run:** set 3 mm bleed on export and downsample the cover/portal images to ~200 dpi if a smaller file is needed. QR destination tested → opens WhatsApp chat to +91 87961 99188 with the consultation prefill.
 
 ---
 
