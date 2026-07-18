@@ -9,8 +9,10 @@ Landing page + lead capture + poster assets for the Delhi Cantt–exclusive Main
 > Give your child’s (or your own) musical journey the *right beginning* — structured lessons with carefully matched teachers, homework, attendance tracking and regular parent updates.
 >
 > 🎁 *Delhi Cantt launch benefit*
-> Main Pathway — ~₹12,000~ → *₹10,000/month* (save ₹2,000)
+> Main Pathway — first month *₹10,000* instead of ~₹12,000~ (save ₹2,000), then ₹12,000/month.
 > 8 structured classes every month.
+>
+> Prefer to compare? See all three programmes — *Foundation · Main Pathway · Director’s Circle* — and pick what fits.
 >
 > Guitar • Piano • Vocals • Drums • Violin • More
 > 🏠 Home · 💻 Online · 🎹 South Delhi centre
@@ -36,8 +38,9 @@ Landing page + lead capture + poster assets for the Delhi Cantt–exclusive Main
    - `public/og-delhi-cantt.png` (WhatsApp/OG preview)
    - `docs/campaign/delhi-cantt.md` (this file)
    - **Modified:** none of the existing pages — no unrelated changes.
-3. **How offer eligibility is controlled:** `DELHI_CANTT.active` (and optional `expiresOn`) in `lib/delhi-cantt.ts`. Set `active: false` → the landing page hides the form and shows a graceful “closed” state. One file, one flag. The Function also carries `OFFER.active` as a server backstop.
-4. **How the discount is validated:** entirely **server-side** in `functions/api/delhi-cantt-lead.js`. The browser never sends prices; the Function stamps the authoritative `regular_price 12000 / offer_price 10000 / discount 2000 / offer_code DELHICANTT2000 / campaign / source` on every lead. It also normalises + validates the Indian mobile (`^[6-9]\d{9}$`), requires learner name + area, honours a honeypot, and rate-limits per IP.
+   The page also shows a **three-programme comparison** (Foundation ₹8,000 · Main Pathway ₹12,000 · Director’s Circle by consultation) so families can understand the full range and enquire about any of them — the Delhi Cantt benefit is clearly scoped to the **Main Pathway, first month only**.
+3. **How offer eligibility is controlled:** `DELHI_CANTT.active` (and optional `expiresOn`) in `lib/delhi-cantt.ts`. Set `active: false` → the landing page hides the claim/enquiry buttons and shows a graceful “closed” state. One file, one flag. The Function also carries `OFFER.active` as a server backstop.
+4. **How the discount is validated:** entirely **server-side** in `functions/api/delhi-cantt-lead.js`. The browser never sends prices; the Function stamps the authoritative offer — **first month ₹10,000 vs regular ₹12,000, save ₹2,000, code DELHICANTT2000**, applied only when the chosen programme is the Main Pathway (Foundation / Director’s enquiries are logged at regular terms). It also normalises + validates the Indian mobile (`^[6-9]\d{9}$`), requires learner name + area, honours a honeypot, and rate-limits per IP.
 5. **How leads are stored:** the existing **Web3Forms lead channel** (same inbox as `/start`) — a richly-labelled email with learner, age, instrument, mode, area, enquirer, WhatsApp (+ click-to-call & click-to-WhatsApp links), offer, code, source, campaign, UTM, status “New”, and next-step guidance. If `campaign_leads` + `SUPABASE_URL`/`SUPABASE_SERVICE_ROLE_KEY` exist, it is **also** best-effort stored in the DB (no duplicate system; email is the guaranteed path).
 6. **Where the owner sees campaign leads:** the Musicphonetics lead inbox today (every field + WhatsApp/call links, subject prefixed `🎖️ Delhi Cantt Lead …`). If you run `supabase/campaign_leads.sql` and set the env keys, leads also land in the `campaign_leads` table (owner-readable via RLS) — ready for a future owner-portal list view with the statuses New → Contacted → Consultation booked → Trial booked → Enrolled → Not proceeding.
 7. **Poster files generated:** portrait, square, OG (below).
@@ -51,7 +54,7 @@ Landing page + lead capture + poster assets for the Delhi Cantt–exclusive Main
 12. **Manual steps remaining:**
     - Deploy (Cloudflare Pages picks up the new route + Function automatically).
     - *(Optional)* run `supabase/campaign_leads.sql` and set the Supabase env keys to enable DB storage.
-    - Confirm the offer terms wording: this presents **₹10,000/month as the launch fee** (per the written brief). If it should instead be **first month only**, tell me and I’ll flip the copy — it’s centralised in `lib/delhi-cantt.ts`.
+    - Offer terms are set to **first month ₹10,000, then ₹12,000/month** (matches the poster). All copy is centralised in `lib/delhi-cantt.ts` if terms change.
     - Paste the WhatsApp message + portrait poster into the Delhi Cantt groups.
 13. **Build/lint/mobile tests:** `tsc --noEmit` clean · `next build` static export succeeds (`/delhi-cantt` emitted) · rendered + visually checked on a 390 px mobile viewport (hero, multi-step form) and all three posters at exact pixel sizes.
 

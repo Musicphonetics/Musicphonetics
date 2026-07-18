@@ -19,6 +19,7 @@ create table if not exists public.campaign_leads (
   mode              text,
   area              text,
   goal              text,
+  interested_plan   text,                          -- Foundation · Main Pathway · Director's Circle
   status            text not null default 'New',   -- New · Contacted · Consultation booked · Trial booked · Enrolled · Not proceeding
   source            text,
   campaign          text,

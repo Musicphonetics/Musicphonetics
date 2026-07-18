@@ -13,6 +13,7 @@
 const WEB3FORMS_FALLBACK = "1a5d9694-46b9-4236-8ced-1b68b65b5097";
 
 // ---- Authoritative offer (server-side truth — never trust the client) ------
+// The Delhi Cantt benefit is FIRST MONTH ONLY and applies to the Main Pathway.
 const OFFER = {
   active: true,
   plan: "Main Pathway",
@@ -21,7 +22,7 @@ const OFFER = {
   campaign: "delhi_cantt_launch",
   source: "whatsapp_society_group",
   regular_price: 12000,
-  offer_price: 10000,
+  first_month_price: 10000,
   discount_amount: 2000,
   classes_per_month: 8,
 };
@@ -73,6 +74,9 @@ export async function onRequestPost({ request, env }) {
   const mode = clean(b.mode, 40);
   const email = clean(b.email, 160).toLowerCase();
   const goal = clean(b.goal, 400);
+  // Interested programme (Foundation / Main Pathway / Director's Circle).
+  const planIn = clean(b.plan, 40) || "Main Pathway";
+  const isOfferPlan = /main\s*pathway/i.test(planIn);
 
   if (learner.length < 2) return json({ ok: false, error: "Please enter the learner's first name." }, 400);
   if (!phone) return json({ ok: false, error: "Please enter a valid 10-digit Indian mobile number." }, 400);
@@ -101,16 +105,17 @@ export async function onRequestPost({ request, env }) {
     mode: mode || null,
     area,
     goal: goal || null,
+    interested_plan: planIn,
     status: "New",
     // Campaign / offer — set on the server, not the client:
     source: OFFER.source,
     campaign: OFFER.campaign,
-    offer_code: OFFER.offer_code,
+    offer_code: isOfferPlan ? OFFER.offer_code : null,
     offer_plan: OFFER.offer_plan,
     plan_label: OFFER.plan,
     regular_price: OFFER.regular_price,
-    offer_price: OFFER.offer_price,
-    discount_amount: OFFER.discount_amount,
+    offer_price: isOfferPlan ? OFFER.first_month_price : null,
+    discount_amount: isOfferPlan ? OFFER.discount_amount : 0,
     classes_per_month: OFFER.classes_per_month,
     utm_source: utm.source, utm_medium: utm.medium, utm_campaign: utm.campaign, utm_content: utm.content,
     received_at: receivedAt,
@@ -143,7 +148,7 @@ export async function onRequestPost({ request, env }) {
       headers: { "content-type": "application/json", accept: "application/json" },
       body: JSON.stringify({
         access_key: env.WEB3FORMS_ACCESS_KEY || WEB3FORMS_FALLBACK,
-        subject: `🎖️ Delhi Cantt Lead — ${learner} (${instrument || "Music"}) · ${area}`,
+        subject: `🎖️ Delhi Cantt Lead — ${learner} (${instrument || "Music"}) · ${planIn} · ${area}`,
         from_name: "Musicphonetics · Delhi Cantt",
         ...(email ? { replyto: email } : {}),
         Reference: ref,
@@ -158,9 +163,12 @@ export async function onRequestPost({ request, env }) {
         "Call": telHref,
         "Open WhatsApp": waHref,
         Email: email || "-",
+        "Interested programme": planIn,
         "Learning goal": goal || "-",
-        "— Offer —": `${OFFER.plan}: ₹${OFFER.regular_price.toLocaleString("en-IN")} → ₹${OFFER.offer_price.toLocaleString("en-IN")}/mo (save ₹${OFFER.discount_amount.toLocaleString("en-IN")}), ${OFFER.classes_per_month} classes/month`,
-        "Offer code": OFFER.offer_code,
+        "— Offer —": isOfferPlan
+          ? `${OFFER.plan}: first month ₹${OFFER.first_month_price.toLocaleString("en-IN")} instead of ₹${OFFER.regular_price.toLocaleString("en-IN")} (save ₹${OFFER.discount_amount.toLocaleString("en-IN")}), then ₹${OFFER.regular_price.toLocaleString("en-IN")}/mo · ${OFFER.classes_per_month} classes/month`
+          : `${planIn}: enquiry at regular terms (Delhi Cantt first-month benefit applies to the Main Pathway only).`,
+        "Offer code": isOfferPlan ? OFFER.offer_code : "-",
         Source: OFFER.source,
         Campaign: OFFER.campaign,
         UTM: [utm.source, utm.medium, utm.campaign, utm.content].filter(Boolean).join(" / ") || "-",

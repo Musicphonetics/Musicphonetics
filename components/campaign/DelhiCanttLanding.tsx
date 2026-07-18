@@ -6,14 +6,16 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { whatsappLink } from "@/lib/data";
 import {
-  DELHI_CANTT, offerIsLive, OFFER_REGULAR, OFFER_PRICE, OFFER_SAVE,
-  CANTT_AGE_GROUPS, CANTT_INSTRUMENTS, CANTT_MODES, canttWhatsappMessage,
+  DELHI_CANTT, offerIsLive, OFFER_REGULAR, OFFER_FIRST_MONTH, OFFER_SAVE,
+  PACKAGES, PACKAGE_CHOICES, CANTT_AGE_GROUPS, CANTT_INSTRUMENTS, CANTT_MODES,
+  canttWhatsappMessage, type Package,
 } from "@/lib/delhi-cantt";
 import { cn } from "@/lib/utils";
 
 type View = "hero" | "form" | "success";
 
 interface Answers {
+  plan: string;
   learner_name: string;
   age_group: string;
   instrument: string;
@@ -25,7 +27,7 @@ interface Answers {
   goal: string;
 }
 const EMPTY: Answers = {
-  learner_name: "", age_group: "", instrument: "", mode: "",
+  plan: "Main Pathway", learner_name: "", age_group: "", instrument: "", mode: "",
   area: "", enquirer_name: "", phone: "", email: "", goal: "",
 };
 
@@ -52,12 +54,16 @@ export function DelhiCanttLanding() {
   const set = (k: keyof Answers, v: string) => setA((p) => ({ ...p, [k]: v }));
 
   const steps = [
-    { title: "The learner", valid: () => a.learner_name.trim().length >= 2 && !!a.age_group && !!a.instrument },
+    { title: "The learner", valid: () => !!a.plan && a.learner_name.trim().length >= 2 && !!a.age_group && !!a.instrument },
     { title: "Preferences", valid: () => !!a.mode && a.area.trim().length >= 2 },
     { title: "Your details", valid: () => a.enquirer_name.trim().length >= 2 && validPhone(a.phone) },
   ];
 
-  function openForm() { setView("form"); setStep(0); setError(null); window.scrollTo({ top: 0, behavior: "smooth" }); }
+  function openForm(plan: string) {
+    setA((p) => ({ ...p, plan }));
+    setView("form"); setStep(0); setError(null);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
 
   async function submit() {
     if (submitting || submittedRef.current) return;
@@ -86,9 +92,8 @@ export function DelhiCanttLanding() {
     }
   }
 
-  // ---------------------------------------------------------------- shells --
   return (
-    <main className="mx-auto flex min-h-screen w-full max-w-[520px] flex-col px-5 pb-16 pt-6 text-paper">
+    <main className="mx-auto flex min-h-screen w-full max-w-[560px] flex-col px-5 pb-16 pt-6 text-paper">
       <header className="flex items-center justify-between">
         <Link href="/" aria-label="Musicphonetics home" className="inline-flex">
           <Image src="/logo-wordmark-light.webp" alt="Musicphonetics" width={163} height={30} priority className="h-7 w-auto" />
@@ -116,7 +121,7 @@ export function DelhiCanttLanding() {
 }
 
 /* ============================ HERO ============================ */
-function Hero({ live, onClaim }: { live: boolean; onClaim: () => void }) {
+function Hero({ live, onClaim }: { live: boolean; onClaim: (plan: string) => void }) {
   return (
     <div className="animate-fade-up">
       <p className="mt-8 text-[11px] font-semibold uppercase tracking-[0.22em] text-gold-soft">Delhi Cantt Launch Benefit</p>
@@ -128,7 +133,7 @@ function Hero({ live, onClaim }: { live: boolean; onClaim: () => void }) {
         tracking and regular parent updates.
       </p>
 
-      {/* Offer card */}
+      {/* Offer card — Main Pathway, first month */}
       <div className="mt-7 rounded-2xl border border-gold/30 bg-gradient-to-b from-gold/[0.08] to-transparent p-5">
         <div className="flex items-center justify-between">
           <span className="text-[11px] font-semibold uppercase tracking-[0.16em] text-gold-soft">Main Pathway</span>
@@ -138,14 +143,15 @@ function Hero({ live, onClaim }: { live: boolean; onClaim: () => void }) {
         </div>
         <div className="mt-3 flex items-end gap-3">
           <span className="font-display text-[54px] font-semibold leading-none text-gold-soft" style={{ fontVariantNumeric: "tabular-nums" }}>
-            {OFFER_PRICE}
+            {OFFER_FIRST_MONTH}
           </span>
-          <span className="pb-2 text-sm text-paper/60">/ month</span>
+          <span className="pb-2 text-sm text-paper/60">first month</span>
         </div>
-        <div className="mt-1 flex items-center gap-3">
+        <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1">
           <span className="text-lg text-paper/45 line-through decoration-gold/70 decoration-2" style={{ fontVariantNumeric: "tabular-nums" }}>
             {OFFER_REGULAR}
           </span>
+          <span className="text-sm text-paper/55">then {OFFER_REGULAR}/month</span>
           <span className="rounded-full bg-gold/15 px-3 py-1 text-xs font-semibold text-gold-soft">Save {OFFER_SAVE}</span>
         </div>
         <hr className="my-4 border-white/10" />
@@ -155,7 +161,7 @@ function Hero({ live, onClaim }: { live: boolean; onClaim: () => void }) {
       {live ? (
         <>
           <button
-            onClick={onClaim}
+            onClick={() => onClaim("Main Pathway")}
             className="mt-6 w-full rounded-full bg-gold px-6 py-4 text-base font-semibold text-ink transition hover:bg-gold-soft focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold-soft"
           >
             Claim Delhi Cantt Benefit
@@ -177,6 +183,61 @@ function Hero({ live, onClaim }: { live: boolean; onClaim: () => void }) {
           </li>
         ))}
       </ul>
+
+      {/* -------- Compare all three programmes -------- */}
+      <section className="mt-12">
+        <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-gold-soft">Compare programmes</p>
+        <h2 className="mt-2 font-display text-[26px] font-semibold leading-tight text-paper">Three ways to learn. One standard.</h2>
+        <p className="mt-2 text-[13px] leading-relaxed text-paper/60">
+          The Delhi Cantt launch benefit applies to the <span className="text-gold-soft">Main Pathway</span> (first month).
+          Foundation and Director’s Circle are shown so you can choose what fits the learner — every programme includes
+          matched teachers, parent visibility and secure company payments.
+        </p>
+
+        <div className="mt-5 flex flex-col gap-4">
+          {PACKAGES.map((p) => <PackageCard key={p.key} p={p} onEnquire={onClaim} live={live} />)}
+        </div>
+        <p className="mt-4 text-center text-[11px] text-paper/40">Not sure which fits? Pick “Help me decide” in the form and we’ll recommend one.</p>
+      </section>
+    </div>
+  );
+}
+
+function PackageCard({ p, onEnquire, live }: { p: Package; onEnquire: (plan: string) => void; live: boolean }) {
+  return (
+    <div className={cn(
+      "rounded-2xl border p-5",
+      p.featured ? "border-gold/50 bg-gradient-to-b from-gold/[0.09] to-transparent" : "border-white/10 bg-white/[0.03]",
+    )}>
+      <div className="flex items-start justify-between gap-3">
+        <div>
+          <h3 className="font-display text-xl font-semibold text-paper">{p.name}</h3>
+          <p className="mt-0.5 text-[12px] text-paper/55">For {p.bestFor.toLowerCase()}</p>
+        </div>
+        {p.featured && <span className="shrink-0 rounded-full bg-gold px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-ink">Delhi Cantt</span>}
+      </div>
+
+      <div className="mt-3 flex items-end gap-2">
+        <span className="font-display text-[30px] font-semibold text-paper" style={{ fontVariantNumeric: "tabular-nums" }}>{p.priceLabel}</span>
+        <span className="pb-1.5 text-[12px] text-paper/50">{p.priceSub}</span>
+      </div>
+      {p.offer && <p className="mt-1 text-[13px] font-semibold text-gold-soft">{p.offer}</p>}
+
+      <ul className="mt-4 flex flex-col gap-2">
+        {p.features.map((f) => (
+          <li key={f} className="flex items-start gap-2.5 text-[13px] text-paper/75"><Check /> <span>{f}</span></li>
+        ))}
+      </ul>
+
+      {live && (
+        <button onClick={() => onEnquire(p.name)}
+          className={cn(
+            "mt-5 w-full rounded-full px-5 py-3 text-sm font-semibold transition",
+            p.featured ? "bg-gold text-ink hover:bg-gold-soft" : "border border-white/20 text-paper hover:border-gold/60",
+          )}>
+          {p.featured ? "Claim Delhi Cantt Benefit" : `Enquire about ${p.name}`}
+        </button>
+      )}
     </div>
   );
 }
@@ -210,6 +271,10 @@ function FormView({
       <div className="mt-6 space-y-5">
         {step === 0 && (
           <>
+            <Choice label="Which programme?" options={PACKAGE_CHOICES} value={a.plan} onChange={(v) => set("plan", v)} />
+            {a.plan === "Main Pathway" && (
+              <p className="-mt-2 text-[12px] text-gold-soft">Delhi Cantt benefit: first month {OFFER_FIRST_MONTH} (save {OFFER_SAVE}).</p>
+            )}
             <Field label="Learner's first name" htmlFor="learner">
               <input id="learner" value={a.learner_name} onChange={(e) => set("learner_name", e.target.value)}
                 placeholder="e.g. Aarav" autoComplete="off" className={inputCls} />
@@ -284,7 +349,7 @@ function FormView({
 /* ============================ SUCCESS ============================ */
 function Success({ a }: { a: Answers }) {
   const wa = whatsappLink(canttWhatsappMessage({
-    name: a.learner_name, age: a.age_group, instrument: a.instrument, mode: a.mode, area: a.area,
+    name: a.learner_name, age: a.age_group, instrument: a.instrument, mode: a.mode, area: a.area, plan: a.plan,
   }));
   return (
     <div className="animate-fade-up flex flex-1 flex-col items-center justify-center py-10 text-center">
