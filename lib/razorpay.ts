@@ -13,6 +13,7 @@ export interface CreateOrderInput {
   receipt?: string;
   plan?: string;
   plan_key?: string; // stable key for server-side price validation
+  coupon_code?: string; // teacher coupon; re-validated server-side
   name?: string;
 }
 export interface CreateOrderResult {

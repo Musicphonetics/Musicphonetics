@@ -81,17 +81,38 @@ export async function onRequestPost(context) {
     return json({ ok: false, error: "Invalid amount." }, 400);
   }
 
+  // Server-side coupon validation (codes only): look the code up in Supabase,
+  // read its percent, and reduce the plan's price ceiling accordingly. The
+  // discount can never be spoofed larger than the code actually grants, and an
+  // unknown/inactive code simply applies no discount.
+  const couponCode = String(body.coupon_code || body.couponCode || "").toUpperCase().replace(/[^A-Z0-9]/g, "").slice(0, 24);
+  let discountPercent = 0;
+  if (couponCode && env.SUPABASE_URL && env.SUPABASE_SERVICE_ROLE_KEY) {
+    try {
+      const cRes = await fetch(`${env.SUPABASE_URL}/rest/v1/teacher_coupons?code=eq.${encodeURIComponent(couponCode)}&active=eq.true&select=discount_percent`, {
+        headers: { apikey: env.SUPABASE_SERVICE_ROLE_KEY, Authorization: `Bearer ${env.SUPABASE_SERVICE_ROLE_KEY}` },
+      });
+      const rows = cRes.ok ? await cRes.json() : [];
+      const pct = Number(rows[0]?.discount_percent);
+      if (Number.isFinite(pct)) discountPercent = Math.max(0, Math.min(100, Math.round(pct)));
+    } catch { /* coupon lookup best-effort → falls back to no discount */ }
+  }
+
   // Server-side price validation: for a known plan, the amount may not exceed
-  // that plan's real monthly fee (pro-rata is always <=). Blocks URL tampering.
-  const ceiling = PLAN_PRICE_PAISE[planKey];
+  // that plan's real monthly fee AFTER any valid coupon (pro-rata is always <=).
+  // Blocks URL tampering and coupon spoofing.
+  const planPrice = PLAN_PRICE_PAISE[planKey];
+  const ceiling = planPrice ? Math.round(planPrice * (1 - discountPercent / 100)) : undefined;
   if (ceiling && amount > ceiling) {
-    return json({ ok: false, error: "Amount does not match the selected plan." }, 400);
+    return json({ ok: false, error: "Amount does not match the selected plan or coupon." }, 400);
   }
 
   // Small, non-sensitive labels to help reconcile the order in the dashboard.
   const notes = {
     plan: String(body.plan || "").slice(0, 60),
     student: String(body.name || "").slice(0, 100),
+    coupon: couponCode || "",
+    discount_percent: String(discountPercent || ""),
   };
 
   const auth = "Basic " + btoa(`${keyId}:${keySecret}`);

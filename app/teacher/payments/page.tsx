@@ -49,6 +49,10 @@ export default function PaymentsPage() {
       billing_cycle: f.billing_cycle || null,
       fee_quoted: picked?.fee_quoted ?? null,
       amount_paid: amount,
+      // Price breakdown so reports stay meaningful even when a discount applied.
+      list_price: picked?.fee_quoted ?? null,
+      final_amount: amount,
+      discount: picked?.fee_quoted && picked.fee_quoted > amount ? picked.fee_quoted - amount : null,
       payment_status: f.payment_status || "Received",
       payment_mode: f.payment_mode || "Secure gateway",
       cashfree_bill_no: f.cashfree_bill_no || null,

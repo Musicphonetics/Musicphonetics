@@ -9,6 +9,8 @@ import { INSTRUMENTS, EXPERIENCE, MODES } from "@/lib/onboarding";
 import { WEEK_DAYS, saveEnrolment } from "@/lib/enrolment";
 import { computeProrata, SCHEDULE_POLICY, BILLING_POLICY, TERMS_AGREED } from "@/lib/policy";
 import { loadRazorpay, createOrder, verifyPayment } from "@/lib/razorpay";
+import { getSupabase } from "@/lib/supabase/client";
+import { normalizeCode } from "@/lib/coupon";
 import { cn } from "@/lib/utils";
 
 // Razorpay Standard Checkout. The order is created server-side by the Pages
@@ -31,7 +33,7 @@ export function PayClient() {
   const planKey = (params.get("plan") || "").toLowerCase();
   const plan = PLAN_AMOUNTS[planKey];
   const amtParam = Math.round(Number(params.get("amt") || ""));
-  const monthly = Number.isFinite(amtParam) && amtParam > 0 ? amtParam : plan?.amount ?? 0;
+  const listMonthly = Number.isFinite(amtParam) && amtParam > 0 ? amtParam : plan?.amount ?? 0;
   const planName = plan?.name ?? "Musicphonetics classes";
 
   // The enrolment form - the same details we capture in "Start now", now tied
@@ -47,6 +49,29 @@ export function PayClient() {
   const [error, setError] = useState<string | null>(null);
   // Two-step booking: 1 = details, 2 = read the terms and pay.
   const [step, setStep] = useState<1 | 2>(1);
+  // Optional teacher coupon (codes only) — validated on the server via RPC, and
+  // re-validated again at order creation so the discount can't be spoofed.
+  const [couponInput, setCouponInput] = useState("");
+  const [couponCode, setCouponCode] = useState<string | null>(null);
+  const [discountPct, setDiscountPct] = useState(0);
+  const [couponMsg, setCouponMsg] = useState<string | null>(null);
+  const [couponBusy, setCouponBusy] = useState(false);
+
+  const monthly = Math.max(0, Math.round(listMonthly * (1 - discountPct / 100)));
+
+  async function applyCouponCode() {
+    const clean = normalizeCode(couponInput);
+    if (clean.length < 3) { setCouponMsg("Enter a valid code."); return; }
+    setCouponBusy(true); setCouponMsg(null);
+    try {
+      const { data, error } = await getSupabase().rpc("mp_validate_coupon", { p_code: clean });
+      const row = Array.isArray(data) ? data[0] : data;
+      if (error || !row?.valid) { setDiscountPct(0); setCouponCode(null); setCouponMsg("That code isn’t valid."); }
+      else { setDiscountPct(Number(row.discount_percent) || 0); setCouponCode(clean); setCouponMsg(`Applied: ${row.discount_percent}% off${row.teacher_name ? ` · ${row.teacher_name}` : ""}.`); }
+    } catch { setCouponMsg("Couldn’t check that code. Try again."); }
+    setCouponBusy(false);
+  }
+  function clearCoupon() { setCouponCode(null); setDiscountPct(0); setCouponInput(""); setCouponMsg(null); }
 
   // Warm up the Razorpay script as soon as the page loads, so the pay click is
   // instant and any load problem shows up before the customer commits.
@@ -102,6 +127,7 @@ export function PayClient() {
         receipt: `mp_${Date.now()}`,
         plan: planName,
         plan_key: planKey,
+        coupon_code: couponCode ?? undefined,
         name: name.trim(),
       });
 
@@ -160,8 +186,35 @@ export function PayClient() {
         <h1 className="mt-2 font-display text-2xl font-semibold text-paper sm:text-3xl">{planName}</h1>
         {monthly > 0 && (
           <p className="mt-1 text-sm text-paper/70">
+            {discountPct > 0 && <span className="mr-2 text-paper/40 line-through">{inr(listMonthly)}</span>}
             <b className="text-paper">{inr(monthly)}</b> / month · 8 classes · one hour each
+            {discountPct > 0 && <span className="ml-2 rounded-full bg-gold/20 px-2 py-0.5 text-xs font-semibold text-gold">{discountPct}% off</span>}
           </p>
+        )}
+
+        {step === 1 && (
+        <>
+        {/* Optional teacher coupon */}
+        {listMonthly > 0 && (
+          <div className="mt-4 rounded-2xl border border-white/10 bg-white/[0.04] p-3">
+            {couponCode ? (
+              <div className="flex items-center justify-between gap-2 text-sm">
+                <span className="text-paper/80">Coupon <b className="font-mono text-gold">{couponCode}</b> applied — {discountPct}% off</span>
+                <button type="button" onClick={clearCoupon} className="text-xs font-semibold text-paper/50 hover:text-paper">Remove</button>
+              </div>
+            ) : (
+              <div className="flex items-center gap-2">
+                <input value={couponInput} onChange={(e) => setCouponInput(normalizeCode(e.target.value))}
+                  placeholder="Teacher coupon (optional)"
+                  className="min-w-0 flex-1 rounded-xl border border-white/15 bg-transparent px-3 py-2.5 font-mono text-sm uppercase text-paper placeholder:text-paper/35 focus:outline-none" />
+                <button type="button" disabled={couponBusy} onClick={applyCouponCode}
+                  className="shrink-0 rounded-xl bg-gold px-4 py-2.5 text-sm font-semibold text-ink disabled:opacity-50">{couponBusy ? "…" : "Apply"}</button>
+              </div>
+            )}
+            {couponMsg && <p className={cn("mt-1.5 text-xs", couponCode ? "text-feature-green" : "text-red-300")}>{couponMsg}</p>}
+          </div>
+        )}
+        </>
         )}
 
         {step === 1 && (

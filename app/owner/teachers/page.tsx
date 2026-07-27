@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { PortalShell } from "@/components/portal/PortalShell";
 import { OnboardingChecklist } from "@/components/portal/OnboardingChecklist";
 import { OWNER_TABS } from "@/components/portal/tabs";
+import { TeacherCouponCard } from "@/components/owner/TeacherCoupon";
 import { Loading, formatMoney } from "@/components/portal/kit";
 import { ReportCardModal, type ReportStudent } from "@/components/portal/ReportCard";
 import { ParentLoginModal } from "@/components/portal/ParentLoginModal";
@@ -76,6 +77,8 @@ export default function OwnerTeachers() {
           </div>
 
           <div className="mb-5"><OnboardingChecklist mode="owner" teacherId={selected.t.id} /></div>
+
+          <div className="mb-5"><TeacherCouponCard teacherId={selected.t.id} teacherName={selected.t.full_name || ""} /></div>
 
           <p className="mb-2 text-sm font-semibold text-ink">Students</p>
           {selected.students.length === 0 ? (
