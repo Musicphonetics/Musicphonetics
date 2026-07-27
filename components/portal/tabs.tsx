@@ -37,3 +37,9 @@ export const OWNER_TABS: Tab[] = [
   { href: "/owner/audit", label: "Audit", icon: I("M4 5h16M4 12h16M4 19h10M18 16l2 2 3-3") },
   { href: "/owner/settings", label: "Settings", icon: I("M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM19 12a7 7 0 0 0-.1-1l2-1.5-2-3.5-2.4 1a7 7 0 0 0-1.7-1L14.5 2h-5l-.3 2.5a7 7 0 0 0-1.7 1l-2.4-1-2 3.5L5 11a7 7 0 0 0 0 2l-2 1.5 2 3.5 2.4-1a7 7 0 0 0 1.7 1l.3 2.5h5l.3-2.5a7 7 0 0 0 1.7-1l2.4 1 2-3.5-2-1.5a7 7 0 0 0 .1-1Z") },
 ];
+
+// Sales / marketing workspace — leads only, no financials/HR/settings.
+export const SALES_TABS: Tab[] = [
+  { href: "/sales/dashboard", label: "Dashboard", icon: I("M3 11.5 12 4l9 7.5M5 10v9a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-9") },
+  { href: "/sales/leads", label: "Leads", icon: I("M16 19v-1a4 4 0 0 0-8 0v1M12 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM19 8v6M22 11h-6") },
+];

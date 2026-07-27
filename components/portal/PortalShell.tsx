@@ -19,14 +19,14 @@ export interface Tab {
 export function PortalShell({
   children, role, tabs, title, subtitle, headerRight, variant = "mobile", theme = "light",
 }: {
-  children: ReactNode; role: "teacher" | "owner" | "parent"; tabs: Tab[]; title?: string;
+  children: ReactNode; role: "teacher" | "owner" | "parent" | "sales"; tabs: Tab[]; title?: string;
   subtitle?: string; headerRight?: ReactNode; variant?: "mobile" | "wide"; theme?: "light" | "night";
 }) {
   const { loading, configured, userId, profile, error } = useAuth();
   const router = useRouter();
   const pathname = usePathname();
   const night = theme === "night";
-  const loginPath = role === "owner" ? "/owner/login" : role === "parent" ? "/parent/login" : "/teacher/login";
+  const loginPath = role === "owner" ? "/owner/login" : role === "parent" ? "/parent/login" : role === "sales" ? "/sales/login" : "/teacher/login";
 
   // Only bounce to login when genuinely signed out — NOT on a network/timeout
   // error (that would loop to a login page that also can't reach the server).
@@ -137,7 +137,7 @@ export function PortalShell({
           <div className="mx-auto max-w-6xl px-4 py-3">
             {/* Brand + sign out */}
             <div className="flex items-center justify-between gap-3">
-              <p className="font-display text-base font-semibold">Musicphonetics <span className="text-gold">Owner</span></p>
+              <p className="font-display text-base font-semibold">Musicphonetics <span className="text-gold">{role === "sales" ? "Sales" : "Owner"}</span></p>
               <div className="flex items-center gap-2">
                 <NotificationBell tone="dark" />
                 <button onClick={() => signOut()} className="shrink-0 rounded-full border border-white/15 px-3 py-1 text-sm text-paper/70 hover:text-paper">Sign out</button>
