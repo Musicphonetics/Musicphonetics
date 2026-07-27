@@ -12,7 +12,6 @@ import type { StudentStat, ClassUpdate, Payment } from "@/lib/supabase/types";
 import { studentPlan, PLAN_LABEL, type Plan } from "@/lib/plan";
 import { cn } from "@/lib/utils";
 
-const PLANS: Plan[] = ["foundation", "main", "directors"];
 
 export default function MyStudents() {
   const [rows, setRows] = useState<StudentStat[] | null>(null);
@@ -168,11 +167,14 @@ function GoalEditor({ studentId, feeQuoted }: { studentId: string; feeQuoted: nu
       });
   }, [studentId, feeQuoted]);
 
+  // Teachers set the GOAL only — never the commercial plan. The plan is read
+  // from the student's enrolment and shown read-only; changing it lives in the
+  // owner portal. Director's Circle is not a teacher-managed program.
   async function save() {
     setBusy(true); setErr(null); setMsg(null);
-    const payload: Record<string, unknown> = { plan, goal_set_at: new Date().toISOString() };
-    if (plan === "directors") { payload.monthly_goal = null; payload.goal_month = null; }
-    else { payload.monthly_goal = goal.trim() || null; payload.goal_month = month; }
+    const payload: Record<string, unknown> = {
+      monthly_goal: goal.trim() || null, goal_month: month, goal_set_at: new Date().toISOString(),
+    };
     const { error } = await getSupabase().from("students").update(payload).eq("id", studentId);
     setBusy(false);
     if (error) {
@@ -181,46 +183,48 @@ function GoalEditor({ studentId, feeQuoted }: { studentId: string; feeQuoted: nu
     } else setMsg("Saved. The family sees this in the student portal.");
   }
 
+  const planTone = { foundation: "bg-gold/15 text-[#7A5E0F]", main: "bg-forest/12 text-forest", directors: "bg-ink/10 text-ink/70" }[plan];
+
   return (
     <div className="mt-4 rounded-xl border border-hairline bg-white p-3.5">
-      <p className="text-xs font-semibold uppercase tracking-wide text-[#7A5E0F]">Plan &amp; this month&apos;s goal</p>
+      <p className="text-xs font-semibold uppercase tracking-wide text-[#7A5E0F]">Program &amp; this month&apos;s goal</p>
       {needsMigration ? (
-        <p className="mt-2 text-xs leading-relaxed text-ink/60">Run <code className="rounded bg-mist px-1">supabase/student_plan_goals.sql</code> once in Supabase to enable plans &amp; monthly goals.</p>
+        <p className="mt-2 text-xs leading-relaxed text-ink/60">Run <code className="rounded bg-mist px-1">supabase/student_plan_goals.sql</code> once in Supabase to enable monthly goals.</p>
       ) : !loaded ? (
         <p className="mt-2 text-xs text-ink/50">Loading…</p>
       ) : (
         <>
-          <div className="mt-2 flex flex-wrap gap-1.5">
-            {PLANS.map((p) => (
-              <button key={p} type="button" onClick={() => { setPlan(p); setMsg(null); }}
-                className={cn("rounded-full border px-3 py-1.5 text-xs font-semibold transition",
-                  plan === p ? "border-ink bg-ink text-paper" : "border-hairline text-ink/70 hover:border-ink/40")}>
-                {PLAN_LABEL[p]}
-              </button>
-            ))}
+          {/* Program is READ-ONLY — set by the office at enrolment. */}
+          <div className="mt-2 flex items-center gap-2">
+            <span className={cn("rounded-full px-3 py-1 text-xs font-semibold", planTone)}>{PLAN_LABEL[plan]}</span>
+            <span className="text-[10px] uppercase tracking-wide text-ink/40">Set by the office</span>
           </div>
 
           {plan === "directors" ? (
-            <p className="mt-2.5 text-xs leading-relaxed text-ink/60">Director&apos;s Circle shows no progress bar and no monthly goal — a bespoke, personally-guided plan.</p>
+            <p className="mt-2.5 text-xs leading-relaxed text-ink/60">Director&apos;s Circle is personally guided by the director. There&apos;s no monthly goal to set here.</p>
           ) : (
             <>
+              {plan === "foundation" && (
+                <p className="mt-2.5 text-xs leading-relaxed text-ink/55">Foundation follows the 32-class curriculum journey. You can add an optional focus for this month below.</p>
+              )}
               <div className="mt-2.5 flex items-center gap-2">
                 <label className="text-xs text-ink/60">Month</label>
                 <input type="month" value={month} onChange={(e) => { setMonth(e.target.value); setMsg(null); }}
                   className="rounded-lg border border-hairline bg-white px-2.5 py-1.5 text-xs text-ink focus-visible:outline-2 focus-visible:outline-gold focus:outline-none" />
               </div>
               <textarea value={goal} onChange={(e) => { setGoal(e.target.value); setMsg(null); }} rows={2}
-                placeholder="e.g. Play the C, G and Am chords cleanly and switch between them in time."
+                placeholder={plan === "foundation"
+                  ? "Optional focus for this month…"
+                  : "e.g. Play the C, G and Am chords cleanly and switch between them in time."}
                 className="mt-2 w-full rounded-lg border border-hairline bg-white px-3 py-2 text-sm text-ink placeholder:text-ink/40 focus-visible:outline-2 focus-visible:outline-gold focus:outline-none" />
+              {err && <p className="mt-2 text-xs text-red-600">{err}</p>}
+              {msg && <p className="mt-2 text-xs font-semibold text-feature-green">{msg}</p>}
+              <button onClick={save} disabled={busy}
+                className="mt-2.5 w-full rounded-lg bg-gold py-2 text-sm font-semibold text-charcoal hover:brightness-105 disabled:opacity-50">
+                {busy ? "Saving…" : "Save goal"}
+              </button>
             </>
           )}
-
-          {err && <p className="mt-2 text-xs text-red-600">{err}</p>}
-          {msg && <p className="mt-2 text-xs font-semibold text-feature-green">{msg}</p>}
-          <button onClick={save} disabled={busy}
-            className="mt-2.5 w-full rounded-lg bg-gold py-2 text-sm font-semibold text-charcoal hover:brightness-105 disabled:opacity-50">
-            {busy ? "Saving…" : "Save plan & goal"}
-          </button>
         </>
       )}
     </div>

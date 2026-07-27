@@ -7,10 +7,11 @@ import { Loading, formatMoney } from "@/components/portal/kit";
 import { OwnerTable, type Col } from "@/components/portal/OwnerTable";
 import { isSupabaseConfigured, getSupabase } from "@/lib/supabase/client";
 import { loadOwnerData } from "@/lib/supabase/owner";
+import { studentPlan, PLAN_LABEL, type Plan } from "@/lib/plan";
 
 interface Row extends Record<string, unknown> {
   id: string; code: string; teacher_id: string; name: string; instrument: string; level: string; status: string;
-  fee: number | null; days: string; parent: string; phone: string; email: string;
+  fee: number | null; days: string; parent: string; phone: string; email: string; plan: Plan;
 }
 interface TeacherOpt { id: string; name: string }
 
@@ -31,6 +32,7 @@ export default function OwnerStudents() {
         name: s.name, instrument: s.instrument ?? "-", level: s.level ?? "-", status: s.status,
         fee: s.fee_quoted, days: s.class_day ?? "-", parent: s.parent_name ?? "-", phone: s.parent_phone ?? "-",
         email: s.parent_email ?? "-",
+        plan: studentPlan({ plan: (s as { plan?: string | null }).plan, fee_quoted: s.fee_quoted }),
       })));
     });
   }, []);
@@ -61,9 +63,31 @@ export default function OwnerStudents() {
     }
   }
 
+  // Owner-only: set the student's commercial program. Teachers see this
+  // read-only; only the office changes it here.
+  async function setPlan(studentId: string, plan: Plan) {
+    setBusyId(studentId); setErr(null);
+    const { error } = await getSupabase().from("students").update({ plan }).eq("id", studentId);
+    setBusyId(null);
+    if (error) { setErr(error.message); return; }
+    setRows((prev) => prev && prev.map((r) => (r.id === studentId ? { ...r, plan } : r)));
+    setSavedId(studentId);
+    setTimeout(() => setSavedId((v) => (v === studentId ? null : v)), 2000);
+  }
+
   const cols: Col<Row>[] = [
     { key: "code", label: "Code", render: (r) => <span className="whitespace-nowrap font-mono text-xs">{r.code}</span> },
     { key: "name", label: "Student" },
+    {
+      key: "plan", label: "Program",
+      csv: (r) => PLAN_LABEL[r.plan],
+      render: (r) => (
+        <select value={r.plan} disabled={busyId === r.id} onChange={(e) => setPlan(r.id, e.target.value as Plan)}
+          className="min-w-[140px] rounded-lg border border-hairline bg-white px-2.5 py-1.5 text-sm focus-visible:outline-2 focus-visible:outline-gold focus:outline-none disabled:opacity-50">
+          {(["foundation", "main", "directors"] as Plan[]).map((p) => <option key={p} value={p}>{PLAN_LABEL[p]}</option>)}
+        </select>
+      ),
+    },
     {
       key: "teacher_id", label: "Teacher",
       csv: (r) => teachers.find((t) => t.id === r.teacher_id)?.name ?? "",
