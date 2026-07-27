@@ -1,14 +1,18 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { PortalShell } from "@/components/portal/PortalShell";
 import { OWNER_TABS } from "@/components/portal/tabs";
+import { getSupabase, isSupabaseConfigured } from "@/lib/supabase/client";
+import { PROGRAM_PRICES, priceLabel } from "@/lib/pricing";
+import { cn } from "@/lib/utils";
 
 // Operational settings & admin index. No secrets are shown or editable here —
 // keys (Supabase service role, Razorpay, Resend) live only in Cloudflare env.
 const LINKS: { href: string; title: string; sub: string }[] = [
   { href: "/owner/students", title: "Students", sub: "Codes, plans, teacher assignment, search" },
-  { href: "/owner/teachers", title: "Teachers", sub: "Roster, onboarding, earnings" },
+  { href: "/owner/teachers", title: "Teachers", sub: "Roster, onboarding, coupons, earnings" },
   { href: "/owner/applications", title: "Applications", sub: "Approve teachers, offer & joining letters" },
   { href: "/owner/schedule", title: "Schedule", sub: "All classes, filters, conflicts" },
   { href: "/owner/messages", title: "Messages & notifications", sub: "Director notes and the bell feed" },
@@ -19,6 +23,15 @@ const LINKS: { href: string; title: string; sub: string }[] = [
   { href: "/owner/audit", title: "Audit log", sub: "Append-only activity record" },
 ];
 
+const PROGRAMS: { name: string; price: string; note: string; tone: string }[] = [
+  { name: "Foundation", price: priceLabel("foundation"), tone: "bg-gold/15 text-[#7A5E0F]",
+    note: "32-class beginner journey (Explore → Play → Make Music → Perform). Progress bar + monthly focus." },
+  { name: "Main Pathway", price: priceLabel("main"), tone: "bg-forest/12 text-forest",
+    note: "Ongoing structured development, guided by a fresh monthly goal the teacher sets." },
+  { name: "Director's Circle", price: priceLabel("directors"), tone: "bg-ink/10 text-ink/70",
+    note: "Bespoke, director-guided. Owner-managed and hidden from ordinary teacher workflow." },
+];
+
 const ENV_NOTES = [
   ["ACTIVATION_CODE", "The code families use on Student Activation"],
   ["RESEND_API_KEY / MAIL_FROM", "Auto-emails teacher offers on approval"],
@@ -27,9 +40,72 @@ const ENV_NOTES = [
   ["ALLOWED_ORIGIN_HOSTS", "Optional: restrict which origins may call public APIs"],
 ];
 
+interface CouponRow { code: string; discount_percent: number; active: boolean; label: string | null; teacher_id: string }
+
 export default function OwnerSettings() {
+  const [coupons, setCoupons] = useState<CouponRow[] | null>(null);
+  const [couponNote, setCouponNote] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!isSupabaseConfigured()) { setCoupons([]); return; }
+    getSupabase().from("teacher_coupons").select("code,discount_percent,active,label,teacher_id").order("active", { ascending: false })
+      .then(({ data, error }) => {
+        if (error) { setCouponNote(/relation|does not exist|schema cache/i.test(error.message) ? "Run supabase/teacher_coupons.sql to enable teacher coupons." : error.message); setCoupons([]); }
+        else setCoupons((data as CouponRow[]) ?? []);
+      });
+  }, []);
+
   return (
     <PortalShell role="owner" tabs={OWNER_TABS} variant="wide" title="Settings">
+      {/* Programs & current pricing */}
+      <section className="rounded-2xl border border-hairline bg-white p-5">
+        <p className="font-display text-lg font-semibold text-ink">Programs &amp; current pricing</p>
+        <p className="mt-0.5 text-sm text-ink/60">The current list prices used across the site and for new enrolments. Historical payments keep their own amounts.</p>
+        <div className="mt-4 grid gap-3 sm:grid-cols-3">
+          {PROGRAMS.map((p) => (
+            <div key={p.name} className="rounded-xl border border-hairline p-4">
+              <div className="flex items-center justify-between gap-2">
+                <span className={cn("rounded-full px-2.5 py-1 text-xs font-semibold", p.tone)}>{p.name}</span>
+              </div>
+              <p className="mt-3 font-display text-2xl font-semibold text-ink">{p.price}<span className="text-sm font-normal text-ink/50">{PROGRAM_PRICES[p.name === "Foundation" ? "foundation" : p.name === "Main Pathway" ? "main" : "directors"] != null ? " / mo" : ""}</span></p>
+              <p className="mt-1.5 text-xs leading-relaxed text-ink/60">{p.note}</p>
+            </div>
+          ))}
+        </div>
+        <p className="mt-3 text-xs text-ink/50">To change a list price, update <code className="rounded bg-mist px-1">lib/pricing.ts</code> (single source) and redeploy. A student&apos;s program is set per-student under <Link href="/owner/students" className="font-semibold text-[#7A5E0F]">Students</Link>.</p>
+      </section>
+
+      {/* Teacher commercial settings — coupons */}
+      <section className="mt-6 rounded-2xl border border-hairline bg-white p-5">
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <p className="font-display text-lg font-semibold text-ink">Teacher commercial settings</p>
+          <Link href="/owner/teachers" className="text-sm font-semibold text-[#7A5E0F]">Manage per teacher →</Link>
+        </div>
+        <p className="mt-0.5 text-sm text-ink/60">Coupon codes (percent off) are created per teacher in <b>Teachers</b>. Teachers can see their code but never edit it; the discount is re-validated on the server at payment.</p>
+        {couponNote && <p className="mt-3 rounded-lg bg-mist px-3 py-2 text-xs text-ink/70">{couponNote}</p>}
+        {coupons === null ? (
+          <p className="mt-3 text-sm text-ink/50">Loading…</p>
+        ) : coupons.length === 0 ? (
+          <p className="mt-3 text-sm text-ink/55">No teacher coupons yet.</p>
+        ) : (
+          <div className="mt-3 divide-y divide-hairline">
+            {coupons.map((c) => (
+              <div key={c.code} className="flex flex-wrap items-center justify-between gap-2 py-2.5">
+                <div className="flex items-center gap-3">
+                  <code className="rounded bg-mist px-2 py-0.5 font-mono text-sm text-ink">{c.code}</code>
+                  <span className="text-sm text-ink/70">{c.label || `${c.discount_percent}%`}</span>
+                </div>
+                <span className={cn("rounded-full px-2.5 py-1 text-xs font-semibold", c.active ? "bg-feature-green/12 text-feature-green" : "bg-mist text-ink/55")}>
+                  {c.discount_percent}% · {c.active ? "Active" : "Inactive"}
+                </span>
+              </div>
+            ))}
+          </div>
+        )}
+      </section>
+
+      {/* Admin index */}
+      <p className="mt-6 mb-3 text-xs font-semibold uppercase tracking-wide text-ink/50">Manage</p>
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
         {LINKS.map((l) => (
           <Link key={l.href} href={l.href} className="rounded-2xl border border-hairline bg-white p-4 transition hover:border-ink/30 hover:shadow-card">
@@ -39,6 +115,7 @@ export default function OwnerSettings() {
         ))}
       </div>
 
+      {/* Env / config */}
       <div className="mt-6 rounded-2xl border border-hairline bg-white p-5">
         <p className="font-display text-lg font-semibold text-ink">Configuration</p>
         <p className="mt-0.5 text-sm text-ink/60">These are set as environment variables in Cloudflare Pages — never in the app. Values are never shown here.</p>
