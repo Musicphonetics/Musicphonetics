@@ -137,6 +137,22 @@ export async function onRequestPost({ request, env }) {
       });
       stored = res.ok;
     } catch { /* fall through to email */ }
+
+    // Also land in the unified CRM leads table (same system, with attribution).
+    try {
+      await fetch(`${env.SUPABASE_URL}/rest/v1/rpc/mp_intake_lead`, {
+        method: "POST",
+        headers: { apikey: env.SUPABASE_SERVICE_ROLE_KEY, Authorization: `Bearer ${env.SUPABASE_SERVICE_ROLE_KEY}`, "content-type": "application/json" },
+        body: JSON.stringify({ p: {
+          student_name: learner, parent_name: enquirer, phone: "+91" + phone, email: email || null,
+          student_age: age || null, instrument_interest: instrument || null, preferred_mode: mode || null,
+          preferred_area: area || null, learning_goal: goal || null, preferred_program: planIn,
+          coupon_code: isOfferPlan ? OFFER.offer_code : null,
+          source: "delhi_cantt", campaign: OFFER.campaign, landing_page: "/delhi-cantt",
+          utm_source: utm.source, utm_medium: utm.medium, utm_campaign: utm.campaign, utm_content: utm.content,
+        } }),
+      });
+    } catch { /* CRM save best-effort; email still fires */ }
   }
 
   // 2) Notify the owner — the guaranteed lead channel.

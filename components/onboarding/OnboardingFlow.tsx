@@ -69,34 +69,48 @@ export function OnboardingFlow() {
     buzz();
     setSubmitting(true);
     setSubmitError(false);
+    const isChild = answers.who === "My Child";
     try {
-      // Static site (no backend) → post the lead straight to Web3Forms.
-      const res = await fetch("https://api.web3forms.com/submit", {
+      // PRIMARY: save the lead to the database (never lost to a slow email).
+      const res = await fetch("/api/lead", {
+        method: "POST",
+        headers: { "content-type": "application/json", accept: "application/json" },
+        body: JSON.stringify({
+          student_name: isChild ? null : answers.name,
+          parent_name: answers.name,
+          email: answers.email,
+          phone: answers.phone,
+          student_age: answers.childAge,
+          instrument_interest: answers.instrument,
+          preferred_mode: answers.mode,
+          preferred_area: answers.location,
+          experience_level: answers.experience,
+          learning_goal: answers.goal,
+          preferred_time: answers.timing,
+          message: answers.begin ? `Preferred start: ${answers.begin}` : undefined,
+          source: "website",
+          landing_page: "/start",
+          botcheck: "",
+        }),
+      });
+      const data = (await res.json().catch(() => ({ ok: false }))) as { ok?: boolean };
+      if (!res.ok || !data.ok) throw new Error("save failed");
+      // SECONDARY (best-effort, non-blocking): email notice until the outbox
+      // worker takes over. A failure here never affects the saved lead.
+      fetch("https://api.web3forms.com/submit", {
         method: "POST",
         headers: { "Content-Type": "application/json", Accept: "application/json" },
         body: JSON.stringify({
           access_key: WEB3FORMS_ACCESS_KEY,
           subject: `New Musicphonetics Lead - ${answers.name ?? "Unknown"} (${answers.instrument ?? "Music"})`,
-          from_name: "Musicphonetics Website",
-          botcheck: "", // honeypot - must stay empty
-          ...(answers.email ? { email: answers.email } : {}),
-          Name: answers.name ?? "-",
-          WhatsApp: answers.phone ?? "-",
-          Email: answers.email ?? "-",
-          Instrument: answers.instrument ?? "-",
-          Mode: answers.mode ?? "-",
-          "Student Type": answers.who ?? "-",
-          Age: answers.childAge ?? "-",
-          Area: answers.location ?? "-",
-          Experience: answers.experience ?? "-",
-          Goal: answers.goal ?? "-",
-          "Preferred Timing": answers.timing ?? "-",
-          "Preferred Start": answers.begin ?? "-",
+          from_name: "Musicphonetics Website", botcheck: "",
+          Name: answers.name ?? "-", WhatsApp: answers.phone ?? "-", Email: answers.email ?? "-",
+          Instrument: answers.instrument ?? "-", Mode: answers.mode ?? "-", "Student Type": answers.who ?? "-",
+          Age: answers.childAge ?? "-", Area: answers.location ?? "-", Experience: answers.experience ?? "-",
+          Goal: answers.goal ?? "-", "Preferred Timing": answers.timing ?? "-", "Preferred Start": answers.begin ?? "-",
           Source: "Website onboarding",
         }),
-      });
-      const data = (await res.json().catch(() => ({ success: false }))) as { success?: boolean };
-      if (!res.ok || data.success === false) throw new Error("delivery failed");
+      }).catch(() => {});
       setSubmitting(false);
       go(1); // proceed to the "analyzing" → success flow
     } catch {
