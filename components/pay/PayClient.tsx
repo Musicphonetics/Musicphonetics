@@ -16,8 +16,8 @@ import { cn } from "@/lib/utils";
 // the key SECRET never reaches this file.
 
 const PLAN_AMOUNTS: Record<string, { name: string; amount: number }> = {
-  foundation: { name: "Foundation", amount: 8000 },
-  main: { name: "Main Musicphonetics Pathway", amount: 12000 },
+  foundation: { name: "Foundation", amount: 10000 },
+  main: { name: "Main Musicphonetics Pathway", amount: 15000 },
   "directors-circle": { name: "Director's Circle", amount: 28000 },
 };
 

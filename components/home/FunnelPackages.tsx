@@ -23,7 +23,7 @@ const PLANS: Plan[] = [
     tag: "Most chosen",
     name: "The Main Pathway",
     line: "The full Musicphonetics system, for real and lasting progress.",
-    fee: "₹12,000",
+    fee: "₹15,000",
     feeNote: "8 one hour classes each month",
     facts: [
       "A matched teacher and a structured curriculum.",
@@ -38,7 +38,7 @@ const PLANS: Plan[] = [
     tag: "The starting point",
     name: "Foundation",
     line: "A calm, correct first start for absolute beginners.",
-    fee: "₹8,000",
+    fee: "₹10,000",
     feeNote: "a four chapter beginner journey",
     facts: [
       "Built for absolute beginners.",

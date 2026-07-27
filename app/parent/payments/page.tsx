@@ -17,8 +17,8 @@ const pretty = (iso: string) => new Date(iso + "T00:00:00").toLocaleDateString("
 
 // The plans a parent can pay for, straight into the tested Razorpay flow (/pay).
 const PLANS = [
-  { key: "foundation", name: "Foundation", amount: 8000, cadence: "32-class beginner journey" },
-  { key: "main", name: "Main Pathway", amount: 12000, cadence: "8 classes / month" },
+  { key: "foundation", name: "Foundation", amount: 10000, cadence: "32-class beginner journey" },
+  { key: "main", name: "Main Pathway", amount: 15000, cadence: "8 classes / month" },
 ];
 
 export default function ParentPayments() {

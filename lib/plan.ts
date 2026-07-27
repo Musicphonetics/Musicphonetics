@@ -5,7 +5,8 @@
 //   directors  → neither (a bespoke, personally-guided plan)
 //
 // Uses the explicit `plan` column when set; otherwise infers from the fee
-// (Foundation ₹8,000 vs Main Pathway ₹12,000). It never infers "directors" -
+// (Foundation ₹10,000 vs Main Pathway ₹15,000; a <₹12k fee reads as Foundation).
+// It never infers "directors" -
 // that is set explicitly (activation stamps it, or a teacher/owner sets it).
 
 export type Plan = "foundation" | "main" | "directors";

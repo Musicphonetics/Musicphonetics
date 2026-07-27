@@ -11,7 +11,7 @@ export const FOUNDATION = {
   totalClasses: 32,
   classesPerChapter: 8,
   upgradeTo: "Main Musicphonetics Pathway",
-  upgradeFee: 12000,
+  upgradeFee: 15000,
 } as const;
 
 export interface Chapter {
@@ -144,6 +144,6 @@ export function upgradeMessage(studentName: string): string {
     `Over the last cycle the student worked through the beginner foundation chapters and is now ready for the next level. ` +
     `The recommended next step is the Main Musicphonetics Pathway, where we focus on stronger progress, theory, confidence, ` +
     `performance preparation and grade-oriented direction where applicable. From the next cycle the student can move to the ` +
-    `Main Pathway at ₹12,000/month. I'll personally guide the transition so the progress continues smoothly.`
+    `Main Pathway at ₹15,000/month. I'll personally guide the transition so the progress continues smoothly.`
   );
 }

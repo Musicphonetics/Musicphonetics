@@ -336,7 +336,7 @@ export const PACKAGES: Package[] = [
     key: "Foundation",
     name: "Foundation",
     tagline: "Structured, one-to-one music education to a real standard.",
-    priceFrom: "from ₹12,000",
+    priceFrom: "from ₹15,000",
     unit: "/month · 8 classes (₹1,500/class)",
     bullets: [
       "Verified faculty (7-stage selection)",

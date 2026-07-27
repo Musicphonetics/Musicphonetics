@@ -45,8 +45,8 @@ export const HOME_PACKAGES: HomePackage[] = [
   {
     key: "foundation",
     name: "Foundation Journey",
-    price: "₹8,000",
-    payAmount: 8000,
+    price: "₹10,000",
+    payAmount: 10000,
     cadence: "32-class beginner journey · 4 chapters",
     tagline: "A 32-class beginner pathway, divided into 4 chapters.",
     bullets: [
@@ -72,8 +72,8 @@ export const HOME_PACKAGES: HomePackage[] = [
   {
     key: "main",
     name: "Main Musicphonetics Pathway",
-    price: "₹12,000",
-    payAmount: 12000,
+    price: "₹15,000",
+    payAmount: 15000,
     cadence: "8 classes / month · 1 hour each",
     badge: "Most Recommended",
     secondaryBadge: "Main Pathway",

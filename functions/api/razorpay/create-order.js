@@ -24,8 +24,8 @@ const MAX_AMOUNT = 20000000; // ₹2,00,000
 // allow anything from MIN up to the plan price; we never trust an amount above
 // the plan's real price. Unknown/no plan falls back to the MIN/MAX bounds.
 const PLAN_PRICE_PAISE = {
-  foundation: 800000,     // ₹8,000
-  main: 1200000,          // ₹12,000
+  foundation: 1000000,    // ₹10,000
+  main: 1500000,          // ₹15,000
   "directors-circle": 2800000, // ₹28,000 (bespoke ceiling)
 };
 

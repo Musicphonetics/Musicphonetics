@@ -32,8 +32,8 @@ export const PROGRAMMES: Programme[] = [
   {
     slug: "foundation",
     name: "Foundation",
-    price: "₹8,000",
-    payAmount: 8000,
+    price: "₹10,000",
+    payAmount: 10000,
     cadence: "8 classes / month · 1 hour each",
     heroImage: "/images/classes/keys-duet.webp",
     intro:
@@ -88,8 +88,8 @@ export const PROGRAMMES: Programme[] = [
   {
     slug: "main",
     name: "Main Musicphonetics Pathway",
-    price: "₹12,000",
-    payAmount: 12000,
+    price: "₹15,000",
+    payAmount: 15000,
     cadence: "8 classes / month · 1 hour each",
     badge: "Most Recommended",
     heroImage: "/images/classes/duet.webp",
