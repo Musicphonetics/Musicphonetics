@@ -40,11 +40,18 @@ export function useAuth(): AuthState {
       });
     }
 
+    // Safety net: never let the portal sit on a spinner. If auth resolution
+    // hasn't completed shortly after the request timeout, surface a bounded
+    // error state so the shell can offer a retry instead of hanging.
+    const guard = setTimeout(() => {
+      if (active) setState((s) => (s.loading ? { ...s, loading: false, error: s.error || "Couldn't reach the server. Check your connection and try again." } : s));
+    }, 17000);
+
     sb.auth.getSession().then(({ data }) => load(data.session?.user?.id ?? null)).catch((e) => {
       if (active) setState((s) => ({ ...s, loading: false, error: e?.message || "Auth error" }));
     });
     const { data: sub } = sb.auth.onAuthStateChange((_e, session) => load(session?.user?.id ?? null));
-    return () => { active = false; sub.subscription.unsubscribe(); };
+    return () => { active = false; clearTimeout(guard); sub.subscription.unsubscribe(); };
   }, []);
 
   return state;

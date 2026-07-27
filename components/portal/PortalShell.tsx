@@ -4,7 +4,6 @@ import { useEffect, type ReactNode } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useAuth, signOut } from "@/lib/supabase/auth";
-import { Loading } from "./kit";
 import { NotificationBell } from "./NotificationBell";
 import { cn } from "@/lib/utils";
 
@@ -23,15 +22,17 @@ export function PortalShell({
   children: ReactNode; role: "teacher" | "owner" | "parent"; tabs: Tab[]; title?: string;
   subtitle?: string; headerRight?: ReactNode; variant?: "mobile" | "wide"; theme?: "light" | "night";
 }) {
-  const { loading, configured, userId, profile } = useAuth();
+  const { loading, configured, userId, profile, error } = useAuth();
   const router = useRouter();
   const pathname = usePathname();
   const night = theme === "night";
   const loginPath = role === "owner" ? "/owner/login" : role === "parent" ? "/parent/login" : "/teacher/login";
 
+  // Only bounce to login when genuinely signed out — NOT on a network/timeout
+  // error (that would loop to a login page that also can't reach the server).
   useEffect(() => {
-    if (!loading && configured && !userId) router.replace(loginPath);
-  }, [loading, configured, userId, router, loginPath]);
+    if (!loading && configured && !userId && !error) router.replace(loginPath);
+  }, [loading, configured, userId, error, router, loginPath]);
 
   // A staff account (owner/teacher) must never use the Student (parent) portal:
   // the students table has teacher/owner SELECT policies, so it would surface
@@ -65,8 +66,24 @@ export function PortalShell({
       </Centered>
     );
   }
-  if (loading) return <div className={cn("min-h-screen", night ? "bg-onyx" : "bg-paper")}><Loading dark={night} /></div>;
-  if (!userId) return <div className={cn("min-h-screen", night ? "bg-onyx" : "bg-paper")}><Loading dark={night} label="Redirecting…" /></div>;
+  // Couldn't reach the server (paused project, dropped connection, timeout):
+  // show a bounded retry instead of spinning forever or looping to login.
+  if (!loading && error && !userId) {
+    return (
+      <Centered>
+        <h1 className="font-display text-xl font-semibold text-ink">Can’t reach the server</h1>
+        <p className="mt-2 max-w-sm text-sm text-ink/65">{error}</p>
+        <div className="mt-5 flex justify-center gap-3">
+          <button onClick={() => window.location.reload()} className="rounded-full bg-ink px-6 py-3 text-sm font-semibold text-paper">Retry</button>
+          <Link href={loginPath} className="rounded-full border border-hairline px-6 py-3 text-sm font-semibold text-ink">Sign in</Link>
+        </div>
+      </Centered>
+    );
+  }
+  // Instant shell skeleton while auth resolves — the portal never shows a blank
+  // screen, and a slow secondary query can't hold up the whole chrome.
+  if (loading) return <ShellSkeleton night={night} wide={variant === "wide"} />;
+  if (!userId) return <ShellSkeleton night={night} wide={variant === "wide"} />;
 
   // A staff account (owner/teacher) must never render the Student (parent)
   // portal — it would expose their teacher/owner-visible student rows. Block it
@@ -234,4 +251,43 @@ export function PortalShell({
 
 function Centered({ children }: { children: ReactNode }) {
   return <div className="grid min-h-screen place-items-center bg-paper px-6 text-center"><div>{children}</div></div>;
+}
+
+// Lightweight shell placeholder shown the instant a portal page mounts, so the
+// chrome appears immediately and auth/data resolve underneath it.
+function ShellSkeleton({ night, wide }: { night: boolean; wide: boolean }) {
+  const bg = night ? "bg-onyx" : "bg-paper";
+  const bar = night ? "bg-white/10" : "bg-ink/10";
+  const card = night ? "bg-white/5" : "bg-white";
+  const border = night ? "border-white/10" : "border-hairline";
+  const Block = ({ className }: { className?: string }) => <div className={cn("animate-pulse rounded-md", bar, className)} />;
+  return (
+    <div className={cn("min-h-screen", bg, wide ? "" : "pb-24")}>
+      <header className={cn("border-b px-4 py-3", border, night ? "bg-onyx/85" : "bg-paper/90")}>
+        <div className={cn("mx-auto flex items-center justify-between", wide ? "max-w-6xl" : "max-w-md")}>
+          <Block className="h-6 w-40" />
+          <Block className="h-8 w-8 rounded-full" />
+        </div>
+      </header>
+      <main className={cn("mx-auto px-4 py-6", wide ? "max-w-6xl" : "max-w-md")}>
+        <Block className="h-5 w-32" />
+        <div className="mt-4 grid grid-cols-2 gap-3">
+          {[0, 1, 2, 3].map((i) => (
+            <div key={i} className={cn("rounded-2xl border p-4", border, card)}>
+              <Block className="h-3 w-16" />
+              <Block className="mt-3 h-6 w-20" />
+            </div>
+          ))}
+        </div>
+        <div className={cn("mt-4 rounded-2xl border p-4", border, card)}><Block className="h-24 w-full" /></div>
+      </main>
+      {!wide && (
+        <nav className={cn("fixed inset-x-0 bottom-0 border-t px-4 py-3", border, night ? "bg-onyx-1/95" : "bg-white/95")}>
+          <div className="mx-auto flex max-w-md items-center justify-around">
+            {[0, 1, 2, 3, 4].map((i) => <Block key={i} className="h-7 w-7 rounded-lg" />)}
+          </div>
+        </nav>
+      )}
+    </div>
+  );
 }

@@ -34,27 +34,37 @@ export default function TeacherDashboard() {
   const [directorMsg, setDirectorMsg] = useState<DirectorMessage | null>(null);
 
   useEffect(() => {
-    if (!isSupabaseConfigured()) return;
-    loadTeacherMessage().then(setDirectorMsg);
+    if (!isSupabaseConfigured()) {
+      setErr("The portal isn’t configured. Please contact the Musicphonetics office.");
+      setStats({ students: 0, week: 0, received: 0, pending: 0 });
+      return;
+    }
+    loadTeacherMessage().then(setDirectorMsg).catch(() => {});
     const sb = getSupabase();
     (async () => {
-      // RLS scopes all of these to the signed-in teacher automatically.
-      const [studentsRes, weekRes, payRes] = await Promise.all([
-        sb.from("students").select("fee_quoted,status").eq("status", "active"),
-        sb.from("class_updates").select("id", { count: "exact", head: true })
-          .gte("class_date", mondayISO()).eq("class_status", "Completed"),
-        sb.from("payments").select("amount_paid").gte("payment_date", monthStartISO()),
-      ]);
-      if (studentsRes.error) setErr(studentsRes.error.message);
-      const active = studentsRes.data ?? [];
-      const expected = active.reduce((s, r) => s + (r.fee_quoted ?? 0), 0);
-      const received = (payRes.data ?? []).reduce((s, r) => s + (r.amount_paid ?? 0), 0);
-      setStats({
-        students: active.length,
-        week: weekRes.count ?? 0,
-        received,
-        pending: Math.max(expected - received, 0),
-      });
+      try {
+        // RLS scopes all of these to the signed-in teacher automatically.
+        const [studentsRes, weekRes, payRes] = await Promise.all([
+          sb.from("students").select("fee_quoted,status").eq("status", "active"),
+          sb.from("class_updates").select("id", { count: "exact", head: true })
+            .gte("class_date", mondayISO()).eq("class_status", "Completed"),
+          sb.from("payments").select("amount_paid").gte("payment_date", monthStartISO()),
+        ]);
+        if (studentsRes.error) setErr(studentsRes.error.message);
+        const active = studentsRes.data ?? [];
+        const expected = active.reduce((s, r) => s + (r.fee_quoted ?? 0), 0);
+        const received = (payRes.data ?? []).reduce((s, r) => s + (r.amount_paid ?? 0), 0);
+        setStats({
+          students: active.length,
+          week: weekRes.count ?? 0,
+          received,
+          pending: Math.max(expected - received, 0),
+        });
+      } catch (e) {
+        // Never leave the dashboard spinning — surface a bounded error instead.
+        setErr(e instanceof Error ? e.message : "Couldn’t load your data. Please retry.");
+        setStats({ students: 0, week: 0, received: 0, pending: 0 });
+      }
     })();
   }, []);
 

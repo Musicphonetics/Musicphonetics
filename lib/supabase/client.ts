@@ -24,6 +24,28 @@ export function isSupabaseConfigured(): boolean {
   return Boolean(rawUrl() && rawKey());
 }
 
+// Every Supabase request goes through this fetch so a single call can never hang
+// the portal for minutes (e.g. a paused/cold project). It aborts after a bound
+// and surfaces as a normal query error the UI can show + retry. Uploads get a
+// longer bound than reads.
+const READ_TIMEOUT_MS = 15000;
+const UPLOAD_TIMEOUT_MS = 45000;
+function timeoutFetch(input: RequestInfo | URL, init?: RequestInit): Promise<Response> {
+  // Respect a caller-provided signal; add our own abort on timeout.
+  const url = typeof input === "string" ? input : input instanceof URL ? input.href : (input as Request).url;
+  const isUpload = /\/storage\/v1\/object\//.test(url) && (init?.method || "GET").toUpperCase() !== "GET";
+  const ms = isUpload ? UPLOAD_TIMEOUT_MS : READ_TIMEOUT_MS;
+  const ctrl = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(new DOMException("Request timed out", "TimeoutError")), ms);
+  // Chain the incoming signal (if any) into our controller.
+  const incoming = init?.signal;
+  if (incoming) {
+    if (incoming.aborted) ctrl.abort(incoming.reason);
+    else incoming.addEventListener("abort", () => ctrl.abort(incoming.reason), { once: true });
+  }
+  return fetch(input, { ...init, signal: ctrl.signal }).finally(() => clearTimeout(timer));
+}
+
 // Returns { client, error } and never throws - callers can show a friendly
 // message instead of a white-screen "check console" crash.
 export function getSupabaseSafe(): { client: SupabaseClient | null; error: string | null } {
@@ -38,6 +60,7 @@ export function getSupabaseSafe(): { client: SupabaseClient | null; error: strin
   try {
     _client = createClient(url, key, {
       auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true },
+      global: { fetch: timeoutFetch },
     });
     return { client: _client, error: null };
   } catch (e) {

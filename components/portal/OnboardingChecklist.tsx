@@ -234,7 +234,9 @@ export function OnboardingChecklist({ mode, teacherId }: { mode: "teacher" | "ow
 // Convenience wrapper for the signed-in teacher (their own checklist).
 export function TeacherOnboardingSelf() {
   const [uid, setUid] = useState<string | null>(null);
-  useEffect(() => { getSupabase().auth.getUser().then(({ data }) => setUid(data.user?.id ?? null)); }, []);
+  // getSession() reads the cached session (no network round-trip); getUser()
+  // would add a redundant /auth/v1/user call on every dashboard load.
+  useEffect(() => { getSupabase().auth.getSession().then(({ data }) => setUid(data.session?.user?.id ?? null)); }, []);
   if (!uid) return null;
   return <OnboardingChecklist mode="teacher" teacherId={uid} />;
 }
