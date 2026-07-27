@@ -21,9 +21,9 @@ const OFFER = {
   offer_code: "DELHICANTT2000",
   campaign: "delhi_cantt_launch",
   source: "whatsapp_society_group",
-  regular_price: 12000,
+  regular_price: 15000,
   first_month_price: 10000,
-  discount_amount: 2000,
+  discount_amount: 5000,
   classes_per_month: 8,
 };
 

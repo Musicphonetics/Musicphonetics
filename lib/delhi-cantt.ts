@@ -15,6 +15,7 @@
 // ============================================================================
 
 import { inr } from "./money";
+import { PROGRAM_PRICES, priceLabel } from "./pricing";
 
 export interface DelhiCanttOffer {
   active: boolean;
@@ -38,9 +39,9 @@ export const DELHI_CANTT: DelhiCanttOffer = {
   active: true,
   expiresOn: null,
   planLabel: "Main Pathway",
-  regularPrice: 12000,
+  regularPrice: PROGRAM_PRICES.main ?? 15000, // ₹15,000 current list price
   firstMonthPrice: 10000,
-  discount: 2000,
+  discount: (PROGRAM_PRICES.main ?? 15000) - 10000, // save ₹5,000 on month one
   classesPerMonth: 8,
   instrumentsLine: "Guitar • Piano • Vocals • Drums • Violin • More",
   offerCode: "DELHICANTT2000",
@@ -79,7 +80,7 @@ export const PACKAGES: Package[] = [
   {
     key: "foundation",
     name: "Foundation",
-    priceLabel: "₹8,000",
+    priceLabel: priceLabel("foundation"),
     priceSub: "per month",
     bestFor: "New & young beginners",
     features: [
@@ -92,7 +93,7 @@ export const PACKAGES: Package[] = [
   {
     key: "main_pathway",
     name: "Main Pathway",
-    priceLabel: "₹12,000",
+    priceLabel: priceLabel("main"),
     priceSub: "per month",
     bestFor: "Committed, progressing learners",
     features: [
@@ -101,7 +102,7 @@ export const PACKAGES: Package[] = [
       "Structured ongoing development",
       "Homework, attendance & parent visibility",
     ],
-    offer: "Delhi Cantt: first month ₹10,000 (save ₹2,000)",
+    offer: `Delhi Cantt: first month ${OFFER_FIRST_MONTH} (save ${OFFER_SAVE})`,
     featured: true,
   },
   {
