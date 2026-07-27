@@ -11,6 +11,7 @@ import {
   loadLeads, loadLeadStats, LEAD_STATUSES, LEAD_STATUS_LABEL, LEAD_STATUS_TONE, type LeadListRow,
 } from "@/lib/supabase/leads";
 import { LeadDetailPanel } from "@/components/owner/LeadDetailPanel";
+import { LeadAnalytics } from "@/components/leads/LeadAnalytics";
 import { cn } from "@/lib/utils";
 
 const SOURCES = ["all", "website", "delhi_cantt", "stage", "instagram", "google", "whatsapp", "referral", "event", "organic"];
@@ -33,6 +34,7 @@ export function LeadsCentre() {
   const [sel, setSel] = useState<Set<string>>(new Set());
   const [openId, setOpenId] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  const [showAnalytics, setShowAnalytics] = useState(false);
 
   const teacherName = useMemo(() => Object.fromEntries(teachers.map((t) => [t.id, t.name])), [teachers]);
 
@@ -75,6 +77,13 @@ export function LeadsCentre() {
   return (
     <>
       {err && <div className="mb-4 rounded-xl border border-red-300 bg-red-50 p-3 text-sm text-red-700">{err}</div>}
+
+      <div className="mb-3 flex justify-end">
+        <button onClick={() => setShowAnalytics((v) => !v)} className="rounded-full border border-hairline px-4 py-1.5 text-xs font-semibold text-ink/70 hover:border-ink/30">
+          {showAnalytics ? "Hide analytics" : "Show analytics"}
+        </button>
+      </div>
+      {showAnalytics && <div className="mb-5"><LeadAnalytics /></div>}
 
       <div className="mb-4 grid grid-cols-3 gap-2 sm:grid-cols-6">
         {([
