@@ -11,6 +11,7 @@ import { computeProrata, SCHEDULE_POLICY, BILLING_POLICY, TERMS_AGREED } from "@
 import { loadRazorpay, createOrder, verifyPayment } from "@/lib/razorpay";
 import { getSupabase } from "@/lib/supabase/client";
 import { normalizeCode } from "@/lib/coupon";
+import { whatsappLink } from "@/lib/data";
 import { cn } from "@/lib/utils";
 
 // Razorpay Standard Checkout. The order is created server-side by the Pages
@@ -39,13 +40,20 @@ export function PayClient() {
   // The enrolment form - the same details we capture in "Start now", now tied
   // to payment so the welcome document reflects the family's own choices.
   const [name, setName] = useState(params.get("name") || "");
+  const [phone, setPhone] = useState(params.get("phone") || "");
+  const [email, setEmail] = useState(params.get("email") || "");
   const [instrument, setInstrument] = useState(params.get("instrument") || "");
   const [level, setLevel] = useState("");
   const [mode, setMode] = useState("");
+  const [area, setArea] = useState("");
   const [days, setDays] = useState<string[]>([]);
   const [startDate, setStartDate] = useState(todayISO());
   const [agreed, setAgreed] = useState(false);
   const [paying, setPaying] = useState(false);
+  const [leadBusy, setLeadBusy] = useState(false);
+  // The form doubles as our lead form — it's the primary action; payment is
+  // optional. "form" = filling it in, "trial_done" = free-trial request sent.
+  const [view, setView] = useState<"form" | "trial_done">("form");
   const [error, setError] = useState<string | null>(null);
   // Two-step booking: 1 = details, 2 = read the terms and pay.
   const [step, setStep] = useState<1 | 2>(1);
@@ -89,8 +97,52 @@ export function PayClient() {
   const prorated = pr ? pr.day > 2 : false;
   const payNow = pr ? (prorated ? pr.firstPayment : monthly) : 0;
 
-  const detailsReady = Boolean(name.trim() && instrument && days.length > 0 && startDate);
+  const phoneOk = /^[6-9]\d{9}$/.test(phone.replace(/\D/g, ""));
+  const emailOk = !email.trim() || /^\S+@\S+\.\S+$/.test(email.trim());
+  // Enough to be a real lead: who + a way to reach them + an instrument.
+  const detailsReady = Boolean(name.trim() && phoneOk && emailOk && instrument);
   const ready = detailsReady && agreed && payNow > 0;
+
+  // Save the lead to the CRM (DB-first) — the PRIMARY action for both paths.
+  async function submitLead(intent: "trial" | "pay"): Promise<boolean> {
+    try {
+      const res = await fetch("/api/lead", {
+        method: "POST",
+        headers: { "content-type": "application/json", accept: "application/json" },
+        body: JSON.stringify({
+          student_name: name.trim(),
+          parent_name: name.trim(),
+          phone: phone.replace(/\D/g, ""),
+          email: email.trim() || undefined,
+          instrument_interest: instrument,
+          preferred_mode: mode || undefined,
+          preferred_area: area.trim() || undefined,
+          experience_level: level || undefined,
+          preferred_days: days.join(", ") || undefined,
+          preferred_program: planName,
+          coupon_code: couponCode ?? undefined,
+          message: intent === "trial"
+            ? `Requested a FREE TRIAL for ${planName}. Preferred start ${startDate}.`
+            : `Enrolment (paying) for ${planName}. Preferred start ${startDate}.`,
+          source: "website",
+          landing_page: "/pay",
+          botcheck: "",
+        }),
+      });
+      const data = (await res.json().catch(() => ({ ok: false }))) as { ok?: boolean };
+      return !!(res.ok && data.ok);
+    } catch { return false; }
+  }
+
+  // "Book a free trial" — no payment. Save the lead, show the confirmation.
+  async function bookTrial() {
+    if (!detailsReady || leadBusy) return;
+    setError(null); setLeadBusy(true);
+    const ok = await submitLead("trial");
+    setLeadBusy(false);
+    if (ok) { setView("trial_done"); window.scrollTo({ top: 0, behavior: "smooth" }); }
+    else setError("Couldn't send your request. Please check your details and try again.");
+  }
 
   function goToTerms() {
     if (!detailsReady) return;
@@ -107,6 +159,9 @@ export function PayClient() {
     if (!ready || paying) return;
     setError(null);
     setPaying(true);
+
+    // Capture the lead FIRST — so even if they abandon checkout, we have them.
+    await submitLead("pay");
 
     // Save the enrolment first so /welcome can show the confirmation on success.
     const now = new Date().toISOString();
@@ -178,11 +233,13 @@ export function PayClient() {
     }
   }
 
+  if (view === "trial_done") return <TrialDone name={name} planName={planName} instrument={instrument} phone={phone} />;
+
   return (
     <div className="mx-auto w-full max-w-lg">
       <div className="rounded-3xl border border-white/12 bg-white/[0.05] p-6 shadow-card-hover backdrop-blur-md sm:p-8">
         <Stave className="w-16 opacity-70" />
-        <p className="mt-5 eyebrow text-gold">{step === 1 ? "Step 1 of 2 · Your details" : "Step 2 of 2 · Terms & payment"}</p>
+        <p className="mt-5 eyebrow text-gold">{step === 1 ? "Step 1 of 2 · Your details" : "Step 2 of 2 · Terms & your choice"}</p>
         <h1 className="mt-2 font-display text-2xl font-semibold text-paper sm:text-3xl">{planName}</h1>
         {monthly > 0 && (
           <p className="mt-1 text-sm text-paper/70">
@@ -194,7 +251,7 @@ export function PayClient() {
 
         {step === 1 && (
         <>
-        {/* Optional teacher coupon */}
+        {/* Optional coupon */}
         {listMonthly > 0 && (
           <div className="mt-4 rounded-2xl border border-white/10 bg-white/[0.04] p-3">
             {couponCode ? (
@@ -205,7 +262,7 @@ export function PayClient() {
             ) : (
               <div className="flex items-center gap-2">
                 <input value={couponInput} onChange={(e) => setCouponInput(normalizeCode(e.target.value))}
-                  placeholder="Teacher coupon (optional)"
+                  placeholder="Coupon code (optional)"
                   className="min-w-0 flex-1 rounded-xl border border-white/15 bg-transparent px-3 py-2.5 font-mono text-sm uppercase text-paper placeholder:text-paper/35 focus:outline-none" />
                 <button type="button" disabled={couponBusy} onClick={applyCouponCode}
                   className="shrink-0 rounded-xl bg-gold px-4 py-2.5 text-sm font-semibold text-ink disabled:opacity-50">{couponBusy ? "…" : "Apply"}</button>
@@ -229,8 +286,23 @@ export function PayClient() {
           />
         </Group>
 
+        {/* Contact — needed so we can reach you */}
+        <Group n={2} label="How can we reach you?">
+          <div className="flex items-stretch overflow-hidden rounded-xl border border-white/15 bg-white/[0.04] focus-within:outline-2 focus-within:outline-gold">
+            <span className="flex items-center border-r border-white/15 px-3 text-sm text-paper/55">+91</span>
+            <input value={phone} inputMode="numeric" autoComplete="tel-national"
+              onChange={(e) => setPhone(e.target.value.replace(/\D/g, "").slice(0, 10))}
+              aria-label="WhatsApp number" placeholder="WhatsApp number"
+              className="w-full bg-transparent px-4 py-3 text-sm text-paper placeholder:text-paper/40 focus:outline-none" />
+          </div>
+          {phone.length > 0 && !phoneOk && <p className="mt-1.5 text-xs text-red-300">Enter a valid 10-digit mobile (starts 6–9).</p>}
+          <input value={email} onChange={(e) => setEmail(e.target.value)} type="email" autoComplete="email"
+            aria-label="Email (optional)" placeholder="Email (optional)"
+            className="mt-2 w-full rounded-xl border border-white/15 bg-white/[0.04] px-4 py-3 text-sm text-paper placeholder:text-paper/40 focus-visible:outline-2 focus-visible:outline-gold focus:outline-none" />
+        </Group>
+
         {/* Instrument */}
-        <Group n={2} label="Which instrument?">
+        <Group n={3} label="Which instrument?">
           <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
             {INSTRUMENTS.map((o) => (
               <button key={o.value} type="button" onClick={() => setInstrument(o.value)}
@@ -246,17 +318,20 @@ export function PayClient() {
         </Group>
 
         {/* Level */}
-        <Group n={3} label="Current level" optional>
+        <Group n={4} label="Current level" optional>
           <Pills options={EXPERIENCE.map((e) => e.value)} value={level} onPick={setLevel} />
         </Group>
 
         {/* Mode */}
-        <Group n={4} label="Preferred mode" optional>
+        <Group n={5} label="Preferred mode & area" optional>
           <Pills options={MODES.map((m) => m.value)} value={mode} onPick={setMode} />
+          <input value={area} onChange={(e) => setArea(e.target.value)}
+            aria-label="Your area / locality" placeholder="Your area / locality (e.g. Vasant Kunj)"
+            className="mt-2 w-full rounded-xl border border-white/15 bg-white/[0.04] px-4 py-3 text-sm text-paper placeholder:text-paper/40 focus-visible:outline-2 focus-visible:outline-gold focus:outline-none" />
         </Group>
 
         {/* Preferred days (multi) */}
-        <Group n={5} label="Preferred days" hint="Pick every day you'd like classes - most students choose two.">
+        <Group n={6} label="Preferred days" hint="Pick every day you'd like classes - most students choose two.">
           <div className="flex flex-wrap gap-2">
             {WEEK_DAYS.map((d) => (
               <button key={d} type="button" onClick={() => toggleDay(d)}
@@ -269,7 +344,7 @@ export function PayClient() {
         </Group>
 
         {/* Start date */}
-        <Group n={6} label="When would you like to start?" hint="Your fee plan is built around this date.">
+        <Group n={7} label="When would you like to start?" hint="Your fee plan is built around this date.">
           <input
             type="date" aria-label="Preferred start date" value={startDate} min={todayISO()} onChange={(e) => setStartDate(e.target.value)}
             className="w-full rounded-xl border border-white/15 bg-white/[0.04] px-4 py-3 text-sm text-paper [color-scheme:dark] focus-visible:outline-2 focus-visible:outline-gold focus:outline-none"
@@ -312,12 +387,12 @@ export function PayClient() {
           type="button" onClick={goToTerms} disabled={!detailsReady}
           className={cn("mt-7 inline-flex min-h-[54px] w-full items-center justify-center gap-2 rounded-full px-6 text-base font-semibold transition-all active:scale-[0.99]",
             detailsReady ? "bg-gold text-ink shadow-card hover:bg-deep-gold" : "cursor-not-allowed bg-white/10 text-paper/40")}>
-          {detailsReady ? "Continue to terms" : "Fill your details to continue"}
+          {detailsReady ? "Continue — review & choose" : "Fill your details to continue"}
           {detailsReady && <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>}
         </button>
-        {!detailsReady && (
-          <p className="mt-2 text-center text-xs text-paper/50">Name, instrument, at least one day and a start date are needed.</p>
-        )}
+        <p className="mt-2 text-center text-xs text-paper/50">
+          {detailsReady ? "Next you’ll see the terms and your price, then choose a free trial or to enrol." : "Name, a valid mobile number and an instrument are needed."}
+        </p>
         </>
         )}
 
@@ -333,7 +408,9 @@ export function PayClient() {
           <SummaryItem label="Instrument" value={instrument} />
           <SummaryItem label="Preferred days" value={days.join(", ")} />
           <SummaryItem label="Start date" value={prettyDate(startDate)} />
-          <SummaryItem label="Pay now to enrol" value={inr(payNow)} highlight />
+          {payNow > 0
+            ? <SummaryItem label="Fee if you enrol now" value={inr(payNow)} highlight />
+            : <SummaryItem label="Free trial" value="No payment to enquire" highlight />}
         </div>
 
         <h2 className="mt-7 font-display text-xl font-semibold text-paper">The terms, in full</h2>
@@ -381,36 +458,40 @@ export function PayClient() {
           </span>
         </label>
 
-        {/* Pay */}
-        <button
-          type="button" onClick={proceed} disabled={!ready || paying}
-          className={cn("mt-5 inline-flex min-h-[54px] w-full items-center justify-center gap-2 rounded-full px-6 text-base font-semibold transition-all active:scale-[0.99]",
-            ready && !paying ? "bg-gold text-ink shadow-card hover:bg-deep-gold" : "cursor-not-allowed bg-white/10 text-paper/40")}>
-          {paying
-            ? "Opening secure checkout…"
-            : ready
-              ? `Pay ${payNow > 0 ? inr(payNow) : ""} securely`
-              : !detailsReady ? "Fill your details to continue" : "Tick the box to agree and continue"}
-        </button>
-        {!detailsReady && !paying && (
-          <p className="mt-2 text-center text-xs text-paper/50">Name, instrument, at least one day and a start date are needed.</p>
-        )}
+        {/* Two ways to proceed — submitting the form is the goal; paying is optional. */}
+        <div className="mt-6 space-y-3">
+          <p className="text-center text-sm font-medium text-paper/80">Ready? Choose how you’d like to begin.</p>
+
+          {/* Free trial — primary, NO payment */}
+          <button type="button" onClick={bookTrial} disabled={!detailsReady || leadBusy}
+            className={cn("inline-flex min-h-[54px] w-full items-center justify-center gap-2 rounded-full px-6 text-base font-semibold transition-all active:scale-[0.99]",
+              detailsReady && !leadBusy ? "bg-gold text-ink shadow-card hover:bg-deep-gold" : "cursor-not-allowed bg-white/10 text-paper/40")}>
+            {leadBusy ? "Sending your request…" : "Book a free trial — no payment"}
+          </button>
+          <p className="text-center text-xs text-paper/55">Just submit — we’ll contact you to schedule it. No card, no fees to enquire.</p>
+
+          {payNow > 0 && (
+            <>
+              <div className="flex items-center gap-3 py-1 text-[11px] uppercase tracking-wider text-paper/40">
+                <span className="h-px flex-1 bg-white/10" />or enrol &amp; pay now<span className="h-px flex-1 bg-white/10" />
+              </div>
+              <button type="button" onClick={proceed} disabled={!ready || paying}
+                className={cn("inline-flex min-h-[54px] w-full items-center justify-center gap-2 rounded-full border-2 px-6 text-base font-semibold transition-all active:scale-[0.99]",
+                  ready && !paying ? "border-gold text-gold hover:bg-gold/10" : "cursor-not-allowed border-white/12 text-paper/40")}>
+                {paying ? "Opening secure checkout…" : ready ? `Pay ${inr(payNow)} & enrol` : "Tick “I agree” above to pay"}
+              </button>
+              <p className="flex items-center justify-center gap-2 text-xs text-paper/55">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" aria-hidden="true" className="text-gold"><path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6l7-3z" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" /></svg>
+                Encrypted &amp; secure · UPI, cards &amp; netbanking
+              </p>
+            </>
+          )}
+        </div>
         {error && (
           <div role="alert" className="mt-3 rounded-xl border border-red-400/40 bg-red-500/10 p-3 text-center text-sm text-red-200">
             {error}
           </div>
         )}
-
-        <p className="mt-4 flex items-center justify-center gap-2 text-xs text-paper/60">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" aria-hidden="true" className="text-gold">
-            <path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6l7-3z" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" />
-          </svg>
-          Encrypted &amp; secure · UPI, cards &amp; netbanking
-        </p>
-        <p className="mt-3 text-center text-xs leading-relaxed text-paper/50">
-          A secure payment window opens for {payNow > 0 ? inr(payNow) : "your amount"}. Your details
-          are saved, so your welcome document is ready the moment payment succeeds.
-        </p>
         </>
         )}
       </div>
@@ -418,6 +499,33 @@ export function PayClient() {
       <p className="mt-5 text-center text-sm text-paper/60">
         Need help? <Link href="/support" className="font-semibold text-gold underline underline-offset-2">We reply immediately</Link>.
       </p>
+    </div>
+  );
+}
+
+function TrialDone({ name, planName, instrument, phone }: { name: string; planName: string; instrument: string; phone: string }) {
+  const first = name.trim().split(" ")[0] || "there";
+  const wa = whatsappLink(`Hi Musicphonetics, I just requested a free trial for ${instrument || planName}${name ? ` (${name})` : ""}. Looking forward to hearing about the next step.`);
+  return (
+    <div className="mx-auto w-full max-w-lg">
+      <div className="rounded-3xl border border-white/12 bg-white/[0.05] p-7 text-center shadow-card-hover backdrop-blur-md sm:p-9">
+        <div className="mx-auto grid h-16 w-16 place-items-center rounded-full bg-gold/15 text-gold">
+          <svg viewBox="0 0 24 24" className="h-8 w-8" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12l4 4 10-10" /></svg>
+        </div>
+        <h1 className="mt-6 font-display text-2xl font-semibold text-paper sm:text-3xl">Your free trial request is in, {first}!</h1>
+        <p className="mt-3 text-sm leading-relaxed text-paper/70">
+          We’ve received your details for <b className="text-paper/90">{instrument || planName}</b>. Our team will reach out shortly to
+          confirm a teacher and schedule your <b className="text-paper/90">free trial class</b> — no payment needed.
+        </p>
+        <div className="mt-5 rounded-2xl border border-white/10 bg-white/[0.04] p-4 text-left text-sm text-paper/75">
+          <p><span className="text-paper/50">What happens next:</span> we match a teacher to your goals, then message you on WhatsApp{phone ? ` at +91 ${phone}` : ""} to lock a time. You only pay once you’re happy after the trial.</p>
+        </div>
+        <a href={wa} target="_blank" rel="noopener noreferrer"
+          className="mt-6 inline-flex min-h-[52px] w-full items-center justify-center gap-2 rounded-full bg-gold px-6 text-base font-semibold text-ink shadow-card hover:bg-deep-gold">
+          Message us on WhatsApp
+        </a>
+        <Link href="/" className="mt-3 inline-block text-sm font-medium text-paper/60 hover:text-gold">Back to home</Link>
+      </div>
     </div>
   );
 }

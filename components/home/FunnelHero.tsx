@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { WhatsAppCTA } from "./WhatsAppCTA";
-import { WA_MSG, HERO_SLIDES } from "@/lib/home-config";
+import Link from "next/link";
+import { HERO_SLIDES } from "@/lib/home-config";
 import { cn } from "@/lib/utils";
 
 function scrollToId(id: string) {
@@ -66,7 +66,11 @@ export function FunnelHero() {
           </p>
 
           <div className="mt-8 flex flex-col items-start gap-4 sm:flex-row sm:items-center">
-            <WhatsAppCTA label="Book a free trial" message={WA_MSG.trial} />
+            <Link href="/pay?trial=1"
+              className="inline-flex items-center gap-2 rounded-full bg-gold px-7 py-3.5 text-base font-semibold text-ink shadow-card transition hover:bg-deep-gold">
+              Book a free trial
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>
+            </Link>
             <button type="button" onClick={() => scrollToId("how")}
               className="inline-flex items-center gap-1.5 text-base font-semibold text-paper/90 underline-offset-4 hover:text-paper hover:underline">
               See how it works ↓

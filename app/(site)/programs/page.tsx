@@ -6,7 +6,6 @@ import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { Reveal } from "@/components/ui/Reveal";
 import { FinalCTA } from "@/components/sections/FinalCTA";
-import { whatsappLink } from "@/lib/data";
 
 export const metadata: Metadata = {
   title: "Programs",
@@ -99,14 +98,8 @@ export default function ProgramsPage() {
                   ))}
                 </ul>
                 <div className="mt-6 pt-1">
-                  <Button
-                    href={whatsappLink(
-                      `Hi Musicphonetics, I'd like to know more about ${program.title}.`
-                    )}
-                    external
-                    variant="secondary"
-                  >
-                    Enquire on WhatsApp
+                  <Button href="/pay?trial=1" variant="secondary">
+                    Book a free trial
                   </Button>
                 </div>
               </Card>

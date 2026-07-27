@@ -3,7 +3,6 @@ import { Logo } from "./Logo";
 import { Button } from "@/components/ui/Button";
 import {
   BRAND,
-  whatsappTrialLink,
   FOOTER_NAV,
   AREAS_SERVED,
   INSTAGRAM_HANDLE,
@@ -33,8 +32,8 @@ export function Footer() {
             </p>
             <p className="mt-2 text-sm text-paper/60">Founded in India.</p>
             <div className="mt-6">
-              <Button href={whatsappTrialLink()} external variant="light" size="md">
-                Book a Trial
+              <Button href="/pay?trial=1" variant="light" size="md">
+                Book a Free Trial
               </Button>
             </div>
 

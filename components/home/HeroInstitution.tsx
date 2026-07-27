@@ -1,5 +1,4 @@
-import { WA_MSG } from "@/lib/home-config";
-import { whatsappLink } from "@/lib/data";
+import Link from "next/link";
 
 // Gold outline icons for the feature strip.
 function FeatureIcon({ d }: { d: string }) {
@@ -63,11 +62,11 @@ export function HeroInstitution() {
             </p>
 
             <div className="mt-8 flex flex-col items-start gap-5 sm:flex-row sm:items-center">
-              <a href={whatsappLink(WA_MSG.trial)} target="_blank" rel="noopener noreferrer"
+              <Link href="/pay?trial=1"
                 className="inline-flex items-center gap-3 rounded-full bg-charcoal px-8 py-4 text-base font-semibold text-cream shadow-[0_16px_40px_-12px_rgba(22,27,38,0.5)] transition hover:brightness-125">
-                Book a Trial Class
+                Book a Free Trial
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>
-              </a>
+              </Link>
               <a href="#programmes" className="inline-flex items-center gap-2 text-[0.98rem] font-semibold text-charcoal underline decoration-gold decoration-2 underline-offset-[6px] transition-colors hover:text-deep-gold">
                 See Programmes
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>

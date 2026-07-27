@@ -34,7 +34,9 @@ export default function ProgrammePage({ params }: { params: { slug: string } }) 
   const p = getProgramme(params.slug);
   if (!p) notFound();
 
-  const enrolHref = p.payAmount ? `/pay?plan=${p.slug}&amt=${p.payAmount}` : null;
+  // Always open the enrolment/lead form (free trial or pay) — never straight to
+  // WhatsApp. Amount is included when known so the form can show the price.
+  const enrolHref = `/pay?plan=${p.slug}${p.payAmount ? `&amt=${p.payAmount}` : ""}`;
 
   const courseLd = {
     "@context": "https://schema.org",
@@ -76,12 +78,10 @@ export default function ProgrammePage({ params }: { params: { slug: string } }) 
           </div>
 
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-            {enrolHref ? (
-              <Link href={enrolHref} className="inline-flex items-center justify-center gap-2 rounded-full bg-gold px-7 py-4 text-base font-semibold text-charcoal shadow-card transition-all hover:brightness-105 hover:-translate-y-0.5">
-                Book your place
+            <Link href={enrolHref} className="inline-flex items-center justify-center gap-2 rounded-full bg-gold px-7 py-4 text-base font-semibold text-charcoal shadow-card transition-all hover:brightness-105 hover:-translate-y-0.5">
+                Book a free trial or enrol
                 <Arrow />
               </Link>
-            ) : null}
             <WhatsAppCTA label={p.payAmount ? "Ask a question first" : "Request access"} message={p.ctaMsg} variant={p.payAmount ? "outline" : "primary"} />
           </div>
         </div>
@@ -189,12 +189,10 @@ export default function ProgrammePage({ params }: { params: { slug: string } }) 
               : "Request access and we'll take it from there, personally."}
           </p>
           <div className="mt-7 flex flex-col justify-center gap-3 sm:flex-row">
-            {enrolHref ? (
-              <Link href={enrolHref} className="inline-flex items-center justify-center gap-2 rounded-full bg-gold px-7 py-4 text-base font-semibold text-charcoal shadow-card transition-all hover:brightness-105 hover:-translate-y-0.5">
-                Book your place
+            <Link href={enrolHref} className="inline-flex items-center justify-center gap-2 rounded-full bg-gold px-7 py-4 text-base font-semibold text-charcoal shadow-card transition-all hover:brightness-105 hover:-translate-y-0.5">
+                Book a free trial or enrol
                 <Arrow />
               </Link>
-            ) : null}
             <WhatsAppCTA label={p.payAmount ? "Ask on WhatsApp" : "Request access"} message={p.ctaMsg} variant={p.payAmount ? "outline" : "primary"} />
           </div>
         </div>
