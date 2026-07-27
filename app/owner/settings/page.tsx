@@ -11,6 +11,7 @@ import { cn } from "@/lib/utils";
 // Operational settings & admin index. No secrets are shown or editable here —
 // keys (Supabase service role, Razorpay, Resend) live only in Cloudflare env.
 const LINKS: { href: string; title: string; sub: string }[] = [
+  { href: "/owner/leads", title: "Leads", sub: "Enquiries, pipeline, assignment, conversion" },
   { href: "/owner/students", title: "Students", sub: "Codes, plans, teacher assignment, search" },
   { href: "/owner/teachers", title: "Teachers", sub: "Roster, onboarding, coupons, earnings" },
   { href: "/owner/applications", title: "Applications", sub: "Approve teachers, offer & joining letters" },

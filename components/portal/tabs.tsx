@@ -24,6 +24,7 @@ export const PARENT_TABS: Tab[] = [
 
 export const OWNER_TABS: Tab[] = [
   { href: "/owner/dashboard", label: "Home", icon: I("M3 11.5 12 4l9 7.5M5 10v9a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-9") },
+  { href: "/owner/leads", label: "Leads", icon: I("M16 19v-1a4 4 0 0 0-8 0v1M12 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM19 8v6M22 11h-6") },
   { href: "/owner/applications", label: "Apply", icon: I("M9 12h6M9 16h4M7 3h7l5 5v11a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1ZM14 3v5h5") },
   { href: "/owner/messages", label: "Messages", icon: I("M4 5h16v11H8l-4 4V5Z") },
   { href: "/owner/teachers", label: "Teachers", icon: I("M16 19v-1a4 4 0 0 0-8 0v1M12 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z") },
