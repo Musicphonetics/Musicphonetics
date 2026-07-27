@@ -25,24 +25,24 @@ export interface Chapter {
 
 export const FOUNDATION_CHAPTERS: Chapter[] = [
   {
-    number: 1, name: "Starting Right", startClass: 1, endClass: 8,
+    number: 1, name: "Explore", startClass: 1, endClass: 8,
     goal: "Comfort with the instrument, posture, basic rhythm, basic sound and a practice routine.",
-    parent: "Your child is learning the foundation of sound, rhythm, posture and practice discipline.",
+    parent: "Your child is exploring the foundation of sound, rhythm, posture and practice discipline.",
   },
   {
-    number: 2, name: "Building Basics", startClass: 9, endClass: 16,
+    number: 2, name: "Play", startClass: 9, endClass: 16,
     goal: "Basic notes / chords / scales, rhythm stability, simple patterns, homework habit, first exercise.",
-    parent: "The student is moving from comfort to control - basic notes, rhythm and their first song section.",
+    parent: "The student is starting to play - basic notes, rhythm and their first song section.",
   },
   {
-    number: 3, name: "Musical Confidence", startClass: 17, endClass: 24,
+    number: 3, name: "Make Music", startClass: 17, endClass: 24,
     goal: "Applying basics into songs and exercises, timing, visible confidence, independent practice.",
-    parent: "Your child is now building confidence and musical independence.",
+    parent: "Your child is making music - playing real songs with timing and growing confidence.",
   },
   {
-    number: 4, name: "Ready for Next Level", startClass: 25, endClass: 32,
+    number: 4, name: "Perform", startClass: 25, endClass: 32,
     goal: "Foundation review, a simple performance piece, strengths and gaps identified, Main Pathway readiness.",
-    parent: "Your child is finishing the beginner foundation and getting ready for the Main Pathway.",
+    parent: "Your child is preparing to perform and getting ready for the Main Pathway.",
   },
 ];
 
@@ -55,7 +55,7 @@ export interface FoundationProgress {
   totalClasses: number;
   progressPercent: number;  // 0..100
   currentChapter: Chapter;
-  chapters: { chapter: Chapter; state: ChapterState }[];
+  chapters: { chapter: Chapter; state: ChapterState; completed: number }[];
   status: FoundationStatus;
   readyForUpgrade: boolean;
   workingOn: string;        // parent-facing "what we're working on"
@@ -89,7 +89,9 @@ export function computeFoundation(
     let state: ChapterState = "upcoming";
     if (effective >= chapter.endClass) state = "completed";
     else if (chapter.number === currentNumber) state = "in_progress";
-    return { chapter, state };
+    // Classes completed within this 8-class stage (e.g. Make Music = 2/8).
+    const completed = clamp(effective - (chapter.startClass - 1), 0, FOUNDATION.classesPerChapter);
+    return { chapter, state, completed };
   });
 
   const foundationComplete = effective >= FOUNDATION.totalClasses;

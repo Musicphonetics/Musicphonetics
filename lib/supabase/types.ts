@@ -95,6 +95,10 @@ export interface Student {
   plan?: "foundation" | "main" | "directors" | null;
   monthly_goal?: string | null;
   goal_month?: string | null;
+  // Foundation learning content (teacher-entered; parent/student card shows it).
+  current_topic?: string | null;
+  next_milestone?: string | null;
+  repertoire?: string[] | null;
   goal_set_at?: string | null;
   created_at: string;
   updated_at: string;

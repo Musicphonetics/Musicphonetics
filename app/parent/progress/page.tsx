@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { PortalShell } from "@/components/portal/PortalShell";
 import { PARENT_TABS } from "@/components/portal/tabs";
 import { Loading, EmptyState } from "@/components/portal/kit";
-import { FoundationJourney } from "@/components/parent/FoundationJourney";
+import { FoundationCard } from "@/components/portal/FoundationCard";
 import { isSupabaseConfigured } from "@/lib/supabase/client";
 import { loadParentData, completedCount, type ParentData } from "@/lib/supabase/parent";
 import { computeFoundation, skillIndicators } from "@/lib/foundation";
@@ -50,7 +50,13 @@ export default function ParentProgress() {
           )}
 
           {plan === "foundation" ? (
-            <FoundationJourney p={foundation} studentName={student.name} />
+            <FoundationCard
+              instrument={student.instrument}
+              foundation={foundation}
+              currentTopic={student.current_topic}
+              songs={Array.isArray(student.repertoire) ? student.repertoire : []}
+              nextMilestone={student.next_milestone}
+            />
           ) : plan === "main" ? (
             <>
               <div className="rounded-2xl border border-gold/40 bg-white p-5">

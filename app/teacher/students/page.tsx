@@ -10,6 +10,8 @@ import { getSupabase, isSupabaseConfigured } from "@/lib/supabase/client";
 import { loadRoster } from "@/lib/supabase/roster";
 import type { StudentStat, ClassUpdate, Payment } from "@/lib/supabase/types";
 import { studentPlan, PLAN_LABEL, type Plan } from "@/lib/plan";
+import { computeFoundation } from "@/lib/foundation";
+import { FoundationCard } from "@/components/portal/FoundationCard";
 import { cn } from "@/lib/utils";
 
 
@@ -108,6 +110,8 @@ function StudentDetail({ stat, onReport }: { stat: StudentStat; onReport: () => 
       </button>
 
       <GoalEditor studentId={stat.student_id} feeQuoted={stat.fee_quoted} />
+
+      <FoundationTeacherPanel studentId={stat.student_id} instrument={stat.instrument} completed={stat.classes_completed} feeQuoted={stat.fee_quoted} />
 
       <p className="mt-4 text-xs font-semibold uppercase tracking-wide text-ink/60">Recent classes</p>
       {!classes ? <p className="mt-1 text-xs text-ink/50">Loading…</p> :
@@ -227,6 +231,80 @@ function GoalEditor({ studentId, feeQuoted }: { studentId: string; feeQuoted: nu
           )}
         </>
       )}
+    </div>
+  );
+}
+
+// Foundation-only: the operational progress card (derived from completed
+// classes) + editors for the learning content the parent/student sees.
+const fldCls = "mt-1 w-full rounded-lg border border-hairline bg-white px-3 py-2 text-sm text-ink placeholder:text-ink/40 focus-visible:outline-2 focus-visible:outline-gold focus:outline-none";
+function FoundationTeacherPanel({ studentId, instrument, completed, feeQuoted }: { studentId: string; instrument: string | null; completed: number; feeQuoted: number | null }) {
+  const [plan, setPlan] = useState<Plan | null>(null);
+  const [topic, setTopic] = useState("");
+  const [milestone, setMilestone] = useState("");
+  const [songs, setSongs] = useState<string[]>([]);
+  const [songInput, setSongInput] = useState("");
+  const [loaded, setLoaded] = useState(false);
+  const [busy, setBusy] = useState(false);
+  const [msg, setMsg] = useState<string | null>(null);
+
+  useEffect(() => {
+    getSupabase().from("students").select("plan,current_topic,next_milestone,repertoire").eq("id", studentId).single()
+      .then(({ data }) => {
+        const row = data as { plan: string | null; current_topic: string | null; next_milestone: string | null; repertoire: string[] | null } | null;
+        setPlan(studentPlan({ plan: row?.plan, fee_quoted: feeQuoted }));
+        setTopic(row?.current_topic ?? "");
+        setMilestone(row?.next_milestone ?? "");
+        setSongs(Array.isArray(row?.repertoire) ? (row!.repertoire as string[]) : []);
+        setLoaded(true);
+      });
+  }, [studentId, feeQuoted]);
+
+  if (!loaded || plan !== "foundation") return null;
+  const foundation = computeFoundation(completed, 1, false, false);
+
+  const addSong = () => { const s = songInput.trim(); if (!s) return; setSongs((c) => [...c, s].slice(0, 40)); setSongInput(""); setMsg(null); };
+  const removeSong = (i: number) => { setSongs((c) => c.filter((_, idx) => idx !== i)); setMsg(null); };
+  async function save() {
+    setBusy(true); setMsg(null);
+    const { error } = await getSupabase().from("students")
+      .update({ current_topic: topic.trim() || null, next_milestone: milestone.trim() || null, repertoire: songs }).eq("id", studentId);
+    setBusy(false);
+    setMsg(error ? error.message : "Saved. The family sees this in the student portal.");
+  }
+
+  return (
+    <div className="mt-4">
+      <FoundationCard instrument={instrument} foundation={foundation} currentTopic={topic} songs={songs} nextMilestone={milestone} />
+      <div className="mt-3 space-y-3 rounded-xl border border-hairline bg-white p-3.5">
+        <p className="text-xs font-semibold uppercase tracking-wide text-[#7A5E0F]">Update learning progress</p>
+        <label className="block"><span className="text-xs text-ink/60">Now learning</span>
+          <input value={topic} onChange={(e) => { setTopic(e.target.value); setMsg(null); }} placeholder="e.g. Playing with both hands" className={fldCls} /></label>
+        <div>
+          <span className="text-xs text-ink/60">Songs learned</span>
+          {songs.length > 0 && (
+            <div className="mt-1 flex flex-wrap gap-1.5">
+              {songs.map((s, i) => (
+                <span key={i} className="inline-flex items-center gap-1 rounded-full bg-gold/10 px-2.5 py-1 text-xs text-ink">
+                  {s}<button type="button" onClick={() => removeSong(i)} className="text-ink/40 hover:text-red-600" aria-label={`Remove ${s}`}>×</button>
+                </span>
+              ))}
+            </div>
+          )}
+          <div className="mt-1.5 flex gap-2">
+            <input value={songInput} onChange={(e) => setSongInput(e.target.value)}
+              onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); addSong(); } }}
+              placeholder="Add a song…" className={cn(fldCls, "flex-1")} />
+            <button type="button" onClick={addSong} className="mt-1 shrink-0 rounded-lg border border-hairline px-3 text-xs font-semibold text-ink/70">Add</button>
+          </div>
+        </div>
+        <label className="block"><span className="text-xs text-ink/60">Next milestone</span>
+          <input value={milestone} onChange={(e) => { setMilestone(e.target.value); setMsg(null); }} placeholder="e.g. Play a complete song for my family" className={fldCls} /></label>
+        {msg && <p className={cn("text-xs", msg.startsWith("Saved") ? "font-semibold text-feature-green" : "text-red-600")}>{msg}</p>}
+        <button onClick={save} disabled={busy} className="w-full rounded-lg bg-gold py-2 text-sm font-semibold text-charcoal hover:brightness-105 disabled:opacity-50">
+          {busy ? "Saving…" : "Save learning progress"}
+        </button>
+      </div>
     </div>
   );
 }
