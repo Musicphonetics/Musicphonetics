@@ -74,6 +74,8 @@ export default function TeacherDashboard() {
       <h1 className="font-display text-2xl font-semibold text-ink">{first}</h1>
       <p className="mt-1 text-xs text-ink/55">{new Date().toLocaleDateString("en-IN", { weekday: "long", day: "numeric", month: "long" })}</p>
 
+      <NewLeadsAlert />
+
       {err && (
         <div className="mt-4 rounded-xl border border-red-300 bg-red-50 p-3 text-sm text-red-700">
           Couldn&apos;t load your data: {err}
@@ -112,6 +114,28 @@ export default function TeacherDashboard() {
         <DirectorNote variant="teacher" custom={directorMsg ? { title: directorMsg.title, body: directorMsg.body, date: directorMsg.created_at } : null} />
       </div>
     </PortalShell>
+  );
+}
+
+// New assigned leads the teacher hasn't contacted yet — surfaced up front so
+// they never hunt for them (RLS scopes the count to their own leads).
+function NewLeadsAlert() {
+  const [count, setCount] = useState(0);
+  useEffect(() => {
+    if (!isSupabaseConfigured()) return;
+    getSupabase().from("leads").select("id", { count: "exact", head: true })
+      .is("first_contacted_at", null).not("status", "in", "(converted,lost,not_interested,duplicate)")
+      .then(({ count }) => setCount(count ?? 0));
+  }, []);
+  if (count <= 0) return null;
+  return (
+    <Link href="/teacher/leads" className="mt-4 flex items-center justify-between gap-3 rounded-2xl border border-gold/50 bg-gold/[0.08] p-4">
+      <div>
+        <p className="font-display text-base font-semibold text-ink">{count} new lead{count === 1 ? "" : "s"} to follow up</p>
+        <p className="text-xs text-ink/60">Tap to contact and convert them.</p>
+      </div>
+      <span className="grid h-8 w-8 place-items-center rounded-full bg-gold text-sm font-bold text-ink">{count > 9 ? "9+" : count}</span>
+    </Link>
   );
 }
 

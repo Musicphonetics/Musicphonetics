@@ -98,6 +98,25 @@ export async function loadLeadDetail(id: string): Promise<{ lead: LeadDetail | n
   };
 }
 
+// Teacher's own assigned leads (RLS scopes to assigned_teacher_id = auth.uid()).
+export interface TeacherLead {
+  id: string; lead_code: string; student_name: string | null; parent_name: string | null;
+  phone: string | null; email: string | null; instrument_interest: string | null;
+  preferred_mode: string | null; preferred_area: string | null; learning_goal: string | null;
+  status: string; created_at: string; first_contacted_at: string | null;
+  next_follow_up_at: string | null; converted_student_id: string | null;
+}
+export async function loadTeacherLeads(): Promise<{ rows: TeacherLead[]; error: string | null }> {
+  const { data, error } = await getSupabase()
+    .from("leads")
+    .select("id,lead_code,student_name,parent_name,phone,email,instrument_interest,preferred_mode,preferred_area,learning_goal,status,created_at,first_contacted_at,next_follow_up_at,converted_student_id")
+    .order("created_at", { ascending: false }).limit(500);
+  return { rows: (data as TeacherLead[]) ?? [], error: error ? error.message : null };
+}
+/** New = assigned but not yet contacted and still open. Drives the badge. */
+export const isNewLead = (l: { first_contacted_at: string | null; converted_student_id: string | null; status: string }) =>
+  !l.first_contacted_at && !l.converted_student_id && !["lost", "not_interested", "duplicate", "converted"].includes(l.status);
+
 // Lightweight lead KPIs for the top of the centre (efficient count-only queries).
 export async function loadLeadStats(): Promise<Record<string, number>> {
   const sb = getSupabase();
