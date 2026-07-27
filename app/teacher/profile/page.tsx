@@ -196,7 +196,10 @@ export default function TeacherProfile() {
     <PortalShell role="teacher" tabs={TEACHER_TABS} title="My Profile">
       {loading || !profile || !ready ? <Loading /> : (
         <div className="space-y-6">
-          <p className="text-sm text-ink/60">Enter your details here — your onboarding checklist updates automatically. The office verifies sensitive items.</p>
+          <div className="rounded-2xl border border-hairline bg-mist/60 p-4">
+            <p className="text-sm font-medium text-ink">We’ve already filled in everything you shared when you joined.</p>
+            <p className="mt-1 text-sm text-ink/60">Just review it and complete anything still marked missing. Your onboarding checklist updates automatically, and the office verifies sensitive items.</p>
+          </div>
 
           <Section id="personal" title="Personal details">
             <UploadRow label="Profile photo" hint={f.photo_url ? "A photo is on file" : "Optional — a clear headshot"} />

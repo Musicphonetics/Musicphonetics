@@ -200,25 +200,86 @@ export async function onRequestPost({ request, env }) {
   }
   const teacherId = created.id || created.user?.id;
 
-  // 3) Fill the profile from the application.
-  const bank = [
-    app.bank_holder && `A/C name: ${app.bank_holder}`,
-    app.bank_name && `Bank: ${app.bank_name}`,
-    app.bank_account && `A/C: ${app.bank_account}`,
-    app.bank_ifsc && `IFSC: ${app.bank_ifsc}`,
-    app.bank_upi && `UPI: ${app.bank_upi}`,
-  ].filter(Boolean).join(" · ") || null;
-
+  // 3) One source of truth: fill the teacher's PROFILE from the application so
+  // they never re-enter what they already gave. Everything here reads from the
+  // stored application record; the joining letter is an OUTPUT of this data, not
+  // its source. Idempotent — PATCH/upsert by id, safe if approval is re-run.
   if (teacherId) {
+    const instruments = Array.isArray(app.instruments) ? app.instruments.filter(Boolean) : [];
+    const areas = Array.isArray(app.areas) ? app.areas.filter(Boolean) : [];
+    const modes = Array.isArray(app.modes) ? app.modes.filter(Boolean) : [];
+    const yrs = parseInt(String(app.years_teaching ?? "").replace(/[^\d]/g, ""), 10);
+    const acct = String(app.bank_account ?? "").replace(/\s+/g, "");
+    const dob = /^\d{4}-\d{2}-\d{2}$/.test(String(app.dob ?? "")) ? app.dob : null;
+
+    // 3a) Public profile fields.
     await fetch(`${env.SUPABASE_URL}/rest/v1/profiles?id=eq.${teacherId}`, {
       method: "PATCH",
       headers: { ...admin(env), Prefer: "return=minimal" },
       body: JSON.stringify({
-        full_name: app.full_name, role: "teacher", phone: app.phone || null, email: app.email,
-        instruments: app.instruments || null, regions: app.areas || null, preferred_modes: app.modes || null,
-        experience_years: Number.isFinite(Number(app.years_teaching)) ? Number(app.years_teaching) : null,
-        qualifications: app.qualification || null, bank_upi: bank,
+        full_name: app.full_name, legal_name: app.full_name, role: "teacher",
+        email: app.email, phone: app.phone || null,
+        dob, city: app.city || null, address_line_1: app.address || null,
+        languages: app.languages || null,
+        instruments: instruments.length ? instruments : null,
+        primary_instrument: instruments[0] || null,
+        regions: areas.length ? areas : null,
+        preferred_modes: modes.length ? modes : null,
+        experience_years: Number.isFinite(yrs) ? yrs : null,
+        qualifications: app.qualification || null,
+        certifications: app.grade || null,
+        bank_account_holder: app.bank_holder || null,
+        bank_name: app.bank_name || null,
+        bank_account_last4: acct ? acct.slice(-4) : null,
+        ifsc: app.bank_ifsc || null,
+        upi_id: app.bank_upi || null,
       }),
+    }).catch(() => {});
+
+    // 3b) Sensitive details (full account number) → private table (upsert).
+    if (acct) {
+      await fetch(`${env.SUPABASE_URL}/rest/v1/teacher_private_details`, {
+        method: "POST",
+        headers: { ...admin(env), Prefer: "resolution=merge-duplicates,return=minimal" },
+        body: JSON.stringify({ teacher_id: teacherId, bank_account_number: acct }),
+      }).catch(() => {});
+    }
+
+    // 3c) Seed weekly availability from the application's days × time bands, but
+    // only if none exists yet (so re-runs never duplicate). Times are sensible
+    // defaults the teacher can adjust — they just don't start from scratch.
+    try {
+      const existing = await fetch(`${env.SUPABASE_URL}/rest/v1/teacher_availability?teacher_id=eq.${teacherId}&select=id&limit=1`, { headers: admin(env) });
+      const has = existing.ok ? await existing.json() : [];
+      const days = Array.isArray(app.days) ? app.days : [];
+      const bands = Array.isArray(app.time_bands) ? app.time_bands : [];
+      if ((!has || has.length === 0) && days.length) {
+        const DAY = { sun: 0, mon: 1, tue: 2, wed: 3, thu: 4, fri: 5, sat: 6 };
+        const BAND = { morning: ["09:00", "12:00"], afternoon: ["12:00", "16:00"], evening: ["16:00", "20:00"], night: ["18:00", "21:00"] };
+        const bandRanges = (bands.length ? bands : ["evening"]).map((b) => BAND[String(b).toLowerCase().slice(0, 9)] || BAND[String(b).toLowerCase().slice(0, 3) === "aft" ? "afternoon" : "evening"]).filter(Boolean);
+        const rows = [];
+        for (const d of days) {
+          const wd = DAY[String(d).toLowerCase().slice(0, 3)];
+          if (wd === undefined) continue;
+          for (const [start, end] of bandRanges) rows.push({ teacher_id: teacherId, weekday: wd, start_time: start, end_time: end, active: true });
+        }
+        if (rows.length) {
+          await fetch(`${env.SUPABASE_URL}/rest/v1/teacher_availability`, {
+            method: "POST", headers: { ...admin(env), Prefer: "return=minimal" },
+            body: JSON.stringify(rows),
+          }).catch(() => {});
+        }
+      }
+    } catch { /* availability seed is best-effort */ }
+  }
+
+  // 3d) Derive the onboarding checklist now (from the freshly-filled profile) so
+  // the teacher opens the portal to an accurate state and only completes the
+  // genuinely-missing items (PAN, ID proof, photo, acknowledgements).
+  if (teacherId) {
+    await fetch(`${env.SUPABASE_URL}/rest/v1/rpc/mp_sync_onboarding`, {
+      method: "POST", headers: { ...admin(env), Prefer: "return=minimal" },
+      body: JSON.stringify({ p_teacher_id: teacherId }),
     }).catch(() => {});
   }
 
