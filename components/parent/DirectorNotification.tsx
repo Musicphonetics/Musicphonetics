@@ -43,7 +43,7 @@ export function DirectorNotification({ message }: { message: DirectorCustom }) {
           {!read && <span className="absolute -right-0.5 -top-0.5 h-3 w-3 rounded-full border-2 border-[#fdf6e6] bg-red-500" />}
         </span>
         <span className="min-w-0 flex-1">
-          <span className="block text-sm font-semibold text-ink">{read ? "A note from your Director" : "New message from your Director"}</span>
+          <span className="block text-sm font-semibold text-ink">{read ? "A note from the Founder" : "New message from the Founder"}</span>
           <span className="block truncate text-xs text-ink/65">{message.title?.trim() || "Tap to read"}</span>
         </span>
         <span className={read ? "text-xs font-semibold text-[#7A5E0F]" : "rounded-full bg-red-500 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-white"}>{read ? "Open →" : "New"}</span>
@@ -58,7 +58,7 @@ export function DirectorNotification({ message }: { message: DirectorCustom }) {
                 <Image src={FOUNDER.photo} alt={FOUNDER.photoAlt} fill sizes="44px" className="object-cover object-top" />
               </span>
               <div className="min-w-0">
-                <p className="text-[11px] font-semibold uppercase tracking-wide text-[#7A5E0F]">A note from your Director</p>
+                <p className="text-[11px] font-semibold uppercase tracking-wide text-[#7A5E0F]">A note from the Founder</p>
                 <p className="font-display text-sm font-semibold text-ink">{FOUNDER.name}{dateLabel ? <span className="font-body text-xs font-normal text-ink/45"> · {dateLabel}</span> : null}</p>
               </div>
             </div>

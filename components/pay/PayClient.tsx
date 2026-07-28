@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { Stave } from "@/components/ui/Stave";
@@ -8,21 +8,23 @@ import { InstrumentIcon } from "@/components/ui/InstrumentIcon";
 import { INSTRUMENTS, EXPERIENCE, MODES } from "@/lib/onboarding";
 import { WEEK_DAYS, saveEnrolment } from "@/lib/enrolment";
 import { computeProrata, SCHEDULE_POLICY, BILLING_POLICY, TERMS_AGREED } from "@/lib/policy";
-import { loadRazorpay, createOrder, verifyPayment } from "@/lib/razorpay";
 import { getSupabase } from "@/lib/supabase/client";
 import { normalizeCode } from "@/lib/coupon";
 import { whatsappLink } from "@/lib/data";
 import { cn } from "@/lib/utils";
 
-// Razorpay Standard Checkout. The order is created server-side by the Pages
-// Function /api/razorpay/create-order and verified by /api/razorpay/verify-payment;
-// the key SECRET never reaches this file.
+// The form is the primary lead capture; nobody must pay to submit. Enrolling &
+// paying sends the family to the single official monthly payment page below —
+// no gateway keys or order creation happen in the client.
 
 const PLAN_AMOUNTS: Record<string, { name: string; amount: number }> = {
   foundation: { name: "Foundation", amount: 10000 },
   main: { name: "Main Musicphonetics Pathway", amount: 15000 },
-  "directors-circle": { name: "Director's Circle", amount: 28000 },
+  "directors-circle": { name: "Director's Circle", amount: 0 }, // by consultation — no fixed fee
 };
+
+// The official Musicphonetics monthly payment page.
+const PAYMENT_LINK = "https://rzp.io/rzp/mpmonthly";
 
 const inr = (n: number) => "₹" + n.toLocaleString("en-IN");
 const todayISO = () => new Date().toISOString().slice(0, 10);
@@ -80,10 +82,6 @@ export function PayClient() {
     setCouponBusy(false);
   }
   function clearCoupon() { setCouponCode(null); setDiscountPct(0); setCouponInput(""); setCouponMsg(null); }
-
-  // Warm up the Razorpay script as soon as the page loads, so the pay click is
-  // instant and any load problem shows up before the customer commits.
-  useEffect(() => { loadRazorpay(); }, []);
 
   const toggleDay = (d: string) =>
     setDays((cur) => (cur.includes(d) ? cur.filter((x) => x !== d) : [...cur, d]));
@@ -160,77 +158,16 @@ export function PayClient() {
     setError(null);
     setPaying(true);
 
-    // Capture the lead FIRST — so even if they abandon checkout, we have them.
+    // Capture the lead FIRST — so we always have them, even if they don't pay.
     await submitLead("pay");
-
-    // Save the enrolment first so /welcome can show the confirmation on success.
+    // Keep the details so /welcome can confirm after they return.
     const now = new Date().toISOString();
     saveEnrolment({
       planKey, planName, monthly, name: name.trim(), instrument, level, mode, days,
       startDate, firstPayment: payNow, agreedAt: now, savedAt: now,
     });
-
-    try {
-      const loaded = await loadRazorpay();
-      if (!loaded || !window.Razorpay) {
-        throw new Error("Could not load the secure checkout. Check your connection and try again.");
-      }
-
-      const order = await createOrder({
-        amount: Math.round(payNow * 100), // paise
-        currency: "INR",
-        receipt: `mp_${Date.now()}`,
-        plan: planName,
-        plan_key: planKey,
-        coupon_code: couponCode ?? undefined,
-        name: name.trim(),
-      });
-
-      const key = order.key_id || process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID;
-      if (!key) throw new Error("Payments are not configured yet. Please reach us on WhatsApp.");
-
-      const rzp = new window.Razorpay({
-        key,
-        order_id: order.order_id,
-        amount: order.amount,
-        currency: order.currency,
-        name: "Musicphonetics",
-        description: `${planName} · enrolment`,
-        prefill: { name: name.trim() },
-        notes: { plan: planName, instrument },
-        theme: { color: "#C9A227" },
-        handler: async (resp: { razorpay_payment_id: string; razorpay_order_id: string; razorpay_signature: string }) => {
-          try {
-            const v = await verifyPayment(resp);
-            if (v.ok && v.verified) {
-              window.location.href = "/welcome";
-            } else {
-              setPaying(false);
-              setError(`We received your payment but could not verify it automatically. Please message us on WhatsApp with payment id ${resp.razorpay_payment_id} and we'll confirm right away.`);
-            }
-          } catch {
-            setPaying(false);
-            setError(`Payment done but verification did not complete. Please message us on WhatsApp with payment id ${resp.razorpay_payment_id}.`);
-          }
-        },
-        modal: {
-          ondismiss: () => {
-            setPaying(false);
-            setError(null); // user simply closed the window - no error shown
-          },
-        },
-      });
-
-      rzp.on("payment.failed", (r: { error?: { description?: string } }) => {
-        setPaying(false);
-        setError(r?.error?.description || "The payment failed. Please try again or use another method.");
-      });
-
-      rzp.open();
-    } catch (e) {
-      setPaying(false);
-      setError(e instanceof Error ? e.message : "Something went wrong. Please try again.");
-    }
+    // Send them straight to the official Musicphonetics payment page.
+    window.location.href = PAYMENT_LINK;
   }
 
   if (view === "trial_done") return <TrialDone name={name} planName={planName} instrument={instrument} phone={phone} />;
@@ -478,7 +415,7 @@ export function PayClient() {
               <button type="button" onClick={proceed} disabled={!ready || paying}
                 className={cn("inline-flex min-h-[54px] w-full items-center justify-center gap-2 rounded-full border-2 px-6 text-base font-semibold transition-all active:scale-[0.99]",
                   ready && !paying ? "border-gold text-gold hover:bg-gold/10" : "cursor-not-allowed border-white/12 text-paper/40")}>
-                {paying ? "Opening secure checkout…" : ready ? `Pay ${inr(payNow)} & enrol` : "Tick “I agree” above to pay"}
+                {paying ? "Opening secure payment…" : ready ? "Enrol & pay now" : "Tick “I agree” above to pay"}
               </button>
               <p className="flex items-center justify-center gap-2 text-xs text-paper/55">
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" aria-hidden="true" className="text-gold"><path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6l7-3z" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" /></svg>
