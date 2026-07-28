@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import Link from "next/link";
 import { PortalShell } from "@/components/portal/PortalShell";
 import { PARENT_TABS } from "@/components/portal/tabs";
 import { Loading, EmptyState, formatMoney } from "@/components/portal/kit";
@@ -15,17 +14,14 @@ import { cn } from "@/lib/utils";
 
 const pretty = (iso: string) => new Date(iso + "T00:00:00").toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" });
 
-// The plans a parent can pay for, straight into the tested Razorpay flow (/pay).
-const PLANS = [
-  { key: "foundation", name: "Foundation", amount: 10000, cadence: "32-class beginner journey" },
-  { key: "main", name: "Main Pathway", amount: 15000, cadence: "8 classes / month" },
-];
+// Already-enrolled families renew here — the monthly fee is paid on the single
+// official Musicphonetics monthly payment page (NOT the new-enrolment form).
+const RENEWAL_LINK = "https://rzp.io/rzp/mpmonthly";
 
 export default function ParentPayments() {
   const [data, setData] = useState<ParentData | null>(null);
   const [err, setErr] = useState<string | null>(null);
   const [idx, setIdx] = useState(0);
-  const [planKey, setPlanKey] = useState<string>("");
   const [receipt, setReceipt] = useState<Payment | null>(null);
 
   useEffect(() => {
@@ -36,15 +32,6 @@ export default function ParentPayments() {
   const student = data?.students[idx] ?? null;
   const view = useMemo(() => (data && student ? studentView(data, student) : null), [data, student]);
   const pays = useMemo(() => (data && student ? data.payments.filter((p) => p.student_id === student.id) : []), [data, student]);
-
-  // Default the selected plan to the student's current plan.
-  const currentPlanKey = student ? ((student.fee_quoted ?? 8000) < 12000 ? "foundation" : "main") : "";
-  const chosen = planKey || currentPlanKey;
-  const plan = PLANS.find((p) => p.key === chosen) ?? PLANS[0];
-  const amount = student?.fee_quoted ?? plan.amount;
-  const payHref = student
-    ? `/pay?plan=${plan.key}&amt=${amount}&name=${encodeURIComponent(student.name)}${student.instrument ? `&instrument=${encodeURIComponent(student.instrument)}` : ""}`
-    : "/pay";
 
   return (
     <PortalShell role="parent" tabs={PARENT_TABS} title="Musicphonetics" subtitle="Fees & Renewal">
@@ -58,7 +45,7 @@ export default function ParentPayments() {
           {data.students.length > 1 && (
             <div className="flex gap-2 overflow-x-auto pb-1">
               {data.students.map((s, i) => (
-                <button key={s.id} onClick={() => { setIdx(i); setPlanKey(""); }}
+                <button key={s.id} onClick={() => setIdx(i)}
                   className={cn("shrink-0 rounded-full px-4 py-2 text-sm font-medium", i === idx ? "bg-gold text-ink" : "border border-hairline text-ink/70")}>{s.name.split(" ")[0]}</button>
               ))}
             </div>
@@ -76,33 +63,23 @@ export default function ParentPayments() {
             </div>
           </div>
 
-          {/* Choose plan + pay */}
+          {/* Renew — pay the monthly fee on the official payment page */}
           <div className="rounded-3xl border border-hairline bg-white p-5 shadow-[0_12px_34px_-20px_rgba(22,27,38,0.2)]">
-            <p className="text-sm font-semibold text-ink">Renew or pay your fees</p>
-            <p className="mt-1 text-xs text-ink/70">Choose the plan and pay securely online. You&apos;ll get a confirmation the moment it&apos;s done.</p>
-            <div className="mt-4 grid grid-cols-2 gap-3">
-              {PLANS.map((p) => {
-                const active = chosen === p.key;
-                return (
-                  <button key={p.key} onClick={() => setPlanKey(p.key)}
-                    className={cn("rounded-2xl border p-3 text-left transition-colors", active ? "border-gold bg-gold/10" : "border-hairline hover:border-ink/30")}>
-                    <span className="flex items-center justify-between">
-                      <span className="text-sm font-semibold text-ink">{p.name}</span>
-                      <span className={cn("grid h-4 w-4 place-items-center rounded-full border", active ? "border-gold bg-gold" : "border-ink/30")}>
-                        {active && <svg width="10" height="10" viewBox="0 0 24 24" fill="none"><path d="M5 12l4 4 10-10" stroke="#161B26" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" /></svg>}
-                      </span>
-                    </span>
-                    <span className="mt-1 block font-display text-lg font-semibold text-[#7A5E0F]">₹{p.amount.toLocaleString("en-IN")}</span>
-                    <span className="block text-[11px] text-ink/65">{p.cadence}</span>
-                  </button>
-                );
-              })}
-            </div>
-            <Link href={payHref}
+            <p className="text-sm font-semibold text-ink">Renew {student.name.split(" ")[0]}&apos;s monthly fee</p>
+            <p className="mt-1 text-xs text-ink/70">
+              Pay your monthly fee securely on the official Musicphonetics payment page. Your classes continue without a break.
+            </p>
+            {student.fee_quoted ? (
+              <div className="mt-4 flex items-baseline justify-between rounded-2xl border border-hairline bg-mist/50 px-4 py-3">
+                <span className="text-xs font-medium uppercase tracking-wide text-ink/60">{PLAN_LABEL[studentPlan(student)]} · monthly</span>
+                <span className="font-display text-xl font-semibold text-[#7A5E0F]">{formatMoney(student.fee_quoted)}</span>
+              </div>
+            ) : null}
+            <a href={RENEWAL_LINK} target="_blank" rel="noopener noreferrer"
               className="mt-4 flex min-h-[52px] w-full items-center justify-center gap-2 rounded-full bg-gold text-base font-semibold text-ink hover:bg-deep-gold">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3" y="6" width="18" height="13" rx="2.5" stroke="currentColor" strokeWidth="1.8" /><path d="M3 10h18" stroke="currentColor" strokeWidth="1.8" /></svg>
-              Pay {formatMoney(amount)} securely
-            </Link>
+              Pay monthly fee securely
+            </a>
             <p className="mt-2.5 text-center text-[11px] text-ink/65">Billed only in the Musicphonetics name, through a secure payment link.</p>
           </div>
 
