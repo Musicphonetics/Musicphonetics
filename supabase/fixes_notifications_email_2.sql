@@ -33,7 +33,9 @@ begin
     || '<hr style="border:none;border-top:1px solid #eee;margin:22px 0"><p style="font-size:12px;color:#888">Musicphonetics · structured, personalised, transformational.</p></div>';
   perform public.mp__send_email_now(v_email, coalesce(new.title, 'Musicphonetics update'), v_html);
   return new;
-exception when others then return new;  -- email must never break the write
+exception when others then
+  raise warning 'Email notification failed: %', sqlerrm;  -- log, but never break the write
+  return new;
 end $$;
 
 -- 2) Backfill profiles.email from the login email where it is missing.
@@ -68,8 +70,8 @@ begin
   if found then
     update public.leads set
       enquiry_count = enquiry_count + 1, last_activity_at = now(),
-      instrument_interest = coalesce(nullif(instrument_interest,''), p->>'instrument_interest'),
-      learning_goal = coalesce(nullif(learning_goal,''), p->>'learning_goal'),
+      instrument_interest = coalesce(nullif(p->>'instrument_interest',''), instrument_interest),
+      learning_goal = coalesce(nullif(p->>'learning_goal',''), learning_goal),
       status = case when status in ('lost','not_interested','duplicate') then 'new' else status end
      where id = v_existing.id;
     insert into public.lead_activity (lead_id, event_type, metadata) values (v_existing.id, 'repeat_enquiry', p);
