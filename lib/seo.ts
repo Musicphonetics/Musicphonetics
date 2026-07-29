@@ -31,7 +31,7 @@ export function organizationJsonLd() {
     "@id": ORG_ID,
     name: BRAND.name,
     url: SITE_URL,
-    image: `${OG_ORIGIN}/og.png`,
+    image: `${OG_ORIGIN}/og.png?v=2`,
     logo: `${OG_ORIGIN}/logo-wordmark-dark.webp`,
     slogan: "Music should never feel random.",
     description:

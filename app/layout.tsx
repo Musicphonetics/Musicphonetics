@@ -26,7 +26,9 @@ const script = Dancing_Script({
   display: "swap",
 });
 
-const OG_IMAGE = `${OG_ORIGIN}/og.png`;
+// Versioned so social platforms (WhatsApp/Facebook) fetch the redesigned card
+// instead of a stale cached preview. Bump ?v= whenever og.png changes.
+const OG_IMAGE = `${OG_ORIGIN}/og.png?v=2`;
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://musicphonetics.com"),
