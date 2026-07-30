@@ -10,6 +10,17 @@ const thisMonth = () => new Date().toISOString().slice(0, 7);
 const monthLabel = (m: string) =>
   new Date(m + "-01T00:00:00").toLocaleDateString("en-IN", { month: "long", year: "numeric" });
 
+// One-tap starters — fill the notes box so a teacher can plan a month in seconds.
+// The AI expands these (with the song bank) into a full 8-class plan.
+const STARTERS: { label: string; note: string }[] = [
+  { label: "Absolute beginner", note: "Absolute beginner, first month. Build posture, clean notes and steady counting, and an easy first song by month end." },
+  { label: "Bollywood songs", note: "Beginner–easy. Wants to learn popular Bollywood songs this month." },
+  { label: "Rhythm & strumming", note: "Focus on rhythm and strumming/timing this month with one fun, rhythmic song." },
+  { label: "Devotional / bhajan", note: "Devotional focus this month — learn a bhajan to play for the family." },
+  { label: "Performance piece", note: "Prepare one performance piece to play confidently for the family by month end." },
+  { label: "Trinity / exam prep", note: "Trinity exam preparation — scales/arpeggios, a set piece, sight-reading and aural, with a mock in class 7–8." },
+];
+
 // One big monthly goal broken into 8 defined classes, for ANY program. The
 // teacher can write rough notes and let AI draft the 8 classes, then edit
 // freely. Saving mirrors the big goal into monthly_goal so existing goal
@@ -105,7 +116,15 @@ export function MonthlyPlanEditor({
           {/* AI drafting */}
           <div className="mt-3 rounded-lg border border-dashed border-gold/50 bg-gold/[0.04] p-3">
             <p className="text-xs font-semibold text-ink/75">✨ Draft with AI</p>
-            <p className="mt-0.5 text-[11px] text-ink/55">Write rough notes on this month&apos;s focus — AI turns it into one goal + 8 classes. You can edit everything after.</p>
+            <p className="mt-0.5 text-[11px] text-ink/55">Tap a starter or write a few rough words — even short is fine. AI turns it into one goal + 8 classes, with real songs, in {studentName.split(" ")[0] || "the student"}&apos;s name. You can edit everything after.</p>
+            <div className="mt-2 flex flex-wrap gap-1.5">
+              {STARTERS.map((s) => (
+                <button key={s.label} type="button" onClick={() => { setNotes(s.note); setMsg(null); }}
+                  className="rounded-full border border-gold/40 bg-white px-2.5 py-1 text-[11px] font-medium text-ink/75 transition-colors hover:border-gold hover:bg-gold/10">
+                  {s.label}
+                </button>
+              ))}
+            </div>
             <textarea value={notes} onChange={(e) => setNotes(e.target.value)} rows={3}
               placeholder={`e.g. Build ${studentName.split(" ")[0] || "the student"}'s chord changes, start a new song, prep a small performance by month end.`}
               className={cn(fld, "mt-2")} />

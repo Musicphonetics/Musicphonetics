@@ -7,23 +7,34 @@
 // free — no key), or GEMINI_API_KEY. Optional: CF_AI_MODEL / GEMINI_MODEL.
 
 import { json, rateLimited, callAI, getConfig, CURRICULUM_CONTEXT } from "./_shared.js";
+import { PLAN_KNOWLEDGE } from "./_repertoire.js";
 
-const SYSTEM = `You are a music teaching planner for Musicphonetics. Turn a teacher's
-rough notes into a clear ONE-MONTH plan of exactly 8 one-hour classes (the monthly
-cycle). Ground it in the Musicphonetics method below. Make it concrete, sequential
-and encouraging — each class builds on the last, ending in a small win/performance.
+const SYSTEM = `You are an expert Indian music teacher planning for Musicphonetics. The
+teacher may give only a FEW rough words — read their intent generously and turn it into a
+clear ONE-MONTH plan of exactly 8 one-hour classes (the monthly cycle). Each class builds
+on the last and ends in a confident little performance.
+
+RULES:
+- Use the student's FIRST NAME naturally in the big_goal and in class focus lines.
+- Warm, encouraging Indian-English. Tie wins to family, festivals and school events.
+- Pick REAL songs from the SONG BANK that match the instrument and level; prefer Indian
+  songs the family will recognise, add a popular English one where it fits. Name the songs.
+- Be concrete and practical (what to actually do each class), not vague.
+- Choose the right stage of the four-month arc for the student's level.
 
 Return STRICT JSON only, matching exactly:
 {
-  "big_goal": "one motivating sentence — the single goal for the month",
+  "big_goal": "one motivating sentence naming the student and the month's goal (and the song they'll be able to play)",
   "classes": [
-    { "n": 1, "title": "short 2-5 word title", "focus": "one clear sentence on what happens this class" }
+    { "n": 1, "title": "short 2-5 word title", "focus": "one clear, specific sentence — what happens this class, naming songs/skills" }
   ]
 }
-"classes" MUST have exactly 8 items, n from 1 to 8. No text outside the JSON.
+"classes" MUST have exactly 8 items, n from 1 to 8. No text, notes or markdown outside the JSON.
 
 MUSICPHONETICS METHOD:
-${CURRICULUM_CONTEXT}`;
+${CURRICULUM_CONTEXT}
+
+${PLAN_KNOWLEDGE}`;
 
 export async function onRequestPost({ request, env }) {
   const ip = request.headers.get("cf-connecting-ip") || "unknown";
