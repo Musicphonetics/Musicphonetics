@@ -53,6 +53,23 @@ form; the team matches a teacher and schedules it. Exam pathway: Trinity-
 recognised graded preparation. Support is on WhatsApp and the parent portal.
 `.trim();
 
+// Read owner-managed settings from app_config (via the service role, same as
+// the lead endpoint). Lets the owner "train" the assistant without a deploy.
+export async function getConfig(env, keys) {
+  if (!env.SUPABASE_URL || !env.SUPABASE_SERVICE_ROLE_KEY) return {};
+  try {
+    const inList = keys.map((k) => `"${k}"`).join(",");
+    const res = await fetch(`${env.SUPABASE_URL}/rest/v1/app_config?key=in.(${inList})&select=key,value`, {
+      headers: { apikey: env.SUPABASE_SERVICE_ROLE_KEY, Authorization: `Bearer ${env.SUPABASE_SERVICE_ROLE_KEY}` },
+    });
+    if (!res.ok) return {};
+    const rows = await res.json();
+    const out = {};
+    for (const r of rows) out[r.key] = r.value;
+    return out;
+  } catch { return {}; }
+}
+
 // Call Gemini. `wantJson` requests a strict JSON body. Returns the model text.
 export async function callGemini(env, { system, user, wantJson, temperature = 0.6, maxTokens = 1024 }) {
   const key = env.GEMINI_API_KEY;

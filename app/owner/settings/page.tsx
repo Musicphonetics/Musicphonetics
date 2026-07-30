@@ -7,6 +7,7 @@ import { OWNER_TABS } from "@/components/portal/tabs";
 import { getSupabase, isSupabaseConfigured } from "@/lib/supabase/client";
 import { PROGRAM_PRICES, priceLabel } from "@/lib/pricing";
 import { SalesTeam } from "@/components/owner/SalesTeam";
+import { AiKnowledge } from "@/components/owner/AiKnowledge";
 import { cn } from "@/lib/utils";
 
 // Operational settings & admin index. No secrets are shown or editable here —
@@ -105,6 +106,9 @@ export default function OwnerSettings() {
           </div>
         )}
       </section>
+
+      {/* AI assistant knowledge (how the parent "Ask" assistant is grounded) */}
+      <AiKnowledge />
 
       {/* Sales & marketing team */}
       <SalesTeam />
