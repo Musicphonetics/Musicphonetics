@@ -3,9 +3,10 @@
 // text transformation (no DB access); the teacher saves the result from the
 // client via Supabase RLS. Rate-limited.
 //
-// Env: GEMINI_API_KEY (required), GEMINI_MODEL (optional).
+// AI provider (Cloudflare Pages): a Workers AI binding named `AI` (recommended,
+// free — no key), or GEMINI_API_KEY. Optional: CF_AI_MODEL / GEMINI_MODEL.
 
-import { json, rateLimited, callGemini, getConfig, CURRICULUM_CONTEXT } from "./_shared.js";
+import { json, rateLimited, callAI, getConfig, CURRICULUM_CONTEXT } from "./_shared.js";
 
 const SYSTEM = `You are a music teaching planner for Musicphonetics. Turn a teacher's
 rough notes into a clear ONE-MONTH plan of exactly 8 one-hour classes (the monthly
@@ -50,7 +51,7 @@ Produce the JSON plan (one big_goal + exactly 8 classes).`;
     ? `${SYSTEM}\n\nADDITIONAL OFFICIAL KNOWLEDGE (owner-provided):\n${String(cfg.ai_knowledge).slice(0, 12000)}`
     : SYSTEM;
 
-  const r = await callGemini(env, { system, user, wantJson: true, temperature: 0.7, maxTokens: 1400 });
+  const r = await callAI(env, { system, user, wantJson: true, temperature: 0.7, maxTokens: 1400 });
   if (r.error) return json({ ok: false, error: r.error, detail: r.detail }, r.status || 502);
 
   let plan;

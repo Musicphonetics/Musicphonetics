@@ -70,6 +70,32 @@ export async function getConfig(env, keys) {
   } catch { return {}; }
 }
 
+// Provider-agnostic AI call. Prefers Cloudflare Workers AI (free, native to
+// Pages — no external key or billing) when the `AI` binding is present; falls
+// back to Gemini when only GEMINI_API_KEY is set. Returns { text } or { error }.
+export async function callAI(env, opts) {
+  if (env.AI && typeof env.AI.run === "function") return callWorkersAI(env, opts);
+  if (env.GEMINI_API_KEY) return callGemini(env, opts);
+  return { error: "AI is not configured. In Cloudflare Pages, add a Workers AI binding named 'AI' (recommended, free), or set GEMINI_API_KEY.", status: 503 };
+}
+
+// Cloudflare Workers AI — free daily allowance, no API key. Llama by default.
+async function callWorkersAI(env, { system, user, wantJson, temperature = 0.6, maxTokens = 1024 }) {
+  const model = env.CF_AI_MODEL || "@cf/meta/llama-3.1-8b-instruct";
+  const sys = wantJson ? `${system}\n\nReturn ONLY valid minified JSON — no prose, no markdown code fences.` : system;
+  try {
+    const out = await env.AI.run(model, {
+      messages: [{ role: "system", content: sys }, { role: "user", content: user }],
+      temperature, max_tokens: maxTokens,
+    });
+    const text = (out && (out.response ?? out.text ?? "")) || "";
+    if (!text) return { error: "The AI returned no answer.", status: 502, detail: "workers-ai empty" };
+    return { text };
+  } catch (e) {
+    return { error: "AI request failed.", status: 502, detail: `workers-ai ${String(e).slice(0, 200)}` };
+  }
+}
+
 // Call Gemini. `wantJson` requests a strict JSON body. Returns the model text.
 export async function callGemini(env, { system, user, wantJson, temperature = 0.6, maxTokens = 1024 }) {
   const key = env.GEMINI_API_KEY;

@@ -2,9 +2,10 @@
 // Musicphonetics curriculum, programs, and policies, grounded in CURRICULUM_CONTEXT.
 // Stateless: no database access, so it is safe as a public, rate-limited endpoint.
 //
-// Env: GEMINI_API_KEY (required), GEMINI_MODEL (optional).
+// AI provider (Cloudflare Pages): a Workers AI binding named `AI` (recommended,
+// free — no key), or GEMINI_API_KEY. Optional: CF_AI_MODEL / GEMINI_MODEL.
 
-import { json, rateLimited, callGemini, getConfig, CURRICULUM_CONTEXT } from "./_shared.js";
+import { json, rateLimited, callAI, getConfig, CURRICULUM_CONTEXT } from "./_shared.js";
 
 function buildSystem(ownerKnowledge, strict) {
   const strictLine = strict
@@ -41,7 +42,7 @@ export async function onRequestPost({ request, env }) {
   const cfg = await getConfig(env, ["ai_knowledge", "ai_strict"]);
   const system = buildSystem((cfg.ai_knowledge || "").slice(0, 12000), cfg.ai_strict === "true");
 
-  const r = await callGemini(env, { system, user: question + ctx, temperature: cfg.ai_strict === "true" ? 0.3 : 0.5, maxTokens: 700 });
+  const r = await callAI(env, { system, user: question + ctx, temperature: cfg.ai_strict === "true" ? 0.3 : 0.5, maxTokens: 700 });
   if (r.error) return json({ ok: false, error: r.error, detail: r.detail }, r.status || 502);
   return json({ ok: true, answer: r.text.trim() });
 }

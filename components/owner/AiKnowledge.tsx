@@ -82,7 +82,7 @@ export function AiKnowledge() {
             className={cn("mt-3 rounded-full px-6 py-2.5 text-sm font-semibold text-ink", busy ? "bg-gold/50" : "bg-gold hover:bg-deep-gold")}>
             {busy ? "Saving…" : "Save knowledge"}
           </button>
-          <p className="mt-2 text-[11px] text-ink/45">Also requires <code className="rounded bg-mist px-1">GEMINI_API_KEY</code> set in Cloudflare. Leave this blank to use the built-in defaults.</p>
+          <p className="mt-2 text-[11px] text-ink/45">Also requires an AI provider in Cloudflare Pages — a <b>Workers AI</b> binding named <code className="rounded bg-mist px-1">AI</code> (free, recommended) or <code className="rounded bg-mist px-1">GEMINI_API_KEY</code>. Leave this blank to use the built-in defaults.</p>
         </>
       )}
     </section>
