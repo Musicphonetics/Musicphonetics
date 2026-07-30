@@ -100,6 +100,12 @@ export interface Student {
   next_milestone?: string | null;
   repertoire?: string[] | null;
   goal_set_at?: string | null;
+  // Director's Circle monthly plan (one big goal + 8 classes). See
+  // supabase/directors_plan.sql and lib/ai.ts (MonthlyPlan).
+  monthly_plan?: {
+    month?: string; big_goal?: string;
+    classes?: { n: number; title: string; focus: string }[]; updated_at?: string;
+  } | null;
   created_at: string;
   updated_at: string;
 }

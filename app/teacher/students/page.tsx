@@ -12,6 +12,7 @@ import type { StudentStat, ClassUpdate, Payment } from "@/lib/supabase/types";
 import { studentPlan, PLAN_LABEL, type Plan } from "@/lib/plan";
 import { computeFoundation } from "@/lib/foundation";
 import { FoundationCard } from "@/components/portal/FoundationCard";
+import { DirectorsPlanEditor } from "@/components/teach/DirectorsPlanEditor";
 import { cn } from "@/lib/utils";
 
 
@@ -109,7 +110,7 @@ function StudentDetail({ stat, onReport }: { stat: StudentStat; onReport: () => 
         Progress report card
       </button>
 
-      <GoalEditor studentId={stat.student_id} feeQuoted={stat.fee_quoted} />
+      <GoalEditor studentId={stat.student_id} feeQuoted={stat.fee_quoted} studentName={stat.name} instrument={stat.instrument} level={stat.level} />
 
       <FoundationTeacherPanel studentId={stat.student_id} instrument={stat.instrument} completed={stat.classes_completed} feeQuoted={stat.fee_quoted} />
 
@@ -145,7 +146,7 @@ function StudentDetail({ stat, onReport }: { stat: StudentStat; onReport: () => 
 // Set the student's plan (batch) and this month's goal. Foundation shows the
 // curriculum progress bar; Foundation + Main show this goal; Director's Circle
 // shows neither. What you save here is what the family sees in the portal.
-function GoalEditor({ studentId, feeQuoted }: { studentId: string; feeQuoted: number | null }) {
+function GoalEditor({ studentId, feeQuoted, studentName, instrument, level }: { studentId: string; feeQuoted: number | null; studentName: string; instrument: string | null; level: string | null }) {
   const [plan, setPlan] = useState<Plan>("foundation");
   const [goal, setGoal] = useState("");
   const [month, setMonth] = useState(() => new Date().toISOString().slice(0, 7));
@@ -205,7 +206,7 @@ function GoalEditor({ studentId, feeQuoted }: { studentId: string; feeQuoted: nu
           </div>
 
           {plan === "directors" ? (
-            <p className="mt-2.5 text-xs leading-relaxed text-ink/60">Director&apos;s Circle is personally guided by the director. There&apos;s no monthly goal to set here.</p>
+            <DirectorsPlanEditor studentId={studentId} studentName={studentName} instrument={instrument} level={level} />
           ) : (
             <>
               {plan === "foundation" && (

@@ -6,6 +6,7 @@ import { DirectorNotification } from "@/components/parent/DirectorNotification";
 import { FeedbackCard } from "@/components/parent/FeedbackCard";
 import type { StudentView } from "@/lib/supabase/parent";
 import type { Student, Payment } from "@/lib/supabase/types";
+import { DirectorsPlanCard } from "@/components/portal/DirectorsPlanCard";
 import { FOUNDATION, type FoundationProgress, type ChapterState } from "@/lib/foundation";
 import { studentPlan, PLAN_LABEL, type Plan } from "@/lib/plan";
 import { whatsappLink } from "@/lib/data";
@@ -95,8 +96,8 @@ export function DashboardBody({
       {plan === "main" && <GoalPanel plan={plan} student={student} />}
       {plan === "foundation" && student.monthly_goal?.trim() && <GoalPanel plan={plan} student={student} />}
 
-      {/* Director's Circle - bespoke plan, no progress bar */}
-      {plan === "directors" && <DirectorsPanel />}
+      {/* Director's Circle - premium direct-mentorship plan (big goal + 8 classes) */}
+      {plan === "directors" && <DirectorsPlanCard studentName={student.name} instrument={student.instrument} plan={student.monthly_plan} />}
 
       {/* Next class + last update */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
@@ -257,24 +258,6 @@ function GoalPanel({ plan, student }: { plan: Plan; student: Student }) {
       <div className="mt-4 flex items-center justify-between gap-3 border-t border-hairline pt-3.5">
         <p className="flex items-center gap-2 text-sm text-ink/70"><span className="text-gold">★</span> A little practice every day gets you there.</p>
         <Link href="/parent/classes" className={cn("shrink-0 whitespace-nowrap text-sm font-semibold", GOLD)}>View updates →</Link>
-      </div>
-    </Panel>
-  );
-}
-
-// Director's Circle - a bespoke, personally-guided plan (no progress bar).
-function DirectorsPanel() {
-  return (
-    <Panel>
-      <div className="flex items-center gap-4">
-        <span className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-gold/12 text-[#7A5E0F]">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 8l4 4 4-6 4 6 4-4v9a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V8Z" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" /></svg>
-        </span>
-        <div className="min-w-0 flex-1">
-          <p className={cn("text-[0.68rem] font-semibold uppercase tracking-[0.16em]", GOLD)}>Director&apos;s Circle</p>
-          <h2 className="mt-1 font-display text-lg font-semibold text-ink">A bespoke, personally-guided plan</h2>
-          <p className="mt-1 text-sm leading-relaxed text-ink/70">Your learning is guided personally — follow each class update and note below.</p>
-        </div>
       </div>
     </Panel>
   );

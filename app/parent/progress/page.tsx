@@ -5,6 +5,7 @@ import { PortalShell } from "@/components/portal/PortalShell";
 import { PARENT_TABS } from "@/components/portal/tabs";
 import { Loading, EmptyState } from "@/components/portal/kit";
 import { FoundationCard } from "@/components/portal/FoundationCard";
+import { DirectorsPlanCard } from "@/components/portal/DirectorsPlanCard";
 import { isSupabaseConfigured } from "@/lib/supabase/client";
 import { loadParentData, completedCount, type ParentData } from "@/lib/supabase/parent";
 import { computeFoundation, skillIndicators } from "@/lib/foundation";
@@ -72,11 +73,7 @@ export default function ParentProgress() {
               </div>
             </>
           ) : (
-            <div className="rounded-2xl border border-gold/40 bg-white p-5">
-              <p className="text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-[#7A5E0F]">Director&apos;s Circle</p>
-              <h3 className="mt-1 font-display text-lg font-semibold text-ink">A bespoke, personally-guided plan</h3>
-              <p className="mt-1 text-sm text-ink/70">Progress is guided personally rather than by a fixed curriculum — see each class update for what was covered and what&apos;s next.</p>
-            </div>
+            <DirectorsPlanCard studentName={student.name} instrument={student.instrument} plan={student.monthly_plan} />
           )}
 
           {/* Skill indicators - Foundation only (the tracked curriculum path). */}
