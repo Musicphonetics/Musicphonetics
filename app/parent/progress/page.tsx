@@ -11,7 +11,8 @@ import { isSupabaseConfigured } from "@/lib/supabase/client";
 import { loadParentData, completedCount, type ParentData } from "@/lib/supabase/parent";
 import { computeFoundation, skillIndicators } from "@/lib/foundation";
 import { studentPlan } from "@/lib/plan";
-import { cn } from "@/lib/utils";
+import { useSelectedStudent } from "@/lib/family";
+import { FamilySwitcher } from "@/components/parent/FamilySwitcher";
 
 const goalMonthLabel = (m?: string | null) =>
   m ? new Date(m + "-01T00:00:00").toLocaleDateString("en-IN", { month: "long", year: "numeric" })
@@ -20,36 +21,31 @@ const goalMonthLabel = (m?: string | null) =>
 export default function ParentProgress() {
   const [data, setData] = useState<ParentData | null>(null);
   const [err, setErr] = useState<string | null>(null);
-  const [idx, setIdx] = useState(0);
 
+  const reload = () => loadParentData().then((d) => { setErr(d.error); setData(d); });
   useEffect(() => {
     if (!isSupabaseConfigured()) return;
-    loadParentData().then((d) => { setErr(d.error); setData(d); });
+    reload();
   }, []);
 
-  const student = data?.students[idx] ?? null;
+  const { student, select } = useSelectedStudent(data?.students);
   const plan = student ? studentPlan(student) : "foundation";
   const foundation = useMemo(() => {
     if (!data || !student) return null;
     return computeFoundation(completedCount(data, student.id), 1, false, plan !== "foundation");
   }, [data, student, plan]);
   const skills = foundation ? skillIndicators(foundation) : [];
+  const switcher = data && data.students.length > 0
+    ? <FamilySwitcher students={data.students} selectedId={student?.id ?? null} onSelect={select} onAdded={reload} />
+    : null;
 
   return (
-    <PortalShell role="parent" tabs={PARENT_TABS} title="Learning journey">
+    <PortalShell role="parent" tabs={PARENT_TABS} title="Learning journey" headerRight={switcher}>
       {err && <div className="mb-4 rounded-xl border border-red-300 bg-red-50 p-3 text-sm text-red-700">{err}</div>}
       {!data ? <Loading /> : data.students.length === 0 ? (
         <EmptyState title="No student linked yet" hint="Message us on WhatsApp to link your child's profile." />
       ) : student && foundation ? (
         <div className="space-y-4">
-          {data.students.length > 1 && (
-            <div className="flex gap-2 overflow-x-auto pb-1">
-              {data.students.map((s, i) => (
-                <button key={s.id} onClick={() => setIdx(i)}
-                  className={cn("shrink-0 rounded-full px-4 py-2 text-sm font-medium", i === idx ? "bg-ink text-paper" : "border border-hairline bg-white text-ink/70")}>{s.name}</button>
-              ))}
-            </div>
-          )}
 
           {plan === "foundation" ? (
             <FoundationCard

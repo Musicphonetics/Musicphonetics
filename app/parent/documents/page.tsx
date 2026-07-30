@@ -7,6 +7,8 @@ import { PARENT_TABS } from "@/components/portal/tabs";
 import { Loading, EmptyState } from "@/components/portal/kit";
 import { isSupabaseConfigured, getSupabase } from "@/lib/supabase/client";
 import { loadParentData, type ParentData } from "@/lib/supabase/parent";
+import { useSelectedStudent } from "@/lib/family";
+import { FamilySwitcher } from "@/components/parent/FamilySwitcher";
 import type { StudentDocument } from "@/lib/supabase/types";
 
 const DOC_LABEL: Record<string, string> = {
@@ -20,17 +22,24 @@ export default function ParentDocuments() {
   const [data, setData] = useState<ParentData | null>(null);
   const [docs, setDocs] = useState<StudentDocument[]>([]);
 
+  const reload = () => loadParentData().then(setData);
   useEffect(() => {
     if (!isSupabaseConfigured()) { setData({ students: [], classes: [], payments: [], teachers: {}, error: null }); return; }
-    loadParentData().then(setData);
+    reload();
     getSupabase().from("student_documents").select("*").order("created_at", { ascending: false })
       .then(({ data }) => setDocs((data as StudentDocument[]) ?? []));
   }, []);
 
-  const hasReceipts = (data?.payments.length ?? 0) > 0;
+  const { student, select } = useSelectedStudent(data?.students);
+  // Show docs for the selected child (fall back to all if none carry a student id).
+  const studentDocs = docs.filter((d) => !student || !d.student_id || d.student_id === student.id);
+  const hasReceipts = (data?.payments.filter((p) => !student || p.student_id === student.id).length ?? 0) > 0;
+  const switcher = data && data.students.length > 0
+    ? <FamilySwitcher students={data.students} selectedId={student?.id ?? null} onSelect={select} onAdded={reload} />
+    : null;
 
   return (
-    <PortalShell role="parent" tabs={PARENT_TABS} title="Documents">
+    <PortalShell role="parent" tabs={PARENT_TABS} title="Documents" headerRight={switcher}>
       {!data ? <Loading /> : (
         <div className="space-y-4">
           {/* Standing documents everyone has */}
@@ -41,11 +50,11 @@ export default function ParentDocuments() {
           </div>
 
           {/* Any documents the office shared for this student */}
-          {docs.length > 0 && (
+          {studentDocs.length > 0 && (
             <div>
               <p className="mb-2 mt-4 text-xs font-semibold uppercase tracking-wide text-ink/55">Shared with you</p>
               <div className="space-y-2.5">
-                {docs.map((d) => (
+                {studentDocs.map((d) => (
                   <a key={d.id} href={d.document_url || d.internal_route || "#"} target={d.document_url ? "_blank" : undefined} rel="noopener noreferrer"
                     className="flex items-center justify-between rounded-2xl border border-hairline bg-white p-4">
                     <div className="min-w-0">
@@ -59,7 +68,7 @@ export default function ParentDocuments() {
             </div>
           )}
 
-          {docs.length === 0 && !hasReceipts && (
+          {studentDocs.length === 0 && !hasReceipts && (
             <EmptyState title="Your documents" hint="Your enrolment agreement and reports are always here; receipts and certificates appear as they're issued." />
           )}
         </div>

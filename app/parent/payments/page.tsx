@@ -10,6 +10,8 @@ import { PaymentDoc } from "@/components/portal/PaymentDoc";
 import { studentPlan, PLAN_LABEL } from "@/lib/plan";
 import { whatsappLink } from "@/lib/data";
 import type { Payment } from "@/lib/supabase/types";
+import { useSelectedStudent } from "@/lib/family";
+import { FamilySwitcher } from "@/components/parent/FamilySwitcher";
 import { cn } from "@/lib/utils";
 
 const pretty = (iso: string) => new Date(iso + "T00:00:00").toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" });
@@ -21,35 +23,29 @@ const RENEWAL_LINK = "https://rzp.io/rzp/mpmonthly";
 export default function ParentPayments() {
   const [data, setData] = useState<ParentData | null>(null);
   const [err, setErr] = useState<string | null>(null);
-  const [idx, setIdx] = useState(0);
   const [receipt, setReceipt] = useState<Payment | null>(null);
 
+  const reload = () => loadParentData().then((d) => { setErr(d.error); setData(d); });
   useEffect(() => {
     if (!isSupabaseConfigured()) return;
-    loadParentData().then((d) => { setErr(d.error); setData(d); });
+    reload();
   }, []);
 
-  const student = data?.students[idx] ?? null;
+  const { student, select } = useSelectedStudent(data?.students);
   const view = useMemo(() => (data && student ? studentView(data, student) : null), [data, student]);
   const pays = useMemo(() => (data && student ? data.payments.filter((p) => p.student_id === student.id) : []), [data, student]);
+  const switcher = data && data.students.length > 0
+    ? <FamilySwitcher students={data.students} selectedId={student?.id ?? null} onSelect={select} onAdded={reload} />
+    : null;
 
   return (
-    <PortalShell role="parent" tabs={PARENT_TABS} title="Musicphonetics" subtitle="Fees & Renewal">
+    <PortalShell role="parent" tabs={PARENT_TABS} title="Musicphonetics" subtitle="Fees & Renewal" headerRight={switcher}>
       {err && <div className="mb-4 rounded-xl border border-red-300 bg-red-50 p-3 text-sm text-red-700">{err}</div>}
       {!data ? <Loading /> : data.students.length === 0 ? (
         <EmptyState title="No student linked yet" hint="Message us on WhatsApp to link your child's profile." />
       ) : view && student ? (
         <div className="space-y-4">
           <h1 className="font-display text-[1.6rem] font-semibold leading-tight text-ink">Fees &amp; renewal</h1>
-
-          {data.students.length > 1 && (
-            <div className="flex gap-2 overflow-x-auto pb-1">
-              {data.students.map((s, i) => (
-                <button key={s.id} onClick={() => setIdx(i)}
-                  className={cn("shrink-0 rounded-full px-4 py-2 text-sm font-medium", i === idx ? "bg-gold text-ink" : "border border-hairline text-ink/70")}>{s.name.split(" ")[0]}</button>
-              ))}
-            </div>
-          )}
 
           {/* Current status */}
           <div className="rounded-3xl border border-hairline bg-white p-5 shadow-[0_12px_34px_-20px_rgba(22,27,38,0.2)]">

@@ -11,45 +11,40 @@ import { loadParentData, type ParentData } from "@/lib/supabase/parent";
 import type { StudentReport } from "@/lib/supabase/types";
 import { buildReport } from "@/lib/report";
 import { printDoc } from "@/lib/print";
-import { cn } from "@/lib/utils";
+import { useSelectedStudent } from "@/lib/family";
+import { FamilySwitcher } from "@/components/parent/FamilySwitcher";
 
 export default function ParentReports() {
   const [data, setData] = useState<ParentData | null>(null);
   const [err, setErr] = useState<string | null>(null);
-  const [idx, setIdx] = useState(0);
   const [published, setPublished] = useState<StudentReport[]>([]);
 
+  const reload = () => loadParentData().then((d) => { setErr(d.error); setData(d); });
   useEffect(() => {
     if (!isSupabaseConfigured()) return;
-    loadParentData().then((d) => { setErr(d.error); setData(d); });
+    reload();
     // Curated, owner-published monthly reports (RLS: only this family's, published).
     getSupabase().from("student_reports").select("*").eq("status", "published").order("report_month", { ascending: false })
       .then(({ data }) => setPublished((data as StudentReport[]) ?? []));
   }, []);
 
-  const student = data?.students[idx] ?? null;
+  const { student, select } = useSelectedStudent(data?.students);
   const studentReports = useMemo(() => published.filter((r) => r.student_id === student?.id), [published, student]);
   const report = useMemo(() => {
     if (!data || !student) return null;
     return buildReport(data.classes.filter((c) => c.student_id === student.id));
   }, [data, student]);
+  const switcher = data && data.students.length > 0
+    ? <FamilySwitcher students={data.students} selectedId={student?.id ?? null} onSelect={select} onAdded={reload} />
+    : null;
 
   return (
-    <PortalShell role="parent" tabs={PARENT_TABS} title="Progress report">
+    <PortalShell role="parent" tabs={PARENT_TABS} title="Progress report" headerRight={switcher}>
       {err && <div className="mb-4 rounded-xl border border-red-300 bg-red-50 p-3 text-sm text-red-700">{err}</div>}
       {!data ? <Loading /> : data.students.length === 0 ? (
         <EmptyState title="No student linked yet" hint="Message us on WhatsApp to link your child's profile." />
       ) : student && report ? (
         <div className="space-y-4">
-          {data.students.length > 1 && (
-            <div className="flex gap-2 overflow-x-auto pb-1">
-              {data.students.map((s, i) => (
-                <button key={s.id} onClick={() => setIdx(i)}
-                  className={cn("shrink-0 rounded-full px-4 py-2 text-sm font-medium", i === idx ? "bg-ink text-paper" : "border border-hairline bg-white text-ink/70")}>{s.name}</button>
-              ))}
-            </div>
-          )}
-
           {/* Curated monthly reports published by the office */}
           {studentReports.length > 0 && (
             <div className="space-y-4">
