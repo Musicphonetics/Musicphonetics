@@ -82,7 +82,7 @@ export default function TeacherDashboard() {
         </div>
       )}
       {!stats ? <Loading /> : (
-        <div className="mt-5 grid grid-cols-2 gap-3">
+        <div className="mt-5 grid grid-cols-2 gap-3 lg:grid-cols-4">
           <StatCard label="Students" value={`${stats.students}/20`} tone="gold" />
           <StatCard label="Classes this week" value={String(stats.week)} />
           <StatCard label="Received this month" value={formatMoney(stats.received)} tone="green" />
@@ -99,7 +99,7 @@ export default function TeacherDashboard() {
         <Action href="/teacher/students" label="View My Students" />
       </div>
 
-      <div className="mt-6 grid grid-cols-2 gap-3">
+      <div className="mt-6 grid grid-cols-2 gap-3 lg:grid-cols-4">
         <Action href="/teacher/today" label="Today's Classes" />
         <Action href="/teacher/schedule" label="Schedule" />
         <Action href="/teacher/reports" label="Monthly Reports" />
