@@ -93,13 +93,19 @@ export async function callGemini(env, { system, user, wantJson, temperature = 0.
     });
     if (!res.ok) {
       const t = await res.text().catch(() => "");
-      return { error: "The AI service is busy. Please try again in a moment.", status: 502, detail: t.slice(0, 200) };
+      let msg = "";
+      try { msg = JSON.parse(t)?.error?.message || ""; } catch { /* not json */ }
+      return { error: "AI request failed.", status: 502, detail: `${res.status} ${(msg || t).slice(0, 220)}` };
     }
     const data = await res.json();
-    const text = data?.candidates?.[0]?.content?.parts?.map((p) => p.text).join("") ?? "";
-    if (!text) return { error: "The AI returned an empty response. Please try again.", status: 502 };
+    const cand = data?.candidates?.[0];
+    const text = cand?.content?.parts?.map((p) => p.text).join("") ?? "";
+    if (!text) {
+      const why = cand?.finishReason || data?.promptFeedback?.blockReason || "empty response";
+      return { error: "The AI returned no answer.", status: 502, detail: String(why).slice(0, 120) };
+    }
     return { text };
   } catch (e) {
-    return { error: "Couldn't reach the AI service. Please try again.", status: 502, detail: String(e).slice(0, 200) };
+    return { error: "Couldn't reach the AI service.", status: 502, detail: String(e).slice(0, 200) };
   }
 }

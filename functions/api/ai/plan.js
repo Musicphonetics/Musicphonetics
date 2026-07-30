@@ -51,7 +51,7 @@ Produce the JSON plan (one big_goal + exactly 8 classes).`;
     : SYSTEM;
 
   const r = await callGemini(env, { system, user, wantJson: true, temperature: 0.7, maxTokens: 1400 });
-  if (r.error) return json({ ok: false, error: r.error }, r.status || 502);
+  if (r.error) return json({ ok: false, error: r.error, detail: r.detail }, r.status || 502);
 
   let plan;
   try {
