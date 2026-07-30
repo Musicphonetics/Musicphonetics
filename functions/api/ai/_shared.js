@@ -79,21 +79,38 @@ export async function callAI(env, opts) {
   return { error: "AI is not configured. In Cloudflare Pages, add a Workers AI binding named 'AI' (recommended, free), or set GEMINI_API_KEY.", status: 503 };
 }
 
-// Cloudflare Workers AI — free daily allowance, no API key. Llama by default.
+// Cloudflare Workers AI — free daily allowance, no API key. Models get retired
+// periodically, so we try a list of current instruct models and skip any that
+// are deprecated/unavailable. Override the preferred one with CF_AI_MODEL.
+const CF_AI_MODELS = [
+  "@cf/meta/llama-3.3-70b-instruct-fp8-fast",
+  "@cf/meta/llama-4-scout-17b-16e-instruct",
+  "@cf/mistralai/mistral-small-3.1-24b-instruct",
+];
+
 async function callWorkersAI(env, { system, user, wantJson, temperature = 0.6, maxTokens = 1024 }) {
-  const model = env.CF_AI_MODEL || "@cf/meta/llama-3.1-8b-instruct";
   const sys = wantJson ? `${system}\n\nReturn ONLY valid minified JSON — no prose, no markdown code fences.` : system;
-  try {
-    const out = await env.AI.run(model, {
-      messages: [{ role: "system", content: sys }, { role: "user", content: user }],
-      temperature, max_tokens: maxTokens,
-    });
-    const text = (out && (out.response ?? out.text ?? "")) || "";
-    if (!text) return { error: "The AI returned no answer.", status: 502, detail: "workers-ai empty" };
-    return { text };
-  } catch (e) {
-    return { error: "AI request failed.", status: 502, detail: `workers-ai ${String(e).slice(0, 200)}` };
+  const models = [env.CF_AI_MODEL, ...CF_AI_MODELS].filter(Boolean);
+  let lastDetail = "no model available";
+  for (const model of models) {
+    try {
+      const out = await env.AI.run(model, {
+        messages: [{ role: "system", content: sys }, { role: "user", content: user }],
+        temperature, max_tokens: maxTokens,
+      });
+      const text = (out && (out.response ?? out.text ?? "")) || "";
+      if (text) return { text };
+      lastDetail = `${model}: empty`;
+    } catch (e) {
+      const m = String(e);
+      lastDetail = `${model}: ${m.slice(0, 140)}`;
+      // Deprecated / not-found / capacity → try the next model; otherwise stop.
+      if (!/deprecat|not found|no such model|5028|1001|unavailable|capacity|overload/i.test(m)) {
+        return { error: "AI request failed.", status: 502, detail: `workers-ai ${lastDetail}` };
+      }
+    }
   }
+  return { error: "AI request failed.", status: 502, detail: `workers-ai ${lastDetail}` };
 }
 
 // Call Gemini. `wantJson` requests a strict JSON body. Returns the model text.

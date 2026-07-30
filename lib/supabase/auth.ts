@@ -26,18 +26,24 @@ export function useAuth(): AuthState {
     }
     let active = true;
 
+    let lastUid: string | null | undefined;
+
     async function load(userId: string | null) {
       if (!userId) {
         if (active) setState({ loading: false, configured: true, userId: null, profile: null, error: null });
         return;
       }
-      const { data, error } = await sb!.from("profiles").select("*").eq("id", userId).single();
-      if (!active) return;
-      setState({
-        loading: false, configured: true, userId,
-        profile: (data as Profile) ?? null,
-        error: error ? error.message : null,
-      });
+      try {
+        const { data, error } = await sb!.from("profiles").select("*").eq("id", userId).single();
+        if (!active) return;
+        setState({
+          loading: false, configured: true, userId,
+          profile: (data as Profile) ?? null,
+          error: error ? error.message : null,
+        });
+      } catch (e) {
+        if (active) setState({ loading: false, configured: true, userId, profile: null, error: (e as Error)?.message || "Couldn't load your profile." });
+      }
     }
 
     // Safety net: never let the portal sit on a spinner. If auth resolution
@@ -45,12 +51,25 @@ export function useAuth(): AuthState {
     // error state so the shell can offer a retry instead of hanging.
     const guard = setTimeout(() => {
       if (active) setState((s) => (s.loading ? { ...s, loading: false, error: s.error || "Couldn't reach the server. Check your connection and try again." } : s));
-    }, 17000);
+    }, 12000);
 
-    sb.auth.getSession().then(({ data }) => load(data.session?.user?.id ?? null)).catch((e) => {
+    sb.auth.getSession().then(({ data }) => {
+      lastUid = data.session?.user?.id ?? null;
+      load(lastUid);
+    }).catch((e) => {
       if (active) setState((s) => ({ ...s, loading: false, error: e?.message || "Auth error" }));
     });
-    const { data: sub } = sb.auth.onAuthStateChange((_e, session) => load(session?.user?.id ?? null));
+
+    // IMPORTANT: do NOT run Supabase queries directly inside this callback — it
+    // holds an internal auth lock and an awaited query deadlocks (portal hangs
+    // on reload). Defer the work to a microtask so the lock is released first,
+    // and skip redundant reloads when the user id hasn't changed.
+    const { data: sub } = sb.auth.onAuthStateChange((_e, session) => {
+      const uid = session?.user?.id ?? null;
+      if (uid === lastUid) return;
+      lastUid = uid;
+      setTimeout(() => { if (active) load(uid); }, 0);
+    });
     return () => { active = false; clearTimeout(guard); sub.subscription.unsubscribe(); };
   }, []);
 
