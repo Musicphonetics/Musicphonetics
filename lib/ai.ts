@@ -40,8 +40,13 @@ export function normalizePlan(raw: unknown, month: string): MonthlyPlan {
   };
 }
 
-export function planHasContent(p?: MonthlyPlan | null): boolean {
-  return !!(p && (p.big_goal.trim() || p.classes.some((c) => c.title.trim() || c.focus.trim())));
+export function planHasContent(
+  p?: { big_goal?: string | null; classes?: { title?: string | null; focus?: string | null }[] } | null,
+): boolean {
+  if (!p) return false;
+  const big = (p.big_goal ?? "").trim();
+  const anyClass = Array.isArray(p.classes) && p.classes.some((c) => (c?.title ?? "").trim() || (c?.focus ?? "").trim());
+  return !!(big || anyClass);
 }
 
 // Teacher: rough notes → { big_goal, classes[8] }.

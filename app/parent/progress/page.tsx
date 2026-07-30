@@ -5,7 +5,8 @@ import { PortalShell } from "@/components/portal/PortalShell";
 import { PARENT_TABS } from "@/components/portal/tabs";
 import { Loading, EmptyState } from "@/components/portal/kit";
 import { FoundationCard } from "@/components/portal/FoundationCard";
-import { DirectorsPlanCard } from "@/components/portal/DirectorsPlanCard";
+import { MonthlyPlanCard } from "@/components/portal/MonthlyPlanCard";
+import { planHasContent } from "@/lib/ai";
 import { isSupabaseConfigured } from "@/lib/supabase/client";
 import { loadParentData, completedCount, type ParentData } from "@/lib/supabase/parent";
 import { computeFoundation, skillIndicators } from "@/lib/foundation";
@@ -65,15 +66,24 @@ export default function ParentProgress() {
                 <h3 className="mt-1 font-display text-lg font-semibold text-ink">Main Musicphonetics Pathway</h3>
                 <p className="mt-1 text-sm text-ink/70">Ongoing, structured growth in confidence, theory, ear training and performance — guided by a fresh goal each month.</p>
               </div>
-              <div className="rounded-2xl border border-hairline bg-white p-5">
-                <p className="text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-[#7A5E0F]">{goalMonthLabel(student.goal_month)} · This month&apos;s goal</p>
-                {student.monthly_goal?.trim()
-                  ? <p className="mt-1.5 text-sm leading-relaxed text-ink/80">{student.monthly_goal}</p>
-                  : <p className="mt-1.5 text-sm leading-relaxed text-ink/65">Your teacher will set this month&apos;s goal soon.</p>}
-              </div>
+              {planHasContent(student.monthly_plan) ? (
+                <MonthlyPlanCard studentName={student.name} instrument={student.instrument} monthlyPlan={student.monthly_plan} plan={plan} />
+              ) : (
+                <div className="rounded-2xl border border-hairline bg-white p-5">
+                  <p className="text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-[#7A5E0F]">{goalMonthLabel(student.goal_month)} · This month&apos;s goal</p>
+                  {student.monthly_goal?.trim()
+                    ? <p className="mt-1.5 text-sm leading-relaxed text-ink/80">{student.monthly_goal}</p>
+                    : <p className="mt-1.5 text-sm leading-relaxed text-ink/65">Your teacher will set this month&apos;s goal soon.</p>}
+                </div>
+              )}
             </>
           ) : (
-            <DirectorsPlanCard studentName={student.name} instrument={student.instrument} plan={student.monthly_plan} />
+            <MonthlyPlanCard studentName={student.name} instrument={student.instrument} monthlyPlan={student.monthly_plan} plan={plan} />
+          )}
+
+          {/* Foundation: the month's 8-class plan (in addition to the journey) */}
+          {plan === "foundation" && planHasContent(student.monthly_plan) && (
+            <MonthlyPlanCard studentName={student.name} instrument={student.instrument} monthlyPlan={student.monthly_plan} plan={plan} />
           )}
 
           {/* Skill indicators - Foundation only (the tracked curriculum path). */}

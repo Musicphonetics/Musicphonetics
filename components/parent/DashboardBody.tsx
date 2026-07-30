@@ -6,7 +6,8 @@ import { DirectorNotification } from "@/components/parent/DirectorNotification";
 import { FeedbackCard } from "@/components/parent/FeedbackCard";
 import type { StudentView } from "@/lib/supabase/parent";
 import type { Student, Payment } from "@/lib/supabase/types";
-import { DirectorsPlanCard } from "@/components/portal/DirectorsPlanCard";
+import { MonthlyPlanCard } from "@/components/portal/MonthlyPlanCard";
+import { planHasContent } from "@/lib/ai";
 import { FOUNDATION, type FoundationProgress, type ChapterState } from "@/lib/foundation";
 import { studentPlan, PLAN_LABEL, type Plan } from "@/lib/plan";
 import { whatsappLink } from "@/lib/data";
@@ -92,12 +93,13 @@ export function DashboardBody({
         </Panel>
       )}
 
-      {/* Monthly goal - Foundation (supplementary, when set) + Main Pathway (primary) */}
-      {plan === "main" && <GoalPanel plan={plan} student={student} />}
-      {plan === "foundation" && student.monthly_goal?.trim() && <GoalPanel plan={plan} student={student} />}
-
-      {/* Director's Circle - premium direct-mentorship plan (big goal + 8 classes) */}
-      {plan === "directors" && <DirectorsPlanCard studentName={student.name} instrument={student.instrument} plan={student.monthly_plan} />}
+      {/* This month's plan (one big goal + 8 classes) — every program once the
+          teacher has made one. Director's Circle always shows it (premium). */}
+      {(planHasContent(student.monthly_plan) || plan === "directors") ? (
+        <MonthlyPlanCard studentName={student.name} instrument={student.instrument} monthlyPlan={student.monthly_plan} plan={plan} />
+      ) : (plan === "main" || (plan === "foundation" && !!student.monthly_goal?.trim())) ? (
+        <GoalPanel plan={plan} student={student} />
+      ) : null}
 
       {/* Next class + last update */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
