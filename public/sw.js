@@ -2,8 +2,8 @@
 // App-shell (navigations) served network-first with a cached fallback so the
 // portal opens instantly and survives brief drops. Data (Supabase) always goes
 // to the network — never cached — so records stay live and private.
-const SHELL = "mp-teacher-os-shell-v2";
-const SHELL_URLS = ["/teacher/login", "/offline.html", "/manifest.webmanifest"];
+const SHELL = "mp-shell-v3";
+const SHELL_URLS = ["/", "/parent/login", "/teacher/login", "/offline.html", "/manifest.webmanifest"];
 
 self.addEventListener("install", (event) => {
   event.waitUntil(caches.open(SHELL).then((c) => c.addAll(SHELL_URLS)).catch(() => {}));

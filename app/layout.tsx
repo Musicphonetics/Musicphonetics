@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Fraunces, Hanken_Grotesk, Dancing_Script } from "next/font/google";
 import "@/styles/globals.css";
 import { JsonLd } from "@/components/seo/JsonLd";
+import { InstallPWA } from "@/components/pwa/InstallPWA";
 import { organizationJsonLd, websiteJsonLd, OG_ORIGIN } from "@/lib/seo";
 
 const display = Fraunces({
@@ -41,7 +42,7 @@ export const metadata: Metadata = {
     "Structured, faculty-led music classes across Delhi NCR - guitar, piano, keyboard, vocals & more, at home or online. Book a free trial; we reply immediately.",
   alternates: { canonical: "/" },
   manifest: "/manifest.webmanifest",
-  appleWebApp: { capable: true, statusBarStyle: "black-translucent", title: "Teacher OS" },
+  appleWebApp: { capable: true, statusBarStyle: "black-translucent", title: "Musicphonetics" },
   icons: { icon: "/icons/icon-192.png", apple: "/icons/apple-touch-icon.png" },
   openGraph: {
     title: "Music education, built like an institution.",
@@ -85,6 +86,7 @@ export default function RootLayout({
         <script dangerouslySetInnerHTML={{ __html: "if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('/sw.js').catch(function(){})})}" }} />
         <JsonLd data={[organizationJsonLd(), websiteJsonLd()]} />
         {children}
+        <InstallPWA />
       </body>
     </html>
   );

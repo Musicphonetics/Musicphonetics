@@ -1,17 +1,24 @@
 {
-  "name": "Musicphonetics Teacher OS",
-  "short_name": "Teacher OS",
-  "description": "Teacher portal and owner dashboard for Musicphonetics.",
-  "id": "/teacher/dashboard",
-  "start_url": "/teacher/dashboard",
+  "name": "Musicphonetics",
+  "short_name": "Musicphonetics",
+  "description": "Structured, faculty-led music education — book a trial, track every class, and follow your child's journey.",
+  "id": "/",
+  "start_url": "/?source=pwa",
   "scope": "/",
   "display": "standalone",
+  "display_override": ["standalone", "minimal-ui"],
   "orientation": "portrait",
   "background_color": "#161B26",
   "theme_color": "#161B26",
+  "categories": ["education", "music"],
   "icons": [
     { "src": "/icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
     { "src": "/icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
     { "src": "/icons/maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "shortcuts": [
+    { "name": "Parent / Student portal", "short_name": "Parent", "url": "/parent/login" },
+    { "name": "Teacher portal", "short_name": "Teacher", "url": "/teacher/login" },
+    { "name": "Book a free trial", "short_name": "Free trial", "url": "/pay?trial=1" }
   ]
 }
