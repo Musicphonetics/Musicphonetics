@@ -90,6 +90,18 @@ export interface Student {
   media_consent: boolean | null;
   birthday_gift_notes: string | null;
   notes: string | null;
+  // Admission form fields (supabase/student_admission_fields.sql). Optional so
+  // pre-migration rows still read.
+  gender?: string | null;
+  school_grade?: string | null;
+  photo_url?: string | null;
+  parent_relationship?: string | null;
+  parent_occupation?: string | null;
+  previous_experience?: string | null;
+  preferred_days?: string | null;
+  preferred_time?: string | null;
+  lead_source?: string | null;
+  referred_by?: string | null;
   // Plan (batch) + rolling monthly goal. Optional: columns added by
   // supabase/student_plan_goals.sql; older rows / pre-migration read undefined.
   plan?: "foundation" | "main" | "directors" | null;
