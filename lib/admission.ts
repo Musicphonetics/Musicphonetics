@@ -25,6 +25,16 @@ export const OCCUPATIONS = [
   "Other",
 ] as const;
 
+// Occupations for which a rank / designation makes sense (Defence & services).
+export const RANK_OCCUPATIONS = [
+  "Defence (Army / Navy / Air Force)",
+  "Government Service",
+  "PSU",
+];
+export function needsRank(occupation?: string | null): boolean {
+  return !!occupation && RANK_OCCUPATIONS.includes(occupation);
+}
+
 export const EXPERIENCE_LEVELS = [
   "Absolute beginner",
   "Some basics",

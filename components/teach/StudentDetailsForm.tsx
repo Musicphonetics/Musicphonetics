@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { getSupabase } from "@/lib/supabase/client";
 import { Field, Select, TextArea, MoneyField } from "@/components/portal/kit";
-import { GENDERS, RELATIONSHIPS, OCCUPATIONS, EXPERIENCE_LEVELS, LEAD_SOURCES, GRADES, ageFromDob } from "@/lib/admission";
+import { GENDERS, RELATIONSHIPS, OCCUPATIONS, EXPERIENCE_LEVELS, LEAD_SOURCES, GRADES, ageFromDob, needsRank } from "@/lib/admission";
 import { PLAN_LABEL } from "@/lib/plan";
 import { cn } from "@/lib/utils";
 
@@ -75,7 +75,9 @@ export function StudentDetailsForm({ studentId, onSaved }: { studentId: string; 
       name: f.name?.trim() || null, gender: f.gender || null, dob: f.dob || null,
       school: f.school || null, school_grade: f.school_grade || null, photo_url: photoPath,
       parent_name: f.parent_name || null, parent_relationship: f.parent_relationship || null,
-      parent_occupation: f.parent_occupation || null, parent_phone: f.parent_phone || null,
+      parent_occupation: f.parent_occupation || null,
+      parent_rank: needsRank(f.parent_occupation) ? (f.parent_rank || null) : null,
+      parent_phone: f.parent_phone || null,
       parent_email: f.parent_email || null, address: f.address || null, area: f.area || null,
       instrument: f.instrument || null, previous_experience: f.previous_experience || null,
       learning_goal: f.learning_goal || null, class_mode: f.class_mode || null,
@@ -126,6 +128,9 @@ export function StudentDetailsForm({ studentId, onSaved }: { studentId: string; 
           <Field label="Parent / guardian name" value={f.parent_name || ""} onChange={(v) => set("parent_name", v)} />
           <Select label="Relationship" value={f.parent_relationship || "-"} onChange={(v) => set("parent_relationship", v)} options={opt(RELATIONSHIPS)} />
           <Select label="Parent occupation" value={f.parent_occupation || "-"} onChange={(v) => set("parent_occupation", v)} options={opt(OCCUPATIONS)} />
+          {needsRank(f.parent_occupation) && (
+            <Field label="Rank / designation" value={f.parent_rank || ""} onChange={(v) => set("parent_rank", v)} placeholder="e.g. Colonel, Wing Commander, IAS" />
+          )}
           <Field label="Mobile number" inputMode="tel" value={f.parent_phone || ""} onChange={(v) => set("parent_phone", v)} />
           <Field label="Email" inputMode="email" value={f.parent_email || ""} onChange={(v) => set("parent_email", v)} />
           <Field label="Area / locality" value={f.area || ""} onChange={(v) => set("area", v)} />

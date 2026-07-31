@@ -97,6 +97,7 @@ export interface Student {
   photo_url?: string | null;
   parent_relationship?: string | null;
   parent_occupation?: string | null;
+  parent_rank?: string | null;
   previous_experience?: string | null;
   preferred_days?: string | null;
   preferred_time?: string | null;
