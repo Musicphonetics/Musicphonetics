@@ -47,36 +47,8 @@ export default function ParentPayments() {
         <div className="space-y-4">
           <h1 className="font-display text-[1.6rem] font-semibold leading-tight text-ink">Fees &amp; renewal</h1>
 
-          {/* Family overview — each child can have a different fee */}
-          {data.students.length > 1 && (
-            <div className="rounded-3xl border border-gold/40 bg-white p-5 shadow-[0_12px_34px_-20px_rgba(22,27,38,0.2)]">
-              <p className="text-xs font-semibold uppercase tracking-wide text-[#7A5E0F]">Family fees · {data.students.length} children</p>
-              <div className="mt-3 divide-y divide-hairline">
-                {data.students.map((s) => {
-                  const sv = studentView(data, s);
-                  const paid = /received/i.test(sv.paymentStatus);
-                  const selected = s.id === student.id;
-                  return (
-                    <div key={s.id} className="flex items-center justify-between gap-3 py-3">
-                      <button onClick={() => select(s.id)} className="min-w-0 flex-1 text-left">
-                        <p className={cn("truncate text-sm font-semibold", selected ? "text-[#7A5E0F]" : "text-ink")}>{s.name}</p>
-                        <p className="text-[11px] text-ink/55">{PLAN_LABEL[studentPlan(s)]} · {s.fee_quoted ? `${formatMoney(s.fee_quoted)}/mo` : "fee as confirmed"}</p>
-                      </button>
-                      <div className="flex shrink-0 items-center gap-2">
-                        <span className={cn("rounded-full px-2.5 py-1 text-[11px] font-semibold", paid ? "bg-emerald-500/12 text-emerald-700" : "bg-gold/15 text-[#7A5E0F]")}>{paid ? "Paid" : sv.paymentStatus}</span>
-                        <a href={RENEWAL_LINK} target="_blank" rel="noopener noreferrer" className="rounded-full bg-gold px-3.5 py-1.5 text-xs font-semibold text-ink hover:bg-deep-gold">Pay</a>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-              <div className="mt-3 flex items-center justify-between border-t border-hairline pt-3">
-                <span className="text-sm font-semibold text-ink">Total / month</span>
-                <span className="font-display text-lg font-semibold text-[#7A5E0F]">{formatMoney(data.students.reduce((t, s) => t + (s.fee_quoted ?? 0), 0))}</span>
-              </div>
-              <p className="mt-2 text-[11px] leading-relaxed text-ink/55">Each child can have their own fee. Pay each child&apos;s monthly fee on the secure page — the office reconciles each payment to the right child.</p>
-            </div>
-          )}
+          {/* Family fees — tick children, adjust the amount, pay in one go */}
+          {data.students.length > 1 && <FamilyPay data={data} onFocus={select} focusedId={student.id} link={RENEWAL_LINK} />}
 
           {/* Current status (selected child) */}
           <div className="rounded-3xl border border-hairline bg-white p-5 shadow-[0_12px_34px_-20px_rgba(22,27,38,0.2)]">
@@ -159,5 +131,66 @@ export default function ParentPayments() {
         </div>
       )}
     </PortalShell>
+  );
+}
+
+// Family fees: tick which children to pay for, adjust the amount if needed, then
+// pay in one go on the official page. The payment link is the same — the amount
+// shown is what to enter there; the office reconciles it to the ticked children.
+function FamilyPay({ data, onFocus, focusedId, link }: { data: ParentData; onFocus: (id: string) => void; focusedId?: string; link: string }) {
+  const students = data.students;
+  const sumOf = (ids: Set<string>) => students.reduce((t, s) => t + (ids.has(s.id) ? (s.fee_quoted ?? 0) : 0), 0);
+  const [sel, setSel] = useState<Set<string>>(() => new Set(students.map((s) => s.id)));
+  const [amount, setAmount] = useState<string>(() => String(sumOf(new Set(students.map((s) => s.id)))));
+
+  function toggle(id: string) {
+    const n = new Set(sel);
+    if (n.has(id)) n.delete(id); else n.add(id);
+    setSel(n);
+    setAmount(String(sumOf(n)));
+  }
+
+  return (
+    <div className="rounded-3xl border border-gold/40 bg-white p-5 shadow-[0_12px_34px_-20px_rgba(22,27,38,0.2)]">
+      <p className="text-xs font-semibold uppercase tracking-wide text-[#7A5E0F]">Family fees · {students.length} children</p>
+      <p className="mt-0.5 text-xs text-ink/60">Tick who you&apos;re paying for, then pay in one go.</p>
+
+      <div className="mt-3 divide-y divide-hairline">
+        {students.map((s) => {
+          const sv = studentView(data, s);
+          const paid = /received/i.test(sv.paymentStatus);
+          const checked = sel.has(s.id);
+          return (
+            <div key={s.id} className="flex items-center gap-3 py-3">
+              <input type="checkbox" checked={checked} onChange={() => toggle(s.id)} className="h-5 w-5 shrink-0 accent-gold" aria-label={`Include ${s.name}`} />
+              <button onClick={() => onFocus(s.id)} className="min-w-0 flex-1 text-left">
+                <p className={cn("truncate text-sm font-semibold", s.id === focusedId ? "text-[#7A5E0F]" : "text-ink")}>{s.name}</p>
+                <p className="text-[11px] text-ink/55">{PLAN_LABEL[studentPlan(s)]} · {s.fee_quoted ? `${formatMoney(s.fee_quoted)}/mo` : "fee as confirmed"}</p>
+              </button>
+              <span className={cn("shrink-0 rounded-full px-2.5 py-1 text-[11px] font-semibold", paid ? "bg-emerald-500/12 text-emerald-700" : "bg-gold/15 text-[#7A5E0F]")}>{paid ? "Paid" : sv.paymentStatus}</span>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Amount to pay — auto-summed from ticked children, editable */}
+      <label className="mt-3 flex items-center justify-between gap-3 border-t border-hairline pt-3">
+        <span className="text-sm font-semibold text-ink">Amount to pay</span>
+        <span className="flex items-center rounded-xl border border-hairline bg-white px-3 py-2">
+          <span className="text-ink/50">₹</span>
+          <input value={amount} inputMode="numeric" onChange={(e) => setAmount(e.target.value.replace(/[^\d]/g, ""))}
+            className="w-24 bg-transparent text-right font-display text-lg font-semibold text-[#7A5E0F] focus:outline-none" aria-label="Amount to pay" />
+        </span>
+      </label>
+
+      <a href={link} target="_blank" rel="noopener noreferrer"
+        className="mt-4 flex min-h-[52px] w-full items-center justify-center gap-2 rounded-full bg-gold text-base font-semibold text-ink hover:bg-deep-gold">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3" y="6" width="18" height="13" rx="2.5" stroke="currentColor" strokeWidth="1.8" /><path d="M3 10h18" stroke="currentColor" strokeWidth="1.8" /></svg>
+        Pay {amount ? `₹${Number(amount).toLocaleString("en-IN")}` : ""} securely
+      </a>
+      <p className="mt-2.5 text-center text-[11px] leading-relaxed text-ink/60">
+        On the secure page, enter <b className="text-ink/75">₹{amount ? Number(amount).toLocaleString("en-IN") : "0"}</b>. Billed only in the Musicphonetics name; the office reconciles it to the ticked children.
+      </p>
+    </div>
   );
 }
