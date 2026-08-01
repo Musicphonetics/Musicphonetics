@@ -34,7 +34,8 @@ export function StudentDetailsForm({ studentId, onSaved }: { studentId: string; 
   useEffect(() => {
     getSupabase().from("students").select("*").eq("id", studentId).single().then(async ({ data, error }) => {
       if (error) {
-        if (/column|does not exist|schema cache/i.test(error.message)) setNeedsMigration(true);
+        // select("*") only errors if the whole table is missing — a genuine setup issue.
+        if (/relation .*students.* does not exist/i.test(error.message)) setNeedsMigration(true);
       } else if (data) {
         const row = data as Record<string, unknown>;
         const next: Form = {};
@@ -85,12 +86,32 @@ export function StudentDetailsForm({ studentId, onSaved }: { studentId: string; 
       start_date: f.start_date || null, fee_quoted: numOrNull(f.fee_quoted || ""),
       lead_source: f.lead_source || null, referred_by: f.referred_by || null, status: f.status || "active",
     };
-    const { error } = await getSupabase().from("students").update(payload).eq("id", studentId);
-    setBusy(false);
-    if (error) {
-      if (/column|does not exist|schema cache/i.test(error.message)) setNeedsMigration(true);
+    // Resilient save: if a column hasn't been migrated yet (e.g. parent_rank),
+    // drop just that field and retry, rather than failing the whole form.
+    const body: Record<string, unknown> = { ...payload };
+    const skipped: string[] = [];
+    for (let i = 0; i < 12; i++) {
+      const { error } = await getSupabase().from("students").update(body).eq("id", studentId);
+      if (!error) {
+        setBusy(false);
+        setMsg(skipped.length ? `Saved. (Not-yet-enabled fields skipped: ${skipped.join(", ")} — run the latest SQL to include them.)` : "Saved.");
+        onSaved?.();
+        return;
+      }
+      const col = error.message.match(/'([a-z_]+)' column|column "?([a-z_]+)"? of/i);
+      const name = col?.[1] || col?.[2];
+      if ((error.code === "PGRST204" || /schema cache|column/i.test(error.message)) && name && name in body) {
+        delete body[name];
+        skipped.push(name);
+        continue;
+      }
+      setBusy(false);
+      if (/relation .*students.* does not exist/i.test(error.message)) setNeedsMigration(true);
       else setErr(error.message);
-    } else { setMsg("Saved."); onSaved?.(); }
+      return;
+    }
+    setBusy(false);
+    setErr("Couldn't save — please try again.");
   }
 
   if (needsMigration) return <p className="mt-3 rounded-lg bg-mist px-3 py-2 text-xs text-ink/70">Run <code className="rounded bg-white px-1">supabase/student_admission_fields.sql</code> once in Supabase to enable the admission form.</p>;

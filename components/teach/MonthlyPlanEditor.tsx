@@ -55,7 +55,8 @@ export function MonthlyPlanEditor({
   }, [studentId]);
 
   async function generate() {
-    if (!notes.trim() || gen) return;
+    if (gen) return;
+    if (!notes.trim()) { setErr("Tap a starter above or type a few words first."); return; }
     setGen(true); setErr(null); setMsg(null);
     try {
       const out = await aiGeneratePlan({
@@ -128,10 +129,11 @@ export function MonthlyPlanEditor({
             <textarea value={notes} onChange={(e) => setNotes(e.target.value)} rows={3}
               placeholder={`e.g. Build ${studentName.split(" ")[0] || "the student"}'s chord changes, start a new song, prep a small performance by month end.`}
               className={cn(fld, "mt-2")} />
-            <button onClick={generate} disabled={gen || !notes.trim()}
-              className="mt-2 w-full rounded-lg bg-ink py-2 text-sm font-semibold text-paper hover:brightness-110 disabled:opacity-50">
+            <button onClick={generate} disabled={gen}
+              className="mt-2 w-full rounded-lg bg-ink py-2 text-sm font-semibold text-paper hover:brightness-110 disabled:opacity-60">
               {gen ? "Generating…" : "Generate 8-class plan"}
             </button>
+            {err && <p className="mt-2 rounded-lg bg-red-50 px-2.5 py-2 text-xs leading-relaxed text-red-700">{err}</p>}
           </div>
 
           {/* The big goal */}
