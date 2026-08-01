@@ -19,7 +19,7 @@ export default function ParentAsk() {
   }, []);
 
   const { student, select } = useSelectedStudent(data?.students);
-  const switcher = data && data.students.length > 0
+  const switcher = data
     ? <FamilySwitcher students={data.students} selectedId={student?.id ?? null} onSelect={select} onAdded={reload} />
     : null;
 

@@ -34,7 +34,7 @@ export default function ParentDashboard() {
   const pay = useMemo(() => (data && student ? data.payments.find((p) => p.student_id === student.id) ?? null : null), [data, student]);
   const directorMsg = useMemo(() => (student ? pickParentMessage(directorRows, student.id) : null), [directorRows, student]);
 
-  const switcher = data && data.students.length > 0
+  const switcher = data
     ? <FamilySwitcher students={data.students} selectedId={student?.id ?? null} onSelect={select} onAdded={reload} />
     : null;
 

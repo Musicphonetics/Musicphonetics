@@ -27,7 +27,7 @@ export default function ParentHomework() {
       .filter((c) => c.student_id === student.id && c.homework?.trim())
       .sort((a, b) => (a.class_date < b.class_date ? 1 : -1));
   }, [data, student]);
-  const switcher = data && data.students.length > 0
+  const switcher = data
     ? <FamilySwitcher students={data.students} selectedId={student?.id ?? null} onSelect={select} onAdded={reload} />
     : null;
 

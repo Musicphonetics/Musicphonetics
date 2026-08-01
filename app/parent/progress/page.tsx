@@ -35,7 +35,7 @@ export default function ParentProgress() {
     return computeFoundation(completedCount(data, student.id), 1, false, plan !== "foundation");
   }, [data, student, plan]);
   const skills = foundation ? skillIndicators(foundation) : [];
-  const switcher = data && data.students.length > 0
+  const switcher = data
     ? <FamilySwitcher students={data.students} selectedId={student?.id ?? null} onSelect={select} onAdded={reload} />
     : null;
 

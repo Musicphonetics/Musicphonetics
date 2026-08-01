@@ -34,7 +34,7 @@ export default function ParentDocuments() {
   // Show docs for the selected child (fall back to all if none carry a student id).
   const studentDocs = docs.filter((d) => !student || !d.student_id || d.student_id === student.id);
   const hasReceipts = (data?.payments.filter((p) => !student || p.student_id === student.id).length ?? 0) > 0;
-  const switcher = data && data.students.length > 0
+  const switcher = data
     ? <FamilySwitcher students={data.students} selectedId={student?.id ?? null} onSelect={select} onAdded={reload} />
     : null;
 

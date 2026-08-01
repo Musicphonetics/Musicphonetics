@@ -4,6 +4,7 @@ import { useState } from "react";
 import type { Student } from "@/lib/supabase/types";
 import { INSTRUMENTS } from "@/lib/onboarding";
 import { linkChild } from "@/lib/family";
+import { signOut } from "@/lib/supabase/auth";
 import { cn } from "@/lib/utils";
 
 const first = (n: string) => n.split(" ")[0] || n;
@@ -17,15 +18,14 @@ export function FamilySwitcher({
   const [open, setOpen] = useState(false);
   const [adding, setAdding] = useState(false);
   const current = students.find((s) => s.id === selectedId) ?? students[0];
-  if (!current) return null;
 
   return (
     <div className="relative">
       <button type="button" onClick={() => setOpen((v) => !v)}
         className="flex items-center gap-2 rounded-full border border-hairline bg-white py-1 pl-1 pr-2.5 transition-colors hover:border-ink/30"
         aria-haspopup="true" aria-expanded={open}>
-        <span className="grid h-8 w-8 place-items-center rounded-full border border-gold/40 bg-gold/15 font-display text-sm font-bold text-[#7A5E0F]">{initial(current.name)}</span>
-        <span className="max-w-[7rem] truncate text-sm font-semibold text-ink">{first(current.name)}</span>
+        <span className="grid h-8 w-8 place-items-center rounded-full border border-gold/40 bg-gold/15 font-display text-sm font-bold text-[#7A5E0F]">{current ? initial(current.name) : "👤"}</span>
+        <span className="max-w-[7rem] truncate text-sm font-semibold text-ink">{current ? first(current.name) : "Account"}</span>
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true" className="text-ink/50"><path d="M6 9l6 6 6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>
       </button>
 
@@ -33,7 +33,7 @@ export function FamilySwitcher({
         <>
           <button type="button" aria-hidden="true" className="fixed inset-0 z-30 cursor-default" onClick={() => setOpen(false)} />
           <div className="absolute right-0 top-11 z-40 w-60 overflow-hidden rounded-2xl border border-hairline bg-white shadow-xl">
-            <p className="px-3 pt-3 text-[10px] font-semibold uppercase tracking-wide text-ink/45">Your children</p>
+            {students.length > 0 && <p className="px-3 pt-3 text-[10px] font-semibold uppercase tracking-wide text-ink/45">Your children</p>}
             <div className="mt-1 max-h-72 overflow-y-auto p-1.5">
               {students.map((s) => (
                 <button key={s.id} onClick={() => { onSelect(s.id); setOpen(false); }}
@@ -53,6 +53,13 @@ export function FamilySwitcher({
                 className="flex w-full items-center gap-2.5 rounded-xl px-2.5 py-2 text-left text-sm font-semibold text-ink/80 hover:bg-paper">
                 <span className="grid h-7 w-7 shrink-0 place-items-center rounded-full border border-dashed border-ink/30 text-ink/60">+</span>
                 Add a child
+              </button>
+              <button onClick={() => signOut()}
+                className="flex w-full items-center gap-2.5 rounded-xl px-2.5 py-2 text-left text-sm font-medium text-ink/70 hover:bg-paper">
+                <span className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-ink/[0.06] text-ink/60">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" /></svg>
+                </span>
+                Sign out
               </button>
             </div>
           </div>

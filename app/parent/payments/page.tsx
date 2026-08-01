@@ -34,7 +34,7 @@ export default function ParentPayments() {
   const { student, select } = useSelectedStudent(data?.students);
   const view = useMemo(() => (data && student ? studentView(data, student) : null), [data, student]);
   const pays = useMemo(() => (data && student ? data.payments.filter((p) => p.student_id === student.id) : []), [data, student]);
-  const switcher = data && data.students.length > 0
+  const switcher = data
     ? <FamilySwitcher students={data.students} selectedId={student?.id ?? null} onSelect={select} onAdded={reload} />
     : null;
 
@@ -47,7 +47,38 @@ export default function ParentPayments() {
         <div className="space-y-4">
           <h1 className="font-display text-[1.6rem] font-semibold leading-tight text-ink">Fees &amp; renewal</h1>
 
-          {/* Current status */}
+          {/* Family overview — each child can have a different fee */}
+          {data.students.length > 1 && (
+            <div className="rounded-3xl border border-gold/40 bg-white p-5 shadow-[0_12px_34px_-20px_rgba(22,27,38,0.2)]">
+              <p className="text-xs font-semibold uppercase tracking-wide text-[#7A5E0F]">Family fees · {data.students.length} children</p>
+              <div className="mt-3 divide-y divide-hairline">
+                {data.students.map((s) => {
+                  const sv = studentView(data, s);
+                  const paid = /received/i.test(sv.paymentStatus);
+                  const selected = s.id === student.id;
+                  return (
+                    <div key={s.id} className="flex items-center justify-between gap-3 py-3">
+                      <button onClick={() => select(s.id)} className="min-w-0 flex-1 text-left">
+                        <p className={cn("truncate text-sm font-semibold", selected ? "text-[#7A5E0F]" : "text-ink")}>{s.name}</p>
+                        <p className="text-[11px] text-ink/55">{PLAN_LABEL[studentPlan(s)]} · {s.fee_quoted ? `${formatMoney(s.fee_quoted)}/mo` : "fee as confirmed"}</p>
+                      </button>
+                      <div className="flex shrink-0 items-center gap-2">
+                        <span className={cn("rounded-full px-2.5 py-1 text-[11px] font-semibold", paid ? "bg-emerald-500/12 text-emerald-700" : "bg-gold/15 text-[#7A5E0F]")}>{paid ? "Paid" : sv.paymentStatus}</span>
+                        <a href={RENEWAL_LINK} target="_blank" rel="noopener noreferrer" className="rounded-full bg-gold px-3.5 py-1.5 text-xs font-semibold text-ink hover:bg-deep-gold">Pay</a>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+              <div className="mt-3 flex items-center justify-between border-t border-hairline pt-3">
+                <span className="text-sm font-semibold text-ink">Total / month</span>
+                <span className="font-display text-lg font-semibold text-[#7A5E0F]">{formatMoney(data.students.reduce((t, s) => t + (s.fee_quoted ?? 0), 0))}</span>
+              </div>
+              <p className="mt-2 text-[11px] leading-relaxed text-ink/55">Each child can have their own fee. Pay each child&apos;s monthly fee on the secure page — the office reconciles each payment to the right child.</p>
+            </div>
+          )}
+
+          {/* Current status (selected child) */}
           <div className="rounded-3xl border border-hairline bg-white p-5 shadow-[0_12px_34px_-20px_rgba(22,27,38,0.2)]">
             <p className="text-xs font-semibold uppercase tracking-wide text-[#7A5E0F]">Current fee</p>
             <p className="mt-1 font-display text-3xl font-semibold text-ink">{student.fee_quoted ? formatMoney(student.fee_quoted) : "As confirmed"}<span className="text-base font-normal text-ink/70"> / month</span></p>

@@ -34,7 +34,7 @@ export default function ParentReports() {
     if (!data || !student) return null;
     return buildReport(data.classes.filter((c) => c.student_id === student.id));
   }, [data, student]);
-  const switcher = data && data.students.length > 0
+  const switcher = data
     ? <FamilySwitcher students={data.students} selectedId={student?.id ?? null} onSelect={select} onAdded={reload} />
     : null;
 
