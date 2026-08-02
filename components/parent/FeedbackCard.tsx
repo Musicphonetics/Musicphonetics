@@ -16,17 +16,26 @@ export function FeedbackCard({ studentId, studentName, dark }: { studentId: stri
   async function submit() {
     if (rating === 0) { setErr("Please pick a rating first."); return; }
     setErr(null); setBusy(true);
-    const { data: { session } } = await getSupabase().auth.getSession();
-    const { error } = await getSupabase().from("parent_feedback").insert({
-      student_id: studentId,
-      parent_id: session?.user?.id ?? null,
-      rating,
-      feedback: text.trim() || null,
-      permission_to_feature: feature,
-    });
+    try {
+      const { data: { session } } = await getSupabase().auth.getSession();
+      const { error } = await getSupabase().from("parent_feedback").insert({
+        student_id: studentId,
+        parent_id: session?.user?.id ?? null,
+        rating,
+        feedback: text.trim() || null,
+        permission_to_feature: feature,
+      });
+      if (error) {
+        setErr(/relation|schema cache|does not exist|column/i.test(error.message)
+          ? "Feedback isn’t enabled yet — please run supabase/parent_feedback.sql."
+          : /row-level security|policy|permission/i.test(error.message)
+            ? "We couldn’t save that under your account. Please refresh and try again."
+            : "Couldn’t send your feedback. Please try again.");
+      } else setDone(true);
+    } catch {
+      setErr("Couldn’t reach the server. Please check your connection and try again.");
+    }
     setBusy(false);
-    if (error) setErr(error.message);
-    else setDone(true);
   }
 
   if (done) {
