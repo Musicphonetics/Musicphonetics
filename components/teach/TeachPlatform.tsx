@@ -91,8 +91,8 @@ export function TeachPlatform() {
         {/* See it in action — real portal screens */}
         <div className="mt-16">
           <h3 className="font-display text-2xl font-semibold">See it in action</h3>
-          <p className="mt-2 max-w-xl text-sm leading-relaxed text-paper/65">Actual screens from the teacher app — this is what you&apos;ll use every day.</p>
-          <div className="mt-8 grid gap-8 sm:grid-cols-3">
+          <p className="mt-2 max-w-xl text-sm leading-relaxed text-paper/65">Real screens from the app — what you and your students&apos; families use every day.</p>
+          <div className="mt-8 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
             {SHOTS.map((s) => (
               <figure key={s.src} className="group">
                 <div className="mx-auto max-w-[240px] rounded-[2rem] border border-white/12 bg-black/60 p-2 shadow-[0_30px_60px_-30px_rgba(0,0,0,0.8)] transition-transform group-hover:-translate-y-1">
@@ -120,4 +120,5 @@ const SHOTS = [
   { src: "/images/teach/dashboard.png", title: "Your dashboard", desc: "Students, classes and earnings in one glance.", alt: "Musicphonetics teacher dashboard" },
   { src: "/images/teach/planner.png", title: "AI lesson planner", desc: "A full month of 8 classes in seconds.", alt: "Musicphonetics AI lesson planner generating an 8-class plan" },
   { src: "/images/teach/earnings.png", title: "Live earnings", desc: "Always know exactly what you'll be paid.", alt: "Musicphonetics teacher earnings and payouts" },
+  { src: "/images/teach/parent.png", title: "The parent view", desc: "Families see progress, plans and fees — so your work shines.", alt: "Musicphonetics parent portal showing a child's learning journey" },
 ];
