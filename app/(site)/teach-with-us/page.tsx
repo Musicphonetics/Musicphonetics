@@ -6,6 +6,7 @@ import { TeachProofStrip } from "@/components/teach/TeachProofStrip";
 import { Ecosystem } from "@/components/teach/Ecosystem";
 import { EarningsCalculator } from "@/components/teach/EarningsCalculator";
 import { ScopeOfWork } from "@/components/teach/ScopeOfWork";
+import { TeachPlatform } from "@/components/teach/TeachPlatform";
 import { GrowthLadder } from "@/components/teach/GrowthLadder";
 import { HowPayouts } from "@/components/teach/HowPayouts";
 import { NonNegotiable } from "@/components/teach/NonNegotiable";
@@ -20,12 +21,12 @@ const SITE = "https://musicphonetics.com";
 export const metadata: Metadata = {
   title: "Teach With Musicphonetics - Earn What Your Craft Is Worth",
   description:
-    "Music teacher jobs in Delhi NCR and online. Keep 70% of every fee, walk into a ready student network, and be paid on time. Students, payments and scheduling are handled for you.",
+    "Music teacher jobs in Delhi NCR and online. Keep 70% of every fee and get a real teaching platform — AI lesson planning, students brought to you, progress tracking, live earnings and a verified public profile. Payments and scheduling handled for you.",
   alternates: { canonical: `${SITE}/teach-with-us` },
   openGraph: {
     title: "Teach With Musicphonetics - Earn What Your Craft Is Worth",
     description:
-      "Keep 70% of every fee. A ready student network, payments and scheduling handled for you. Music teacher roles across Delhi NCR and online.",
+      "Keep 70% of every fee, plus a modern teacher portal: AI lesson planning, a students-brought-to-you leads inbox, progress tracking, live earnings and a verified public profile.",
   },
 };
 
@@ -82,6 +83,7 @@ export default function TeachWithUsPage() {
       <EarningsCalculator />
       <StaveDivider background="paper" />
       <ScopeOfWork />
+      <TeachPlatform />
       <StaveDivider background="white" />
       <GrowthLadder />
       <HowPayouts />
