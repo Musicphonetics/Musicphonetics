@@ -104,6 +104,7 @@ export default function TeacherDashboard() {
         <Action href="/teacher/schedule" label="Schedule" />
         <Action href="/teacher/reports" label="Monthly Reports" />
         <Action href="/teacher/earnings" label="Earnings" />
+        <Action href="/teacher/profile-maker" label="My public profile" />
       </div>
 
       <div className="mt-6">
