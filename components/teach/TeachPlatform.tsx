@@ -88,10 +88,36 @@ export function TeachPlatform() {
           ))}
         </div>
 
-        <p className="mt-8 text-sm text-paper/55">
+        {/* See it in action — real portal screens */}
+        <div className="mt-16">
+          <h3 className="font-display text-2xl font-semibold">See it in action</h3>
+          <p className="mt-2 max-w-xl text-sm leading-relaxed text-paper/65">Actual screens from the teacher app — this is what you&apos;ll use every day.</p>
+          <div className="mt-8 grid gap-8 sm:grid-cols-3">
+            {SHOTS.map((s) => (
+              <figure key={s.src} className="group">
+                <div className="mx-auto max-w-[240px] rounded-[2rem] border border-white/12 bg-black/60 p-2 shadow-[0_30px_60px_-30px_rgba(0,0,0,0.8)] transition-transform group-hover:-translate-y-1">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={s.src} alt={s.alt} loading="lazy" className="w-full rounded-[1.5rem]" />
+                </div>
+                <figcaption className="mt-4 text-center">
+                  <span className="block font-display text-base font-semibold">{s.title}</span>
+                  <span className="mt-0.5 block text-sm text-paper/60">{s.desc}</span>
+                </figcaption>
+              </figure>
+            ))}
+          </div>
+        </div>
+
+        <p className="mt-10 text-sm text-paper/55">
           Works on any phone or laptop — install it like an app, and it even works offline.
         </p>
       </div>
     </section>
   );
 }
+
+const SHOTS = [
+  { src: "/images/teach/dashboard.png", title: "Your dashboard", desc: "Students, classes and earnings in one glance.", alt: "Musicphonetics teacher dashboard" },
+  { src: "/images/teach/planner.png", title: "AI lesson planner", desc: "A full month of 8 classes in seconds.", alt: "Musicphonetics AI lesson planner generating an 8-class plan" },
+  { src: "/images/teach/earnings.png", title: "Live earnings", desc: "Always know exactly what you'll be paid.", alt: "Musicphonetics teacher earnings and payouts" },
+];
