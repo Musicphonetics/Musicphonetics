@@ -64,7 +64,13 @@ function FacultyProfileInner() {
           </div>
           <div>
             <p className="text-[0.72rem] font-semibold uppercase tracking-[0.18em] text-gold">Musicphonetics Faculty</p>
-            <h1 className="mt-1.5 font-display text-3xl font-semibold sm:text-4xl">{profile.name}</h1>
+            <div className="mt-1.5 flex items-center gap-2">
+              <h1 className="font-display text-3xl font-semibold sm:text-4xl">{profile.name}</h1>
+              <span title="Verified by Musicphonetics" className="inline-flex items-center gap-1 rounded-full bg-gold/15 px-2.5 py-1 text-[11px] font-semibold text-gold">
+                <svg viewBox="0 0 24 24" className="h-3 w-3" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12l4 4 10-10" /></svg>
+                Verified
+              </span>
+            </div>
             {profile.headline && <p className="mt-1.5 text-lg text-paper/80">{profile.headline}</p>}
             <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-paper/70">
               {profile.location && <span>📍 {profile.location}</span>}

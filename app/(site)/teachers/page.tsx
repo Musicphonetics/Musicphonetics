@@ -5,6 +5,7 @@ import { Section } from "@/components/ui/Section";
 import { Reveal } from "@/components/ui/Reveal";
 import { FacultySelection } from "@/components/sections/FacultySelection";
 import { FinalCTA } from "@/components/sections/FinalCTA";
+import { PublishedTeachers } from "@/components/teachers/PublishedTeachers";
 import { publishedFaculty, isFacultyPublic } from "@/lib/faculty";
 
 function initials(name: string) {
@@ -28,6 +29,9 @@ export default function TeachersPage() {
 
       {/* The seven-stage selection - the real, finished content */}
       <FacultySelection eyebrow="Selection" />
+
+      {/* Teacher profiles auto-appear here the moment they're approved/published. */}
+      <PublishedTeachers />
 
       {/* Public faculty grid appears once enough teachers are ready; until then,
           a finished note (individual profiles stay reachable by direct link). */}
