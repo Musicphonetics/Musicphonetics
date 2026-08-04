@@ -8,6 +8,8 @@
 //      EMAIL_WORKER_SECRET (required — matched against the x-worker-secret header),
 //      SITE_URL (optional, for CTA links; defaults to https://musicphonetics.com).
 
+import { sendEmail, mailerConfigured } from "./_mailer.js";
+
 const MAX_ATTEMPTS = 5;
 const BATCH = 20;
 const json = (o, s = 200) => new Response(JSON.stringify(o), { status: s, headers: { "content-type": "application/json" } });
@@ -49,10 +51,9 @@ async function handle(env, req) {
   const secret = req.headers.get("x-worker-secret") || new URL(req.url).searchParams.get("secret") || "";
   if (!env.EMAIL_WORKER_SECRET || secret !== env.EMAIL_WORKER_SECRET) return json({ ok: false, error: "Forbidden" }, 403);
   if (!env.SUPABASE_URL || !env.SUPABASE_SERVICE_ROLE_KEY) return json({ ok: false, error: "Not configured" }, 503);
-  if (!env.RESEND_API_KEY) return json({ ok: false, error: "RESEND_API_KEY missing" }, 503);
+  if (!mailerConfigured(env)) return json({ ok: false, error: "No mail provider (set BREVO_API_KEY or RESEND_API_KEY)" }, 503);
 
   const site = (env.SITE_URL || "https://musicphonetics.com").replace(/\/$/, "");
-  const from = env.MAIL_FROM || "Musicphonetics <onboarding@resend.dev>";
 
   // Fetch a batch of sendable rows (pending or previously failed, under the cap).
   const qs = `status=in.(pending,failed)&attempt_count=lt.${MAX_ATTEMPTS}&order=scheduled_at.asc&limit=${BATCH}`;
@@ -63,15 +64,13 @@ async function handle(env, req) {
 
   let sent = 0, failed = 0;
   for (const row of rows) {
-    let ok = false, err = null;
-    try {
-      const r = await fetch("https://api.resend.com/emails", {
-        method: "POST", headers: { Authorization: `Bearer ${env.RESEND_API_KEY}`, "content-type": "application/json" },
-        body: JSON.stringify({ from, to: [row.recipient_email], subject: row.subject, html: renderHtml(row.template_key, row.payload, site) }),
-      });
-      ok = r.ok;
-      if (!ok) err = (await r.text().catch(() => "")).slice(0, 300);
-    } catch (e) { err = String(e).slice(0, 300); }
+    const r = await sendEmail(env, {
+      to: row.recipient_email,
+      subject: row.subject,
+      html: renderHtml(row.template_key, row.payload, site),
+    });
+    const ok = r.sent;
+    const err = ok ? null : String(r.note || "send failed").slice(0, 300);
 
     const patch = ok
       ? { status: "sent", sent_at: new Date().toISOString(), attempt_count: (row.attempt_count || 0) + 1, last_error: null }

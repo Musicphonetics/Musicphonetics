@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { PortalShell } from "@/components/portal/PortalShell";
 import { OWNER_TABS } from "@/components/portal/tabs";
 import { Loading, EmptyState } from "@/components/portal/kit";
@@ -18,6 +18,7 @@ interface AppRow {
   commitment: string | null; days: string[] | null; time_bands: string[] | null; modes: string[] | null; areas: string[] | null; transport: string | null;
   bank_holder: string | null; bank_name: string | null; bank_account: string | null; bank_ifsc: string | null; bank_upi: string | null;
   why_join: string | null;
+  offer_sent_at: string | null; offer_accepted_at: string | null; joining_sent_at: string | null;
 }
 
 const s = (v?: string | null) => v ?? "";
@@ -29,16 +30,46 @@ export default function OwnerApplications() {
   const [sel, setSel] = useState<AppRow | null>(null);
   const [busy, setBusy] = useState(false);
   const [doc, setDoc] = useState<"offer" | "joining">("offer");
-  const [creds, setCreds] = useState<{ email: string; password: string; teacherId: string; emailed: boolean; emailNote: string } | null>(null);
+  const [creds, setCreds] = useState<{ email: string; password: string; teacherId: string } | null>(null);
+  const [recipient, setRecipient] = useState("");
+  const [sending, setSending] = useState<null | "offer" | "joining">(null);
+  const [sendMsg, setSendMsg] = useState<{ ok: boolean; text: string } | null>(null);
 
   async function load() {
     if (!isSupabaseConfigured()) return;
     const { data, error } = await getSupabase()
       .from("teacher_applications").select("*").order("created_at", { ascending: false });
     if (error) setErr(error.message);
-    setRows((data as AppRow[]) ?? []);
+    const list = (data as AppRow[]) ?? [];
+    setRows(list);
+    // Keep the open application in sync (e.g. acceptance arriving after a refresh).
+    setSel((cur) => (cur ? list.find((r) => r.id === cur.id) ?? cur : cur));
   }
   useEffect(() => { load(); }, []);
+
+  function open(a: AppRow) { setSel(a); setCreds(null); setSendMsg(null); setRecipient(a.email || ""); }
+
+  // Email the offer or joining document via the staged onboarding flow.
+  async function sendDoc(app: AppRow, which: "offer" | "joining") {
+    setSending(which); setSendMsg(null); setErr(null);
+    const { data: { session } } = await getSupabase().auth.getSession();
+    const token = session?.access_token;
+    if (!token) { setErr("Please sign in again."); setSending(null); return; }
+    const res = await fetch("/api/send-offer", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+      body: JSON.stringify({ application_id: app.id, doc: which, email: recipient.trim() || app.email }),
+    });
+    const d = (await res.json().catch(() => ({}))) as { ok?: boolean; to?: string; temp_password?: string; error?: string };
+    setSending(null);
+    if (!res.ok || !d.ok) { setSendMsg({ ok: false, text: d.error || "Could not send the email." }); return; }
+    setSendMsg({ ok: true, text: which === "offer"
+      ? `Offer letter emailed to ${d.to}. They'll tap “Accept my offer” in the email.`
+      : `Joining agreement + login emailed to ${d.to}.` });
+    if (which === "joining" && d.temp_password) setCreds((c) => (c ? { ...c, password: d.temp_password! } : c));
+    const stamp = new Date().toISOString();
+    setSel((s) => (s && s.id === app.id ? { ...s, ...(which === "offer" ? { offer_sent_at: stamp } : { joining_sent_at: stamp }) } : s));
+  }
 
   async function approve(app: AppRow) {
     setBusy(true); setErr(null); setCreds(null);
@@ -50,10 +81,10 @@ export default function OwnerApplications() {
       headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
       body: JSON.stringify({ application_id: app.id }),
     });
-    const d = (await res.json().catch(() => ({}))) as { ok?: boolean; login_email?: string; temp_password?: string; teacher_id?: string; emailed?: boolean; email_note?: string; error?: string };
+    const d = (await res.json().catch(() => ({}))) as { ok?: boolean; login_email?: string; temp_password?: string; teacher_id?: string; error?: string };
     setBusy(false);
     if (!res.ok || !d.ok) { setErr(d.error || "Could not approve."); return; }
-    setCreds({ email: d.login_email || app.email, password: d.temp_password || "", teacherId: d.teacher_id || "", emailed: !!d.emailed, emailNote: d.email_note || "" });
+    setCreds({ email: d.login_email || app.email, password: d.temp_password || "", teacherId: d.teacher_id || "" });
     setSel({ ...app, status: "approved", teacher_id: d.teacher_id || null });
     load();
   }
@@ -101,7 +132,7 @@ export default function OwnerApplications() {
             {sel.status !== "approved" && (
               <button onClick={() => approve(sel)} disabled={busy}
                 className="mt-5 inline-flex min-h-[48px] items-center justify-center rounded-full bg-ink px-6 text-sm font-semibold text-paper hover:bg-[#0f131c] disabled:opacity-50">
-                {busy ? "Approving…" : "Approve → create login & offer letter"}
+                {busy ? "Approving…" : "Approve → create teacher login"}
               </button>
             )}
           </div>
@@ -115,16 +146,65 @@ export default function OwnerApplications() {
                 <Cred k="Login email" v={creds.email} />
                 <Cred k="Temporary password" v={creds.password} />
               </div>
-              <div className={cn("mt-3 flex items-start gap-2 rounded-xl border p-3 text-xs",
-                creds.emailed ? "border-feature-green/30 bg-feature-green/10 text-feature-green" : "border-hairline bg-white text-ink/70")}>
-                <span aria-hidden="true">{creds.emailed ? "✓" : "ℹ"}</span>
-                {creds.emailed
-                  ? <span>The offer letter, joining agreement and login details were <b>emailed to {creds.email}</b> automatically.</span>
-                  : <span>Email not sent automatically ({creds.emailNote || "no mail provider configured"}). Send the details above on WhatsApp/email yourself. To auto-email teachers, set <b>RESEND_API_KEY</b> (and <b>MAIL_FROM</b>) in the Pages environment.</span>}
-              </div>
-              <p className="mt-2 text-xs text-ink/60">Ask them to change the password after first login.</p>
+              <p className="mt-2 text-xs text-ink/60">These are shown once. The joining email below also delivers the password to the teacher directly.</p>
             </div>
           )}
+
+          {/* Staged onboarding: send offer → teacher accepts → send joining → assign leads */}
+          <div className="mt-6 rounded-2xl border border-hairline bg-white p-5">
+            <p className="font-display text-lg font-semibold text-ink">Send onboarding documents</p>
+            <p className="mt-0.5 text-sm text-ink/60">Email the offer, let the teacher accept, then send the joining agreement &amp; login. Emails send to the address below.</p>
+
+            <label className="mt-4 block text-[11px] font-semibold uppercase tracking-wide text-ink/55">Recipient email</label>
+            <input value={recipient} onChange={(e) => setRecipient(e.target.value)} type="email" placeholder="teacher@email.com"
+              className="mt-1 w-full max-w-sm rounded-lg border border-hairline bg-white px-3 py-2 text-sm focus-visible:outline-2 focus-visible:outline-gold focus:outline-none" />
+
+            {sendMsg && (
+              <div className={cn("mt-3 rounded-xl border p-3 text-sm", sendMsg.ok ? "border-feature-green/30 bg-feature-green/10 text-feature-green" : "border-red-300 bg-red-50 text-red-700")}>
+                {sendMsg.text}
+              </div>
+            )}
+
+            <ol className="mt-4 space-y-3">
+              {/* Step 1 — offer */}
+              <Step n={1} title="Send the offer letter" done={!!sel.offer_sent_at}
+                sub={sel.offer_sent_at ? `Sent ${fmt(sel.offer_sent_at)}` : "Includes an “Accept my offer” button."}>
+                <button onClick={() => sendDoc(sel, "offer")} disabled={sending !== null}
+                  className="rounded-full bg-ink px-4 py-2 text-sm font-semibold text-paper hover:bg-[#0f131c] disabled:opacity-50">
+                  {sending === "offer" ? "Sending…" : sel.offer_sent_at ? "Resend offer" : "Send offer letter"}
+                </button>
+              </Step>
+
+              {/* Step 2 — acceptance */}
+              <Step n={2} title="Teacher accepts the offer" done={!!sel.offer_accepted_at}
+                sub={sel.offer_accepted_at ? `Accepted ${fmt(sel.offer_accepted_at)}` : "Waiting for the teacher to tap Accept in their email."}>
+                {!sel.offer_accepted_at && (
+                  <button onClick={() => load()} className="rounded-full border border-hairline px-4 py-2 text-sm font-semibold text-ink/70 hover:text-ink">
+                    Refresh
+                  </button>
+                )}
+              </Step>
+
+              {/* Step 3 — joining */}
+              <Step n={3} title="Send the joining agreement + login" done={!!sel.joining_sent_at}
+                sub={sel.joining_sent_at ? `Sent ${fmt(sel.joining_sent_at)}`
+                  : sel.status !== "approved" ? "Approve the teacher first to create their login."
+                  : !sel.offer_accepted_at ? "Best after they accept — you can still send it now." : "Delivers the full agreement + a fresh password."}>
+                <button onClick={() => sendDoc(sel, "joining")} disabled={sending !== null || sel.status !== "approved"}
+                  className="rounded-full bg-ink px-4 py-2 text-sm font-semibold text-paper hover:bg-[#0f131c] disabled:opacity-50">
+                  {sending === "joining" ? "Sending…" : sel.joining_sent_at ? "Resend joining" : "Send joining + login"}
+                </button>
+              </Step>
+
+              {/* Step 4 — leads */}
+              <Step n={4} title="Assign their first leads" done={false}
+                sub="Once they've joined, send students their way from Leads.">
+                <a href="/owner/leads" className="rounded-full border border-hairline px-4 py-2 text-sm font-semibold text-ink/70 hover:text-ink">
+                  Open Leads →
+                </a>
+              </Step>
+            </ol>
+          </div>
 
           {/* Documents for this applicant */}
           {(sel.status === "approved" || creds) && (() => {
@@ -163,14 +243,14 @@ export default function OwnerApplications() {
         <>
           <p className="mb-2 text-sm font-semibold text-ink">Pending review ({pending.length})</p>
           <div className="space-y-2.5">
-            {pending.map((a) => <AppCard key={a.id} a={a} onOpen={() => { setSel(a); setCreds(null); }} />)}
+            {pending.map((a) => <AppCard key={a.id} a={a} onOpen={() => open(a)} />)}
             {pending.length === 0 && <p className="rounded-2xl border border-hairline bg-white p-5 text-sm text-ink/55">Nothing pending.</p>}
           </div>
           {others.length > 0 && (
             <>
               <p className="mb-2 mt-8 text-sm font-semibold text-ink">Processed</p>
               <div className="space-y-2.5">
-                {others.map((a) => <AppCard key={a.id} a={a} onOpen={() => { setSel(a); setCreds(null); }} />)}
+                {others.map((a) => <AppCard key={a.id} a={a} onOpen={() => open(a)} />)}
               </div>
             </>
           )}
@@ -211,5 +291,24 @@ function Cred({ k, v }: { k: string; v: string }) {
       <p className="text-[10px] font-semibold uppercase tracking-wide text-ink/50">{k}</p>
       <p className="mt-0.5 break-all text-sm font-semibold text-ink">{v}</p>
     </div>
+  );
+}
+
+function fmt(iso: string) {
+  return new Date(iso).toLocaleString("en-IN", { day: "numeric", month: "short", hour: "numeric", minute: "2-digit" });
+}
+
+function Step({ n, title, sub, done, children }: { n: number; title: string; sub: string; done: boolean; children?: ReactNode }) {
+  return (
+    <li className={cn("flex flex-wrap items-center gap-3 rounded-xl border p-3", done ? "border-feature-green/30 bg-feature-green/[0.05]" : "border-hairline")}>
+      <span className={cn("grid h-7 w-7 shrink-0 place-items-center rounded-full text-xs font-bold", done ? "bg-feature-green/15 text-feature-green" : "bg-gold/15 text-[#7A5E0F]")}>
+        {done ? "✓" : n}
+      </span>
+      <div className="min-w-0 flex-1">
+        <p className="text-sm font-semibold text-ink">{title}</p>
+        <p className="mt-0.5 text-xs text-ink/60">{sub}</p>
+      </div>
+      {children}
+    </li>
   );
 }
