@@ -31,8 +31,8 @@ const PROGRAMS: { name: string; price: string; note: string; tone: string }[] = 
     note: "32-class beginner journey (Explore → Play → Make Music → Perform). Progress bar + monthly focus." },
   { name: "Main Pathway", price: priceLabel("main"), tone: "bg-forest/12 text-forest",
     note: "Ongoing structured development, guided by a fresh monthly goal the teacher sets." },
-  { name: "Director's Circle", price: priceLabel("directors"), tone: "bg-ink/10 text-ink/70",
-    note: "Bespoke, director-guided. Owner-managed and hidden from ordinary teacher workflow." },
+  { name: "Director's Circle", price: "From ₹2,500/class", tone: "bg-ink/10 text-ink/70",
+    note: "Bespoke, director-guided. By consultation — from ₹2,500 per class, up to ₹5,000. Owner-managed." },
 ];
 
 const ENV_NOTES = [

@@ -108,7 +108,7 @@ export const HOME_PACKAGES: HomePackage[] = [
     badge: "By request only",
     tagline: "Direct founder-level mentoring, for a select few.",
     bullets: [
-      "By request only",
+      "By consultation · from ₹2,500 per class (up to ₹5,000)",
       "Limited availability",
       "~1 week waiting list",
       "An exclusive, personally guided pathway",

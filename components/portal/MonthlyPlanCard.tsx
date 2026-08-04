@@ -34,6 +34,9 @@ export function MonthlyPlanCard({
           <p className="mt-1 text-sm text-paper/70">
             One-to-one, personally guided by the Director{instrument ? ` · ${instrument}` : ""} · {monthLabel(p.month)}
           </p>
+          <p className="mt-2.5 inline-flex items-center gap-1.5 rounded-full border border-gold/25 bg-white/[0.04] px-2.5 py-1 text-[11px] text-paper/60">
+            <span className="text-gold">◆</span> Fees by consultation · from ₹2,500/class (up to ₹5,000)
+          </p>
         </div>
       ) : (
         <div className="border-b border-hairline bg-gradient-to-br from-gold/[0.1] to-transparent px-5 py-4">

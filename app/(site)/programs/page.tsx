@@ -47,8 +47,8 @@ const PROGRAM_DETAILS: ProgramDetail[] = [
     title: "The Director's Circle",
     status: "Premium",
     statusTone: "green",
-    body: "Learn directly from Director Abhishek by prior booking - for serious learners who want the highest standard from day one.",
-    points: ["Faculty-led classes", "By prior booking", "Highest standard"],
+    body: "Learn directly from Director Abhishek by prior booking - for serious learners who want the highest standard from day one. Fees are set by a personal consultation, from ₹2,500 per class (up to ₹5,000).",
+    points: ["Faculty-led classes", "From ₹2,500/class (up to ₹5,000)", "By consultation"],
   },
   {
     title: "Group Classes & Academy Batches",

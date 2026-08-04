@@ -72,7 +72,7 @@ export default function ProgrammePage({ params }: { params: { slug: string } }) 
             {p.price ? (
               <><span className="font-display text-4xl font-semibold text-gold">{p.price}</span><span className="text-ivory/65">/ month</span></>
             ) : (
-              <span className="font-display text-3xl font-semibold text-gold">By request</span>
+              <span className="font-display text-3xl font-semibold text-gold">From ₹2,500 <span className="text-xl text-ivory/65">/ class</span></span>
             )}
             <span className="text-sm text-ivory/55">· {p.cadence}</span>
           </div>
@@ -90,7 +90,7 @@ export default function ProgrammePage({ params }: { params: { slug: string } }) 
       {/* Quick facts */}
       <section className="border-y border-white/10 bg-charcoal-2">
         <div className="container-mp grid sm:grid-cols-3">
-          <Fact label="Fee" value={p.price ? `${p.price} / month` : "By request"} />
+          <Fact label="Fee" value={p.price ? `${p.price} / month` : "From ₹2,500 / class (up to ₹5,000)"} />
           <Fact label="Format" value="At home, online, or our South Delhi centre" />
           <Fact label="Rhythm" value={p.cadence} />
         </div>

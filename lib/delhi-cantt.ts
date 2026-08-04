@@ -108,7 +108,7 @@ export const PACKAGES: Package[] = [
   {
     key: "directors_circle",
     name: "Director's Circle",
-    priceLabel: "By consultation",
+    priceLabel: "From ₹2,500/class",
     priceSub: "premium mentorship",
     bestFor: "Serious & advanced learners",
     features: [

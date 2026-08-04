@@ -34,3 +34,17 @@ export function priceLabel(plan: PlanKey): string {
 export function listPrice(plan: PlanKey): number | null {
   return PROGRAM_PRICES[plan];
 }
+
+// ---------------------------------------------------------------------------
+// Director's Circle is priced per class, set by a personal consultation. We
+// still let families see the entry point so they can gauge fit. Single source
+// of truth for the hint — reused everywhere the Director's Circle is shown.
+// ---------------------------------------------------------------------------
+export const DIRECTORS_FEE_FROM = 2500;
+export const DIRECTORS_FEE_TO = 5000;
+/** e.g. shown as the price line: "From ₹2,500 / class" */
+export const DIRECTORS_FEE_FROM_LABEL = "From ₹2,500 / class";
+/** compact one-liner used as a hint/subtext */
+export const DIRECTORS_FEE_HINT = "By consultation · from ₹2,500 per class (up to ₹5,000)";
+/** a fuller sentence for cards/notes */
+export const DIRECTORS_FEE_NOTE = "Fees are set by a personal consultation — from ₹2,500 per class, up to ₹5,000.";

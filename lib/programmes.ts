@@ -148,7 +148,7 @@ export const PROGRAMMES: Programme[] = [
     name: "Director's Circle",
     price: null,
     payAmount: null,
-    cadence: "By request · limited seats",
+    cadence: "by consultation · up to ₹5,000/class · limited seats",
     badge: "By request only",
     heroImage: "/images/classes/ukulele.webp",
     intro:

@@ -241,6 +241,12 @@ export function PayClient() {
         <Stave className="w-16 opacity-70" />
         <p className="mt-5 eyebrow text-gold">{step === 1 ? "Step 1 of 2 · Your details" : "Step 2 of 2 · Terms & your choice"}</p>
         <h1 className="mt-2 font-display text-2xl font-semibold text-paper sm:text-3xl">{planName}</h1>
+        {planKey === "directors-circle" && (
+          <p className="mt-1 text-sm text-paper/70">
+            <span className="rounded-full bg-gold/15 px-2 py-0.5 text-xs font-semibold text-gold">By consultation</span>
+            <span className="ml-2">from <b className="text-paper">₹2,500</b> per class (up to ₹5,000)</span>
+          </p>
+        )}
         {monthly > 0 && (
           <p className="mt-1 text-sm text-paper/70">
             {discountPct > 0 && <span className="mr-2 text-paper/40 line-through">{inr(listMonthly)}</span>}
