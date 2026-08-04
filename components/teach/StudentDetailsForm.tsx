@@ -177,7 +177,14 @@ export function StudentDetailsForm({ studentId, onSaved }: { studentId: string; 
             <p className="text-xs font-semibold text-ink/60">Package</p>
             <p className="mt-1.5 rounded-lg bg-mist px-3 py-2 text-sm text-ink/70">{f.plan && PLAN_LABEL[f.plan as "foundation" | "main" | "directors"] ? PLAN_LABEL[f.plan as "foundation" | "main" | "directors"] : "Set by office"} <span className="text-[11px] text-ink/45">· set by office</span></p>
           </div>
-          <MoneyField label="Monthly fee (office confirms)" value={f.fee_quoted || ""} onChange={(v) => set("fee_quoted", v)} />
+          <div>
+            <MoneyField label="Monthly fee" value={f.fee_quoted || ""} onChange={(v) => set("fee_quoted", v)} />
+            <p className="mt-1 text-[11px] leading-relaxed text-ink/55">This is what the parent (and the office) see. Foundation ₹10,000 · Main ₹15,000 · Director&apos;s Circle by consultation.</p>
+            <div className="mt-1.5 flex flex-wrap gap-1.5">
+              <button type="button" onClick={() => set("fee_quoted", "10000")} className="rounded-full border border-hairline px-2.5 py-1 text-[11px] font-medium text-ink/70 hover:border-gold">Foundation ₹10,000</button>
+              <button type="button" onClick={() => set("fee_quoted", "15000")} className="rounded-full border border-hairline px-2.5 py-1 text-[11px] font-medium text-ink/70 hover:border-gold">Main ₹15,000</button>
+            </div>
+          </div>
           <Select label="Lead source" value={f.lead_source || "-"} onChange={(v) => set("lead_source", v)} options={opt(LEAD_SOURCES)} />
           <Field label="Referred by (optional)" value={f.referred_by || ""} onChange={(v) => set("referred_by", v)} placeholder="Name of who referred them" />
           <Select label="Status" value={f.status || "active"} onChange={(v) => set("status", v)} options={STATUS} />

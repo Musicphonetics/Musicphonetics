@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { PortalShell } from "@/components/portal/PortalShell";
 import { OWNER_TABS } from "@/components/portal/tabs";
-import { Loading, formatMoney } from "@/components/portal/kit";
+import { Loading } from "@/components/portal/kit";
 import { OwnerTable, type Col } from "@/components/portal/OwnerTable";
 import { isSupabaseConfigured, getSupabase } from "@/lib/supabase/client";
 import { loadOwnerData } from "@/lib/supabase/owner";
@@ -75,6 +75,19 @@ export default function OwnerStudents() {
     setTimeout(() => setSavedId((v) => (v === studentId ? null : v)), 2000);
   }
 
+  // Owner override: the teacher confirms the fee, but the owner can change it.
+  async function setFee(studentId: string, raw: string) {
+    const digits = raw.replace(/[^\d]/g, "");
+    const fee = digits ? Math.round(Number(digits)) : null;
+    setBusyId(studentId); setErr(null);
+    const { error } = await getSupabase().from("students").update({ fee_quoted: fee }).eq("id", studentId);
+    setBusyId(null);
+    if (error) { setErr(error.message); return; }
+    setRows((prev) => prev && prev.map((r) => (r.id === studentId ? { ...r, fee } : r)));
+    setSavedId(studentId);
+    setTimeout(() => setSavedId((v) => (v === studentId ? null : v)), 2000);
+  }
+
   const cols: Col<Row>[] = [
     { key: "code", label: "Code", render: (r) => <span className="whitespace-nowrap font-mono text-xs">{r.code}</span> },
     { key: "name", label: "Student" },
@@ -110,7 +123,20 @@ export default function OwnerStudents() {
     { key: "instrument", label: "Instrument" },
     { key: "level", label: "Level" },
     { key: "status", label: "Status" },
-    { key: "fee", label: "Fee", render: (r) => (r.fee ? formatMoney(r.fee) : "-"), csv: (r) => r.fee ?? "" },
+    {
+      key: "fee", label: "Fee / month", csv: (r) => r.fee ?? "",
+      render: (r) => (
+        <div className="flex items-center gap-1.5">
+          <span className="text-xs text-ink/40">₹</span>
+          <input key={`${r.id}-${r.fee ?? ""}`} type="text" inputMode="numeric" defaultValue={r.fee ?? ""}
+            disabled={busyId === r.id} placeholder="—"
+            onKeyDown={(e) => { if (e.key === "Enter") (e.target as HTMLInputElement).blur(); }}
+            onBlur={(e) => { const v = e.target.value.replace(/[^\d]/g, ""); if (v !== String(r.fee ?? "")) setFee(r.id, v); }}
+            className="w-24 rounded-lg border border-hairline bg-white px-2.5 py-1.5 text-sm focus-visible:outline-2 focus-visible:outline-gold focus:outline-none disabled:opacity-50" />
+          {savedId === r.id && <span className="text-[11px] font-semibold text-feature-green">Saved</span>}
+        </div>
+      ),
+    },
     { key: "days", label: "Days" },
     { key: "parent", label: "Parent" },
     { key: "phone", label: "Phone" },
