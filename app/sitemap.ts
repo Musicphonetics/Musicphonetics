@@ -1,5 +1,6 @@
 import type { MetadataRoute } from "next";
 import { PUBLIC_STANDARDS } from "@/lib/standards-public";
+import { AREA_PAGES } from "@/lib/areas";
 
 const SITE_URL = "https://musicphonetics.com";
 
@@ -13,6 +14,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/curriculum",
     "/teachers",
     "/faculty",
+    "/music-classes",
     "/centre",
     "/founder",
     "/open-mic",
@@ -31,6 +33,16 @@ export default function sitemap(): MetadataRoute.Sitemap {
     changeFrequency: "monthly",
     priority: path === "" ? 1 : 0.8,
   }));
+
+  // Local area landing pages (high local-SEO value).
+  for (const a of AREA_PAGES) {
+    entries.push({
+      url: `${SITE_URL}/music-classes/${a.slug}`,
+      lastModified: now,
+      changeFrequency: "monthly",
+      priority: 0.9,
+    });
+  }
 
   // Standards documents (public only)
   for (const s of PUBLIC_STANDARDS) {

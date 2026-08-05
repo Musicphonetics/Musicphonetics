@@ -98,6 +98,7 @@ export const FOOTER_NAV = [
   { label: "Open Mic & Chai", href: "/open-mic" },
   { label: "Student activation", href: "/activate" },
   { label: "Curriculum", href: "/curriculum" },
+  { label: "Classes near you", href: "/music-classes" },
   { label: "Standards", href: "/standards" },
   { label: "South Delhi Centre", href: "/centre" },
   { label: "Trust Centre", href: "/trust" },
