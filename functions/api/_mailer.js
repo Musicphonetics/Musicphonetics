@@ -35,6 +35,11 @@ export async function sendEmail(env, { to, subject, html, replyTo }) {
 
   // 1) Brevo — no domain needed (single verified sender).
   if (env.BREVO_API_KEY) {
+    // Guard against the common mix-up: the REST API needs an API key (xkeysib-…),
+    // NOT the SMTP key (xsmtpsib-…). Workers can't speak SMTP, so we can't use it.
+    if (/^xsmtpsib-/i.test(env.BREVO_API_KEY.trim())) {
+      return { sent: false, note: "BREVO_API_KEY looks like a Brevo SMTP key (xsmtpsib-…). This needs the REST API key that starts with xkeysib- (Brevo → SMTP & API → API keys → Generate a new API key)." };
+    }
     try {
       const res = await fetch("https://api.brevo.com/v3/smtp/email", {
         method: "POST",
