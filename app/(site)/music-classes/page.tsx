@@ -10,9 +10,9 @@ import { whatsappTrialLink } from "@/lib/data";
 import { SITE_URL, breadcrumbJsonLd } from "@/lib/seo";
 
 export const metadata: Metadata = {
-  title: "Music Classes in Delhi NCR — Home & Online",
+  title: "Music Classes in Delhi NCR | Home & Online",
   description:
-    "Structured, faculty-led music classes across Delhi NCR — South Delhi, Gurugram, Noida, Faridabad, Ghaziabad & Central Delhi. Guitar, piano, vocals & more, at home or online. Book a free trial.",
+    "Structured, faculty-led music classes across Delhi NCR. Delhi Cantt, South Delhi, Gurugram, Noida, Faridabad, Ghaziabad and Central Delhi. Guitar, piano, vocals and more, at home or online. Book a free trial.",
   alternates: { canonical: "/music-classes" },
 };
 
@@ -20,7 +20,7 @@ export default function MusicClassesHub() {
   const itemList = {
     "@context": "https://schema.org",
     "@type": "ItemList",
-    name: "Music classes by area — Delhi NCR",
+    name: "Music classes by area in Delhi NCR",
     itemListElement: AREA_PAGES.map((a, i) => ({
       "@type": "ListItem",
       position: i + 1,
@@ -39,8 +39,8 @@ export default function MusicClassesHub() {
 
       <PageHero
         eyebrow="Across Delhi NCR"
-        title={<>Music classes near you — <span className="italic text-gold">at home or online.</span></>}
-        intro="A verified teacher, a structured method, and progress you can actually see — wherever you are in Delhi NCR. Choose your area to begin."
+        title={<>Music classes near you, <span className="italic text-gold">at home or online.</span></>}
+        intro="A verified teacher, a structured method, and progress you can actually follow, wherever you are in Delhi NCR. Choose your area to begin."
       >
         <div className="flex flex-col gap-3 sm:flex-row">
           <Button href="/start" variant="primary" size="lg">Book a free trial</Button>

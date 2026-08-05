@@ -18,8 +18,8 @@ export function generateStaticParams() {
 export function generateMetadata({ params }: { params: { area: string } }): Metadata {
   const area = getArea(params.area);
   if (!area) return {};
-  const title = `Music Classes in ${area.name} — Home & Online`;
-  const description = `Structured, faculty-led music classes in ${area.name} — guitar, piano, keyboard, vocals & more, at home or online. Verified teachers, a personalised plan, monthly reports. Book a free trial.`;
+  const title = `Music Classes in ${area.name} | Home & Online`;
+  const description = `Structured, faculty-led music classes in ${area.name}. Guitar, piano, keyboard, vocals and more, at home or online. Verified teachers, a personalised plan and monthly reports. Book a free trial.`;
   return {
     title,
     description,
@@ -31,6 +31,13 @@ export function generateMetadata({ params }: { params: { area: string } }): Meta
 export default function AreaPage({ params }: { params: { area: string } }) {
   const area = getArea(params.area);
   if (!area) notFound();
+
+  const whyPoints: [string, string][] = area.whyPoints ?? [
+    ["Verified faculty", "Every teacher clears a seven stage selection. A safe, vetted professional at your home or online."],
+    ["A real method", "A clear pathway from first sound to confident performance, never a random string of songs."],
+    ["Progress you can see", "A parent portal with a personalised monthly plan, class by class updates and monthly reports."],
+    ["Home or online", `Taught at your home across ${area.name}, or live online, whichever suits your family.`],
+  ];
 
   // Flagship (Delhi Cantt) carries a full LocalBusiness with the real postal
   // address that matches the Google Business Profile exactly. Other areas are
@@ -61,7 +68,7 @@ export default function AreaPage({ params }: { params: { area: string } }) {
         "@type": "Service",
         serviceType: "Music lessons",
         name: `Music classes in ${area.name}`,
-        description: `Structured, one-to-one music lessons in ${area.name} — home and online — across guitar, piano, keyboard, vocals, drums and more.`,
+        description: `Structured, one to one music lessons in ${area.name}, home and online, across guitar, piano, keyboard, vocals, drums and more.`,
         areaServed: { "@type": "Place", name: `${area.name}, Delhi NCR, India` },
         provider: {
           "@type": ["LocalBusiness", "MusicSchool", "EducationalOrganization"],
@@ -84,7 +91,7 @@ export default function AreaPage({ params }: { params: { area: string } }) {
 
       <PageHero
         eyebrow={`Music classes in ${area.name}`}
-        title={<>Structured music classes in {area.name} — <span className="italic text-gold">at home or online.</span></>}
+        title={<>Structured music classes in {area.name}, <span className="italic text-gold">at home or online.</span></>}
         intro={area.lead}
       >
         <div className="flex flex-col gap-3 sm:flex-row">
@@ -97,16 +104,28 @@ export default function AreaPage({ params }: { params: { area: string } }) {
       <Section background="white" spacing="md">
         <Reveal>
           <div className="max-w-3xl">
-            <p className="eyebrow">Music education, built like an institution</p>
+            <p className="eyebrow">Our approach in {area.name}</p>
             <p className="mt-4 text-lg leading-relaxed text-ink/75">{area.intro}</p>
           </div>
         </Reveal>
       </Section>
 
+      {/* Founder / defence note (flagship only) */}
+      {area.founderNote && (
+        <Section background="ink" spacing="md">
+          <Reveal>
+            <div className="mx-auto max-w-3xl text-center">
+              <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-gold">From a forces family</p>
+              <p className="mt-4 font-display text-xl font-semibold leading-relaxed text-paper sm:text-2xl">{area.founderNote}</p>
+            </div>
+          </Reveal>
+        </Section>
+      )}
+
       {/* Instruments */}
       <Section background="paper" spacing="md">
         <SectionHeading eyebrow="Every instrument" title={`Learn any instrument in ${area.name}`}
-          intro="One method, one standard — whichever instrument your child (or you) wants to play." />
+          intro="One method and one standard, whichever instrument your child or you want to play." />
         <div className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
           {AREA_INSTRUMENTS.map((inst) => (
             <div key={inst} className="rounded-xl border border-hairline bg-white px-4 py-4 text-center text-sm font-semibold text-ink">
@@ -119,7 +138,7 @@ export default function AreaPage({ params }: { params: { area: string } }) {
       {/* Programmes */}
       <Section background="white" spacing="md">
         <SectionHeading eyebrow="Choose a pathway" title={`How families in ${area.name} learn with us`}
-          intro="Every student follows a personalised, one-to-one pathway. Pick the level of guidance that fits." />
+          intro="Every student follows a personalised, one to one pathway. Pick the level of guidance that fits." />
         <div className="mt-8 grid gap-5 lg:grid-cols-3">
           {PACKAGES.map((p) => (
             <div key={p.key} className={`rounded-2xl border p-6 ${p.featured ? "border-gold bg-gold/[0.05]" : p.premium ? "border-ink bg-ink text-paper" : "border-hairline bg-white"}`}>
@@ -130,19 +149,14 @@ export default function AreaPage({ params }: { params: { area: string } }) {
             </div>
           ))}
         </div>
-        <p className="mt-6"><Link href="/programs" className="font-semibold text-[#7A5E0F]">See full programme details →</Link></p>
+        <p className="mt-6"><Link href="/programs" className="font-semibold text-[#7A5E0F]">See full programme details</Link></p>
       </Section>
 
       {/* Why us */}
       <Section background="paper" spacing="md">
-        <SectionHeading eyebrow={`Why ${area.name} chooses Musicphonetics`} title="Not tuition. An education." />
+        <SectionHeading eyebrow={`Why ${area.name} chooses Musicphonetics`} title="A music education you can rely on." />
         <div className="mt-8 grid gap-5 sm:grid-cols-2">
-          {[
-            ["Verified faculty", "Every teacher passes a 7-stage selection. A safe, vetted professional at your home or online."],
-            ["A real method", "A structured pathway from first sound to confident performance — never a random string of songs."],
-            ["Progress you can see", "A parent portal with a personalised monthly plan, class-by-class updates and monthly reports."],
-            ["Home or online", `Taught at your home across ${area.name}, or live online — whichever suits your family.`],
-          ].map(([h, b]) => (
+          {whyPoints.map(([h, b]) => (
             <div key={h} className="rounded-2xl border border-hairline bg-white p-6">
               <p className="font-display text-lg font-semibold text-ink">{h}</p>
               <p className="mt-2 text-sm leading-relaxed text-ink/70">{b}</p>
@@ -160,7 +174,7 @@ export default function AreaPage({ params }: { params: { area: string } }) {
             <span key={n} className="rounded-full border border-hairline bg-mist px-4 py-2 text-sm font-medium text-ink/75">{n}</span>
           ))}
         </div>
-        <p className="mt-6 text-sm text-ink/60">Don&apos;t see your locality? We very likely still cover it — <Link href={whatsappTrialLink()} className="font-semibold text-[#7A5E0F]">message us on WhatsApp</Link> and we&apos;ll confirm a teacher near you.</p>
+        <p className="mt-6 text-sm text-ink/60">Don&apos;t see your locality? We very likely still cover it. <Link href={whatsappTrialLink()} className="font-semibold text-[#7A5E0F]">Message us on WhatsApp</Link> and we&apos;ll confirm a teacher near you.</p>
       </Section>
 
       {/* Flagship only: visible Name/Address/Phone matching the Google listing. */}
@@ -182,8 +196,8 @@ export default function AreaPage({ params }: { params: { area: string } }) {
                 </div>
               </div>
               <div className="rounded-xl border border-hairline bg-mist p-5 text-sm leading-relaxed text-ink/70">
-                <p className="font-semibold text-ink">Home · Online · Studio</p>
-                <p className="mt-1">Classes at your home across Delhi Cantt, live online anywhere, or in person at our Parade Road studio. Free trial, no commitment — we usually confirm a teacher the same day.</p>
+                <p className="font-semibold text-ink">Home, online or studio</p>
+                <p className="mt-1">Classes at your home across Delhi Cantt, live online anywhere, or in person at our Parade Road studio. Free trial, no commitment. We usually confirm a teacher the same day.</p>
               </div>
             </div>
           </div>
@@ -192,7 +206,7 @@ export default function AreaPage({ params }: { params: { area: string } }) {
 
       <FinalCTA
         headline={`Start music classes in ${area.name} with one free trial.`}
-        text="Tell us the instrument and who it's for. We'll match a verified teacher and confirm your slot — usually the same day."
+        text="Tell us the instrument and who it is for. We will match a verified teacher and confirm your slot, usually the same day."
       />
     </>
   );
