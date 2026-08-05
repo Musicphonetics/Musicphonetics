@@ -60,6 +60,16 @@ export const metadata: Metadata = {
       "Structured, faculty-led music classes across Delhi NCR - at home and online.",
     images: [OG_IMAGE],
   },
+  // Search-engine ownership verification. Set these as build env vars in
+  // Cloudflare Pages when you claim the site (Google Search Console → HTML tag
+  // method gives the google token; Bing Webmaster Tools gives msvalidate). Left
+  // empty, nothing is emitted. DNS TXT verification also works and needs no deploy.
+  verification: {
+    google: process.env.GOOGLE_SITE_VERIFICATION || undefined,
+    ...(process.env.BING_SITE_VERIFICATION
+      ? { other: { "msvalidate.01": process.env.BING_SITE_VERIFICATION } }
+      : {}),
+  },
 };
 
 export const viewport: Viewport = {
