@@ -12,6 +12,8 @@
 // Env: SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY
 // Auth: Authorization: Bearer <owner access token>. Caller must be role='owner'.
 
+import { provisionFromApplication } from "./_provision.js";
+
 const json = (obj, status = 200) =>
   new Response(JSON.stringify(obj), { status, headers: { "content-type": "application/json" } });
 
@@ -20,12 +22,6 @@ const admin = (env) => ({
   Authorization: `Bearer ${env.SUPABASE_SERVICE_ROLE_KEY}`,
   "content-type": "application/json",
 });
-
-function tempPassword() {
-  const abc = "ABCDEFGHJKLMNPQRSTUVWXYZ", num = "23456789", low = "abcdefghijkmnpqrstuvwxyz";
-  const pick = (s, n) => Array.from({ length: n }, () => s[Math.floor(Math.random() * s.length)]).join("");
-  return `Mp-${pick(abc, 2)}${pick(low, 3)}${pick(num, 3)}`;
-}
 
 async function assertOwner(env, token) {
   if (!token) return { ok: false, status: 401, error: "Missing session" };
@@ -66,129 +62,24 @@ export async function onRequestPost({ request, env }) {
   const apps = aRes.ok ? await aRes.json() : [];
   const app = apps[0];
   if (!app) return json({ ok: false, error: "Application not found" }, 404);
-  if (app.status === "approved") return json({ ok: false, error: "Already approved" }, 409);
+  if (app.status === "approved" && app.teacher_id) return json({ ok: false, error: "Already approved" }, 409);
 
-  const password = tempPassword();
+  // 2) Provision the login + profile (shared with the accept-offer flow).
+  const prov = await provisionFromApplication(env, app);
+  if (!prov.ok) return json({ ok: false, error: prov.error }, prov.status || 400);
 
-  // 2) Create the auth login.
-  const cRes = await fetch(`${env.SUPABASE_URL}/auth/v1/admin/users`, {
-    method: "POST",
-    headers: admin(env),
-    body: JSON.stringify({
-      email: app.email, password, email_confirm: true,
-      user_metadata: { full_name: app.full_name, role: "teacher" },
-    }),
-  });
-  const created = await cRes.json().catch(() => ({}));
-  if (!cRes.ok) {
-    const msg = created.msg || created.error_description || created.error || "";
-    if (/registered|exists|already/i.test(msg)) return json({ ok: false, error: "This email already has a login." }, 409);
-    return json({ ok: false, error: "Could not create the login." }, 400);
-  }
-  const teacherId = created.id || created.user?.id;
-
-  // 3) One source of truth: fill the teacher's PROFILE from the application so
-  // they never re-enter what they already gave. Everything here reads from the
-  // stored application record; the joining letter is an OUTPUT of this data, not
-  // its source. Idempotent — PATCH/upsert by id, safe if approval is re-run.
-  if (teacherId) {
-    const instruments = Array.isArray(app.instruments) ? app.instruments.filter(Boolean) : [];
-    const areas = Array.isArray(app.areas) ? app.areas.filter(Boolean) : [];
-    const modes = Array.isArray(app.modes) ? app.modes.filter(Boolean) : [];
-    const yrs = parseInt(String(app.years_teaching ?? "").replace(/[^\d]/g, ""), 10);
-    const acct = String(app.bank_account ?? "").replace(/\s+/g, "");
-    const dob = /^\d{4}-\d{2}-\d{2}$/.test(String(app.dob ?? "")) ? app.dob : null;
-
-    // 3a) Public profile fields.
-    await fetch(`${env.SUPABASE_URL}/rest/v1/profiles?id=eq.${teacherId}`, {
-      method: "PATCH",
-      headers: { ...admin(env), Prefer: "return=minimal" },
-      body: JSON.stringify({
-        full_name: app.full_name, legal_name: app.full_name, role: "teacher",
-        email: app.email, phone: app.phone || null,
-        dob, city: app.city || null, address_line_1: app.address || null,
-        languages: app.languages || null,
-        instruments: instruments.length ? instruments : null,
-        primary_instrument: instruments[0] || null,
-        regions: areas.length ? areas : null,
-        preferred_modes: modes.length ? modes : null,
-        experience_years: Number.isFinite(yrs) ? yrs : null,
-        qualifications: app.qualification || null,
-        certifications: app.grade || null,
-        bank_account_holder: app.bank_holder || null,
-        bank_name: app.bank_name || null,
-        bank_account_last4: acct ? acct.slice(-4) : null,
-        ifsc: app.bank_ifsc || null,
-        upi_id: app.bank_upi || null,
-      }),
-    }).catch(() => {});
-
-    // 3b) Sensitive details (full account number) → private table (upsert).
-    if (acct) {
-      await fetch(`${env.SUPABASE_URL}/rest/v1/teacher_private_details`, {
-        method: "POST",
-        headers: { ...admin(env), Prefer: "resolution=merge-duplicates,return=minimal" },
-        body: JSON.stringify({ teacher_id: teacherId, bank_account_number: acct }),
-      }).catch(() => {});
-    }
-
-    // 3c) Seed weekly availability from the application's days × time bands, but
-    // only if none exists yet (so re-runs never duplicate). Times are sensible
-    // defaults the teacher can adjust — they just don't start from scratch.
-    try {
-      const existing = await fetch(`${env.SUPABASE_URL}/rest/v1/teacher_availability?teacher_id=eq.${teacherId}&select=id&limit=1`, { headers: admin(env) });
-      const has = existing.ok ? await existing.json() : [];
-      const days = Array.isArray(app.days) ? app.days : [];
-      const bands = Array.isArray(app.time_bands) ? app.time_bands : [];
-      if ((!has || has.length === 0) && days.length) {
-        const DAY = { sun: 0, mon: 1, tue: 2, wed: 3, thu: 4, fri: 5, sat: 6 };
-        const BAND = { morning: ["09:00", "12:00"], afternoon: ["12:00", "16:00"], evening: ["16:00", "20:00"], night: ["18:00", "21:00"] };
-        const bandRanges = (bands.length ? bands : ["evening"]).map((b) => BAND[String(b).toLowerCase().slice(0, 9)] || BAND[String(b).toLowerCase().slice(0, 3) === "aft" ? "afternoon" : "evening"]).filter(Boolean);
-        const rows = [];
-        for (const d of days) {
-          const wd = DAY[String(d).toLowerCase().slice(0, 3)];
-          if (wd === undefined) continue;
-          for (const [start, end] of bandRanges) rows.push({ teacher_id: teacherId, weekday: wd, start_time: start, end_time: end, active: true });
-        }
-        if (rows.length) {
-          await fetch(`${env.SUPABASE_URL}/rest/v1/teacher_availability`, {
-            method: "POST", headers: { ...admin(env), Prefer: "return=minimal" },
-            body: JSON.stringify(rows),
-          }).catch(() => {});
-        }
-      }
-    } catch { /* availability seed is best-effort */ }
-  }
-
-  // 3d) Derive the onboarding checklist now (from the freshly-filled profile) so
-  // the teacher opens the portal to an accurate state and only completes the
-  // genuinely-missing items (PAN, ID proof, photo, acknowledgements).
-  if (teacherId) {
-    await fetch(`${env.SUPABASE_URL}/rest/v1/rpc/mp_sync_onboarding`, {
-      method: "POST", headers: { ...admin(env), Prefer: "return=minimal" },
-      body: JSON.stringify({ p_teacher_id: teacherId }),
-    }).catch(() => {});
-  }
-
-  // 4) Mark the application approved.
-  await fetch(`${env.SUPABASE_URL}/rest/v1/teacher_applications?id=eq.${appId}`, {
-    method: "PATCH",
-    headers: { ...admin(env), Prefer: "return=minimal" },
-    body: JSON.stringify({ status: "approved", teacher_id: teacherId, approved_at: new Date().toISOString() }),
-  }).catch(() => {});
-
-  // 5) Audit (never include the password). No email here — the owner sends the
+  // 3) Audit (never include the password). No email here — the owner sends the
   //    offer and joining documents from the staged flow (/api/send-offer).
   await audit(env, {
     actor_id: guard.user?.id ?? null, actor_role: "owner",
-    action: "teacher_application_approved", entity_type: "teacher", entity_id: teacherId, teacher_id: teacherId,
+    action: "teacher_application_approved", entity_type: "teacher", entity_id: prov.teacherId, teacher_id: prov.teacherId,
     summary: `Approved teacher application for ${app.full_name}`,
   });
 
   return json({
     ok: true,
-    teacher_id: teacherId,
+    teacher_id: prov.teacherId,
     login_email: app.email,
-    temp_password: password,
+    temp_password: prov.password,
   });
 }

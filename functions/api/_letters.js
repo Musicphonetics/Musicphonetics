@@ -72,9 +72,10 @@ export function offerEmailHtml({ name, acceptUrl }) {
     </div>
     ${incomeBlock}
     <p style="margin:0 0 14px;font-size:14px;line-height:1.6;color:#3a3f4a">
-      When you are ready, click below to accept. This records your acceptance and lets us prepare your Joining Agreement and portal access.
+      When you are ready, click below to accept and agree to the terms. <b>As soon as you accept, we'll email you the
+      full Joining Agreement and your portal login with a temporary password</b> — so you can sign in right away.
     </p>
-    <a href="${esc(acceptUrl)}" style="display:inline-block;background:#161b26;color:#fff;text-decoration:none;font-weight:700;font-size:14px;padding:12px 22px;border-radius:999px">✓ Accept my offer</a>
+    <a href="${esc(acceptUrl)}" style="display:inline-block;background:#161b26;color:#fff;text-decoration:none;font-weight:700;font-size:14px;padding:12px 22px;border-radius:999px">✓ I accept &amp; agree to the terms</a>
     <p style="margin:14px 0 0;font-size:12px;color:#9aa">If the button doesn't work, open this link: <br>${esc(acceptUrl)}</p>`);
 }
 
@@ -121,8 +122,10 @@ export function acceptConfirmPage({ name, alreadyAccepted }) {
         <div style="margin:22px auto 0;width:56px;height:56px;border-radius:50%;background:#1f7a4d;line-height:56px;font-size:30px;color:#fff">✓</div>
         <h1 style="margin:18px 0 6px;font-size:22px">${alreadyAccepted ? "Already accepted" : "Offer accepted"}</h1>
         <p style="margin:0;font-size:15px;color:#d8d4c8;line-height:1.6">
-          Thank you, ${first}. ${alreadyAccepted ? "Your acceptance is already on record." : "We've recorded your acceptance of the Musicphonetics teaching offer."}
-          Our team will now send you the Joining Agreement and your portal login. Welcome aboard!
+          Thank you, ${first}. ${alreadyAccepted
+            ? "Your acceptance is already on record, and your login details were emailed to you."
+            : "We've recorded your acceptance. Your Joining Agreement and portal login — with a temporary password — are on their way to your inbox right now. Please check your email (including Promotions/Spam)."}
+          Welcome aboard!
         </p>
       </div>
       <p style="margin:18px 0 0;font-size:12px;color:#9aa">You can close this window. Questions? WhatsApp +91 87961 99188.</p>

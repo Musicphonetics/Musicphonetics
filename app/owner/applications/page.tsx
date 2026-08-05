@@ -153,7 +153,7 @@ export default function OwnerApplications() {
           {/* Staged onboarding: send offer → teacher accepts → send joining → assign leads */}
           <div className="mt-6 rounded-2xl border border-hairline bg-white p-5">
             <p className="font-display text-lg font-semibold text-ink">Send onboarding documents</p>
-            <p className="mt-0.5 text-sm text-ink/60">Email the offer, let the teacher accept, then send the joining agreement &amp; login. Emails send to the address below.</p>
+            <p className="mt-0.5 text-sm text-ink/60">Just send the offer. When the teacher taps <b>“I accept”</b>, their login is created and the joining agreement + temporary password are emailed to them automatically.</p>
 
             <label className="mt-4 block text-[11px] font-semibold uppercase tracking-wide text-ink/55">Recipient email</label>
             <input value={recipient} onChange={(e) => setRecipient(e.target.value)} type="email" placeholder="teacher@email.com"
@@ -175,9 +175,11 @@ export default function OwnerApplications() {
                 </button>
               </Step>
 
-              {/* Step 2 — acceptance */}
-              <Step n={2} title="Teacher accepts the offer" done={!!sel.offer_accepted_at}
-                sub={sel.offer_accepted_at ? `Accepted ${fmt(sel.offer_accepted_at)}` : "Waiting for the teacher to tap Accept in their email."}>
+              {/* Step 2 — acceptance (auto-provisions the login + emails credentials) */}
+              <Step n={2} title="Teacher accepts → login auto-created" done={!!sel.offer_accepted_at}
+                sub={sel.offer_accepted_at
+                  ? `Accepted ${fmt(sel.offer_accepted_at)} · login created & credentials emailed`
+                  : "When they tap Accept, their login is created and the joining agreement + password are emailed automatically."}>
                 {!sel.offer_accepted_at && (
                   <button onClick={() => load()} className="rounded-full border border-hairline px-4 py-2 text-sm font-semibold text-ink/70 hover:text-ink">
                     Refresh
@@ -185,14 +187,14 @@ export default function OwnerApplications() {
                 )}
               </Step>
 
-              {/* Step 3 — joining */}
-              <Step n={3} title="Send the joining agreement + login" done={!!sel.joining_sent_at}
-                sub={sel.joining_sent_at ? `Sent ${fmt(sel.joining_sent_at)}`
-                  : sel.status !== "approved" ? "Approve the teacher first to create their login."
-                  : !sel.offer_accepted_at ? "Best after they accept — you can still send it now." : "Delivers the full agreement + a fresh password."}>
+              {/* Step 3 — joining (optional re-send; happens automatically on acceptance) */}
+              <Step n={3} title="Joining agreement + login" done={!!sel.joining_sent_at}
+                sub={sel.joining_sent_at ? `Sent ${fmt(sel.joining_sent_at)} · re-send only if needed`
+                  : sel.status !== "approved" ? "Sent automatically when they accept. Or approve now to create the login, then re-send here."
+                  : "Sent automatically on acceptance — use this only to re-send with a fresh password."}>
                 <button onClick={() => sendDoc(sel, "joining")} disabled={sending !== null || sel.status !== "approved"}
-                  className="rounded-full bg-ink px-4 py-2 text-sm font-semibold text-paper hover:bg-[#0f131c] disabled:opacity-50">
-                  {sending === "joining" ? "Sending…" : sel.joining_sent_at ? "Resend joining" : "Send joining + login"}
+                  className="rounded-full border border-hairline px-4 py-2 text-sm font-semibold text-ink/70 hover:text-ink disabled:opacity-50">
+                  {sending === "joining" ? "Sending…" : "Re-send joining + login"}
                 </button>
               </Step>
 
