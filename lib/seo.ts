@@ -13,11 +13,11 @@ import { FOUNDER, FOUNDER_HIGHLIGHTS } from "./founder";
 import { INSTRUMENTS } from "./onboarding";
 import type { TeacherProfile, Region } from "./teachers";
 
-// Canonical brand domain (used for canonical/sitemap - unchanged for now).
+// Canonical brand domain (used for canonical/sitemap + all structured data).
 export const SITE_URL = "https://musicphonetics.com";
-// Origin that actually serves the live build today - used so OG/share images
-// and structured-data images resolve on the current testing domain.
-export const OG_ORIGIN = "https://musicphonetics.pages.dev";
+// The live domain now serves everything, so OG/share images and structured-data
+// images resolve on the canonical domain (better than the old pages.dev origin).
+export const OG_ORIGIN = SITE_URL;
 
 export const SOCIAL_PROFILES: string[] = [INSTAGRAM_URL];
 
