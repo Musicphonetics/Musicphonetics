@@ -10,6 +10,10 @@ export interface AreaPage {
   lead: string;         // one-line positioning for hero
   intro: string;        // localized opening paragraph
   neighbourhoods: string[];
+  flagship?: boolean;   // the hub (Delhi Cantt) — extra weight + real address
+  // Real postal address, matching the Google Business Profile exactly. Only the
+  // flagship hub has this; it powers LocalBusiness schema + the local pack.
+  address?: { street: string; locality: string; region: string; postalCode: string; mapUrl: string };
 }
 
 export const AREA_INSTRUMENTS = [
@@ -17,6 +21,23 @@ export const AREA_INSTRUMENTS = [
 ];
 
 export const AREA_PAGES: AreaPage[] = [
+  {
+    slug: "delhi-cantt",
+    name: "Delhi Cantt",
+    inName: "Delhi Cantt",
+    flagship: true,
+    lead: "Our home base — structured, faculty-led music classes in Delhi Cantt: at your home, online, or at our Parade Road studio.",
+    intro:
+      "Musicphonetics is based in Delhi Cantt. From Parade Road across the Cantonment, families learn music the way it should be taught — with a verified teacher, a structured method, and a parent portal that shows real monthly progress. Learn at your home, live online, or with us on Parade Road. This is our hub, and where we look after our own community first.",
+    neighbourhoods: ["Parade Road", "Sadar Bazar (Cantt)", "Gopinath Bazar", "Brar Square", "Dhaula Kuan", "Naraina", "Naraina Vihar", "Kirby Place", "Delhi Cantonment"],
+    address: {
+      street: "Parade Road",
+      locality: "Delhi Cantonment",
+      region: "Delhi",
+      postalCode: "110010",
+      mapUrl: "https://www.google.com/maps/search/?api=1&query=Musicphonetics%2C+Parade+Road%2C+Delhi+Cantt",
+    },
+  },
   {
     slug: "south-delhi",
     name: "South Delhi",

@@ -32,22 +32,46 @@ export default function AreaPage({ params }: { params: { area: string } }) {
   const area = getArea(params.area);
   if (!area) notFound();
 
-  const service = {
-    "@context": "https://schema.org",
-    "@type": "Service",
-    serviceType: "Music lessons",
-    name: `Music classes in ${area.name}`,
-    description: `Structured, one-to-one music lessons in ${area.name} — home and online — across guitar, piano, keyboard, vocals, drums and more.`,
-    areaServed: { "@type": "Place", name: `${area.name}, Delhi NCR, India` },
-    provider: {
-      "@type": ["LocalBusiness", "MusicSchool", "EducationalOrganization"],
-      name: BRAND.name,
-      url: SITE_URL,
-      telephone: PHONE_DISPLAY,
-      areaServed: area.neighbourhoods.map((n) => ({ "@type": "Place", name: n })),
-    },
-    offers: { "@type": "Offer", priceCurrency: "INR", price: "15000", url: `${SITE_URL}/start` },
-  };
+  // Flagship (Delhi Cantt) carries a full LocalBusiness with the real postal
+  // address that matches the Google Business Profile exactly. Other areas are
+  // service-area only (no street address to claim).
+  const primary = area.address
+    ? {
+        "@context": "https://schema.org",
+        "@type": ["MusicSchool", "LocalBusiness", "EducationalOrganization"],
+        "@id": `${SITE_URL}/music-classes/${area.slug}#localbusiness`,
+        name: BRAND.name,
+        url: `${SITE_URL}/music-classes/${area.slug}`,
+        telephone: PHONE_DISPLAY,
+        priceRange: "₹₹",
+        image: `${SITE_URL}/og.png?v=2`,
+        address: {
+          "@type": "PostalAddress",
+          streetAddress: area.address.street,
+          addressLocality: area.address.locality,
+          addressRegion: area.address.region,
+          postalCode: area.address.postalCode,
+          addressCountry: "IN",
+        },
+        hasMap: area.address.mapUrl,
+        areaServed: area.neighbourhoods.map((n) => ({ "@type": "Place", name: n })),
+      }
+    : {
+        "@context": "https://schema.org",
+        "@type": "Service",
+        serviceType: "Music lessons",
+        name: `Music classes in ${area.name}`,
+        description: `Structured, one-to-one music lessons in ${area.name} — home and online — across guitar, piano, keyboard, vocals, drums and more.`,
+        areaServed: { "@type": "Place", name: `${area.name}, Delhi NCR, India` },
+        provider: {
+          "@type": ["LocalBusiness", "MusicSchool", "EducationalOrganization"],
+          name: BRAND.name,
+          url: SITE_URL,
+          telephone: PHONE_DISPLAY,
+          areaServed: area.neighbourhoods.map((n) => ({ "@type": "Place", name: n })),
+        },
+        offers: { "@type": "Offer", priceCurrency: "INR", price: "15000", url: `${SITE_URL}/start` },
+      };
   const breadcrumb = breadcrumbJsonLd([
     { name: "Home", path: "/" },
     { name: "Music classes", path: "/music-classes" },
@@ -56,7 +80,7 @@ export default function AreaPage({ params }: { params: { area: string } }) {
 
   return (
     <>
-      <JsonLd data={[service, breadcrumb]} />
+      <JsonLd data={[primary, breadcrumb]} />
 
       <PageHero
         eyebrow={`Music classes in ${area.name}`}
@@ -138,6 +162,33 @@ export default function AreaPage({ params }: { params: { area: string } }) {
         </div>
         <p className="mt-6 text-sm text-ink/60">Don&apos;t see your locality? We very likely still cover it — <Link href={whatsappTrialLink()} className="font-semibold text-[#7A5E0F]">message us on WhatsApp</Link> and we&apos;ll confirm a teacher near you.</p>
       </Section>
+
+      {/* Flagship only: visible Name/Address/Phone matching the Google listing. */}
+      {area.address && (
+        <Section background="paper" spacing="md">
+          <div className="rounded-2xl border border-hairline bg-white p-6 sm:p-8">
+            <div className="grid gap-6 sm:grid-cols-[1.2fr_1fr] sm:items-center">
+              <div>
+                <p className="eyebrow">Find us in Delhi Cantt</p>
+                <p className="mt-3 font-display text-2xl font-semibold text-ink">{BRAND.name}</p>
+                <address className="mt-2 not-italic text-ink/75">
+                  {area.address.street}, {area.address.locality}<br />
+                  {area.address.region} {area.address.postalCode}, India<br />
+                  <a href={`tel:+91${PHONE_DISPLAY.replace(/\D/g, "").slice(-10)}`} className="font-semibold text-[#7A5E0F]">{PHONE_DISPLAY}</a>
+                </address>
+                <div className="mt-5 flex flex-col gap-3 sm:flex-row">
+                  <Button href={area.address.mapUrl} external variant="primary" size="md">Get directions</Button>
+                  <Button href={whatsappTrialLink()} external variant="secondary" size="md">WhatsApp us</Button>
+                </div>
+              </div>
+              <div className="rounded-xl border border-hairline bg-mist p-5 text-sm leading-relaxed text-ink/70">
+                <p className="font-semibold text-ink">Home · Online · Studio</p>
+                <p className="mt-1">Classes at your home across Delhi Cantt, live online anywhere, or in person at our Parade Road studio. Free trial, no commitment — we usually confirm a teacher the same day.</p>
+              </div>
+            </div>
+          </div>
+        </Section>
+      )}
 
       <FinalCTA
         headline={`Start music classes in ${area.name} with one free trial.`}

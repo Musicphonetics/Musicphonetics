@@ -40,7 +40,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       url: `${SITE_URL}/music-classes/${a.slug}`,
       lastModified: now,
       changeFrequency: "monthly",
-      priority: 0.9,
+      priority: a.flagship ? 1 : 0.9,
     });
   }
 
