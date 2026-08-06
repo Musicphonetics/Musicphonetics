@@ -23,6 +23,7 @@ export default function TeacherSchedule() {
   const [timeoff, setTimeoff] = useState<TeacherTimeOff[]>([]);
   const [sched, setSched] = useState<ScheduledClass[]>([]);
   const [toast, setToast] = useState<{ kind: "success" | "error"; message: string } | null>(null);
+  const [edit, setEdit] = useState<{ id: string; date: string; start: string; end: string; mode: string; location: string } | null>(null);
 
   // availability form
   const [aw, setAw] = useState("1"); const [as1, setAs1] = useState("16:00"); const [ae, setAe] = useState("17:00"); const [am, setAm] = useState("Online");
@@ -76,6 +77,22 @@ export default function TeacherSchedule() {
     logAudit({ action: AUDIT.SCHEDULE_CHANGED, teacher_id: uid, student_id: ssid, entity_type: "scheduled_class", summary: `Scheduled a class on ${sdate}` });
     setToast({ kind: "success", message: "Class scheduled." }); reload();
   }
+  // Reschedule / fix a class the teacher entered with the wrong date or time.
+  async function saveEdit() {
+    if (!edit) return;
+    if (edit.end <= edit.start) return setToast({ kind: "error", message: "End time must be after start." });
+    const clash = sched.some((c) => c.id !== edit.id && c.scheduled_date === edit.date && c.status === "scheduled"
+      && overlaps(edit.start, edit.end, c.start_time.slice(0, 5), c.end_time.slice(0, 5)));
+    if (clash) return setToast({ kind: "error", message: "That overlaps another scheduled class." });
+    const { error } = await getSupabase().from("scheduled_classes").update({
+      scheduled_date: edit.date, start_time: edit.start, end_time: edit.end,
+      mode: edit.mode, location: edit.location || null, status: "scheduled", updated_at: new Date().toISOString(),
+    }).eq("id", edit.id);
+    if (error) return setToast({ kind: "error", message: error.message });
+    logAudit({ action: AUDIT.SCHEDULE_CHANGED, teacher_id: uid ?? undefined, entity_type: "scheduled_class", entity_id: edit.id, summary: `Rescheduled a class to ${edit.date}` });
+    setToast({ kind: "success", message: "Class updated." });
+    setEdit(null); reload();
+  }
   async function cancelSched(c: ScheduledClass) {
     await getSupabase().from("scheduled_classes").update({ status: "cancelled_by_teacher", updated_at: new Date().toISOString() }).eq("id", c.id);
     logAudit({ action: AUDIT.SCHEDULE_CHANGED, teacher_id: c.teacher_id, student_id: c.student_id, entity_type: "scheduled_class", entity_id: c.id, summary: "Cancelled a scheduled class" });
@@ -97,14 +114,36 @@ export default function TeacherSchedule() {
             <p className="mb-2 text-sm font-semibold text-ink">Upcoming classes</p>
             <div className="space-y-2">
               {sched.length === 0 ? <Empty text="No upcoming classes scheduled." /> : sched.map((c) => (
-                <div key={c.id} className="flex items-center justify-between rounded-2xl border border-hairline bg-white p-3.5">
-                  <div>
-                    <p className="text-sm font-semibold text-ink">{nameOf[c.student_id] || "Student"}</p>
-                    <p className="text-xs text-ink/60">{prettyDate(c.scheduled_date)} · {c.start_time.slice(0, 5)}–{c.end_time.slice(0, 5)} · {c.mode || "—"}</p>
-                  </div>
-                  {c.status === "scheduled"
-                    ? <button onClick={() => cancelSched(c)} className="text-xs font-semibold text-red-600">Cancel</button>
-                    : <span className="text-xs font-semibold text-ink/50">{ATTENDANCE_LABEL[c.status] ?? c.status}</span>}
+                <div key={c.id} className="rounded-2xl border border-hairline bg-white p-3.5">
+                  {edit?.id === c.id ? (
+                    <div className="space-y-2">
+                      <p className="text-sm font-semibold text-ink">{nameOf[c.student_id] || "Student"}</p>
+                      <div className="grid grid-cols-2 gap-2">
+                        <input type="date" value={edit.date} onChange={(e) => setEdit({ ...edit, date: e.target.value })} className={INP} />
+                        <select value={edit.mode} onChange={(e) => setEdit({ ...edit, mode: e.target.value })} className={INP}><option>Online</option><option>Home</option></select>
+                        <input type="time" value={edit.start} onChange={(e) => setEdit({ ...edit, start: e.target.value })} className={INP} />
+                        <input type="time" value={edit.end} onChange={(e) => setEdit({ ...edit, end: e.target.value })} className={INP} />
+                        <input value={edit.location} onChange={(e) => setEdit({ ...edit, location: e.target.value })} placeholder="Location (optional)" className={INP + " col-span-2"} />
+                      </div>
+                      <div className="flex gap-2">
+                        <button onClick={saveEdit} className="rounded-full bg-ink px-5 py-2 text-xs font-semibold text-paper">Save changes</button>
+                        <button onClick={() => setEdit(null)} className="rounded-full border border-hairline px-5 py-2 text-xs font-semibold text-ink/70">Cancel</button>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-sm font-semibold text-ink">{nameOf[c.student_id] || "Student"}</p>
+                        <p className="text-xs text-ink/60">{prettyDate(c.scheduled_date)} · {c.start_time.slice(0, 5)}–{c.end_time.slice(0, 5)} · {c.mode || "—"}</p>
+                      </div>
+                      {c.status === "scheduled" ? (
+                        <div className="flex items-center gap-3">
+                          <button onClick={() => setEdit({ id: c.id, date: c.scheduled_date, start: c.start_time.slice(0, 5), end: c.end_time.slice(0, 5), mode: c.mode || "Online", location: c.location || "" })} className="text-xs font-semibold text-[#7A5E0F]">Edit</button>
+                          <button onClick={() => cancelSched(c)} className="text-xs font-semibold text-red-600">Cancel</button>
+                        </div>
+                      ) : <span className="text-xs font-semibold text-ink/50">{ATTENDANCE_LABEL[c.status] ?? c.status}</span>}
+                    </div>
+                  )}
                 </div>
               ))}
             </div>
