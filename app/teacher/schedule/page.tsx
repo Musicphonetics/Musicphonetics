@@ -13,6 +13,7 @@ import { cn } from "@/lib/utils";
 
 const WD = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 const todayISO = () => new Date().toISOString().slice(0, 10);
+const daysAgoISO = (n: number) => new Date(Date.now() - n * 86400000).toISOString().slice(0, 10);
 const prettyDate = (iso: string) => new Date(iso + "T00:00:00").toLocaleDateString("en-IN", { weekday: "short", day: "numeric", month: "short" });
 const overlaps = (aS: string, aE: string, bS: string, bE: string) => aS < bE && bS < aE;
 
@@ -37,7 +38,7 @@ export default function TeacherSchedule() {
     const [av, to, sc] = await Promise.all([
       sb.from("teacher_availability").select("*").order("weekday").order("start_time"),
       sb.from("teacher_time_off").select("*").order("start_date", { ascending: false }),
-      sb.from("scheduled_classes").select("*").gte("scheduled_date", todayISO()).order("scheduled_date").order("start_time"),
+      sb.from("scheduled_classes").select("*").gte("scheduled_date", daysAgoISO(60)).order("scheduled_date").order("start_time"),
     ]);
     setAvail((av.data as TeacherAvailability[]) ?? []);
     setTimeoff((to.data as TeacherTimeOff[]) ?? []);
@@ -105,6 +106,44 @@ export default function TeacherSchedule() {
     setToast({ kind: "success", message: "Unavailable dates added." }); setTR(""); reload();
   }
 
+  const today = todayISO();
+  const upcoming = sched.filter((c) => c.scheduled_date >= today);
+  const past = sched.filter((c) => c.scheduled_date < today).reverse();
+
+  const renderRow = (c: ScheduledClass) => (
+    <div key={c.id} className="rounded-2xl border border-hairline bg-white p-3.5">
+      {edit?.id === c.id ? (
+        <div className="space-y-2">
+          <p className="text-sm font-semibold text-ink">{nameOf[c.student_id] || "Student"}</p>
+          <div className="grid grid-cols-2 gap-2">
+            <input type="date" value={edit.date} onChange={(e) => setEdit({ ...edit, date: e.target.value })} className={INP} />
+            <select value={edit.mode} onChange={(e) => setEdit({ ...edit, mode: e.target.value })} className={INP}><option>Online</option><option>Home</option></select>
+            <input type="time" value={edit.start} onChange={(e) => setEdit({ ...edit, start: e.target.value })} className={INP} />
+            <input type="time" value={edit.end} onChange={(e) => setEdit({ ...edit, end: e.target.value })} className={INP} />
+            <input value={edit.location} onChange={(e) => setEdit({ ...edit, location: e.target.value })} placeholder="Location (optional)" className={INP + " col-span-2"} />
+          </div>
+          <div className="flex gap-2">
+            <button onClick={saveEdit} className="rounded-full bg-ink px-5 py-2 text-xs font-semibold text-paper">Save changes</button>
+            <button onClick={() => setEdit(null)} className="rounded-full border border-hairline px-5 py-2 text-xs font-semibold text-ink/70">Cancel</button>
+          </div>
+        </div>
+      ) : (
+        <div className="flex items-center justify-between gap-3">
+          <div className="min-w-0">
+            <p className="text-sm font-semibold text-ink">{nameOf[c.student_id] || "Student"}</p>
+            <p className="text-xs text-ink/60">{prettyDate(c.scheduled_date)} · {c.start_time.slice(0, 5)}–{c.end_time.slice(0, 5)} · {c.mode || "—"}</p>
+          </div>
+          <div className="flex shrink-0 items-center gap-3">
+            <button onClick={() => setEdit({ id: c.id, date: c.scheduled_date, start: c.start_time.slice(0, 5), end: c.end_time.slice(0, 5), mode: c.mode || "Online", location: c.location || "" })} className="text-xs font-semibold text-[#7A5E0F]">Edit</button>
+            {c.status === "scheduled"
+              ? <button onClick={() => cancelSched(c)} className="text-xs font-semibold text-red-600">Cancel</button>
+              : <span className="text-xs font-semibold text-ink/50">{ATTENDANCE_LABEL[c.status] ?? c.status}</span>}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+
   return (
     <PortalShell role="teacher" tabs={TEACHER_TABS} title="Schedule">
       {!avail ? <Loading /> : (
@@ -113,41 +152,18 @@ export default function TeacherSchedule() {
           <section>
             <p className="mb-2 text-sm font-semibold text-ink">Upcoming classes</p>
             <div className="space-y-2">
-              {sched.length === 0 ? <Empty text="No upcoming classes scheduled." /> : sched.map((c) => (
-                <div key={c.id} className="rounded-2xl border border-hairline bg-white p-3.5">
-                  {edit?.id === c.id ? (
-                    <div className="space-y-2">
-                      <p className="text-sm font-semibold text-ink">{nameOf[c.student_id] || "Student"}</p>
-                      <div className="grid grid-cols-2 gap-2">
-                        <input type="date" value={edit.date} onChange={(e) => setEdit({ ...edit, date: e.target.value })} className={INP} />
-                        <select value={edit.mode} onChange={(e) => setEdit({ ...edit, mode: e.target.value })} className={INP}><option>Online</option><option>Home</option></select>
-                        <input type="time" value={edit.start} onChange={(e) => setEdit({ ...edit, start: e.target.value })} className={INP} />
-                        <input type="time" value={edit.end} onChange={(e) => setEdit({ ...edit, end: e.target.value })} className={INP} />
-                        <input value={edit.location} onChange={(e) => setEdit({ ...edit, location: e.target.value })} placeholder="Location (optional)" className={INP + " col-span-2"} />
-                      </div>
-                      <div className="flex gap-2">
-                        <button onClick={saveEdit} className="rounded-full bg-ink px-5 py-2 text-xs font-semibold text-paper">Save changes</button>
-                        <button onClick={() => setEdit(null)} className="rounded-full border border-hairline px-5 py-2 text-xs font-semibold text-ink/70">Cancel</button>
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <p className="text-sm font-semibold text-ink">{nameOf[c.student_id] || "Student"}</p>
-                        <p className="text-xs text-ink/60">{prettyDate(c.scheduled_date)} · {c.start_time.slice(0, 5)}–{c.end_time.slice(0, 5)} · {c.mode || "—"}</p>
-                      </div>
-                      {c.status === "scheduled" ? (
-                        <div className="flex items-center gap-3">
-                          <button onClick={() => setEdit({ id: c.id, date: c.scheduled_date, start: c.start_time.slice(0, 5), end: c.end_time.slice(0, 5), mode: c.mode || "Online", location: c.location || "" })} className="text-xs font-semibold text-[#7A5E0F]">Edit</button>
-                          <button onClick={() => cancelSched(c)} className="text-xs font-semibold text-red-600">Cancel</button>
-                        </div>
-                      ) : <span className="text-xs font-semibold text-ink/50">{ATTENDANCE_LABEL[c.status] ?? c.status}</span>}
-                    </div>
-                  )}
-                </div>
-              ))}
+              {upcoming.length === 0 ? <Empty text="No upcoming classes scheduled." /> : upcoming.map(renderRow)}
             </div>
-            <div className="mt-3 rounded-2xl border border-hairline bg-white p-4">
+
+            {past.length > 0 && (
+              <div className="mt-5">
+                <p className="mb-1 text-sm font-semibold text-ink">Earlier classes</p>
+                <p className="mb-2 text-xs text-ink/55">Added a wrong date? Tap Edit here to fix a past class.</p>
+                <div className="space-y-2">{past.map(renderRow)}</div>
+              </div>
+            )}
+
+            <div className="mt-5 rounded-2xl border border-hairline bg-white p-4">
               <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-ink/55">Schedule a class</p>
               <div className="grid grid-cols-2 gap-2">
                 <select value={ssid} onChange={(e) => setSsid(e.target.value)} className={INP}>
