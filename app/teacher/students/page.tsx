@@ -82,14 +82,38 @@ export default function MyStudents() {
   );
 }
 
+const CINP = "rounded-lg border border-hairline bg-white px-2 py-1.5 text-xs focus-visible:outline-2 focus-visible:outline-gold focus:outline-none";
+
 function StudentDetail({ stat, onReport }: { stat: StudentStat; onReport: () => void }) {
   const [classes, setClasses] = useState<ClassUpdate[] | null>(null);
   const [payments, setPayments] = useState<Payment[] | null>(null);
   const [showAdmission, setShowAdmission] = useState(false);
+  const [editId, setEditId] = useState<string | null>(null);
+  const [ev, setEv] = useState<{ class_date: string; class_status: string; taught: string }>({ class_date: "", class_status: "", taught: "" });
+  const [clsMsg, setClsMsg] = useState<string | null>(null);
+
+  function startEdit(c: ClassUpdate) {
+    setClsMsg(null);
+    setEditId(c.id);
+    setEv({ class_date: (c.class_date || "").slice(0, 10), class_status: c.class_status || "Completed", taught: c.taught || "" });
+  }
+  async function saveClass(id: string) {
+    const { error } = await getSupabase().from("class_updates")
+      .update({ class_date: ev.class_date, class_status: ev.class_status, taught: ev.taught || null }).eq("id", id);
+    if (error) { setClsMsg(error.message); return; }
+    setClasses((prev) => prev && prev.map((c) => (c.id === id ? { ...c, class_date: ev.class_date, class_status: ev.class_status, taught: ev.taught } as ClassUpdate : c)));
+    setEditId(null);
+  }
+  async function deleteClass(id: string) {
+    const { error } = await getSupabase().from("class_updates").delete().eq("id", id);
+    if (error) { setClsMsg(error.message); return; }
+    setClasses((prev) => prev && prev.filter((c) => c.id !== id));
+    setEditId(null);
+  }
 
   useEffect(() => {
     const sb = getSupabase();
-    sb.from("class_updates").select("*").eq("student_id", stat.student_id).order("class_date", { ascending: false }).limit(8)
+    sb.from("class_updates").select("*").eq("student_id", stat.student_id).order("class_date", { ascending: false }).limit(50)
       .then(({ data }) => setClasses((data as ClassUpdate[]) ?? []));
     sb.from("payments").select("*").eq("student_id", stat.student_id).order("payment_date", { ascending: false }).limit(8)
       .then(({ data }) => setPayments((data as Payment[]) ?? []));
@@ -124,14 +148,37 @@ function StudentDetail({ stat, onReport }: { stat: StudentStat; onReport: () => 
 
       <FoundationTeacherPanel studentId={stat.student_id} instrument={stat.instrument} completed={stat.classes_completed} feeQuoted={stat.fee_quoted} />
 
-      <p className="mt-4 text-xs font-semibold uppercase tracking-wide text-ink/60">Recent classes</p>
+      <p className="mt-4 text-xs font-semibold uppercase tracking-wide text-ink/60">Recent classes · tap Edit to fix</p>
+      {clsMsg && <p className="mt-1 text-xs text-red-600">{clsMsg}</p>}
       {!classes ? <p className="mt-1 text-xs text-ink/50">Loading…</p> :
         classes.length === 0 ? <p className="mt-1 text-xs text-ink/50">No classes logged yet.</p> : (
         <ul className="mt-2 space-y-1.5">
           {classes.map((c) => (
-            <li key={c.id} className="flex justify-between text-xs text-ink/75">
-              <span>{c.class_date} · {c.class_status}</span>
-              <span className="truncate pl-2 text-ink/55">{c.taught || ""}</span>
+            <li key={c.id} className="rounded-lg border border-hairline bg-white p-2">
+              {editId === c.id ? (
+                <div className="space-y-1.5">
+                  <div className="grid grid-cols-2 gap-1.5">
+                    <input type="date" value={ev.class_date} onChange={(e) => setEv({ ...ev, class_date: e.target.value })} className={CINP} />
+                    <select value={ev.class_status} onChange={(e) => setEv({ ...ev, class_status: e.target.value })} className={CINP}>
+                      {["Completed", "Cancelled", "Absent", "Rescheduled"].map((s) => <option key={s} value={s}>{s}</option>)}
+                    </select>
+                  </div>
+                  <input value={ev.taught} onChange={(e) => setEv({ ...ev, taught: e.target.value })} placeholder="What was covered" className={CINP + " w-full"} />
+                  <div className="flex items-center gap-2">
+                    <button onClick={() => saveClass(c.id)} className="rounded-full bg-ink px-4 py-1.5 text-[11px] font-semibold text-paper">Save</button>
+                    <button onClick={() => setEditId(null)} className="rounded-full border border-hairline px-4 py-1.5 text-[11px] font-semibold text-ink/70">Cancel</button>
+                    <button onClick={() => deleteClass(c.id)} className="ml-auto text-[11px] font-semibold text-red-600">Delete</button>
+                  </div>
+                </div>
+              ) : (
+                <div className="flex items-center justify-between gap-2 text-xs">
+                  <div className="min-w-0">
+                    <span className="text-ink/75">{c.class_date} · {c.class_status}</span>
+                    {c.taught && <span className="ml-2 text-ink/50">{c.taught}</span>}
+                  </div>
+                  <button onClick={() => startEdit(c)} className="shrink-0 font-semibold text-[#7A5E0F]">Edit</button>
+                </div>
+              )}
             </li>
           ))}
         </ul>
