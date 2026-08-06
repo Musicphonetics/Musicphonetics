@@ -23,10 +23,11 @@ export default function TeacherCalendar() {
       if (!user) { setEvents([]); return; }
       const from = isoDays(-90), to = isoDays(180);
 
-      const [prof, cls, evs, studs] = await Promise.all([
+      const [prof, cls, evs, logs, studs] = await Promise.all([
         sb.from("profiles").select("calendar_token").eq("id", user.id).maybeSingle(),
         sb.from("scheduled_classes").select("*").gte("scheduled_date", from).lte("scheduled_date", to),
         sb.from("calendar_events").select("*").gte("event_date", from).lte("event_date", to),
+        sb.from("class_updates").select("*").gte("class_date", from).lte("class_date", to),
         sb.from("students").select("id,name"),
       ]);
 
@@ -45,6 +46,15 @@ export default function TeacherCalendar() {
         for (const e of (evs.data as Record<string, string>[]) ?? []) {
           out.push({ id: `e-${e.id}`, date: e.event_date, start: e.start_time, end: e.end_time, title: e.title, sub: e.location || undefined, kind: "event" });
         }
+      }
+      // Logged classes (Recent classes) also show on the calendar and stay in
+      // sync as they're edited.
+      for (const u of (logs.data as Record<string, string>[]) ?? []) {
+        out.push({
+          id: `u-${u.id}`, date: u.class_date, start: u.scheduled_start || null, end: u.scheduled_end || null,
+          title: sName[u.student_id] || "Class", sub: [u.class_status, u.taught].filter(Boolean).join(" · ") || undefined,
+          kind: "class", cancelled: /cancel|no-show/i.test(u.class_status || ""),
+        });
       }
       setEvents(out);
     })();

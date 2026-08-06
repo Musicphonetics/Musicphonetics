@@ -27,6 +27,7 @@ const addMin = (time, mins) => {
   return `${String(Math.floor(t / 60)).padStart(2, "0")}:${String(t % 60).padStart(2, "0")}:00`;
 };
 const isoDays = (n) => new Date(Date.now() + n * 86400000).toISOString().slice(0, 10);
+const nextDay = (date) => { const d = new Date(String(date) + "T00:00:00Z"); d.setUTCDate(d.getUTCDate() + 1); return d.toISOString().slice(0, 10).replace(/-/g, ""); };
 
 // Fold long lines to 75 octets per RFC 5545 (calendars are strict-ish).
 function fold(line) {
@@ -36,14 +37,16 @@ function fold(line) {
   return out + "\r\n " + rest;
 }
 
-function vevent({ uid, date, start, end, summary, location, description, cancelled }) {
+function vevent({ uid, date, start, end, summary, location, description, cancelled, allDay }) {
   const stamp = new Date().toISOString().replace(/[-:]/g, "").slice(0, 15) + "Z";
+  const when = allDay
+    ? [`DTSTART;VALUE=DATE:${String(date).replace(/-/g, "")}`, `DTEND;VALUE=DATE:${nextDay(date)}`]
+    : [`DTSTART:${dt(date, start)}`, `DTEND:${dt(date, end || addMin(start, 60))}`];
   const lines = [
     "BEGIN:VEVENT",
     `UID:${uid}@musicphonetics`,
     `DTSTAMP:${stamp}`,
-    `DTSTART:${dt(date, start)}`,
-    `DTEND:${dt(date, end || addMin(start, 60))}`,
+    ...when,
     `SUMMARY:${esc(summary)}`,
     location ? `LOCATION:${esc(location)}` : "",
     description ? `DESCRIPTION:${esc(description)}` : "",
@@ -69,14 +72,16 @@ export async function onRequestGet({ request, env }) {
   const from = isoDays(-90), to = isoDays(180);
   const scope = isOwner ? "" : `&teacher_id=eq.${me.id}`;
 
-  const [scRes, evRes, stRes, tpRes] = await Promise.all([
+  const [scRes, evRes, cuRes, stRes, tpRes] = await Promise.all([
     fetch(`${env.SUPABASE_URL}/rest/v1/scheduled_classes?scheduled_date=gte.${from}&scheduled_date=lte.${to}${scope}&select=*&order=scheduled_date`, { headers: admin(env) }),
     fetch(`${env.SUPABASE_URL}/rest/v1/calendar_events?event_date=gte.${from}&event_date=lte.${to}${scope}&select=*&order=event_date`, { headers: admin(env) }),
+    fetch(`${env.SUPABASE_URL}/rest/v1/class_updates?class_date=gte.${from}&class_date=lte.${to}${scope}&select=*&order=class_date`, { headers: admin(env) }),
     fetch(`${env.SUPABASE_URL}/rest/v1/students?select=id,name`, { headers: admin(env) }),
     isOwner ? fetch(`${env.SUPABASE_URL}/rest/v1/profiles?role=eq.teacher&select=id,full_name`, { headers: admin(env) }) : Promise.resolve(null),
   ]);
   const classes = scRes.ok ? await scRes.json() : [];
   const events = evRes.ok ? await evRes.json() : [];
+  const logs = cuRes.ok ? await cuRes.json() : [];
   const students = stRes.ok ? await stRes.json() : [];
   const teachers = tpRes && tpRes.ok ? await tpRes.json() : [];
   const sName = Object.fromEntries(students.map((s) => [s.id, s.name]));
@@ -111,6 +116,19 @@ export async function onRequestGet({ request, env }) {
     parts.push(vevent({
       uid: `event-${e.id}`, date: e.event_date, start: e.start_time || "09:00:00", end: e.end_time,
       summary: `${e.title}${tag}`, location: e.location || "", description: e.notes || "",
+    }));
+  }
+  // Logged classes (Recent classes). No time on the log → all-day entry.
+  for (const u of logs) {
+    const who = sName[u.student_id] || "Student";
+    const tag = isOwner ? ` (${tName[u.teacher_id] || "Teacher"})` : "";
+    const cancelled = /cancel|no-show/i.test(u.class_status || "");
+    parts.push(vevent({
+      uid: `log-${u.id}`, date: u.class_date, start: u.scheduled_start, end: u.scheduled_end,
+      allDay: !u.scheduled_start,
+      summary: `Class — ${who}${tag}${u.class_status ? ` · ${u.class_status}` : ""}`,
+      description: u.taught || "",
+      cancelled,
     }));
   }
 

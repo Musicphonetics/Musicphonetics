@@ -101,7 +101,9 @@ function StudentDetail({ stat, onReport }: { stat: StudentStat; onReport: () => 
     const { error } = await getSupabase().from("class_updates")
       .update({ class_date: ev.class_date, class_status: ev.class_status, taught: ev.taught || null }).eq("id", id);
     if (error) { setClsMsg(error.message); return; }
-    setClasses((prev) => prev && prev.map((c) => (c.id === id ? { ...c, class_date: ev.class_date, class_status: ev.class_status, taught: ev.taught } as ClassUpdate : c)));
+    setClasses((prev) => prev && prev
+      .map((c) => (c.id === id ? { ...c, class_date: ev.class_date, class_status: ev.class_status, taught: ev.taught } as ClassUpdate : c))
+      .sort((a, b) => (b.class_date || "").localeCompare(a.class_date || "")));
     setEditId(null);
   }
   async function deleteClass(id: string) {
