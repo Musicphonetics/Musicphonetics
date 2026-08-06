@@ -43,7 +43,9 @@ function renderHtml(key, p, site) {
         <p>Your child’s progress report${p.month ? ` for ${esc(p.month)}` : ""} is now available.</p>
         ${btn("/parent/reports", "Read the report")}`);
     default:
-      return wrap(`<p>${esc(p.body || "You have a new update from Musicphonetics.")}</p>`);
+      return wrap(`${p.title ? `<h2 style="font-family:Georgia,serif">${esc(p.title)}</h2>` : ""}
+        <p>${esc(p.body || "You have a new update from Musicphonetics.")}</p>
+        ${p.action_url ? btn(p.action_url, "Open Musicphonetics") : ""}`);
   }
 }
 
