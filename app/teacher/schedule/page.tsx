@@ -30,6 +30,7 @@ export default function TeacherSchedule() {
   const [aw, setAw] = useState("1"); const [as1, setAs1] = useState("16:00"); const [ae, setAe] = useState("17:00"); const [am, setAm] = useState("Online");
   // schedule form
   const [ssid, setSsid] = useState(""); const [sdate, setSdate] = useState(todayISO()); const [sst, setSst] = useState("16:00"); const [sen, setSen] = useState("17:00"); const [smode, setSmode] = useState("Online"); const [sloc, setSloc] = useState("");
+  const [scount, setScount] = useState("8"); const [filterStudent, setFilterStudent] = useState("");
   // time off form
   const [tS, setTS] = useState(todayISO()); const [tE, setTE] = useState(todayISO()); const [tR, setTR] = useState("");
 
@@ -38,7 +39,7 @@ export default function TeacherSchedule() {
     const [av, to, sc] = await Promise.all([
       sb.from("teacher_availability").select("*").order("weekday").order("start_time"),
       sb.from("teacher_time_off").select("*").order("start_date", { ascending: false }),
-      sb.from("scheduled_classes").select("*").gte("scheduled_date", daysAgoISO(60)).order("scheduled_date").order("start_time"),
+      sb.from("scheduled_classes").select("*").gte("scheduled_date", daysAgoISO(400)).order("scheduled_date").order("start_time"),
     ]);
     setAvail((av.data as TeacherAvailability[]) ?? []);
     setTimeoff((to.data as TeacherTimeOff[]) ?? []);
@@ -64,19 +65,33 @@ export default function TeacherSchedule() {
     await getSupabase().from("teacher_availability").delete().eq("id", id); reload();
   }
 
+  // Plan a whole run of classes at once: pick a student + how many, and it
+  // generates that many WEEKLY classes from the start date and adds them all
+  // (they show up on the calendar automatically). Set the count to 1 for a
+  // single class. Dates that clash with an existing class are skipped.
   async function addSched() {
     if (!uid) return;
     if (!ssid) return setToast({ kind: "error", message: "Pick a student." });
     if (sen <= sst) return setToast({ kind: "error", message: "End time must be after start." });
-    // Conflict check: no overlapping active class for this teacher on the same day.
-    const clash = sched.some((c) => c.scheduled_date === sdate && c.status === "scheduled" && overlaps(sst, sen, c.start_time.slice(0, 5), c.end_time.slice(0, 5)));
-    if (clash) return setToast({ kind: "error", message: "That overlaps another scheduled class." });
-    const { error } = await getSupabase().from("scheduled_classes").insert({
-      teacher_id: uid, student_id: ssid, scheduled_date: sdate, start_time: sst, end_time: sen, mode: smode, location: sloc || null, status: "scheduled", created_by: uid,
-    });
+    const n = Math.max(1, Math.min(52, parseInt(scount || "1", 10) || 1));
+    const base = new Date(sdate + "T00:00:00");
+    const rows: Record<string, unknown>[] = [];
+    let skipped = 0;
+    for (let i = 0; i < n; i++) {
+      const d = new Date(base); d.setDate(d.getDate() + i * 7);
+      const iso = d.toLocaleDateString("en-CA");
+      const clash = sched.some((c) => c.scheduled_date === iso && c.status === "scheduled" && overlaps(sst, sen, c.start_time.slice(0, 5), c.end_time.slice(0, 5)))
+        || rows.some((r) => r.scheduled_date === iso);
+      if (clash) { skipped++; continue; }
+      rows.push({ teacher_id: uid, student_id: ssid, scheduled_date: iso, start_time: sst, end_time: sen, mode: smode, location: sloc || null, status: "scheduled", created_by: uid });
+    }
+    if (rows.length === 0) return setToast({ kind: "error", message: "Those dates all clash with existing classes." });
+    const { error } = await getSupabase().from("scheduled_classes").insert(rows);
     if (error) return setToast({ kind: "error", message: error.message });
-    logAudit({ action: AUDIT.SCHEDULE_CHANGED, teacher_id: uid, student_id: ssid, entity_type: "scheduled_class", summary: `Scheduled a class on ${sdate}` });
-    setToast({ kind: "success", message: "Class scheduled." }); reload();
+    const sname = students.find((s) => s.student_id === ssid)?.name || "the student";
+    logAudit({ action: AUDIT.SCHEDULE_CHANGED, teacher_id: uid, student_id: ssid, entity_type: "scheduled_class", summary: `Scheduled ${rows.length} classes from ${sdate}` });
+    setToast({ kind: "success", message: `Added ${rows.length} class${rows.length > 1 ? "es" : ""} for ${sname}${skipped ? ` (${skipped} skipped for clashes)` : ""}. They're on the calendar now.` });
+    reload();
   }
   // Reschedule / fix a class the teacher entered with the wrong date or time.
   async function saveEdit() {
@@ -107,8 +122,9 @@ export default function TeacherSchedule() {
   }
 
   const today = todayISO();
-  const upcoming = sched.filter((c) => c.scheduled_date >= today);
-  const past = sched.filter((c) => c.scheduled_date < today).reverse();
+  const visible = filterStudent ? sched.filter((c) => c.student_id === filterStudent) : sched;
+  const upcoming = visible.filter((c) => c.scheduled_date >= today);
+  const past = visible.filter((c) => c.scheduled_date < today).reverse();
 
   const renderRow = (c: ScheduledClass) => (
     <div key={c.id} className="rounded-2xl border border-hairline bg-white p-3.5">
@@ -150,7 +166,19 @@ export default function TeacherSchedule() {
         <div className="space-y-6">
           {/* Scheduled classes */}
           <section>
-            <p className="mb-2 text-sm font-semibold text-ink">Upcoming classes</p>
+            {/* See a single student's whole run of classes at a glance. */}
+            <div className="mb-3 flex items-center gap-2">
+              <select value={filterStudent} onChange={(e) => setFilterStudent(e.target.value)} className={INP + " flex-1"}>
+                <option value="">All students ({sched.length} class{sched.length === 1 ? "" : "es"})</option>
+                {students.map((s) => {
+                  const n = sched.filter((c) => c.student_id === s.student_id).length;
+                  return <option key={s.student_id} value={s.student_id}>{s.name} ({n})</option>;
+                })}
+              </select>
+              {filterStudent && <button onClick={() => setFilterStudent("")} className="shrink-0 text-xs font-semibold text-[#7A5E0F]">Clear</button>}
+            </div>
+
+            <p className="mb-2 text-sm font-semibold text-ink">Upcoming classes{filterStudent ? ` · ${upcoming.length}` : ""}</p>
             <div className="space-y-2">
               {upcoming.length === 0 ? <Empty text="No upcoming classes scheduled." /> : upcoming.map(renderRow)}
             </div>
@@ -164,19 +192,29 @@ export default function TeacherSchedule() {
             )}
 
             <div className="mt-5 rounded-2xl border border-hairline bg-white p-4">
-              <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-ink/55">Schedule a class</p>
-              <div className="grid grid-cols-2 gap-2">
-                <select value={ssid} onChange={(e) => setSsid(e.target.value)} className={INP}>
-                  <option value="">Student…</option>
+              <p className="text-sm font-semibold text-ink">Plan classes</p>
+              <p className="mb-3 text-xs text-ink/55">Pick a student and how many classes. We create them weekly from the start date and add them straight to the calendar. Set the number to 1 for a single class.</p>
+              <div className="space-y-2">
+                <select value={ssid} onChange={(e) => setSsid(e.target.value)} className={INP + " w-full"}>
+                  <option value="">Choose student…</option>
                   {students.map((s) => <option key={s.student_id} value={s.student_id}>{s.name}</option>)}
                 </select>
-                <input type="date" value={sdate} min={todayISO()} onChange={(e) => setSdate(e.target.value)} className={INP} />
-                <input type="time" value={sst} onChange={(e) => setSst(e.target.value)} className={INP} />
-                <input type="time" value={sen} onChange={(e) => setSen(e.target.value)} className={INP} />
-                <select value={smode} onChange={(e) => setSmode(e.target.value)} className={INP}><option>Online</option><option>Home</option></select>
-                <input value={sloc} onChange={(e) => setSloc(e.target.value)} placeholder="Location (optional)" className={INP} />
+                <div className="grid grid-cols-2 gap-2">
+                  <label className="block"><span className="mb-1 block text-[11px] font-semibold uppercase tracking-wide text-ink/50">Number of classes</span>
+                    <input type="number" min={1} max={52} value={scount} onChange={(e) => setScount(e.target.value)} className={INP + " w-full"} /></label>
+                  <label className="block"><span className="mb-1 block text-[11px] font-semibold uppercase tracking-wide text-ink/50">First class date</span>
+                    <input type="date" value={sdate} onChange={(e) => setSdate(e.target.value)} className={INP + " w-full"} /></label>
+                  <label className="block"><span className="mb-1 block text-[11px] font-semibold uppercase tracking-wide text-ink/50">Start</span>
+                    <input type="time" value={sst} onChange={(e) => setSst(e.target.value)} className={INP + " w-full"} /></label>
+                  <label className="block"><span className="mb-1 block text-[11px] font-semibold uppercase tracking-wide text-ink/50">End</span>
+                    <input type="time" value={sen} onChange={(e) => setSen(e.target.value)} className={INP + " w-full"} /></label>
+                  <select value={smode} onChange={(e) => setSmode(e.target.value)} className={INP + " w-full"}><option>Online</option><option>Home</option></select>
+                  <input value={sloc} onChange={(e) => setSloc(e.target.value)} placeholder="Location (optional)" className={INP + " w-full"} />
+                </div>
               </div>
-              <button onClick={addSched} className="mt-3 w-full rounded-full bg-ink py-2.5 text-sm font-semibold text-paper">Add to schedule</button>
+              <button onClick={addSched} className="mt-3 w-full rounded-full bg-ink py-2.5 text-sm font-semibold text-paper">
+                Add {(parseInt(scount, 10) || 1) > 1 ? `${parseInt(scount, 10)} weekly classes` : "class"} to calendar
+              </button>
             </div>
           </section>
 
