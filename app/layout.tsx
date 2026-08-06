@@ -66,9 +66,7 @@ export const metadata: Metadata = {
   // empty, nothing is emitted. DNS TXT verification also works and needs no deploy.
   verification: {
     google: process.env.GOOGLE_SITE_VERIFICATION || undefined,
-    ...(process.env.BING_SITE_VERIFICATION
-      ? { other: { "msvalidate.01": process.env.BING_SITE_VERIFICATION } }
-      : {}),
+    other: { "msvalidate.01": process.env.BING_SITE_VERIFICATION || "852D596D7D6E62CB84B2D032CD2DB7FD" },
   },
 };
 
