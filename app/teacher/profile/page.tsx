@@ -19,6 +19,17 @@ const AGREEMENT_VERSION = "v1-2026";
 const arrToStr = (a?: string[] | null) => (a || []).join(", ");
 const strToArr = (s: string) => s.split(",").map((x) => x.trim()).filter(Boolean);
 
+// If a column has not been migrated yet, PostgREST/Postgres names it in the
+// error. We detect it so a save can drop that one field and still persist the
+// rest, instead of failing wholesale.
+function missingColumn(msg?: string): string | null {
+  if (!msg) return null;
+  let m = msg.match(/find the '([^']+)' column/i);
+  if (m) return m[1];
+  m = msg.match(/column "?([a-zA-Z0-9_]+)"? does not exist/i);
+  return m ? m[1] : null;
+}
+
 type F = Record<string, string>;
 
 export default function TeacherProfile() {
@@ -31,6 +42,7 @@ export default function TeacherProfile() {
   const [agreeAck, setAgreeAck] = useState(false);
   const [availCount, setAvailCount] = useState(0);
   const [busy, setBusy] = useState(false);
+  const [photoBusy, setPhotoBusy] = useState(false);
   const [ready, setReady] = useState(false);
   const [toast, setToast] = useState<{ kind: "success" | "error"; message: string } | null>(null);
   const set = (k: string, v: string) => setF((p) => ({ ...p, [k]: v }));
@@ -111,6 +123,29 @@ export default function TeacherProfile() {
     return e;
   }, [f, priv]);
 
+  // Profile photo: tap the circle to add/replace. Uploads and saves immediately
+  // so it sticks even before the teacher presses Save.
+  async function uploadPhoto(file: File) {
+    if (!uid) return;
+    if (file.size > 5 * 1024 * 1024) { setToast({ kind: "error", message: "Photo must be under 5 MB." }); return; }
+    if (!/^image\/(png|jpe?g|webp)$/.test(file.type)) { setToast({ kind: "error", message: "Use a PNG, JPG or WEBP image." }); return; }
+    setPhotoBusy(true);
+    const sb = getSupabase();
+    const ext = file.name.split(".").pop() || "jpg";
+    const path = `${uid}/avatar-${Date.now()}.${ext}`;
+    const { error } = await sb.storage.from("teacher-photos").upload(path, file, { upsert: true });
+    if (error) {
+      setPhotoBusy(false);
+      setToast({ kind: "error", message: /bucket|not found|does not exist/i.test(error.message) ? "Photo storage isn't enabled yet. Ask the office to run the teacher-photos setup." : `Upload failed: ${error.message}` });
+      return;
+    }
+    const url = sb.storage.from("teacher-photos").getPublicUrl(path).data.publicUrl;
+    set("photo_url", url);
+    await sb.from("profiles").update({ photo_url: url }).eq("id", uid);
+    setPhotoBusy(false);
+    setToast({ kind: "success", message: "Photo updated." });
+  }
+
   async function uploadEvidence(file: File, kind: "identity" | "pan" | "bank") {
     if (!uid) return;
     if (file.size > 5 * 1024 * 1024) { setToast({ kind: "error", message: "File must be under 5 MB." }); return; }
@@ -170,10 +205,19 @@ export default function TeacherProfile() {
       profilePatch.typed_signature = f.typed_signature.trim();
     }
 
-    const { error: pErr } = await getSupabase().from("profiles").update(profilePatch).eq("id", uid);
-    if (pErr) { setBusy(false); setToast({ kind: "error", message: pErr.message }); return; }
+    // Resilient save: if any column has not been migrated yet, drop just that
+    // field and retry, so the teacher's data always saves instead of failing on
+    // one missing column.
+    const patch: Record<string, unknown> = { ...profilePatch, photo_url: f.photo_url || null };
+    for (let i = 0; i < 30; i++) {
+      const { error } = await getSupabase().from("profiles").update(patch).eq("id", uid);
+      if (!error) break;
+      const col = missingColumn(error.message);
+      if (col && col in patch) { delete patch[col]; continue; }
+      setBusy(false); setToast({ kind: "error", message: error.message }); return;
+    }
 
-    const { error: sErr } = await getSupabase().from("teacher_private_details").upsert({
+    const privPatch: Record<string, unknown> = {
       teacher_id: uid,
       bank_account_number: priv.bank_account_number || null,
       pan: priv.pan ? priv.pan.toUpperCase() : null,
@@ -181,13 +225,19 @@ export default function TeacherProfile() {
       pan_proof_path: priv.pan_proof_path || null,
       bank_proof_path: priv.bank_proof_path || null,
       updated_at: nowIso,
-    }, { onConflict: "teacher_id" });
-    if (sErr) { setBusy(false); setToast({ kind: "error", message: sErr.message }); return; }
+    };
+    for (let i = 0; i < 20; i++) {
+      const { error } = await getSupabase().from("teacher_private_details").upsert(privPatch, { onConflict: "teacher_id" });
+      if (!error) break;
+      const col = missingColumn(error.message);
+      if (col && col !== "teacher_id" && col in privPatch) { delete privPatch[col]; continue; }
+      setBusy(false); setToast({ kind: "error", message: error.message }); return;
+    }
 
     // Derive onboarding statuses from the freshly-saved data.
     await getSupabase().rpc("mp_sync_onboarding", { p_teacher_id: null });
     setBusy(false);
-    setToast({ kind: "success", message: "Saved. Your checklist has been updated." });
+    setToast({ kind: "success", message: "Saved. Your profile is up to date." });
   }
 
   const err = (k: string) => errors[k] ? <p className="mt-1 text-xs text-red-600">{errors[k]}</p> : null;
@@ -202,7 +252,7 @@ export default function TeacherProfile() {
           </div>
 
           <Section id="personal" title="Personal details">
-            <UploadRow label="Profile photo" hint={f.photo_url ? "A photo is on file" : "Optional — a clear headshot"} />
+            <PhotoUploader url={f.photo_url} busy={photoBusy} onUpload={uploadPhoto} />
             <Field label="Full legal name" value={f.legal_name || ""} onChange={(v) => set("legal_name", v)} />
             <Field label="Display name" value={f.full_name || ""} onChange={(v) => set("full_name", v)} />
             <div className="grid grid-cols-2 gap-3">
@@ -299,6 +349,36 @@ function Section({ id, title, note, children }: { id: string; title: string; not
       {note && <p className="mt-0.5 text-xs text-ink/55">{note}</p>}
       <div className="mt-4 space-y-4">{children}</div>
     </section>
+  );
+}
+
+function PhotoUploader({ url, busy, onUpload }: { url?: string; busy?: boolean; onUpload: (file: File) => void }) {
+  return (
+    <div className="flex items-center gap-4">
+      <label className="group relative h-24 w-24 shrink-0 cursor-pointer overflow-hidden rounded-full border border-hairline bg-mist" title="Add or change photo">
+        {url ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img src={url} alt="Profile" className="h-full w-full object-cover" />
+        ) : (
+          <span className="flex h-full w-full flex-col items-center justify-center text-ink/40">
+            <svg viewBox="0 0 24 24" className="h-7 w-7" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M12 15.5a3.25 3.25 0 1 0 0-6.5 3.25 3.25 0 0 0 0 6.5Z" />
+              <path d="M3 8.5A1.5 1.5 0 0 1 4.5 7h2l1-2h5l1 2h2A1.5 1.5 0 0 1 19 8.5v9A1.5 1.5 0 0 1 17.5 19h-11A1.5 1.5 0 0 1 5 17.5" />
+            </svg>
+            <span className="mt-1 text-[10px] font-semibold">Add photo</span>
+          </span>
+        )}
+        <span className="absolute inset-x-0 bottom-0 bg-ink/70 py-0.5 text-center text-[10px] font-semibold text-paper opacity-0 transition group-hover:opacity-100">
+          {busy ? "Uploading…" : url ? "Change" : "Add"}
+        </span>
+        <input type="file" accept="image/png,image/jpeg,image/webp" className="hidden" disabled={busy}
+          onChange={(e) => { const file = e.target.files?.[0]; if (file) onUpload(file); e.target.value = ""; }} />
+      </label>
+      <div className="min-w-0 text-sm">
+        <p className="font-medium text-ink">Profile photo</p>
+        <p className="mt-0.5 text-xs text-ink/55">{busy ? "Uploading…" : url ? "Tap the photo to change it." : "Tap the circle to add a clear headshot."}</p>
+      </div>
+    </div>
   );
 }
 
