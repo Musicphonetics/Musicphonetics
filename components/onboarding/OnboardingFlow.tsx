@@ -6,6 +6,7 @@ import { useSearchParams } from "next/navigation";
 import { Logo } from "@/components/layout/Logo";
 import { InstrumentIcon } from "@/components/ui/InstrumentIcon";
 import { whatsappLink } from "@/lib/data";
+import { track } from "@/lib/track";
 import {
   INSTRUMENTS, INSTRUMENT_VALUES, WHO, AGES, MODES, EXPERIENCE, GOALS, TIMINGS, BEGIN, AREAS,
   SOCIAL_PROOF, leadSummary, type LeadData,
@@ -111,6 +112,7 @@ export function OnboardingFlow() {
           Source: "Website onboarding",
         }),
       }).catch(() => {});
+      track("generate_lead", { instrument: answers.instrument, mode: answers.mode, area: answers.location });
       setSubmitting(false);
       go(1); // proceed to the "analyzing" → success flow
     } catch {

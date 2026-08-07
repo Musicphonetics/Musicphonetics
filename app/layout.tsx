@@ -3,6 +3,7 @@ import { Fraunces, Hanken_Grotesk, Dancing_Script } from "next/font/google";
 import "@/styles/globals.css";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { InstallPWA } from "@/components/pwa/InstallPWA";
+import { Analytics } from "@/components/analytics/Analytics";
 import { organizationJsonLd, websiteJsonLd, OG_ORIGIN } from "@/lib/seo";
 
 const display = Fraunces({
@@ -95,6 +96,7 @@ export default function RootLayout({
         <JsonLd data={[organizationJsonLd(), websiteJsonLd()]} />
         {children}
         <InstallPWA />
+        <Analytics />
       </body>
     </html>
   );
