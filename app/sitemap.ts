@@ -9,6 +9,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
   const staticPaths = [
     "",
+    "/learn",
     "/method",
     "/programs",
     "/curriculum",
