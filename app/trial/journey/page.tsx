@@ -1,11 +1,11 @@
 import { PortalShell } from "@/components/portal/PortalShell";
 import { TRIAL_TABS } from "@/components/trial/tabs";
-import { TrialHome } from "@/components/trial/TrialHome";
+import { TrialJourney } from "@/components/trial/TrialJourney";
 
 export default function Page() {
   return (
     <PortalShell role="parent" tabs={TRIAL_TABS} title="Musicphonetics" subtitle="Private Trial Experience">
-      <TrialHome />
+      <TrialJourney />
     </PortalShell>
   );
 }
