@@ -16,6 +16,7 @@ export interface TrialSession {
   director_review?: { text?: string; path?: string; instrument?: string; frequency?: string; start_window?: string } | null;
   recommendation?: { path?: string; price?: string; monthly?: string } | null;
   trial_datetime?: string | null; trial_rating?: number | null;
+  converted_student_id?: string | null;
   feedback?: { by: string; text: string; at: string; rating?: number }[];
   created_at?: string;
 }
@@ -79,7 +80,13 @@ export function useTrial() {
       if (!auth) { router.replace("/trial/login"); return; }
       const { data, error } = await client.rpc("mp_trial_mine");
       if (error) setErr(error.message);
-      setSession((data as TrialSession) || null);
+      const sess = (data as TrialSession) || null;
+      // Once enrolled, the SAME account is a full Student Portal — send them there.
+      if (sess && (sess.stage === "enrolled" || sess.converted_student_id)) {
+        router.replace("/parent/dashboard");
+        return;
+      }
+      setSession(sess);
     } catch (e) { setErr(e instanceof Error ? e.message : "Could not load"); }
     finally { setLoading(false); }
   }, [router]);

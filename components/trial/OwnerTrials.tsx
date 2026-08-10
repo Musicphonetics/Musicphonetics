@@ -74,6 +74,12 @@ function Detail({ id, teachers, onBack }: { id: string; teachers: Row[]; onBack:
   const [frequency, setFrequency] = useState("");
   const [startWindow, setStartWindow] = useState("Within 7 days");
   const [monthly, setMonthly] = useState("");
+  // enrolment
+  const [classMode, setClassMode] = useState("Home");
+  const [perMonth, setPerMonth] = useState("8");
+  const [startDate, setStartDate] = useState("");
+  const [enrolMsg, setEnrolMsg] = useState("");
+  const [enrolling, setEnrolling] = useState(false);
 
   const reload = useCallback(() => {
     const { client } = getSupabaseSafe();
@@ -111,7 +117,15 @@ function Detail({ id, teachers, onBack }: { id: string; teachers: Row[]; onBack:
     const { error } = client ? await client.rpc("mp_trial_director_review", { p_id: id, p: payload }) : { error: { message: "No client" } };
     setBusy(false);
     if (error) { setMsg(error.message); return; }
-    onBack();
+    reload();
+  };
+  const enrol = async () => {
+    setEnrolling(true); setEnrolMsg("");
+    const { client } = getSupabaseSafe();
+    const { error } = client ? await client.rpc("mp_trial_enrol", { p_id: id, p: { class_mode: classMode, classes_per_month: perMonth, start_date: startDate, fee: monthly } }) : { error: { message: "No client" } };
+    setEnrolling(false);
+    if (error) { setEnrolMsg(error.message); return; }
+    reload();
   };
 
   return (
@@ -193,6 +207,31 @@ function Detail({ id, teachers, onBack }: { id: string; teachers: Row[]; onBack:
             {busy ? "Publishing…" : "Publish recommendation to the family"}
           </button>
         </div>
+      </div>
+
+      {/* Enrolment — converts the trial account into the Student Portal */}
+      <div className={card + " border-feature-green/40"}>
+        <h3 className="font-display text-lg font-bold text-ink">Enrol &amp; convert to Student Portal</h3>
+        {row.converted_student_id || row.stage === "enrolled" ? (
+          <div className="mt-2 rounded-xl bg-feature-green/10 p-4 text-sm font-semibold text-feature-green">
+            ✓ Enrolled. This family&rsquo;s login is now their full Student Portal — no second account, history preserved.
+          </div>
+        ) : (
+          <>
+            <p className="mt-1 text-sm text-ink/55">Once payment is arranged, enrol here. Their trial login instantly becomes their Student Portal (same account).</p>
+            <div className="mt-4 grid gap-4 sm:grid-cols-2">
+              <Sel label="Class mode" value={classMode} set={setClassMode} options={["Home", "Online", "Centre"]} />
+              <label className="block"><span className="mb-1.5 block text-sm font-semibold text-ink">Classes / month</span><input className={inp} inputMode="numeric" value={perMonth} onChange={(e) => setPerMonth(e.target.value.replace(/\D/g, ""))} /></label>
+              <label className="block"><span className="mb-1.5 block text-sm font-semibold text-ink">Start date</span><input className={inp} type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} /></label>
+              <label className="block"><span className="mb-1.5 block text-sm font-semibold text-ink">Monthly fee</span><input className={inp} value={monthly} onChange={(e) => setMonthly(e.target.value)} placeholder="₹10,000 / month" /></label>
+            </div>
+            {!row.assigned_teacher_id && <p className="mt-3 text-sm text-red-600">Assign a teacher above before enrolling.</p>}
+            {enrolMsg && <p className="mt-3 text-sm text-red-600">{enrolMsg}</p>}
+            <button onClick={enrol} disabled={enrolling || !row.assigned_teacher_id} className="mt-4 w-full rounded-full bg-feature-green py-3.5 text-base font-semibold text-white disabled:opacity-50">
+              {enrolling ? "Enrolling…" : "Enrol & open Student Portal"}
+            </button>
+          </>
+        )}
       </div>
     </div>
   );
