@@ -16,6 +16,7 @@ export interface TrialSession {
   director_review?: { text?: string; path?: string; instrument?: string; frequency?: string; start_window?: string } | null;
   recommendation?: { path?: string; price?: string; monthly?: string } | null;
   trial_datetime?: string | null; trial_rating?: number | null;
+  trial_otp?: string | null; trial_completed_at?: string | null;
   converted_student_id?: string | null;
   feedback?: { by: string; text: string; at: string; rating?: number }[];
   created_at?: string;
@@ -37,11 +38,13 @@ export function currentStep(s?: TrialSession | null): number {
   if (!s) return 1;
   const profileDone = s.stage !== "booked";          // pre-assessment moves off 'booked'
   const scheduled = !!s.trial_datetime;              // a slot is booked
+  const completed = !!s.trial_completed_at;          // teacher closed the class (OTP)
   const feedbackDone = !!s.trial_rating;             // family submitted feedback
   if (!profileDone) return 1;                         // → Build Your Profile
   if (!scheduled) return 2;                           // → Book Your Trial
-  if (!feedbackDone) return 4;                        // Meet Teacher done → Share Feedback
-  return 6;                                           // Pathway
+  if (!completed) return 3;                           // → Meet Your Teacher (trial ahead)
+  if (!feedbackDone) return 4;                        // → Share Feedback
+  return 5;                                           // → Your Learning Pathway
 }
 
 export const EXPECT = [

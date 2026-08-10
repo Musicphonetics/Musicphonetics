@@ -51,6 +51,9 @@ function AssessDetail({ id, onBack }: { id: string; onBack: () => void }) {
   const [row, setRow] = useState<Row | null>(null);
   const [busy, setBusy] = useState(false);
   const [msg, setMsg] = useState("");
+  const [otp, setOtp] = useState("");
+  const [otpMsg, setOtpMsg] = useState("");
+  const [closing, setClosing] = useState(false);
 
   // assessment fields
   const [summary, setSummary] = useState("");
@@ -102,6 +105,18 @@ function AssessDetail({ id, onBack }: { id: string; onBack: () => void }) {
     onBack();
   };
 
+  const completeTrial = async () => {
+    setClosing(true); setOtpMsg("");
+    const { client } = getSupabaseSafe();
+    const { data, error } = client ? await client.rpc("mp_trial_complete", { p_id: id, p_otp: otp }) : { data: null, error: { message: "No client" } };
+    setClosing(false);
+    if (error) { setOtpMsg(error.message); return; }
+    if (data && data.ok === false) { setOtpMsg(data.error || "Incorrect code."); return; }
+    setOtp("");
+    const r = await getSupabaseSafe().client?.rpc("mp_trial_get_one", { p_id: id });
+    if (r?.data) setRow(r.data);
+  };
+
   return (
     <div className="space-y-4">
       <button onClick={onBack} className="text-sm font-semibold text-ink/60">← Back to trials</button>
@@ -119,6 +134,23 @@ function AssessDetail({ id, onBack }: { id: string; onBack: () => void }) {
           {pre.owns_instrument && <Info k="Owns an instrument" v={pre.owns_instrument} />}
           {pre.goal && <Info k="Main goal" v={pre.goal} />}
         </div>
+      </div>
+
+      {/* Close the trial with the student's code */}
+      <div className={card + " border-feature-green/40"}>
+        <h3 className="font-display text-lg font-bold text-ink">Close the trial</h3>
+        {row.trial_completed_at ? (
+          <p className="mt-2 rounded-xl bg-feature-green/10 p-3 text-sm font-semibold text-feature-green">✓ Trial completed. The family&rsquo;s feedback is now open.</p>
+        ) : (
+          <>
+            <p className="mt-1 text-sm text-ink/55">At the <b>end</b> of the class, ask the student for the 4-digit trial code shown in their portal and enter it here. This closes the trial and opens their feedback.</p>
+            <div className="mt-3 flex gap-2">
+              <input className={inp + " max-w-[10rem] text-center font-mono text-lg tracking-[0.3em]"} inputMode="numeric" maxLength={4} placeholder="0000" value={otp} onChange={(e) => setOtp(e.target.value.replace(/\D/g, "").slice(0, 4))} />
+              <button onClick={completeTrial} disabled={closing || otp.length !== 4} className="rounded-full bg-feature-green px-6 text-sm font-semibold text-white disabled:opacity-50">{closing ? "…" : "Complete"}</button>
+            </div>
+            {otpMsg && <p className="mt-2 text-sm text-red-600">{otpMsg}</p>}
+          </>
+        )}
       </div>
 
       {/* Assessment */}

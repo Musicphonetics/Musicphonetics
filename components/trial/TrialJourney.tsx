@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { getSupabaseSafe } from "@/lib/supabase/client";
 import { Loading } from "@/components/portal/kit";
@@ -17,6 +17,7 @@ export function TrialJourneyView({ s, reload }: { s: TrialSession | null; reload
   const stage = s?.stage || "booked";
   const profileDone = stage !== "booked";
   const scheduled = !!s?.trial_datetime;
+  const completed = !!s?.trial_completed_at;
   const feedbackDone = !!s?.trial_rating;
 
   return (
@@ -47,8 +48,8 @@ export function TrialJourneyView({ s, reload }: { s: TrialSession | null; reload
       {/* Progressive action, driven by the family's own data */}
       {!profileDone && <ProfileBuilder session={s} onSaved={reload} />}
       {profileDone && !scheduled && <BookingCalendar onBooked={reload} />}
-      {scheduled && <ConfirmationCard session={s} />}
-      {scheduled && !feedbackDone && <FeedbackCard onSaved={reload} />}
+      {scheduled && <ConfirmationCard session={s} completed={completed} />}
+      {completed && !feedbackDone && <FeedbackCard onSaved={reload} />}
       {feedbackDone && <PathwayCard session={s} />}
 
       {/* Events */}
@@ -254,36 +255,99 @@ function BookingCalendar({ onBooked }: { onBooked: () => void }) {
 }
 
 // ---------- Step 4: Meet Your Teacher (allotted + Director confirmed) ----------
-function ConfirmationCard({ session }: { session: TrialSession | null }) {
+interface Expect {
+  duration: string; intro: string; partner: string; assess: string[];
+  songs: { title: string; matched: boolean; chords: string[]; capo?: number; line: string }[];
+}
+function ConfirmationCard({ session, completed }: { session: TrialSession | null; completed: boolean }) {
   const first = firstNameOf(session) || "your child";
   const when = session?.trial_datetime ? new Date(session.trial_datetime) : null;
   const whenStr = when ? when.toLocaleString("en-IN", { weekday: "long", day: "numeric", month: "long", hour: "numeric", minute: "2-digit" }) : "your chosen slot";
   const songs = (session?.dream_songs || []).map((d) => d.title).filter(Boolean);
+  const [exp, setExp] = useState<Expect | null>(null);
+
+  useEffect(() => {
+    let on = true;
+    fetch("/api/trial/expect", {
+      method: "POST", headers: { "content-type": "application/json" },
+      body: JSON.stringify({ instrument: session?.instrument || "Guitar", student_name: first, songs: session?.dream_songs || [] }),
+    }).then((r) => r.json()).then((j) => { if (on && j.ok) setExp(j); }).catch(() => {});
+    return () => { on = false; };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [session?.instrument]);
 
   return (
     <div className="space-y-4">
       <div className="rounded-3xl border border-feature-green/30 bg-feature-green/[0.06] p-6 shadow-card">
         <div className="flex items-center gap-2 text-feature-green"><span className="text-2xl">✅</span><span className="font-display text-xl font-bold">Your trial is confirmed</span></div>
         <p className="mt-2 text-sm text-ink/75"><b>{whenStr}</b> · at home or online, as you prefer.</p>
-        <div className="mt-4 rounded-2xl border border-hairline bg-white p-4">
-          <p className="text-sm font-bold text-ink">🎓 A teacher has been allotted to you.</p>
-          <p className="mt-1 text-sm text-ink/65">Your matched Musicphonetics teacher will take {first}&rsquo;s trial. Their details will appear right here in your portal.</p>
+
+        <div className="mt-4 rounded-2xl border border-gold/30 bg-gold/[0.06] p-4">
+          <p className="text-sm font-bold text-[#7A5E0F]">🎓 Your teacher will be allotted in advance.</p>
+          <p className="mt-1 text-sm text-ink/70">
+            Their details — along with the <b>Director&rsquo;s personal confirmation</b> — will reach you in a single message on <b>WhatsApp</b> before your class. You&rsquo;re not alone in this: Musicphonetics is with you at every step, from your very first class to the stage.
+          </p>
         </div>
-        <div className="mt-3 rounded-2xl border border-gold/30 bg-gold/[0.06] p-4">
-          <p className="text-sm font-bold text-[#7A5E0F]">⭐ The Director has personally confirmed your trial.</p>
-          <p className="mt-1 text-sm text-ink/70">You&rsquo;re not alone in this. Musicphonetics is with you at every step — from your very first class to the stage.</p>
-        </div>
+
+        {/* The trial code (OTP) */}
+        {session?.trial_otp && !completed && (
+          <div className="mt-3 rounded-2xl border border-ink/10 bg-white p-4">
+            <p className="text-xs font-bold uppercase tracking-widest text-ink/50">Your trial code</p>
+            <div className="mt-1 flex items-center gap-3">
+              <span className="font-display text-3xl font-bold tracking-[0.3em] text-ink">{session.trial_otp}</span>
+            </div>
+            <p className="mt-1 text-sm text-ink/60">Read this code out to your teacher at the <b>end</b> of the class. Once they enter it, your trial is complete and your feedback opens.</p>
+          </div>
+        )}
       </div>
 
+      {/* Elaborated what-to-expect (real chords + AI prose) */}
       <div className="rounded-3xl border border-hairline bg-white p-6 shadow-card">
         <h3 className="font-display text-lg font-bold text-ink">What to expect in your trial</h3>
-        <div className="mt-3 space-y-2 text-sm">
-          <Row k="Duration" v="A focused 45–60 minute one-to-one class" />
-          <Row k="Format" v="Truly one-to-one — never a group" />
-          <Row k="Your teacher will carry" v={songs.length ? `${first}'s profile & your songs (${songs.join(", ")})` : `${first}'s full profile`} />
-          <Row k="They'll assess" v="Level, musical ear, rhythm & interest" />
+        <p className="mt-2 text-sm leading-relaxed text-ink/75">{exp?.intro || `Your trial is a focused 45 to 60 minute one-to-one class, built entirely around ${first}. It is a real lesson, not a sales pitch.`}</p>
+
+        {(exp?.songs || []).length > 0 && (
+          <div className="mt-4 space-y-3">
+            {exp!.songs.map((s, i) => (
+              <div key={i} className="rounded-2xl border border-hairline bg-paper p-4">
+                <div className="flex items-center justify-between gap-2">
+                  <span className="font-bold text-ink">🎵 {s.title}</span>
+                  {s.matched && (
+                    <span className="flex flex-wrap justify-end gap-1">
+                      {s.chords.map((c) => <span key={c} className="rounded-md border border-hairline bg-white px-2 py-0.5 font-mono text-xs text-ink">{c}</span>)}
+                      {s.capo ? <span className="rounded-md bg-white px-2 py-0.5 text-xs text-ink/55">capo {s.capo}</span> : null}
+                    </span>
+                  )}
+                </div>
+                <p className="mt-2 text-sm leading-relaxed text-ink/65">{s.line}</p>
+              </div>
+            ))}
+          </div>
+        )}
+
+        <div className="mt-4 grid gap-2 text-sm">
+          <Row k="Duration" v={exp?.duration || "45–60 minutes, one-to-one"} />
+          <Row k="Your teacher will carry" v={songs.length ? `${first}'s profile & your songs` : `${first}'s full profile`} />
         </div>
-        <p className="mt-3 text-xs text-ink/50">After your trial, share your feedback below — that&rsquo;s what unlocks your personalised learning pathway.</p>
+
+        {exp?.assess && (
+          <div className="mt-4">
+            <p className="text-xs font-bold uppercase tracking-widest text-[#7A5E0F]">In the trial we&rsquo;ll understand</p>
+            <ul className="mt-2 space-y-1.5">
+              {exp.assess.map((a) => (
+                <li key={a} className="flex items-start gap-2 text-sm text-ink/70">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" className="mt-0.5 shrink-0 text-gold"><path d="M5 12l4 4 10-10" stroke="currentColor" strokeWidth="2.3" strokeLinecap="round" strokeLinejoin="round" /></svg>{a}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+
+        {exp?.partner && <p className="mt-4 rounded-xl bg-gold/[0.08] p-3 text-sm text-ink/70">🎸 {exp.partner}</p>}
+
+        <p className="mt-4 text-xs text-ink/50">
+          {completed ? "Your trial is complete — share your feedback below to unlock your pathway." : "Your feedback opens the moment your teacher closes the class with your trial code."}
+        </p>
       </div>
     </div>
   );
