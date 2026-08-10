@@ -4,34 +4,40 @@ import { useState } from "react";
 import Link from "next/link";
 import { getSupabaseSafe } from "@/lib/supabase/client";
 import { Loading } from "@/components/portal/kit";
-import { useTrial, STAGES, ORDER, EVENTS, firstNameOf, type TrialSession } from "./shared";
+import { useTrial, STAGES, currentStep, EVENTS, firstNameOf, type TrialSession } from "./shared";
+
+const WA = "918796199188";
 
 export function TrialJourney() {
   const { session: s, loading, reload } = useTrial();
   if (loading) return <Loading />;
-  const stageIdx = s ? (ORDER[s.stage] ?? 0) : 0;
-  const preDone = !!(s?.pre_assessment && Object.keys(s.pre_assessment).length > 0) || stageIdx >= 1;
-  const first = firstNameOf(s) || "you";
+  return <TrialJourneyView s={s} reload={reload} />;
+}
+
+export function TrialJourneyView({ s, reload }: { s: TrialSession | null; reload: () => void }) {
+  const cur = currentStep(s?.stage);
+  const stage = s?.stage || "booked";
+  const scheduled = ["trial_scheduled", "trial_done", "assessed", "director_reviewed", "feedback_submitted", "recommended", "enrolled"].includes(stage);
+  const feedbackDone = ["feedback_submitted", "recommended", "enrolled"].includes(stage);
 
   return (
     <div className="space-y-6">
-      {!preDone && <PreAssessment session={s} onSaved={reload} />}
-
-      {/* Full journey */}
+      {/* Journey overview */}
       <div className="rounded-3xl border border-hairline bg-white p-5 shadow-card sm:p-6">
-        <h2 className="font-display text-lg font-bold text-ink">Your full journey</h2>
+        <div className="flex items-center justify-between">
+          <h2 className="font-display text-lg font-bold text-ink">Your journey</h2>
+          <span className="text-sm font-semibold text-[#7A5E0F]">Step {Math.min(cur + 1, STAGES.length)} of {STAGES.length}</span>
+        </div>
         <ol className="mt-4 space-y-1.5">
           {STAGES.map((st, i) => {
-            const done = i < stageIdx, current = i === stageIdx;
+            const done = i < cur, current = i === cur;
             return (
-              <li key={st.key} className={"flex items-center gap-3 rounded-2xl px-3 py-3 " + (current ? "bg-gold/10 ring-1 ring-gold/40" : "")}>
-                <span className={"grid h-8 w-8 shrink-0 place-items-center rounded-full text-sm font-bold " +
-                  (done ? "bg-gold text-ink" : current ? "bg-gold/25 text-[#7A5E0F]" : "bg-ink/[0.05] text-ink/40")}>
-                  {done ? "✓" : i + 1}
-                </span>
+              <li key={st.key} className={"flex items-center gap-3 rounded-2xl px-3 py-2.5 " + (current ? "bg-gold/10 ring-1 ring-gold/40" : "")}>
+                <span className={"grid h-7 w-7 shrink-0 place-items-center rounded-full text-xs font-bold " +
+                  (done ? "bg-gold text-ink" : current ? "bg-gold/25 text-[#7A5E0F]" : "bg-ink/[0.05] text-ink/40")}>{done ? "✓" : i + 1}</span>
                 <span className="min-w-0 flex-1">
                   <span className={"block text-sm font-bold " + (done || current ? "text-ink" : "text-ink/45")}>{st.label}</span>
-                  <span className="block text-xs text-ink/50">{st.sub}</span>
+                  <span className="block text-xs text-ink/50">{done ? "Completed" : st.sub}</span>
                 </span>
               </li>
             );
@@ -39,42 +45,12 @@ export function TrialJourney() {
         </ol>
       </div>
 
-      {/* Recommendation */}
-      <div>
-        <h2 className="mb-3 px-1 font-display text-lg font-bold text-ink">Your personalised pathway</h2>
-        {s?.director_review || s?.recommendation ? (
-          <div className="rounded-3xl border border-gold/40 bg-gold/[0.06] p-6 shadow-card">
-            <p className="text-xs font-bold uppercase tracking-widest text-[#7A5E0F]">Reviewed by the Director</p>
-            {s?.director_review?.text && <p className="mt-2 leading-relaxed text-ink/80">{s.director_review.text}</p>}
-            <div className="mt-4 grid gap-2 text-sm">
-              {s?.director_review?.path && <Row k="Recommended path" v={s.director_review.path} />}
-              {s?.director_review?.instrument && <Row k="Starting instrument" v={s.director_review.instrument} />}
-              {s?.director_review?.frequency && <Row k="Class frequency" v={s.director_review.frequency} />}
-              {s?.director_review?.start_window && <Row k="Suggested start" v={s.director_review.start_window} />}
-            </div>
-            {s?.recommendation?.path && (
-              <Link href="/pay" className="mt-5 inline-flex rounded-full bg-ink px-6 py-3 text-sm font-semibold text-paper">
-                Start my journey — {s.recommendation.path}{s.recommendation.monthly ? ` · ${s.recommendation.monthly}` : ""} →
-              </Link>
-            )}
-          </div>
-        ) : (
-          <div className="rounded-3xl border border-dashed border-hairline bg-white/60 p-8 text-center shadow-card">
-            <div className="text-3xl">🔒</div>
-            <p className="mt-3 font-bold text-ink">Unlocks after your assessment</p>
-            <p className="mx-auto mt-1 max-w-sm text-sm text-ink/55">
-              Your teacher will assess {first} in the trial class, then the Director personally reviews and recommends your pathway. No guesswork — a real, human recommendation.
-            </p>
-          </div>
-        )}
-      </div>
-
-      {(s?.director_note || s?.teacher_summary) && (
-        <div className="rounded-3xl border border-hairline bg-white p-5 shadow-card">
-          <p className="text-xs font-bold uppercase tracking-widest text-[#7A5E0F]">A note from your mentor</p>
-          <p className="mt-2 leading-relaxed text-ink/80">{s.director_note || s.teacher_summary}</p>
-        </div>
-      )}
+      {/* Progressive action, driven by stage */}
+      {stage === "booked" && <ProfileBuilder session={s} onSaved={reload} />}
+      {stage === "pre_assessed" && <BookingCalendar onBooked={reload} />}
+      {scheduled && <ConfirmationCard session={s} />}
+      {scheduled && !feedbackDone && <FeedbackCard onSaved={reload} />}
+      {feedbackDone && <PathwayCard session={s} />}
 
       {/* Events */}
       <div>
@@ -92,13 +68,29 @@ export function TrialJourney() {
   );
 }
 
+const inp = "w-full rounded-xl border border-hairline bg-white px-4 py-3 text-ink placeholder:text-ink/40 focus:border-ink focus-visible:outline-2 focus-visible:outline-gold focus:outline-none";
 function Row({ k, v }: { k: string; v: string }) {
-  return <div className="flex justify-between gap-4 border-b border-hairline py-1.5"><span className="text-ink/55">{k}</span><span className="font-bold text-ink">{v}</span></div>;
+  return <div className="flex justify-between gap-4 border-b border-hairline py-1.5 last:border-0"><span className="text-ink/55">{k}</span><span className="font-bold text-ink">{v}</span></div>;
+}
+function Pills({ label, value, set, options }: { label: string; value: string; set: (v: string) => void; options: string[] }) {
+  return (
+    <div>
+      <span className="mb-2 block text-sm font-semibold text-ink">{label}</span>
+      <div className="flex flex-wrap gap-2">
+        {options.map((o) => (
+          <button key={o} type="button" onClick={() => set(o)}
+            className={"rounded-full border px-3.5 py-2 text-sm font-semibold " + (value === o ? "border-gold bg-gold/20 text-[#7A5E0F]" : "border-hairline text-ink/60 hover:border-ink/40")}>{o}</button>
+        ))}
+      </div>
+    </div>
+  );
 }
 
-const inp = "w-full rounded-xl border border-hairline bg-white px-4 py-3 text-ink placeholder:text-ink/40 focus:border-ink focus-visible:outline-2 focus-visible:outline-gold focus:outline-none";
-
-function PreAssessment({ session, onSaved }: { session: TrialSession | null; onSaved: () => void }) {
+// ---------- Step 2: Build Your Profile ----------
+function ProfileBuilder({ session, onSaved }: { session: TrialSession | null; onSaved: () => void }) {
+  const [name, setName] = useState(session?.student_name || "");
+  const [age, setAge] = useState(session?.student_age || "");
+  const [school, setSchool] = useState(session?.school || "");
   const [songs, setSongs] = useState<{ title: string; lang: string }[]>(
     session?.dream_songs?.length ? session.dream_songs.map((d) => ({ title: d.title, lang: d.lang || "" })) : [{ title: "", lang: "" }, { title: "", lang: "" }]
   );
@@ -111,17 +103,19 @@ function PreAssessment({ session, onSaved }: { session: TrialSession | null; onS
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState("");
 
-  const filled = [songs.some((x) => x.title.trim()), artists, why, objective, schedule, owns, goal].filter(Boolean).length;
-  const pct = Math.round((filled / 7) * 100);
+  const fields = [name, age, school, songs.some((x) => x.title.trim()), artists, why, objective, schedule, owns, goal];
+  const pct = Math.round((fields.filter(Boolean).length / fields.length) * 100);
 
   const save = async () => {
+    if (!name.trim()) { setErr("Please add the student's name."); return; }
     setBusy(true); setErr("");
     const { client } = getSupabaseSafe();
     if (!client) { setErr("Not configured."); setBusy(false); return; }
     const { error } = await client.rpc("mp_trial_pre_assessment", {
       p: {
+        student_name: name, student_age: age, school,
         dream_songs: songs.filter((x) => x.title.trim()),
-        pre_assessment: { favourite_artists: artists, why, parent_objective: objective, schedule, owns_instrument: owns, goal },
+        pre_assessment: { favourite_artists: artists, why, parent_objective: objective, schedule, owns_instrument: owns, goal, school },
       },
     });
     setBusy(false);
@@ -132,14 +126,22 @@ function PreAssessment({ session, onSaved }: { session: TrialSession | null; onS
   return (
     <div className="overflow-hidden rounded-3xl border border-gold/40 bg-white shadow-card">
       <div className="bg-gold/[0.08] p-6">
-        <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#7A5E0F]">Step 2 · Pre-Assessment</p>
-        <h2 className="mt-1 font-display text-2xl font-bold text-ink">Let&rsquo;s get to know {firstNameOf(session) || "you"}</h2>
-        <p className="mt-1 text-sm text-ink/60">The more you share, the more personal your trial. This helps us design the perfect learning path.</p>
-        <div className="mt-4 flex items-center justify-between text-xs font-semibold text-ink/60"><span>Assessment progress</span><span>{pct}% complete</span></div>
+        <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#7A5E0F]">Step 2 · Build Your Profile</p>
+        <h2 className="mt-1 font-display text-2xl font-bold text-ink">Let&rsquo;s get to know {firstNameOf(session) || "the student"}</h2>
+        <p className="mt-1 text-sm text-ink/60">This builds the student profile your teacher and the Director will use. The more you share, the more personal your trial.</p>
+        <div className="mt-4 flex items-center justify-between text-xs font-semibold text-ink/60"><span>Profile progress</span><span>{pct}% complete</span></div>
         <div className="mt-1.5 h-2 w-full overflow-hidden rounded-full bg-ink/10"><div className="h-full rounded-full bg-gold transition-all" style={{ width: `${pct}%` }} /></div>
       </div>
 
       <div className="space-y-5 p-6">
+        <div className="grid gap-4 sm:grid-cols-2">
+          <label className="block"><span className="mb-1.5 block text-sm font-semibold text-ink">Student&rsquo;s name</span>
+            <input className={inp} value={name} onChange={(e) => setName(e.target.value)} placeholder="Full name" /></label>
+          <label className="block"><span className="mb-1.5 block text-sm font-semibold text-ink">School / College <span className="font-normal text-ink/45">(optional)</span></span>
+            <input className={inp} value={school} onChange={(e) => setSchool(e.target.value)} placeholder="School or college name" /></label>
+        </div>
+        <Pills label="Age group" value={age} set={setAge} options={["4-7", "8-12", "13-17", "18+"]} />
+
         <div>
           <label className="mb-1.5 block text-sm font-semibold text-ink">Which 2 songs do you dream of playing? <span className="font-normal text-ink/45">(Hindi or English)</span></label>
           {songs.map((s, i) => (
@@ -156,25 +158,23 @@ function PreAssessment({ session, onSaved }: { session: TrialSession | null; onS
           ))}
         </div>
 
-        <Text label="Favourite artists or bands" value={artists} set={setArtists} placeholder="Who do you love listening to?" />
-        <Text label="Why do you want to learn?" value={why} set={setWhy} placeholder="Your reason, in your words." area />
-        <Text label="As a parent, what's your objective?" hint="(if learning for a child)" value={objective} set={setObjective} placeholder="What would make this worth it?" />
-
+        <TextF label="Favourite artists or bands" value={artists} set={setArtists} placeholder="Who do you love listening to?" />
+        <TextF label="Why do you want to learn?" value={why} set={setWhy} placeholder="Your reason, in your words." area />
+        <TextF label="As a parent, what's your objective?" hint="(if learning for a child)" value={objective} set={setObjective} placeholder="What would make this worth it?" />
         <Pills label="Preferred schedule" value={schedule} set={setSchedule} options={["Weekday evenings", "Weekday daytime", "Weekends", "Flexible"]} />
         <Pills label="Do you already own an instrument?" value={owns} set={setOwns} options={["Yes", "No", "Not sure"]} />
-        <Pills label="Your main goal" value={goal} set={setGoal} options={["Play for fun", "Learn properly", "Exams / grades", "Perform on stage"]} />
+        <Pills label="Main goal" value={goal} set={setGoal} options={["Play for fun", "Learn properly", "Exams / grades", "Perform on stage"]} />
 
         {err && <p className="text-sm text-red-600">{err}</p>}
         <button onClick={save} disabled={busy} className="w-full rounded-full bg-ink py-3.5 text-base font-semibold text-paper disabled:opacity-60">
-          {busy ? "Saving…" : "Submit my pre-assessment"}
+          {busy ? "Saving…" : "Save profile & book my trial →"}
         </button>
-        <p className="text-center text-xs text-ink/45">This helps us design the perfect learning path for {firstNameOf(session) || "you"}.</p>
       </div>
     </div>
   );
 }
 
-function Text({ label, hint, value, set, placeholder, area }: { label: string; hint?: string; value: string; set: (v: string) => void; placeholder?: string; area?: boolean }) {
+function TextF({ label, hint, value, set, placeholder, area }: { label: string; hint?: string; value: string; set: (v: string) => void; placeholder?: string; area?: boolean }) {
   return (
     <label className="block">
       <span className="mb-1.5 block text-sm font-semibold text-ink">{label} {hint && <span className="font-normal text-ink/45">{hint}</span>}</span>
@@ -184,15 +184,188 @@ function Text({ label, hint, value, set, placeholder, area }: { label: string; h
   );
 }
 
-function Pills({ label, value, set, options }: { label: string; value: string; set: (v: string) => void; options: string[] }) {
+// ---------- Step 3: Book Your Trial (instant) ----------
+const SLOTS = [
+  { label: "10:00 AM", h: 10 }, { label: "11:00 AM", h: 11 }, { label: "12:00 PM", h: 12 },
+  { label: "4:00 PM", h: 16 }, { label: "5:00 PM", h: 17 }, { label: "6:00 PM", h: 18 }, { label: "7:00 PM", h: 19 },
+];
+function nextDays(n: number) {
+  const out: Date[] = [];
+  const d = new Date(); d.setHours(0, 0, 0, 0);
+  for (let i = 1; i <= n; i++) { const x = new Date(d); x.setDate(d.getDate() + i); out.push(x); }
+  return out;
+}
+function BookingCalendar({ onBooked }: { onBooked: () => void }) {
+  const days = nextDays(14);
+  const [day, setDay] = useState<Date | null>(null);
+  const [slot, setSlot] = useState<{ label: string; h: number } | null>(null);
+  const [busy, setBusy] = useState(false);
+  const [err, setErr] = useState("");
+
+  const confirm = async () => {
+    if (!day || !slot) { setErr("Pick a date and a time."); return; }
+    setBusy(true); setErr("");
+    const when = new Date(day); when.setHours(slot.h, 0, 0, 0);
+    const { client } = getSupabaseSafe();
+    if (!client) { setErr("Not configured."); setBusy(false); return; }
+    const { error } = await client.rpc("mp_trial_book_slot", { p_datetime: when.toISOString() });
+    setBusy(false);
+    if (error) { setErr(error.message); return; }
+    onBooked();
+  };
+
   return (
-    <div>
-      <span className="mb-2 block text-sm font-semibold text-ink">{label}</span>
-      <div className="flex flex-wrap gap-2">
-        {options.map((o) => (
-          <button key={o} type="button" onClick={() => set(o)}
-            className={"rounded-full border px-3.5 py-2 text-sm font-semibold " + (value === o ? "border-gold bg-gold/20 text-[#7A5E0F]" : "border-hairline text-ink/60 hover:border-ink/40")}>{o}</button>
-        ))}
+    <div className="overflow-hidden rounded-3xl border border-gold/40 bg-white shadow-card">
+      <div className="bg-gold/[0.08] p-6">
+        <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#7A5E0F]">Step 3 · Book Your Trial</p>
+        <h2 className="mt-1 font-display text-2xl font-bold text-ink">Choose your trial date &amp; time</h2>
+        <p className="mt-1 text-sm text-ink/60">Pick a slot that suits you. It&rsquo;s confirmed instantly — no waiting, no back-and-forth.</p>
+      </div>
+      <div className="p-6">
+        <p className="mb-2 text-sm font-semibold text-ink">Select a date</p>
+        <div className="-mx-1 flex gap-2 overflow-x-auto px-1 pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+          {days.map((d) => {
+            const active = day && d.toDateString() === day.toDateString();
+            return (
+              <button key={d.toISOString()} onClick={() => setDay(d)}
+                className={"flex shrink-0 flex-col items-center rounded-2xl border px-3.5 py-2.5 " + (active ? "border-gold bg-gold/15" : "border-hairline")}>
+                <span className="text-[11px] font-semibold uppercase text-ink/50">{d.toLocaleDateString("en-IN", { weekday: "short" })}</span>
+                <span className={"text-lg font-bold " + (active ? "text-[#7A5E0F]" : "text-ink")}>{d.getDate()}</span>
+                <span className="text-[10px] text-ink/45">{d.toLocaleDateString("en-IN", { month: "short" })}</span>
+              </button>
+            );
+          })}
+        </div>
+
+        <p className="mb-2 mt-5 text-sm font-semibold text-ink">Select a time</p>
+        <div className="grid grid-cols-3 gap-2 sm:grid-cols-4">
+          {SLOTS.map((sl) => (
+            <button key={sl.label} onClick={() => setSlot(sl)}
+              className={"rounded-xl border py-2.5 text-sm font-semibold " + (slot?.label === sl.label ? "border-gold bg-gold/20 text-[#7A5E0F]" : "border-hairline text-ink/70 hover:border-ink/40")}>{sl.label}</button>
+          ))}
+        </div>
+
+        {err && <p className="mt-4 text-sm text-red-600">{err}</p>}
+        <button onClick={confirm} disabled={busy || !day || !slot} className="mt-5 w-full rounded-full bg-ink py-3.5 text-base font-semibold text-paper disabled:opacity-50">
+          {busy ? "Confirming…" : "Confirm my trial — instant"}
+        </button>
+      </div>
+    </div>
+  );
+}
+
+// ---------- Step 4: Meet Your Teacher (allotted + Director confirmed) ----------
+function ConfirmationCard({ session }: { session: TrialSession | null }) {
+  const first = firstNameOf(session) || "your child";
+  const when = session?.trial_datetime ? new Date(session.trial_datetime) : null;
+  const whenStr = when ? when.toLocaleString("en-IN", { weekday: "long", day: "numeric", month: "long", hour: "numeric", minute: "2-digit" }) : "your chosen slot";
+  const songs = (session?.dream_songs || []).map((d) => d.title).filter(Boolean);
+  const wa = `https://wa.me/${WA}?text=${encodeURIComponent(`Hi Musicphonetics! My trial for ${first} is booked for ${whenStr}. Looking forward to it.`)}`;
+
+  return (
+    <div className="space-y-4">
+      <div className="rounded-3xl border border-feature-green/30 bg-feature-green/[0.06] p-6 shadow-card">
+        <div className="flex items-center gap-2 text-feature-green"><span className="text-2xl">✅</span><span className="font-display text-xl font-bold">Your trial is confirmed</span></div>
+        <p className="mt-2 text-sm text-ink/75"><b>{whenStr}</b> · at home or online, as you prefer.</p>
+        <div className="mt-4 rounded-2xl border border-hairline bg-white p-4">
+          <p className="text-sm font-bold text-ink">🎓 A teacher has been allotted to you.</p>
+          <p className="mt-1 text-sm text-ink/65">Your matched Musicphonetics teacher will take {first}&rsquo;s trial. Their details are on the way to your WhatsApp.</p>
+        </div>
+        <div className="mt-3 rounded-2xl border border-gold/30 bg-gold/[0.06] p-4">
+          <p className="text-sm font-bold text-[#7A5E0F]">⭐ The Director has personally confirmed your trial.</p>
+          <p className="mt-1 text-sm text-ink/70">You&rsquo;re not alone in this. Musicphonetics is with you at every step — from your very first class to the stage.</p>
+        </div>
+        <a href={wa} target="_blank" rel="noopener noreferrer" className="mt-4 inline-flex rounded-full bg-ink px-6 py-3 text-sm font-semibold text-paper">Get details on WhatsApp →</a>
+      </div>
+
+      <div className="rounded-3xl border border-hairline bg-white p-6 shadow-card">
+        <h3 className="font-display text-lg font-bold text-ink">What to expect in your trial</h3>
+        <div className="mt-3 space-y-2 text-sm">
+          <Row k="Duration" v="A focused 45–60 minute one-to-one class" />
+          <Row k="Format" v="Truly one-to-one — never a group" />
+          <Row k="Your teacher will carry" v={songs.length ? `${first}'s profile & your songs (${songs.join(", ")})` : `${first}'s full profile`} />
+          <Row k="They'll assess" v="Level, musical ear, rhythm & interest" />
+        </div>
+        <p className="mt-3 text-xs text-ink/50">After your trial, share your feedback below — that&rsquo;s what unlocks your personalised learning pathway.</p>
+      </div>
+    </div>
+  );
+}
+
+// ---------- Step 5: Share Feedback (unlocks pathway) ----------
+function FeedbackCard({ onSaved }: { onSaved: () => void }) {
+  const [rating, setRating] = useState(0);
+  const [text, setText] = useState("");
+  const [busy, setBusy] = useState(false);
+  const [err, setErr] = useState("");
+
+  const submit = async () => {
+    if (!rating) { setErr("Please give a star rating."); return; }
+    setBusy(true); setErr("");
+    const { client } = getSupabaseSafe();
+    if (!client) { setErr("Not configured."); setBusy(false); return; }
+    const { error } = await client.rpc("mp_trial_trial_feedback", { p_rating: rating, p_text: text });
+    setBusy(false);
+    if (error) { setErr(error.message); return; }
+    onSaved();
+  };
+
+  return (
+    <div className="overflow-hidden rounded-3xl border border-gold/40 bg-white shadow-card">
+      <div className="bg-gold/[0.08] p-6">
+        <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#7A5E0F]">Step 5 · After your trial</p>
+        <h2 className="mt-1 font-display text-2xl font-bold text-ink">How was your trial?</h2>
+        <p className="mt-1 text-sm text-ink/60">Your honest feedback helps us finalise the perfect pathway. This is the last step before your recommendation.</p>
+      </div>
+      <div className="p-6">
+        <div className="flex justify-center gap-2">
+          {[1, 2, 3, 4, 5].map((n) => (
+            <button key={n} onClick={() => setRating(n)} className={"text-4xl transition " + (n <= rating ? "text-gold" : "text-ink/20")}>★</button>
+          ))}
+        </div>
+        <textarea className={inp + " mt-5"} rows={3} value={text} onChange={(e) => setText(e.target.value)}
+          placeholder="What did you enjoy? Any questions or concerns before you begin?" />
+        {err && <p className="mt-3 text-sm text-red-600">{err}</p>}
+        <button onClick={submit} disabled={busy} className="mt-4 w-full rounded-full bg-ink py-3.5 text-base font-semibold text-paper disabled:opacity-60">
+          {busy ? "Submitting…" : "Submit feedback & unlock my pathway"}
+        </button>
+      </div>
+    </div>
+  );
+}
+
+// ---------- Step 6: Your Learning Pathway (revealed after feedback) ----------
+function PathwayCard({ session: s }: { session: TrialSession | null }) {
+  const has = s?.director_review || s?.recommendation;
+  return (
+    <div className="space-y-4">
+      <div className="rounded-3xl border border-gold/40 bg-gradient-to-b from-gold/[0.1] to-white p-6 shadow-card">
+        <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#7A5E0F]">Step 6 · Your Learning Pathway</p>
+        {has ? (
+          <>
+            <p className="mt-2 text-xs font-bold uppercase tracking-widest text-[#7A5E0F]">Reviewed by the Director</p>
+            {s?.director_review?.text && <p className="mt-2 leading-relaxed text-ink/80">{s.director_review.text}</p>}
+            <div className="mt-4 grid gap-2 text-sm">
+              {s?.director_review?.path && <Row k="Recommended path" v={s.director_review.path} />}
+              {s?.director_review?.instrument && <Row k="Starting instrument" v={s.director_review.instrument} />}
+              {s?.director_review?.frequency && <Row k="Class frequency" v={s.director_review.frequency} />}
+              {s?.director_review?.start_window && <Row k="Suggested start" v={s.director_review.start_window} />}
+            </div>
+            {s?.recommendation?.path && (
+              <Link href="/pay" className="mt-5 inline-flex rounded-full bg-ink px-6 py-3 text-sm font-semibold text-paper">
+                Start my journey — {s.recommendation.path}{s.recommendation.monthly ? ` · ${s.recommendation.monthly}` : ""} →
+              </Link>
+            )}
+          </>
+        ) : (
+          <>
+            <h2 className="mt-2 font-display text-2xl font-bold text-ink">Thank you. 🎉</h2>
+            <p className="mt-2 leading-relaxed text-ink/75">
+              Your teacher&rsquo;s assessment is with the Director now. Your personalised pathway — the right plan, pace and next songs for you — is being prepared and will appear here, and on your WhatsApp, very shortly.
+            </p>
+            <p className="mt-3 text-sm text-ink/55">No templates, no guesswork — a real recommendation, made for you.</p>
+          </>
+        )}
       </div>
     </div>
   );

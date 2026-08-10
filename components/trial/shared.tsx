@@ -9,29 +9,42 @@ import { getSupabaseSafe } from "@/lib/supabase/client";
 
 export interface TrialSession {
   stage: string; status?: string; student_name?: string; who?: string; student_age?: string;
-  instrument?: string; experience_level?: string; learning_goal?: string;
+  school?: string; instrument?: string; experience_level?: string; learning_goal?: string;
   dream_songs?: { title: string; lang?: string }[];
   pre_assessment?: Record<string, string>;
   teacher_summary?: string | null; director_note?: string | null;
   director_review?: { text?: string; path?: string; instrument?: string; frequency?: string; start_window?: string } | null;
   recommendation?: { path?: string; price?: string; monthly?: string } | null;
-  trial_datetime?: string | null; feedback?: { by: string; text: string; at: string }[];
+  trial_datetime?: string | null; trial_rating?: number | null;
+  feedback?: { by: string; text: string; at: string; rating?: number }[];
   created_at?: string;
 }
 
 export const STAGES = [
   { key: "booked", label: "Trial Booked", sub: "Your journey has begun" },
-  { key: "pre_assessed", label: "Pre-Assessment", sub: "Help us understand you better" },
-  { key: "teacher_assigned", label: "Teacher Assigned", sub: "Matched to you personally" },
-  { key: "trial_done", label: "Trial Session", sub: "Your first class" },
-  { key: "assessed", label: "Teacher Assessment", sub: "A real, structured review" },
-  { key: "director_reviewed", label: "Director Review", sub: "Reviewed by the Director" },
-  { key: "recommended", label: "Your Learning Pathway", sub: "A plan made only for you" },
+  { key: "profile", label: "Build Your Profile", sub: "Tell us about the student" },
+  { key: "book", label: "Book Your Trial", sub: "Pick your date & time" },
+  { key: "meet", label: "Meet Your Teacher", sub: "Allotted & confirmed" },
+  { key: "feedback", label: "Share Your Feedback", sub: "After your trial class" },
+  { key: "pathway", label: "Your Learning Pathway", sub: "A plan made only for you" },
 ];
-export const ORDER: Record<string, number> = {
-  booked: 0, pre_assessed: 1, teacher_assigned: 2, trial_scheduled: 2, trial_done: 3,
-  assessed: 4, director_reviewed: 5, recommended: 6, enrolled: 7, nurture: 6,
-};
+
+// Maps the DB stage to the index of the CURRENT actionable step. Steps before
+// it are complete; steps after are upcoming.
+export function currentStep(stage?: string): number {
+  switch (stage) {
+    case "booked": return 1;                 // → Build Your Profile
+    case "pre_assessed": return 2;           // → Book Your Trial
+    case "trial_scheduled":
+    case "trial_done":
+    case "assessed":
+    case "director_reviewed": return 4;      // Meet Your Teacher done → Share Feedback
+    case "feedback_submitted": return 5;     // → Your Learning Pathway
+    case "recommended":
+    case "enrolled": return 6;               // all done
+    default: return 1;
+  }
+}
 
 export const EXPECT = [
   { icon: "🎯", t: "Personalised Assessment", d: "We understand you before we teach you." },

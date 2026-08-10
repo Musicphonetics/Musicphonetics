@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { Loading } from "@/components/portal/kit";
-import { useTrial, STAGES, ORDER, EXPECT, instrumentImage, firstNameOf, type TrialSession } from "./shared";
+import { useTrial, STAGES, currentStep, EXPECT, firstNameOf, type TrialSession } from "./shared";
 
 // The Trial Portal home — a premium, warm assessment dashboard (light theme).
 export function TrialHome() {
@@ -12,39 +12,36 @@ export function TrialHome() {
 }
 
 export function TrialHomeView({ s }: { s: TrialSession | null }) {
-
-  const stageIdx = s ? (ORDER[s.stage] ?? 0) : 0;
+  const cur = currentStep(s?.stage);
   const first = firstNameOf(s) || "there";
   const levelRaw = (s?.experience_level || "Beginner").replace(/^complete\s+/i, "").replace(/^know a little$/i, "some experience").replace(/^played before$/i, "experienced");
   const level = levelRaw.charAt(0).toUpperCase() + levelRaw.slice(1);
-  const stepNo = Math.min(stageIdx + 1, STAGES.length);
+  const stepNo = Math.min(cur + 1, STAGES.length);
 
-  // What the family should do next.
-  const preDone = !!(s?.pre_assessment && Object.keys(s.pre_assessment).length > 0) || stageIdx >= 1;
-  const nextStep = !preDone
-    ? { t: "Complete your Pre-Assessment", note: "Takes 2–3 minutes", href: "/trial/journey" }
-    : stageIdx < 3
-      ? { t: "We're arranging your trial", note: "Your teacher is being matched", href: "/trial/journey" }
-      : (s?.director_review || s?.recommendation)
-        ? { t: "View your recommendation", note: "Your personalised pathway is ready", href: "/trial/journey" }
-        : { t: "Your assessment is in progress", note: "We'll update you here", href: "/trial/journey" };
+  const NEXT: Record<number, { t: string; note: string }> = {
+    1: { t: "Build your profile", note: "Takes 2–3 minutes" },
+    2: { t: "Book your trial class", note: "Pick a date & time — confirmed instantly" },
+    3: { t: "Your trial is confirmed", note: "See what to expect" },
+    4: { t: "Share your trial feedback", note: "It unlocks your learning pathway" },
+    5: { t: "View your learning pathway", note: "Your personalised plan is ready" },
+    6: { t: "You're all set", note: "Start your Musicphonetics journey" },
+  };
+  const next = NEXT[cur] || NEXT[1];
 
   return (
     <div className="space-y-5">
-      {/* Hero */}
-      <div className="relative overflow-hidden rounded-3xl border border-hairline shadow-card">
-        <img src={instrumentImage(s?.instrument)} alt="" className="absolute inset-0 h-full w-full object-cover" />
-        <div className="absolute inset-0 bg-gradient-to-r from-paper via-paper/90 to-paper/20" />
-        <div className="relative max-w-[78%] p-6 sm:p-8">
-          <h1 className="font-display text-3xl font-bold leading-[1.1] text-ink sm:text-4xl">
-            {first},<br />welcome to your<br />musical <span className="italic text-[#7A5E0F]">journey.</span>
-          </h1>
-          <p className="mt-4 text-sm leading-relaxed text-ink/65 sm:text-base">
-            We&rsquo;re excited to guide you from your trial to the right learning pathway.
-          </p>
-          <div className="mt-5 inline-flex items-center gap-2 rounded-full border border-hairline bg-white/80 px-3.5 py-1.5 text-sm font-semibold text-ink">
-            🎵 {s?.instrument || "Guitar"} · {level}
-          </div>
+      {/* Hero — no photo, warm gradient */}
+      <div className="relative overflow-hidden rounded-3xl border border-gold/30 bg-gradient-to-br from-[#FBF6E9] via-white to-[#F4ECD8] p-6 shadow-card sm:p-8">
+        <div className="pointer-events-none absolute -right-8 -top-10 h-40 w-40 rounded-full bg-gold/15 blur-2xl" />
+        <p className="relative text-[11px] font-bold uppercase tracking-[0.2em] text-[#7A5E0F]">Welcome to Musicphonetics</p>
+        <h1 className="relative mt-3 font-display text-3xl font-bold leading-[1.1] text-ink sm:text-4xl">
+          {first},<br />welcome to your<br />musical <span className="italic text-[#7A5E0F]">journey.</span>
+        </h1>
+        <p className="relative mt-4 max-w-md text-sm leading-relaxed text-ink/65 sm:text-base">
+          We&rsquo;re excited to guide you from your trial to the right learning pathway.
+        </p>
+        <div className="relative mt-5 inline-flex items-center gap-2 rounded-full border border-hairline bg-white px-3.5 py-1.5 text-sm font-semibold text-ink">
+          🎵 {s?.instrument || "Guitar"} · {level}
         </div>
       </div>
 
@@ -56,7 +53,7 @@ export function TrialHomeView({ s }: { s: TrialSession | null }) {
         </div>
         <ol className="mt-4 space-y-1.5">
           {STAGES.map((st, i) => {
-            const done = i < stageIdx, current = i === stageIdx;
+            const done = i < cur, current = i === cur;
             return (
               <li key={st.key} className={"flex items-center gap-3 rounded-2xl px-3 py-3 " + (current ? "bg-gold/10 ring-1 ring-gold/40" : "")}>
                 <span className={"grid h-8 w-8 shrink-0 place-items-center rounded-full text-sm font-bold " +
@@ -69,7 +66,7 @@ export function TrialHomeView({ s }: { s: TrialSession | null }) {
                 </span>
                 <span className={"shrink-0 rounded-full px-2.5 py-1 text-[11px] font-bold " +
                   (done ? "text-feature-green" : current ? "bg-gold text-ink" : "text-ink/35")}>
-                  {done ? "Done ✓" : current ? "In progress" : "Upcoming"}
+                  {done ? "Done ✓" : current ? "Now" : "Upcoming"}
                 </span>
               </li>
             );
@@ -82,12 +79,10 @@ export function TrialHomeView({ s }: { s: TrialSession | null }) {
         <span className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-gold/12 text-xl">📋</span>
         <div className="min-w-0 flex-1">
           <div className="text-[11px] font-bold uppercase tracking-wide text-[#7A5E0F]">Next step</div>
-          <div className="font-bold leading-tight text-ink">{nextStep.t}</div>
-          <div className="text-xs text-ink/55">{nextStep.note}</div>
+          <div className="font-bold leading-tight text-ink">{next.t}</div>
+          <div className="text-xs text-ink/55">{next.note}</div>
         </div>
-        <Link href={nextStep.href} className="shrink-0 rounded-full bg-ink px-5 py-2.5 text-sm font-semibold text-paper">
-          Continue →
-        </Link>
+        <Link href="/trial/journey" className="shrink-0 rounded-full bg-ink px-5 py-2.5 text-sm font-semibold text-paper">Continue →</Link>
       </div>
 
       {/* What to expect */}
