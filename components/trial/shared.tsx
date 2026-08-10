@@ -29,21 +29,18 @@ export const STAGES = [
   { key: "pathway", label: "Your Learning Pathway", sub: "A plan made only for you" },
 ];
 
-// Maps the DB stage to the index of the CURRENT actionable step. Steps before
-// it are complete; steps after are upcoming.
-export function currentStep(stage?: string): number {
-  switch (stage) {
-    case "booked": return 1;                 // → Build Your Profile
-    case "pre_assessed": return 2;           // → Book Your Trial
-    case "trial_scheduled":
-    case "trial_done":
-    case "assessed":
-    case "director_reviewed": return 4;      // Meet Your Teacher done → Share Feedback
-    case "feedback_submitted": return 5;     // → Your Learning Pathway
-    case "recommended":
-    case "enrolled": return 6;               // all done
-    default: return 1;
-  }
+// The CURRENT actionable step, derived from DATA (not just stage) so the
+// feedback gate is never skipped by a staff-side stage change. Steps before the
+// returned index are complete; steps after are upcoming.
+export function currentStep(s?: TrialSession | null): number {
+  if (!s) return 1;
+  const profileDone = s.stage !== "booked";          // pre-assessment moves off 'booked'
+  const scheduled = !!s.trial_datetime;              // a slot is booked
+  const feedbackDone = !!s.trial_rating;             // family submitted feedback
+  if (!profileDone) return 1;                         // → Build Your Profile
+  if (!scheduled) return 2;                           // → Book Your Trial
+  if (!feedbackDone) return 4;                        // Meet Teacher done → Share Feedback
+  return 6;                                           // Pathway
 }
 
 export const EXPECT = [

@@ -15,10 +15,11 @@ export function TrialJourney() {
 }
 
 export function TrialJourneyView({ s, reload }: { s: TrialSession | null; reload: () => void }) {
-  const cur = currentStep(s?.stage);
+  const cur = currentStep(s);
   const stage = s?.stage || "booked";
-  const scheduled = ["trial_scheduled", "trial_done", "assessed", "director_reviewed", "feedback_submitted", "recommended", "enrolled"].includes(stage);
-  const feedbackDone = ["feedback_submitted", "recommended", "enrolled"].includes(stage);
+  const profileDone = stage !== "booked";
+  const scheduled = !!s?.trial_datetime;
+  const feedbackDone = !!s?.trial_rating;
 
   return (
     <div className="space-y-6">
@@ -45,9 +46,9 @@ export function TrialJourneyView({ s, reload }: { s: TrialSession | null; reload
         </ol>
       </div>
 
-      {/* Progressive action, driven by stage */}
-      {stage === "booked" && <ProfileBuilder session={s} onSaved={reload} />}
-      {stage === "pre_assessed" && <BookingCalendar onBooked={reload} />}
+      {/* Progressive action, driven by the family's own data */}
+      {!profileDone && <ProfileBuilder session={s} onSaved={reload} />}
+      {profileDone && !scheduled && <BookingCalendar onBooked={reload} />}
       {scheduled && <ConfirmationCard session={s} />}
       {scheduled && !feedbackDone && <FeedbackCard onSaved={reload} />}
       {feedbackDone && <PathwayCard session={s} />}

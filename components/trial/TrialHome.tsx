@@ -12,7 +12,7 @@ export function TrialHome() {
 }
 
 export function TrialHomeView({ s }: { s: TrialSession | null }) {
-  const cur = currentStep(s?.stage);
+  const cur = currentStep(s);
   const first = firstNameOf(s) || "there";
   const levelRaw = (s?.experience_level || "Beginner").replace(/^complete\s+/i, "").replace(/^know a little$/i, "some experience").replace(/^played before$/i, "experienced");
   const level = levelRaw.charAt(0).toUpperCase() + levelRaw.slice(1);
