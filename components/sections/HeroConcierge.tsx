@@ -135,7 +135,7 @@ export function HeroConcierge() {
             </motion.p>
 
             <motion.div {...rise(0.28)} className="order-4 mt-8 flex flex-col gap-3 sm:flex-row">
-              <Button href="/start" variant="light" size="lg" className="px-9 py-4 text-base shadow-card-hover">
+              <Button href="/studio" variant="light" size="lg" className="px-9 py-4 text-base shadow-card-hover">
                 Book a Free Trial
               </Button>
               <Button href="#performances" variant="secondary" size="lg" className="border-white/25 text-paper hover:border-white">

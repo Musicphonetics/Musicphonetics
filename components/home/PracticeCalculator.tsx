@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { SectionHeader } from "./SectionHeader";
-import { WhatsAppCTA } from "./WhatsAppCTA";
+import { TrialCTA } from "./TrialCTA";
 import { cn } from "@/lib/utils";
 
 const INSTRUMENTS = ["Guitar", "Piano / Keyboard", "Vocals"];
@@ -62,7 +62,7 @@ export function PracticeCalculator() {
             </div>
 
             <div className="mt-5">
-              <WhatsAppCTA fullWidth label="Start this plan" message={`Hi Musicphonetics, I'd like to start ${INSTRUMENTS[instrument]}, about ${days} days a week, ${mins} mins a day. My goal: ${GOALS[goal]}.`} />
+              <TrialCTA fullWidth label="Start this plan" instrument={INSTRUMENTS[instrument]} />
             </div>
           </div>
         </div>

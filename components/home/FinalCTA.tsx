@@ -1,6 +1,5 @@
 import { Reveal } from "@/components/ui/Reveal";
-import { WhatsAppCTA } from "./WhatsAppCTA";
-import { WA_MSG } from "@/lib/home-config";
+import { TrialCTA } from "./TrialCTA";
 
 // One action, then the footer.
 export function FinalCTA() {
@@ -18,7 +17,7 @@ export function FinalCTA() {
               Tell us the student&apos;s age, instrument and goal, we&apos;ll match the right teacher.
             </p>
             <div className="mt-8 flex justify-center">
-              <WhatsAppCTA label="Enquire on WhatsApp" message={WA_MSG.final} />
+              <TrialCTA label="Book a free trial" />
             </div>
             <p className="mt-4 text-sm text-ivory/55">We reply immediately.</p>
           </div>

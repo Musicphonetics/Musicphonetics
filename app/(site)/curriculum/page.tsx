@@ -31,7 +31,7 @@ export default function CurriculumPage() {
         title="A clear path from first note to graded exams."
         intro="Four structured levels, one method - the same for every student, aligned to Trinity, ABRSM, and Rockschool where wanted."
       >
-        <Button href="/start" variant="primary" size="lg">
+        <Button href="/studio" variant="primary" size="lg">
           Book a free trial
         </Button>
       </PageHero>

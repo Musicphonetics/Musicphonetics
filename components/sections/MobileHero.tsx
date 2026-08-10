@@ -75,7 +75,7 @@ export function MobileHero() {
 
       {/* Primary CTA bar */}
       <div className="mt-4 grid grid-cols-2 gap-3">
-        <a href="/start" className="rounded-full bg-gold py-3 text-center text-sm font-semibold text-ink active:bg-deep-gold">
+        <a href="/studio" className="rounded-full bg-gold py-3 text-center text-sm font-semibold text-ink active:bg-deep-gold">
           Book Trial
         </a>
         <a href={whatsappLink()} target="_blank" rel="noopener noreferrer" className="rounded-full border border-white/25 py-3 text-center text-sm font-semibold text-paper active:bg-white/10">

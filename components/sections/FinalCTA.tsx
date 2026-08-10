@@ -25,7 +25,7 @@ export function FinalCTA({
           </p>
           <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
             <Magnetic>
-              <Button href="/start" variant="light" size="lg">
+              <Button href="/studio" variant="light" size="lg">
                 Book a Trial
               </Button>
             </Magnetic>

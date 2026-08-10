@@ -54,7 +54,7 @@ export function Hero() {
         <Reveal delay={280}>
           <div className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row">
             <Magnetic className="w-full sm:w-auto">
-              <Button href="/start" size="lg" variant="light" className="w-full">
+              <Button href="/studio" size="lg" variant="light" className="w-full">
                 Book a Trial
               </Button>
             </Magnetic>

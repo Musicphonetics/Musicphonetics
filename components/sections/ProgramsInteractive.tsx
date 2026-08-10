@@ -79,7 +79,7 @@ export function ProgramsInteractive() {
                       <Detail label="Typical outcome" value={p.outcome} />
                     </dl>
                     <a
-                      href={p.name === "Others" ? "/start" : `/start?instrument=${encodeURIComponent(p.name)}`}
+                      href={p.name === "Others" ? "/studio" : `/studio?instrument=${encodeURIComponent(p.name)}`}
                       className="mt-5 inline-flex min-h-[48px] items-center rounded-full bg-ink px-6 text-sm font-semibold text-paper transition-colors hover:bg-[#0f131c]"
                     >
                       {p.name === "Others" ? "Explore other instruments" : `Start with ${p.name}`}

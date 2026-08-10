@@ -4,10 +4,11 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Logo } from "./Logo";
-import { NAV_LINKS, whatsappLink } from "@/lib/data";
+import { NAV_LINKS } from "@/lib/data";
 import { cn } from "@/lib/utils";
 
-const TRIAL = whatsappLink("Hi Musicphonetics, I'd like to book a free trial class.");
+// The "Book a free trial" CTA opens the Trial Portal (no WhatsApp).
+const TRIAL = "/studio";
 
 // Institution nav: transparent (dark ink) over the light home hero, solid
 // charcoal on scroll. Right cluster is a quiet "Parent login" link + the action.
@@ -56,10 +57,10 @@ export function Navbar() {
 
         <div className="hidden items-center gap-5 lg:flex">
           <Link href="/parent/login" className={cn("text-sm transition-colors hover:text-gold", light ? "text-ink/70" : "text-ivory/75")}>Parent login</Link>
-          <a href={TRIAL} target="_blank" rel="noopener noreferrer"
+          <Link href={TRIAL}
             className="rounded-full bg-charcoal px-5 py-2.5 text-sm font-medium text-cream transition hover:brightness-125">
             Book a free trial
-          </a>
+          </Link>
         </div>
 
         {/* Mobile hamburger */}
@@ -99,10 +100,10 @@ export function Navbar() {
             Parent login
           </Link>
           <div className="mt-3 px-1">
-            <a href={TRIAL} target="_blank" rel="noopener noreferrer"
+            <Link href={TRIAL}
               className="flex w-full items-center justify-center rounded-md bg-gold px-4 py-3.5 text-base font-medium text-charcoal">
               Book a free trial
-            </a>
+            </Link>
           </div>
         </div>
       </div>

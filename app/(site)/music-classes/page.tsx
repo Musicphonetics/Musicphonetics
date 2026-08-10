@@ -43,7 +43,7 @@ export default function MusicClassesHub() {
         intro="A verified teacher, a structured method, and progress you can actually follow, wherever you are in Delhi NCR. Choose your area to begin."
       >
         <div className="flex flex-col gap-3 sm:flex-row">
-          <Button href="/start" variant="primary" size="lg">Book a free trial</Button>
+          <Button href="/studio" variant="primary" size="lg">Book a free trial</Button>
           <Button href={whatsappTrialLink()} external variant="secondary" size="lg">Enquire on WhatsApp</Button>
         </div>
       </PageHero>

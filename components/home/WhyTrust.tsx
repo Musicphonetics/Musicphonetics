@@ -1,6 +1,5 @@
 import { Reveal } from "@/components/ui/Reveal";
-import { WhatsAppCTA } from "./WhatsAppCTA";
-import { WA_MSG } from "@/lib/home-config";
+import { TrialCTA } from "./TrialCTA";
 
 const STEPS = [
   { n: "01", t: "We understand the student", d: "Age, level, instrument, goal and learning style - before anything begins." },
@@ -44,7 +43,7 @@ export function WhyTrust() {
             ))}
           </div>
           <div className="mt-8">
-            <WhatsAppCTA label="Find the Right Path" message={WA_MSG.why} />
+            <TrialCTA label="Find the right path" />
           </div>
         </Reveal>
       </div>

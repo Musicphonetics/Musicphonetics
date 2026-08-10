@@ -6,8 +6,6 @@ import { getSupabaseSafe } from "@/lib/supabase/client";
 import { Loading } from "@/components/portal/kit";
 import { useTrial, STAGES, currentStep, EVENTS, firstNameOf, type TrialSession } from "./shared";
 
-const WA = "918796199188";
-
 export function TrialJourney() {
   const { session: s, loading, reload } = useTrial();
   if (loading) return <Loading />;
@@ -261,7 +259,6 @@ function ConfirmationCard({ session }: { session: TrialSession | null }) {
   const when = session?.trial_datetime ? new Date(session.trial_datetime) : null;
   const whenStr = when ? when.toLocaleString("en-IN", { weekday: "long", day: "numeric", month: "long", hour: "numeric", minute: "2-digit" }) : "your chosen slot";
   const songs = (session?.dream_songs || []).map((d) => d.title).filter(Boolean);
-  const wa = `https://wa.me/${WA}?text=${encodeURIComponent(`Hi Musicphonetics! My trial for ${first} is booked for ${whenStr}. Looking forward to it.`)}`;
 
   return (
     <div className="space-y-4">
@@ -270,13 +267,12 @@ function ConfirmationCard({ session }: { session: TrialSession | null }) {
         <p className="mt-2 text-sm text-ink/75"><b>{whenStr}</b> · at home or online, as you prefer.</p>
         <div className="mt-4 rounded-2xl border border-hairline bg-white p-4">
           <p className="text-sm font-bold text-ink">🎓 A teacher has been allotted to you.</p>
-          <p className="mt-1 text-sm text-ink/65">Your matched Musicphonetics teacher will take {first}&rsquo;s trial. Their details are on the way to your WhatsApp.</p>
+          <p className="mt-1 text-sm text-ink/65">Your matched Musicphonetics teacher will take {first}&rsquo;s trial. Their details will appear right here in your portal.</p>
         </div>
         <div className="mt-3 rounded-2xl border border-gold/30 bg-gold/[0.06] p-4">
           <p className="text-sm font-bold text-[#7A5E0F]">⭐ The Director has personally confirmed your trial.</p>
           <p className="mt-1 text-sm text-ink/70">You&rsquo;re not alone in this. Musicphonetics is with you at every step — from your very first class to the stage.</p>
         </div>
-        <a href={wa} target="_blank" rel="noopener noreferrer" className="mt-4 inline-flex rounded-full bg-ink px-6 py-3 text-sm font-semibold text-paper">Get details on WhatsApp →</a>
       </div>
 
       <div className="rounded-3xl border border-hairline bg-white p-6 shadow-card">

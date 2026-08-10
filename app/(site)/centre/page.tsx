@@ -62,7 +62,7 @@ export default function CentrePage() {
             </Reveal>
             <Reveal delay={230}>
               <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-                <Button href="/start" variant="light" size="lg">
+                <Button href="/studio" variant="light" size="lg">
                   Book a free trial
                 </Button>
                 <Button

@@ -98,7 +98,7 @@ export default function ProgramsPage() {
                   ))}
                 </ul>
                 <div className="mt-6 pt-1">
-                  <Button href="/pay?trial=1" variant="secondary">
+                  <Button href="/studio" variant="secondary">
                     Book a free trial
                   </Button>
                 </div>

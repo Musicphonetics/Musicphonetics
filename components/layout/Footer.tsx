@@ -32,7 +32,7 @@ export function Footer() {
             </p>
             <p className="mt-2 text-sm text-paper/60">Founded in India.</p>
             <div className="mt-6">
-              <Button href="/pay?trial=1" variant="light" size="md">
+              <Button href="/studio" variant="light" size="md">
                 Book a Free Trial
               </Button>
             </div>

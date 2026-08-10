@@ -110,7 +110,7 @@ function FacultyProfileInner() {
           <div className="rounded-2xl border border-hairline bg-white p-5">
             <p className="text-sm font-semibold text-ink">Learn with {first}</p>
             <p className="mt-1 text-xs text-ink/60">Book a free trial and we&apos;ll match you.</p>
-            <Link href="/pay?trial=1" className="mt-3 inline-block w-full rounded-full bg-gold px-5 py-2.5 text-center text-sm font-semibold text-ink hover:bg-deep-gold">Book a free trial</Link>
+            <Link href="/studio" className="mt-3 inline-block w-full rounded-full bg-gold px-5 py-2.5 text-center text-sm font-semibold text-ink hover:bg-deep-gold">Book a free trial</Link>
           </div>
         </aside>
       </div>

@@ -21,8 +21,8 @@ export function InstrumentChips() {
     <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
       {CARDS.map((c) => {
         const href = c.value
-          ? `/start?instrument=${encodeURIComponent(c.value)}`
-          : "/start";
+          ? `/studio?instrument=${encodeURIComponent(c.value)}`
+          : "/studio";
         return (
           <Link
             key={c.label}

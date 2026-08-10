@@ -1,7 +1,6 @@
 import { Reveal } from "@/components/ui/Reveal";
 import { Stave } from "@/components/ui/Stave";
-import { WhatsAppCTA } from "./WhatsAppCTA";
-import { WA_MSG } from "@/lib/home-config";
+import { TrialCTA } from "./TrialCTA";
 
 export function FounderMission() {
   return (
@@ -23,7 +22,7 @@ export function FounderMission() {
           </Reveal>
           <Reveal delay={120}>
             <div className="mt-9 flex justify-center">
-              <WhatsAppCTA label="Start Your Musicphonetics Journey" message={WA_MSG.final} />
+              <TrialCTA label="Start Your Musicphonetics Journey" />
             </div>
           </Reveal>
         </div>

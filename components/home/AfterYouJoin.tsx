@@ -1,6 +1,5 @@
 import { Reveal } from "@/components/ui/Reveal";
-import { WhatsAppCTA } from "./WhatsAppCTA";
-import { WA_MSG } from "@/lib/home-config";
+import { TrialCTA } from "./TrialCTA";
 
 const POINTS = [
   { t: "A student profile before starting", d: "We learn the student first - level, goal and learning style." },
@@ -49,7 +48,7 @@ export function AfterYouJoin() {
 
         <Reveal delay={120}>
           <div className="mt-9">
-            <WhatsAppCTA label="Book a Free Consultation" message={WA_MSG.process} />
+            <TrialCTA label="Book a free trial" />
           </div>
         </Reveal>
       </div>

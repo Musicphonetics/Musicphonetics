@@ -71,7 +71,7 @@ export function Plans() {
                       Apply for Director&apos;s Circle
                     </Button>
                   ) : (
-                    <Button href="/start" fullWidth size="lg" variant={dark ? "light" : "primary"}>
+                    <Button href="/studio" fullWidth size="lg" variant={dark ? "light" : "primary"}>
                       Book a free trial
                     </Button>
                   )}

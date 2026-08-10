@@ -3,9 +3,8 @@
 import { useEffect, useState } from "react";
 import { getSupabaseSafe } from "@/lib/supabase/client";
 import { Loading } from "@/components/portal/kit";
-import { useTrial, firstNameOf } from "./shared";
+import { useTrial } from "./shared";
 
-const WA = "918796199188";
 const inp = "w-full rounded-xl border border-hairline bg-white px-4 py-3 text-ink placeholder:text-ink/40 focus:border-ink focus-visible:outline-2 focus-visible:outline-gold focus:outline-none";
 
 // -------------------- Ask --------------------
@@ -16,7 +15,6 @@ export function TrialAsk() {
   const [sent, setSent] = useState(false);
   if (loading) return <Loading />;
 
-  const wa = `https://wa.me/${WA}?text=${encodeURIComponent(`Hi Musicphonetics, this is about ${firstNameOf(s) || "my"} trial.`)}`;
   const send = async () => {
     if (!text.trim()) return;
     setBusy(true);
@@ -42,12 +40,6 @@ export function TrialAsk() {
           </>
         )}
       </div>
-
-      <a href={wa} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 rounded-3xl border border-hairline bg-white p-5 shadow-card">
-        <span className="grid h-11 w-11 place-items-center rounded-2xl bg-[#25D366]/15 text-xl">💬</span>
-        <div className="flex-1"><div className="font-bold text-ink">Chat on WhatsApp</div><div className="text-sm text-ink/55">Prefer to talk? We&rsquo;re a message away.</div></div>
-        <span className="text-ink/40">→</span>
-      </a>
 
       {s?.feedback && s.feedback.length > 0 && (
         <div className="rounded-3xl border border-hairline bg-white p-5 shadow-card">
