@@ -177,7 +177,7 @@ export function LearnExperience() {
   const [openFaq, setOpenFaq] = useState<number | null>(0);
   const inst = INSTRUMENTS[sel];
 
-  const startHref = `/start?instrument=${encodeURIComponent(inst.value)}`;
+  const startHref = `/studio?instrument=${encodeURIComponent(inst.value)}`;
   const waHref =
     "https://wa.me/918796199188?text=" +
     encodeURIComponent(`Hi Musicphonetics, I'd like to book a free ${inst.label} trial class.`);
