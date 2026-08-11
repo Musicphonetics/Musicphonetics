@@ -4,6 +4,7 @@ import { useRef, useState } from "react";
 import Link from "next/link";
 import { SectionHeader } from "./SectionHeader";
 import { cn } from "@/lib/utils";
+import { offerIsLive, OFFER_FIRST_MONTH, OFFER_REGULAR } from "@/lib/delhi-cantt";
 
 interface Plan {
   slug: string;
@@ -108,6 +109,16 @@ export function FunnelPackages() {
           sub="A programme for every stage, each built around real, lasting progress. Most students grow through the Main Pathway."
           invert
         />
+        {offerIsLive() && (
+          <div className="mt-6 flex justify-center">
+            <Link href="/delhi-cantt"
+              className="group inline-flex items-center gap-2.5 rounded-full border border-gold/40 bg-gold/10 px-4 py-2 text-sm font-semibold text-gold transition hover:bg-gold/20">
+              <span aria-hidden>🎖️</span>
+              <span><b>Delhi Cantt exclusive:</b> Main Pathway first month {OFFER_FIRST_MONTH}, then {OFFER_REGULAR}</span>
+              <span className="transition-transform group-hover:translate-x-0.5">→</span>
+            </Link>
+          </div>
+        )}
       </div>
 
       {/* Mobile: swipeable carousel. Desktop: three equal columns. */}

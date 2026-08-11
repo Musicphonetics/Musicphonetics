@@ -4,55 +4,74 @@ import { formatMoney } from "@/components/portal/kit";
 import { computeFeeStanding, type FeePaymentLite } from "@/lib/fees";
 import type { Student, Payment } from "@/lib/supabase/types";
 
-const pretty = (iso: string | null) =>
-  iso ? new Date(iso + "T00:00:00").toLocaleDateString("en-IN", { day: "numeric", month: "long", year: "numeric" }) : "—";
-
-// Shows the family exactly where they stand — including any advance they've paid
-// before the due date. Auto-updates whenever the office records a payment.
-export function AdvanceFeeCard({ student, payments }: { student: Student; payments: Payment[] }) {
+// Shows the family exactly where their fees stand — as CLASSES. Fees buy classes;
+// as classes are taken, the bar fills and the balance drops, so parents see their
+// money being used and know when renewal is near. Advance payments add classes.
+export function AdvanceFeeCard({ student, payments, completed }: { student: Student; payments: Payment[]; completed: number }) {
   const s = computeFeeStanding(
     student.fee_quoted,
-    student.start_date,
+    student.classes_per_month,
+    completed,
     payments as unknown as FeePaymentLite[],
   );
-  if (!s) return null;
+  if (!s || s.classesPurchased <= 0) return null;
 
   const name = student.name.split(" ")[0];
+  const pctW = `${Math.round(s.pct * 100)}%`;
 
   return (
     <div className="rounded-3xl border border-hairline bg-white p-5 shadow-[0_12px_34px_-20px_rgba(22,27,38,0.2)]">
-      <p className="text-xs font-semibold uppercase tracking-wide text-[#7A5E0F]">Your fee standing</p>
+      <div className="flex items-center justify-between">
+        <p className="text-xs font-semibold uppercase tracking-wide text-[#7A5E0F]">Your classes &amp; fees</p>
+        {s.renewalSoon
+          ? <span className="rounded-full bg-gold px-3 py-1 text-xs font-semibold text-ink">Renewal coming soon</span>
+          : s.fullyUsed
+            ? <span className="rounded-full bg-gold px-3 py-1 text-xs font-semibold text-ink">Renewal due</span>
+            : <span className="rounded-full bg-emerald-500/12 px-3 py-1 text-xs font-semibold text-emerald-700">Active</span>}
+      </div>
 
-      {s.paidAhead ? (
-        <div className="mt-3 rounded-2xl bg-emerald-500/[0.08] p-4">
-          <div className="flex items-center gap-2 text-emerald-700">
-            <span className="text-xl">✓</span>
-            <span className="font-display text-lg font-bold">You&rsquo;re paid in advance</span>
-          </div>
-          <p className="mt-1.5 text-sm text-ink/75">
-            You&rsquo;ve paid <b>{formatMoney(s.advanceAmount)}</b> beyond what&rsquo;s due
-            {s.advanceMonths >= 0.5 ? <> — about <b>{s.advanceMonths} month{s.advanceMonths >= 1.5 ? "s" : ""}</b> ahead</> : null}.
-            Thank you! {name}&rsquo;s classes are fully covered.
-          </p>
+      {/* Big number: classes remaining */}
+      <div className="mt-3 flex items-end justify-between">
+        <div>
+          <div className="font-display text-4xl font-bold leading-none text-ink">{s.remaining}<span className="ml-1 text-lg font-semibold text-ink/50">left</span></div>
+          <p className="mt-1 text-sm text-ink/60">of {s.classesPurchased} classes paid for</p>
         </div>
-      ) : s.outstanding > 0 ? (
-        <div className="mt-3 rounded-2xl bg-gold/[0.12] p-4">
-          <div className="font-display text-lg font-bold text-ink">Amount due: {formatMoney(s.outstanding)}</div>
-          <p className="mt-1 text-sm text-ink/70">Renew below to keep {name}&rsquo;s classes running without a break.</p>
+        <div className="text-right">
+          <div className="text-sm text-ink/45 line-through">{formatMoney(s.feeConsumed)}</div>
+          <div className="font-display text-xl font-bold text-[#7A5E0F]">{formatMoney(s.feeRemaining)}</div>
+          <p className="text-[11px] text-ink/50">balance in credit</p>
         </div>
-      ) : (
-        <div className="mt-3 rounded-2xl bg-ink/[0.04] p-4">
-          <div className="font-display text-lg font-bold text-ink">You&rsquo;re all caught up 🎵</div>
-          <p className="mt-1 text-sm text-ink/70">Nothing due right now.</p>
-        </div>
-      )}
+      </div>
 
-      {/* Clear, simple breakdown */}
+      {/* Progress bar: classes used */}
+      <div className="mt-4">
+        <div className="h-3 w-full overflow-hidden rounded-full bg-ink/[0.07]">
+          <div className="h-full rounded-full bg-gradient-to-r from-gold to-[#C6A02E] transition-all" style={{ width: pctW }} />
+        </div>
+        <div className="mt-1.5 flex justify-between text-xs text-ink/55">
+          <span>{s.used} completed</span>
+          <span>{Math.round(s.pct * 100)}% used</span>
+        </div>
+      </div>
+
+      {/* Human line */}
+      <p className="mt-4 rounded-2xl bg-ink/[0.04] p-3 text-sm text-ink/75">
+        {s.monthsAhead >= 1
+          ? <>You&rsquo;re paid <b>~{s.monthsAhead} month{s.monthsAhead >= 1.5 ? "s" : ""}</b> in advance — {name}&rsquo;s next {s.remaining} classes are fully covered. 🎵</>
+          : s.renewalSoon
+            ? <>Just <b>{s.remaining} class{s.remaining === 1 ? "" : "es"}</b> left. Renew soon so {name}&rsquo;s classes never pause.</>
+            : s.fullyUsed
+              ? <>All paid classes are complete. Renew to continue {name}&rsquo;s journey.</>
+              : <><b>{s.remaining}</b> of {s.classesPurchased} classes remaining.</>}
+      </p>
+
+      {/* Countable breakdown */}
       <div className="mt-4 grid gap-2 text-sm">
-        <Row k="Monthly fee" v={formatMoney(s.monthlyFee)} />
+        <Row k="Monthly fee" v={`${formatMoney(s.monthlyFee)} · ${s.classesPerMonth} classes`} />
         <Row k="Total paid so far" v={formatMoney(s.totalPaid)} />
-        <Row k="Months covered" v={`${s.monthsPaid}`} />
-        <Row k="Paid up to (next due)" v={pretty(s.nextDueISO)} highlight />
+        <Row k="Classes paid for" v={`${s.classesPurchased}`} />
+        <Row k="Classes completed" v={`${s.completed}`} />
+        <Row k="Classes remaining" v={`${s.remaining}`} highlight />
       </div>
     </div>
   );

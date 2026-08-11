@@ -63,8 +63,8 @@ export default function ParentPayments() {
             </div>
           </div>
 
-          {/* Advance / fee standing — shows any amount paid before the due date */}
-          <AdvanceFeeCard student={student} payments={pays} />
+          {/* Classes & fees — progress bar of classes used vs paid-for */}
+          <AdvanceFeeCard student={student} payments={pays} completed={view.completed} />
 
           {/* Renew — pay the monthly fee on the official payment page */}
           <div className="rounded-3xl border border-hairline bg-white p-5 shadow-[0_12px_34px_-20px_rgba(22,27,38,0.2)]">
