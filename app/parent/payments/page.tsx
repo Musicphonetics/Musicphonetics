@@ -12,6 +12,7 @@ import { whatsappLink } from "@/lib/data";
 import type { Payment } from "@/lib/supabase/types";
 import { useSelectedStudent } from "@/lib/family";
 import { FamilySwitcher } from "@/components/parent/FamilySwitcher";
+import { AdvanceFeeCard } from "@/components/parent/AdvanceFeeCard";
 import { cn } from "@/lib/utils";
 
 const pretty = (iso: string) => new Date(iso + "T00:00:00").toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" });
@@ -61,6 +62,9 @@ export default function ParentPayments() {
                 : <span className="rounded-full bg-emerald-500/12 px-3 py-1 text-xs font-semibold text-emerald-700">Active</span>}
             </div>
           </div>
+
+          {/* Advance / fee standing — shows any amount paid before the due date */}
+          <AdvanceFeeCard student={student} payments={pays} />
 
           {/* Renew — pay the monthly fee on the official payment page */}
           <div className="rounded-3xl border border-hairline bg-white p-5 shadow-[0_12px_34px_-20px_rgba(22,27,38,0.2)]">

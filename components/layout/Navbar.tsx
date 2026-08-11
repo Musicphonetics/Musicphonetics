@@ -36,7 +36,7 @@ export function Navbar() {
   return (
     <header
       className={cn(
-        "fixed inset-x-0 top-0 z-50 transition-all duration-300",
+        "site-nav fixed inset-x-0 top-0 z-50 transition-all duration-300",
         light
           ? "border-b border-transparent bg-transparent"
           : "border-b border-white/10 bg-charcoal/95 backdrop-blur-md"

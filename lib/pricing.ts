@@ -14,7 +14,7 @@ export type PlanKey = "foundation" | "main" | "directors";
 
 export const PROGRAM_PRICES: Record<PlanKey, number | null> = {
   foundation: 10000,
-  main: 15000,
+  main: 12000,
   directors: null, // Director's Circle — by consultation
 };
 

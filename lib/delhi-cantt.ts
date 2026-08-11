@@ -66,7 +66,7 @@ export const OFFER_SAVE = inr(DELHI_CANTT.discount);            // ₹2,000
 
 // ---- The three packages (for comparison + choice) --------------------------
 export interface Package {
-  key: "foundation" | "main_pathway" | "directors_circle";
+  key: "foundation" | "main_pathway" | "directors_circle" | "abhishek_sessions";
   name: string;
   priceLabel: string;      // display price
   priceSub: string;        // small line under the price
@@ -79,43 +79,56 @@ export interface Package {
 export const PACKAGES: Package[] = [
   {
     key: "foundation",
-    name: "Foundation",
+    name: "The Foundation",
     priceLabel: priceLabel("foundation"),
-    priceSub: "per month",
-    bestFor: "New & young beginners",
+    priceSub: "per month · beginners only",
+    bestFor: "Complete beginners only",
     features: [
-      "Structured 32-class beginner pathway",
-      "Curriculum progress bar",
-      "Homework & attendance tracking",
-      "Monthly goals & parent updates",
+      "8 one-hour classes a month",
+      "Only for those starting from zero",
+      "Correct technique, first chords & first song",
+      "Valid up to 4 months, then a clearance check",
     ],
   },
   {
     key: "main_pathway",
-    name: "Main Pathway",
+    name: "The Main Pathway",
     priceLabel: priceLabel("main"),
     priceSub: "per month",
     bestFor: "Committed, progressing learners",
     features: [
-      "Personalised monthly goals",
-      "Teacher-defined outcomes & reports",
-      "Structured ongoing development",
+      "Theory, performance & Trinity / exam pathway",
+      "Full progress tracking in your portal",
+      "Quarterly stage performances",
       "Homework, attendance & parent visibility",
     ],
-    offer: `Delhi Cantt: first month ${OFFER_FIRST_MONTH} (save ${OFFER_SAVE})`,
+    offer: `Delhi Cantt: first month ${OFFER_FIRST_MONTH}, then ${OFFER_REGULAR} (save ${OFFER_SAVE})`,
     featured: true,
   },
   {
     key: "directors_circle",
-    name: "Director's Circle",
-    priceLabel: "From ₹2,500/class",
-    priceSub: "premium mentorship",
-    bestFor: "Serious & advanced learners",
+    name: "The Director's Circle",
+    priceLabel: "By consultation",
+    priceSub: "priority & concierge",
+    bestFor: "Families who want the very best service",
     features: [
-      "Premium personal mentorship",
-      "Bespoke learning direction",
-      "Higher-touch guidance",
-      "Director involvement · by prior booking",
+      "A dedicated, always-available teacher",
+      "No cancellations, ever · priority booking",
+      "Flexible rescheduling",
+      "Weekly updates & invitations to exclusive events",
+    ],
+  },
+  {
+    key: "abhishek_sessions",
+    name: "Learn with Abhishek",
+    priceLabel: "By application",
+    priceSub: "founder-led · highly limited",
+    bestFor: "By personal selection only",
+    features: [
+      "Taught personally by Abhishek",
+      "Founder-led, one-to-one mentorship",
+      "Highly limited — by application",
+      "Availability at the Founder's discretion",
     ],
   },
 ];

@@ -3,6 +3,7 @@ import { Footer } from "@/components/layout/Footer";
 import { Loader } from "@/components/ui/Loader";
 import { CursorGlow } from "@/components/ui/CursorGlow";
 import { StickyTrialBar } from "@/components/layout/StickyTrialBar";
+import { PromoBar } from "@/components/layout/PromoBar";
 
 export default function SiteLayout({
   children,
@@ -20,6 +21,7 @@ export default function SiteLayout({
       </a>
       <Loader />
       <CursorGlow />
+      <PromoBar />
       <Navbar />
       <main id="main" className="pt-16">
         {children}

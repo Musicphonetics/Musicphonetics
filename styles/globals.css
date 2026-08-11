@@ -336,3 +336,8 @@
   .doc-page:last-child { break-after: auto; page-break-after: auto; }
   .avoid-break { break-inside: avoid; page-break-inside: avoid; }
 }
+
+/* Delhi Cantt promo bar (components/layout/PromoBar.tsx): when active, shift the
+   fixed navbar and main content down by the bar's 2.25rem height. */
+[data-promo] .site-nav { top: 2.25rem; }
+[data-promo] #main { padding-top: calc(4rem + 2.25rem); }
