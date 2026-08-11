@@ -131,35 +131,35 @@ interface Fee {
 
 const FEES: Fee[] = [
   {
-    name: "Free Trial",
-    price: "₹0",
-    unit: "first class",
-    tone: "green",
-    tag: "Start here",
-    points: ["A real one-to-one class", "Meet your matched teacher", "No card, no obligation"],
-  },
-  {
-    name: "Foundation",
+    name: "The Foundation",
     price: "₹10,000",
     unit: "per month",
     tone: "gold",
-    points: ["8 classes a month, 1 hour each", "For absolute beginners", "Learn properly, without pressure"],
+    tag: "Beginners only",
+    points: ["8 one-hour classes a month", "Only for complete beginners", "Valid up to 4 months, then a clearance check"],
   },
   {
-    name: "Main Pathway",
-    price: "₹15,000",
+    name: "The Main Pathway",
+    price: "₹12,000",
     unit: "per month",
     tone: "gold",
-    tag: "Most recommended",
+    tag: "Offer — till seats last",
     best: true,
-    points: ["8 classes a month, 1 hour each", "Theory, performance and exam prep", "Full progress tracking"],
+    points: ["Was ₹15,000 — now ₹12,000", "Theory, performance & exam pathway", "Full tracking + quarterly stage"],
   },
   {
-    name: "Director's Circle",
-    price: "From ₹2,500",
-    unit: "per class",
+    name: "The Signature Programme",
+    price: "By consultation",
+    unit: "",
     tone: "neutral",
-    points: ["Taught by Director Abhishek", "By personal consultation", "Up to ₹5,000 per class"],
+    points: ["A dedicated, always-available teacher", "No cancellations · priority booking", "Weekly updates & exclusive events"],
+  },
+  {
+    name: "Learn with Abhishek",
+    price: "By application",
+    unit: "",
+    tone: "neutral",
+    points: ["One-to-one with the Founder", "Highly limited · discretionary", "Founder-led mentorship"],
   },
 ];
 
@@ -168,7 +168,8 @@ const FAQS: { q: string; a: string }[] = [
   { q: "Does the teacher come to our home?", a: "Yes. We teach at your home across Delhi NCR, live online, or at our South Delhi centre. You choose whatever is most convenient." },
   { q: "What age can start?", a: "Children from around 6 years, and adults of any age. It is never too early or too late to begin properly." },
   { q: "Do you prepare students for exams?", a: "Yes, where the student wants it. Our curriculum follows the Trinity, Rockschool and ABRSM pathways for graded exams." },
-  { q: "How much do classes cost?", a: "Foundation is ₹10,000 a month and the Main Pathway is ₹15,000 a month, both for 8 one-hour classes. Fees vary a little by instrument, level and location. The trial is always free." },
+  { q: "How much do classes cost?", a: "The Foundation (for complete beginners) is ₹10,000 a month. The Main Pathway is ₹12,000 a month — currently on offer, down from ₹15,000, while seats last. Premium options (the Signature Programme, and learning directly with Abhishek) are by consultation. The trial is always free." },
+  { q: "What is the Foundation, exactly?", a: "It is our beginner module, only for people starting from absolute zero. It runs up to 4 months; moving on to the Main Pathway is subject to a short clearance assessment. If you already know a few chords or your string names, you skip Foundation and begin on the Main Pathway." },
   { q: "Is the trial really free?", a: "Yes. Your first one-to-one class is completely free, with no card and no obligation to continue. It is the easiest way to see if it is right for you." },
 ];
 
@@ -347,7 +348,7 @@ export function LearnExperience() {
               <h3 className="text-lg font-semibold text-ink">{f.name}</h3>
               <div className="mt-2 flex items-baseline gap-1.5">
                 <span className="font-display text-3xl font-bold text-ink">{f.price}</span>
-                <span className="text-sm text-ink/55">/ {f.unit}</span>
+                {f.unit ? <span className="text-sm text-ink/55">/ {f.unit}</span> : null}
               </div>
               <ul className="mt-4 flex-1 space-y-2">
                 {f.points.map((p) => (

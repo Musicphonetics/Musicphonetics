@@ -119,6 +119,7 @@ export async function onRequestPost({ request, env }) {
         preferred_area: clean(b.preferred_area, 120), experience_level: clean(b.experience_level, 120),
         learning_goal: clean(b.learning_goal, 300), source: "trial_portal", landing_page: "/studio",
         utm_source: clean(b.utm_source, 120), utm_medium: clean(b.utm_medium, 120), utm_campaign: clean(b.utm_campaign, 120),
+        answers: (b.answers && typeof b.answers === "object") ? b.answers : {},
       },
     });
     token = r && r.token;
