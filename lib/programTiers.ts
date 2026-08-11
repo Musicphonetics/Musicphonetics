@@ -53,7 +53,7 @@ export const TIERS: Record<Tier["key"], Tier> = {
   },
   signature: {
     key: "signature",
-    name: "The Signature Programme",
+    name: "The Director's Circle",
     tagline: "Priority. Concierge. Zero hassle.",
     price: "By consultation",
     premium: true,

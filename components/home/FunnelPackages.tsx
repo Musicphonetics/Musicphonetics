@@ -11,6 +11,7 @@ interface Plan {
   name: string;
   line: string;
   fee: string;
+  strike?: string;
   feeNote: string;
   facts: string[];
   cta: string;
@@ -19,47 +20,62 @@ interface Plan {
 
 const PLANS: Plan[] = [
   {
+    slug: "foundation",
+    tag: "Beginners only",
+    name: "The Foundation",
+    line: "A calm, correct first start — exclusively for complete beginners.",
+    fee: "₹10,000",
+    feeNote: "8 one-hour classes a month",
+    facts: [
+      "Only for people starting from absolute zero.",
+      "Correct technique, first chords and your first song.",
+      "Valid up to 4 months, then a clearance check to advance.",
+    ],
+    cta: "Book a free trial",
+  },
+  {
     slug: "main",
-    tag: "Most chosen",
+    tag: "Offer — till seats last",
     name: "The Main Pathway",
     line: "The full Musicphonetics system, for real and lasting progress.",
-    fee: "₹15,000",
-    feeNote: "8 one hour classes each month",
+    fee: "₹12,000",
+    strike: "₹15,000",
+    feeNote: "8 one-hour classes a month",
     facts: [
-      "A matched teacher and a structured curriculum.",
       "Theory, ear training and real stage work.",
       "Trinity and graded exam prep when ready.",
+      "Full progress tracking + quarterly performances.",
     ],
-    cta: "See the Main Pathway",
+    cta: "Book a free trial",
     featured: true,
   },
   {
-    slug: "foundation",
-    tag: "The starting point",
-    name: "Foundation",
-    line: "A calm, correct first start for absolute beginners.",
-    fee: "₹10,000",
-    feeNote: "a four chapter beginner journey",
+    slug: "directors-circle",
+    tag: "Premium service",
+    name: "The Director's Circle",
+    line: "A white-glove service for families who want the very best — priced for the care, not a name.",
+    fee: "By consultation",
+    feeNote: "priority & concierge",
     facts: [
-      "Built for absolute beginners.",
-      "First notes to Main Pathway ready.",
-      "Most students move up in a few months.",
+      "A dedicated teacher, held only for you.",
+      "No cancellations, ever · priority booking.",
+      "Weekly updates & invitations to exclusive events.",
     ],
-    cta: "Explore Foundation",
+    cta: "Enquire about the Circle",
   },
   {
-    slug: "directors-circle",
-    tag: "By request only",
-    name: "Director's Circle",
-    line: "Direct, founder level mentoring for a select few.",
-    fee: "By request",
-    feeNote: "limited availability",
+    slug: "abhishek-sessions",
+    tag: "By application",
+    name: "Learn with Abhishek",
+    line: "A rare, discretionary place to learn one-to-one with the Founder.",
+    fee: "By application",
+    feeNote: "founder-led · highly limited",
     facts: [
-      "Personally guided by the founder.",
-      "Limited seats, about a week's wait.",
-      "By application only.",
+      "Taught personally by Abhishek.",
+      "Founder-led, one-to-one mentorship.",
+      "Availability entirely at his discretion.",
     ],
-    cta: "Request access",
+    cta: "Apply to learn with Abhishek",
   },
 ];
 
@@ -89,7 +105,7 @@ export function FunnelPackages() {
         <SectionHeader
           eyebrow="Programmes"
           title="The heart of everything we do."
-          sub="Three ways to learn with us, each built around real, lasting progress. Most students grow through the Main Pathway."
+          sub="A programme for every stage, each built around real, lasting progress. Most students grow through the Main Pathway."
           invert
         />
       </div>
@@ -156,7 +172,8 @@ function Card({ p }: { p: Plan }) {
 
       {/* Price */}
       <div className="mt-5 border-t border-white/10 pt-5">
-        <p className="flex items-baseline gap-1.5">
+        <p className="flex items-baseline gap-2">
+          {p.strike && <span className="text-lg text-ivory/40 line-through">{p.strike}</span>}
           <span className="font-display text-[2rem] font-medium leading-none text-ivory">{p.fee}</span>
           {p.fee.startsWith("₹") && <span className="text-sm text-ivory/55">/ month</span>}
         </p>
@@ -175,7 +192,7 @@ function Card({ p }: { p: Plan }) {
 
       {/* CTA */}
       <Link
-        href={`/programmes/${p.slug}`}
+        href="/studio"
         className={cn(
           "group mt-6 inline-flex min-h-[50px] w-full items-center justify-center gap-2 rounded-full px-5 text-[0.92rem] font-semibold transition-all",
           p.featured

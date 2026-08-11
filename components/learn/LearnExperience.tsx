@@ -148,7 +148,7 @@ const FEES: Fee[] = [
     points: ["Was ₹15,000 — now ₹12,000", "Theory, performance & exam pathway", "Full tracking + quarterly stage"],
   },
   {
-    name: "The Signature Programme",
+    name: "The Director's Circle",
     price: "By consultation",
     unit: "",
     tone: "neutral",
@@ -168,7 +168,7 @@ const FAQS: { q: string; a: string }[] = [
   { q: "Does the teacher come to our home?", a: "Yes. We teach at your home across Delhi NCR, live online, or at our South Delhi centre. You choose whatever is most convenient." },
   { q: "What age can start?", a: "Children from around 6 years, and adults of any age. It is never too early or too late to begin properly." },
   { q: "Do you prepare students for exams?", a: "Yes, where the student wants it. Our curriculum follows the Trinity, Rockschool and ABRSM pathways for graded exams." },
-  { q: "How much do classes cost?", a: "The Foundation (for complete beginners) is ₹10,000 a month. The Main Pathway is ₹12,000 a month — currently on offer, down from ₹15,000, while seats last. Premium options (the Signature Programme, and learning directly with Abhishek) are by consultation. The trial is always free." },
+  { q: "How much do classes cost?", a: "The Foundation (for complete beginners) is ₹10,000 a month. The Main Pathway is ₹12,000 a month — currently on offer, down from ₹15,000, while seats last. Premium options (the Director's Circle, and learning directly with Abhishek) are by consultation. The trial is always free." },
   { q: "What is the Foundation, exactly?", a: "It is our beginner module, only for people starting from absolute zero. It runs up to 4 months; moving on to the Main Pathway is subject to a short clearance assessment. If you already know a few chords or your string names, you skip Foundation and begin on the Main Pathway." },
   { q: "Is the trial really free?", a: "Yes. Your first one-to-one class is completely free, with no card and no obligation to continue. It is the easiest way to see if it is right for you." },
 ];
