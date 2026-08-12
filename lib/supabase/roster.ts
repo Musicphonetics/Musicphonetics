@@ -3,6 +3,7 @@
 import { getSupabase } from "./client";
 import type { Student, StudentStat } from "./types";
 import { isValidCompleted } from "@/lib/attendance";
+import { purchasedClasses, type FeePaymentLite } from "@/lib/fees";
 
 // Loads the signed-in teacher's roster with computed stats, reading the BASE
 // tables (students, class_updates, payments) rather than the student_stats
@@ -15,7 +16,7 @@ export async function loadRoster(): Promise<{ rows: StudentStat[]; error: string
   const [studentsRes, classesRes, paymentsRes] = await Promise.all([
     sb.from("students").select("*").order("name"),
     sb.from("class_updates").select("student_id,class_status,attendance_status,counts_toward_cycle"),
-    sb.from("payments").select("student_id,amount_paid,teacher_share"),
+    sb.from("payments").select("student_id,amount_paid,teacher_share,payment_status"),
   ]);
 
   const err = studentsRes.error || classesRes.error || paymentsRes.error;
@@ -27,22 +28,22 @@ export async function loadRoster(): Promise<{ rows: StudentStat[]; error: string
   }
   const paid = new Map<string, number>();
   const share = new Map<string, number>();
+  const payRows = new Map<string, FeePaymentLite[]>();
   for (const p of paymentsRes.data ?? []) {
     paid.set(p.student_id, (paid.get(p.student_id) ?? 0) + (p.amount_paid ?? 0));
     share.set(p.student_id, (share.get(p.student_id) ?? 0) + (p.teacher_share ?? 0));
+    const list = payRows.get(p.student_id) ?? [];
+    list.push({ amount_paid: p.amount_paid ?? 0, payment_status: p.payment_status ?? "Received" });
+    payRows.set(p.student_id, list);
   }
 
   const rows: StudentStat[] = (studentsRes.data as Student[] ?? []).map((s) => {
     const done = completed.get(s.id) ?? 0;
-    const cpm = (s.classes_per_month ?? 0) > 0 ? (s.classes_per_month as number) : 8;
-    const fee = s.fee_quoted ?? 0;
     const totalPaid = paid.get(s.id) ?? 0;
-    // Each payment of the monthly fee buys one cycle of classes (fee = cpm
-    // classes). Two payments = 2 cycles = 16 classes. Advance amounts are
-    // handled naturally by dividing the total paid by the fee. Before any
-    // payment is recorded we assume one cycle so a new student isn't shown as
-    // "renewal due" on day one.
-    const purchased = fee > 0 && totalPaid > 0 ? Math.round((totalPaid / fee) * cpm) : cpm;
+    // Each payment received = one set of classes (a bigger payment = more sets).
+    // Works even when fee_quoted isn't set, so recording a payment always adds a
+    // set. Before any payment we assume one set so a new student isn't shown due.
+    const purchased = purchasedClasses(payRows.get(s.id) ?? [], s.fee_quoted, s.classes_per_month);
     return {
       student_id: s.id,
       student_code: s.student_code ?? null,

@@ -3,6 +3,7 @@
 import { getSupabase } from "./client";
 import type { Student, ClassUpdate, Payment, Profile } from "./types";
 import { isValidCompleted } from "@/lib/attendance";
+import { purchasedClasses, type FeePaymentLite } from "@/lib/fees";
 
 // Everything a parent may see about THEIR own child/children. RLS restricts the
 // rows to students where students.parent_id = auth.uid() (see the SQL). We read
@@ -75,11 +76,7 @@ export function studentView(d: ParentData, student: Student): StudentView {
   // classes); two payments = two cycles. Renewal is due only once every paid
   // class is used up — not on a calendar month. Before any payment we assume
   // one cycle so a new student isn't shown as due.
-  const fee = student.fee_quoted ?? 0;
-  const totalPaid = pays
-    .filter((p) => p.payment_status === "Received" || p.payment_status === "Partial")
-    .reduce((s, p) => s + (Number(p.amount_paid) || 0), 0);
-  const purchased = fee > 0 && totalPaid > 0 ? Math.round((totalPaid / fee) * perMonth) : perMonth;
+  const purchased = purchasedClasses(pays as unknown as FeePaymentLite[], student.fee_quoted, perMonth);
   const remaining = Math.max(purchased - completed, 0);
   const renewalDue = student.status === "active" && remaining === 0;
   return {

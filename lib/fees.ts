@@ -88,6 +88,36 @@ export function computeFeeCycles(
   });
 }
 
+// How many SETS the payments have funded. The rule the studio actually uses:
+// each payment received = one set of classes. A larger payment (e.g. two months
+// in one go) counts as however many whole fees it covers, but never less than
+// one set per payment — and it works even when fee_quoted isn't filled in, so a
+// payment always creates a set. Only Received/Partial payments count.
+export function countPaidSets(
+  payments: FeePaymentLite[],
+  monthlyFee: number | null | undefined,
+): number {
+  const fee = Number(monthlyFee) || 0;
+  let sets = 0;
+  for (const p of payments) {
+    if (p.payment_status !== "Received" && p.payment_status !== "Partial") continue;
+    sets += fee > 0 ? Math.max(1, Math.round((Number(p.amount_paid) || 0) / fee)) : 1;
+  }
+  return sets;
+}
+
+// Total classes the payments have bought (whole sets). Falls back to one set
+// before any payment so a new student isn't shown as already used up.
+export function purchasedClasses(
+  payments: FeePaymentLite[],
+  monthlyFee: number | null | undefined,
+  classesPerMonth: number | null | undefined,
+): number {
+  const cpm = Number(classesPerMonth) > 0 ? Number(classesPerMonth) : 8;
+  const sets = countPaidSets(payments, monthlyFee);
+  return (sets > 0 ? sets : 1) * cpm;
+}
+
 // Classes are counted in SETS (one set = one paid month = classes_per_month
 // classes). The counter never goes past the set size: 14 completed at 8/set is
 // "Set 1 done + 6 of 8 in Set 2", shown as 6/8, not 14/16. Each payment funds a
@@ -141,7 +171,7 @@ export function computeFeeStanding(
     .filter((p) => p.payment_status === "Received" || p.payment_status === "Partial")
     .reduce((s, p) => s + (Number(p.amount_paid) || 0), 0);
 
-  const classesPurchased = Math.round((totalPaid / fee) * cpm);
+  const classesPurchased = purchasedClasses(payments, fee, cpm);
   const completed = Math.max(0, Math.floor(completedClasses || 0));
   const used = Math.min(completed, classesPurchased);
   const remaining = Math.max(0, classesPurchased - completed);
