@@ -6,7 +6,7 @@
 // "a client-side exception". Network-first means every visit gets the fresh build;
 // the cache is used only when the network is unavailable. Supabase/API traffic is
 // never touched, so records stay live and private.
-const SHELL = "mp-shell-v4";
+const SHELL = "mp-shell-v5";
 const SHELL_URLS = ["/", "/parent/login", "/teacher/login", "/offline.html", "/manifest.webmanifest"];
 
 self.addEventListener("install", (event) => {
