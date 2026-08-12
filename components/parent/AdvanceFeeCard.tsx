@@ -1,13 +1,17 @@
 "use client";
 
 import { formatMoney } from "@/components/portal/kit";
-import { computeFeeStanding, type FeePaymentLite } from "@/lib/fees";
+import { computeFeeStanding, computeFeeCycles, type FeePaymentLite, type FeeCyclePayment } from "@/lib/fees";
 import type { Student, Payment } from "@/lib/supabase/types";
+
+const shortDate = (iso: string) => new Date(iso + "T00:00:00").toLocaleDateString("en-IN", { day: "numeric", month: "short" });
 
 // Shows the family exactly where their fees stand — as CLASSES. Fees buy classes;
 // as classes are taken, the bar fills and the balance drops, so parents see their
 // money being used and know when renewal is near. Advance payments add classes.
-export function AdvanceFeeCard({ student, payments, completed }: { student: Student; payments: Payment[]; completed: number }) {
+// completedDates are the REAL class dates, used to show when each payment's block
+// of classes started and got finished (no calendar-month assumption).
+export function AdvanceFeeCard({ student, payments, completed, completedDates = [] }: { student: Student; payments: Payment[]; completed: number; completedDates?: string[] }) {
   const s = computeFeeStanding(
     student.fee_quoted,
     student.classes_per_month,
@@ -15,6 +19,13 @@ export function AdvanceFeeCard({ student, payments, completed }: { student: Stud
     payments as unknown as FeePaymentLite[],
   );
   if (!s || s.classesPurchased <= 0) return null;
+
+  const cycles = computeFeeCycles(
+    payments as unknown as FeeCyclePayment[],
+    student.fee_quoted,
+    student.classes_per_month,
+    completedDates,
+  );
 
   const name = student.name.split(" ")[0];
   const pctW = `${Math.round(s.pct * 100)}%`;
@@ -73,6 +84,35 @@ export function AdvanceFeeCard({ student, payments, completed }: { student: Stud
         <Row k="Classes completed" v={`${s.completed}`} />
         <Row k="Classes remaining" v={`${s.remaining}`} highlight />
       </div>
+
+      {/* Payment cycles — each payment mapped to the real classes it covered */}
+      {cycles.length > 0 && (
+        <div className="mt-4">
+          <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-ink/55">Each payment&rsquo;s classes</p>
+          <div className="space-y-2">
+            {cycles.map((c) => (
+              <div key={c.index} className="rounded-2xl border border-hairline bg-ink/[0.02] p-3">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm font-semibold text-ink">{formatMoney(c.amount)}</span>
+                  {c.status === "done"
+                    ? <span className="rounded-full bg-emerald-500/12 px-2.5 py-0.5 text-[11px] font-semibold text-emerald-700">Completed</span>
+                    : c.status === "active"
+                      ? <span className="rounded-full bg-gold/20 px-2.5 py-0.5 text-[11px] font-semibold text-[#7A5E0F]">In progress</span>
+                      : <span className="rounded-full bg-ink/[0.06] px-2.5 py-0.5 text-[11px] font-semibold text-ink/60">Ready (advance)</span>}
+                </div>
+                <p className="mt-1 text-xs text-ink/65">
+                  Paid <b className="text-ink/80">{shortDate(c.paidOn)}</b> · {c.classes} classes
+                  {c.status === "done" && c.finishedOn
+                    ? <> · finished <b className="text-ink/80">{shortDate(c.finishedOn)}</b> — renewal fell due</>
+                    : c.status === "active"
+                      ? <> · <b className="text-[#7A5E0F]">{c.done} of {c.classes} done</b>, {c.classes - c.done} left</>
+                      : <> · not started yet</>}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

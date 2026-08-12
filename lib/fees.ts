@@ -28,6 +28,66 @@ export interface FeeStanding {
   fullyUsed: boolean;
 }
 
+// One payment's block of classes, mapped onto the REAL dates classes were taken.
+// This is what lets the family see the story: paid on X → these classes → the
+// block got finished on Y (which is when the next payment fell due). Nothing is
+// projected or invented — finishedOn only appears once enough real classes exist.
+export interface FeeCycle {
+  index: number;
+  paidOn: string;              // payment_date
+  amount: number;
+  classes: number;             // classes this payment bought
+  startedOn: string | null;    // date of the first class drawn from this block
+  finishedOn: string | null;   // date the block ran out — i.e. renewal fell due
+  done: number;                // completed classes within this block
+  status: "done" | "active" | "upcoming";
+}
+
+export interface FeeCyclePayment {
+  amount_paid: number;
+  payment_status: string;
+  payment_date: string;
+}
+
+export function computeFeeCycles(
+  payments: FeeCyclePayment[],
+  monthlyFee: number | null | undefined,
+  classesPerMonth: number | null | undefined,
+  completedDates: string[],     // real class dates (any order)
+): FeeCycle[] {
+  const fee = Number(monthlyFee) || 0;
+  if (fee <= 0) return [];
+  const cpm = Number(classesPerMonth) > 0 ? Number(classesPerMonth) : 8;
+
+  const pays = payments
+    .filter((p) => p.payment_status === "Received" || p.payment_status === "Partial")
+    .slice()
+    .sort((a, b) => a.payment_date.localeCompare(b.payment_date));
+  const dates = completedDates.filter(Boolean).slice().sort((a, b) => a.localeCompare(b));
+  const total = dates.length;
+
+  let cursor = 0; // how many completed classes are already spoken for by earlier blocks
+  return pays.map((p, i) => {
+    const classes = Math.max(0, Math.round((Number(p.amount_paid) / fee) * cpm));
+    const start = cursor;
+    const end = cursor + classes; // exclusive index into the completed-class dates
+    const done = Math.max(0, Math.min(total, end) - start);
+    const startedOn = done > 0 ? dates[start] : null;
+    const finishedOn = classes > 0 && total >= end ? dates[end - 1] : null;
+    cursor = end;
+    return {
+      index: i,
+      paidOn: p.payment_date,
+      amount: Number(p.amount_paid) || 0,
+      classes,
+      startedOn,
+      finishedOn,
+      done,
+      status: finishedOn ? "done" : done > 0 ? "active" : "upcoming",
+    };
+  });
+}
+
 export function computeFeeStanding(
   monthlyFee: number | null | undefined,
   classesPerMonth: number | null | undefined,

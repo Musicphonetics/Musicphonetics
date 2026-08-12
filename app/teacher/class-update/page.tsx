@@ -220,35 +220,36 @@ function QuickForm({ students }: { students: StudentStat[] }) {
 /* BACKFILL — many past classes at once. Date · duration · topic.      */
 /* ------------------------------------------------------------------ */
 type BackRow = { id: number; date: string; duration: number; taught: string };
-const FREQ: { label: string; days: number }[] = [
-  { label: "Once a week", days: 7 },
-  { label: "Twice a week", days: 3 },
-  { label: "Every day", days: 1 },
-];
+const daysBetween = (a: string, b: string) =>
+  Math.round((new Date(b + "T00:00:00").getTime() - new Date(a + "T00:00:00").getTime()) / 86400000);
 
 function BackfillForm({ students }: { students: StudentStat[] }) {
   const [sid, setSid] = useState("");
   const [start, setStart] = useState(addDays(today(), -56)); // ~2 months ago
-  const [freqIdx, setFreqIdx] = useState(0);
+  const [end, setEnd] = useState(today());
   const [count, setCount] = useState("8");
   const [rows, setRows] = useState<BackRow[]>([]);
   const [busy, setBusy] = useState(false);
   const [toast, setToast] = useState<{ kind: "success" | "error"; message: string } | null>(null);
   const nextId = useMemo(() => ({ n: 1 }), []);
 
+  // Spread the classes evenly between the first and last date. Real schedules
+  // are irregular (3 one week, 1 the next) — this is only a starting guess; every
+  // date is editable below, so the teacher sets the exact dates that happened.
   function generate() {
     const n = Math.max(0, Math.min(60, Math.floor(Number(count) || 0)));
-    const step = FREQ[freqIdx].days;
+    const span = end && daysBetween(start, end) > 0 ? daysBetween(start, end) : (n - 1) * 7;
     const out: BackRow[] = [];
     for (let i = 0; i < n; i++) {
-      out.push({ id: nextId.n++, date: addDays(start, i * step), duration: 50, taught: "" });
+      const off = n > 1 ? Math.round((i * span) / (n - 1)) : 0;
+      out.push({ id: nextId.n++, date: addDays(start, off), duration: 50, taught: "" });
     }
     setRows(out);
   }
 
   function addRow() {
     const last = rows[rows.length - 1];
-    const date = last ? addDays(last.date, FREQ[freqIdx].days) : start;
+    const date = last ? addDays(last.date, 7) : start;
     setRows((p) => [...p, { id: nextId.n++, date, duration: 50, taught: "" }]);
   }
 
@@ -300,25 +301,17 @@ function BackfillForm({ students }: { students: StudentStat[] }) {
         <p className="text-sm font-semibold text-ink">Add several classes fast</p>
         <div className="grid grid-cols-2 gap-3">
           <Field label="First class was on" type="date" value={start} onChange={setStart} />
-          <Field label="How many classes?" inputMode="numeric" value={count} onChange={setCount} />
+          <Field label="Last class was on" type="date" value={end} onChange={setEnd} />
         </div>
-        <div>
-          <span className="mb-1.5 block text-sm font-semibold text-ink">How often?</span>
-          <div className="flex flex-wrap gap-2">
-            {FREQ.map((fq, i) => (
-              <button key={fq.label} type="button" onClick={() => setFreqIdx(i)}
-                className={cn("rounded-full border px-4 py-2 text-sm font-semibold transition",
-                  freqIdx === i ? "border-gold bg-gold text-ink" : "border-hairline bg-white text-ink/70 hover:border-gold/50")}>
-                {fq.label}
-              </button>
-            ))}
-          </div>
-        </div>
+        <Field label="How many classes in between?" inputMode="numeric" value={count} onChange={setCount} />
         <button type="button" onClick={generate}
           className="w-full rounded-full border border-ink/15 bg-mist py-3 text-sm font-semibold text-ink hover:bg-mist/70">
           Generate {Math.max(0, Math.min(60, Math.floor(Number(count) || 0)))} rows
         </button>
-        <p className="text-xs text-ink/45">Dates fill in automatically — just tweak any that differ and write what was taught in each.</p>
+        <p className="text-xs text-ink/45">
+          We spread the classes evenly between those two dates as a starting point — no fixed weekly pattern.
+          Every date below is editable, so set the exact days each class actually happened.
+        </p>
       </div>
 
       {/* Rows */}

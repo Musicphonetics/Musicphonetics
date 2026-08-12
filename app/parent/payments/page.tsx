@@ -6,6 +6,7 @@ import { PARENT_TABS } from "@/components/portal/tabs";
 import { Loading, EmptyState, formatMoney } from "@/components/portal/kit";
 import { isSupabaseConfigured } from "@/lib/supabase/client";
 import { loadParentData, studentView, type ParentData } from "@/lib/supabase/parent";
+import { isValidCompleted } from "@/lib/attendance";
 import { PaymentDoc } from "@/components/portal/PaymentDoc";
 import { studentPlan, PLAN_LABEL } from "@/lib/plan";
 import { whatsappLink } from "@/lib/data";
@@ -35,6 +36,12 @@ export default function ParentPayments() {
   const { student, select } = useSelectedStudent(data?.students);
   const view = useMemo(() => (data && student ? studentView(data, student) : null), [data, student]);
   const pays = useMemo(() => (data && student ? data.payments.filter((p) => p.student_id === student.id) : []), [data, student]);
+  const completedDates = useMemo(
+    () => (data && student
+      ? data.classes.filter((c) => c.student_id === student.id && isValidCompleted(c)).map((c) => c.class_date)
+      : []),
+    [data, student],
+  );
   const switcher = data
     ? <FamilySwitcher students={data.students} selectedId={student?.id ?? null} onSelect={select} onAdded={reload} />
     : null;
@@ -64,7 +71,7 @@ export default function ParentPayments() {
           </div>
 
           {/* Classes & fees — progress bar of classes used vs paid-for */}
-          <AdvanceFeeCard student={student} payments={pays} completed={view.completed} />
+          <AdvanceFeeCard student={student} payments={pays} completed={view.completed} completedDates={completedDates} />
 
           {/* Renew — pay the monthly fee on the official payment page */}
           <div className="rounded-3xl border border-hairline bg-white p-5 shadow-[0_12px_34px_-20px_rgba(22,27,38,0.2)]">
