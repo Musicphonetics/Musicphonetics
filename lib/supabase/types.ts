@@ -379,6 +379,7 @@ export interface StudentStat {
   fee_quoted: number | null;
   classes_completed: number;
   classes_remaining: number;
+  classes_purchased: number;   // classes the recorded payments have bought
   total_paid: number;
   teacher_share_total: number;
 }

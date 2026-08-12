@@ -60,7 +60,7 @@ export default function MyStudents() {
                   <div className="text-right">
                     <span className={cn("inline-block rounded-full px-2 py-0.5 text-[11px] font-semibold",
                       s.status === "active" ? "bg-feature-green/10 text-feature-green" : "bg-mist text-ink/60")}>{s.status}</span>
-                    <p className="mt-1 text-xs text-ink/60">{s.classes_completed}/{(s.classes_per_month ?? 0)} classes</p>
+                    <p className="mt-1 text-xs text-ink/60">{s.classes_completed}/{s.classes_purchased} classes</p>
                   </div>
                 </button>
                 {openId === s.student_id && (
@@ -128,8 +128,11 @@ function StudentDetail({ stat, onReport }: { stat: StudentStat; onReport: () => 
         <Mini label="Remaining" value={String(stat.classes_remaining)} />
         <Mini label="Paid" value={formatMoney(stat.total_paid)} />
       </div>
-      {stat.classes_remaining <= 2 && stat.status === "active" && (
-        <p className="mt-3 rounded-lg bg-gold/15 px-3 py-2 text-xs font-semibold text-[#7A5E0F]">Renewal due - {stat.classes_remaining} classes left.</p>
+      {stat.status === "active" && stat.classes_remaining === 0 && (
+        <p className="mt-3 rounded-lg bg-gold/15 px-3 py-2 text-xs font-semibold text-[#7A5E0F]">Renewal due — all {stat.classes_purchased} paid classes are complete.</p>
+      )}
+      {stat.status === "active" && stat.classes_remaining > 0 && stat.classes_remaining <= 2 && (
+        <p className="mt-3 rounded-lg bg-gold/15 px-3 py-2 text-xs font-semibold text-[#7A5E0F]">Renewal soon — {stat.classes_remaining} class{stat.classes_remaining === 1 ? "" : "es"} left.</p>
       )}
 
       <button onClick={onReport}

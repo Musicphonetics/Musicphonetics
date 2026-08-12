@@ -66,13 +66,22 @@ export interface StudentView {
 export function studentView(d: ParentData, student: Student): StudentView {
   const cls = d.classes.filter((c) => c.student_id === student.id);
   const completed = cls.filter(isValidCompleted).length;
-  const perMonth = student.classes_per_month ?? 8;
-  const remaining = Math.max(perMonth - (completed % perMonth || (completed && perMonth ? perMonth : 0)), 0);
+  const perMonth = (student.classes_per_month ?? 0) > 0 ? (student.classes_per_month as number) : 8;
   const latest = cls[0] ?? null; // already sorted desc
   const nextClassDate = cls.map((c) => c.next_class_date).find(Boolean) ?? null;
   const pays = d.payments.filter((p) => p.student_id === student.id);
   const paymentStatus = pays[0]?.payment_status ?? "Not recorded";
-  const renewalDue = student.status === "active" && remaining <= 2;
+  // Classes are bought by payments: each monthly fee buys one cycle (perMonth
+  // classes); two payments = two cycles. Renewal is due only once every paid
+  // class is used up — not on a calendar month. Before any payment we assume
+  // one cycle so a new student isn't shown as due.
+  const fee = student.fee_quoted ?? 0;
+  const totalPaid = pays
+    .filter((p) => p.payment_status === "Received" || p.payment_status === "Partial")
+    .reduce((s, p) => s + (Number(p.amount_paid) || 0), 0);
+  const purchased = fee > 0 && totalPaid > 0 ? Math.round((totalPaid / fee) * perMonth) : perMonth;
+  const remaining = Math.max(purchased - completed, 0);
+  const renewalDue = student.status === "active" && remaining === 0;
   return {
     student, teacherName: d.teachers[student.teacher_id] || "Your teacher",
     completed, perMonth, remaining, nextClassDate, latest, paymentStatus, renewalDue,

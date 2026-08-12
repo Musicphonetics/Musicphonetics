@@ -34,7 +34,15 @@ export async function loadRoster(): Promise<{ rows: StudentStat[]; error: string
 
   const rows: StudentStat[] = (studentsRes.data as Student[] ?? []).map((s) => {
     const done = completed.get(s.id) ?? 0;
-    const per = s.classes_per_month ?? 0;
+    const cpm = (s.classes_per_month ?? 0) > 0 ? (s.classes_per_month as number) : 8;
+    const fee = s.fee_quoted ?? 0;
+    const totalPaid = paid.get(s.id) ?? 0;
+    // Each payment of the monthly fee buys one cycle of classes (fee = cpm
+    // classes). Two payments = 2 cycles = 16 classes. Advance amounts are
+    // handled naturally by dividing the total paid by the fee. Before any
+    // payment is recorded we assume one cycle so a new student isn't shown as
+    // "renewal due" on day one.
+    const purchased = fee > 0 && totalPaid > 0 ? Math.round((totalPaid / fee) * cpm) : cpm;
     return {
       student_id: s.id,
       student_code: s.student_code ?? null,
@@ -47,8 +55,9 @@ export async function loadRoster(): Promise<{ rows: StudentStat[]; error: string
       classes_per_month: s.classes_per_month,
       fee_quoted: s.fee_quoted,
       classes_completed: done,
-      classes_remaining: Math.max(per - done, 0),
-      total_paid: paid.get(s.id) ?? 0,
+      classes_purchased: purchased,
+      classes_remaining: Math.max(purchased - done, 0),
+      total_paid: totalPaid,
       teacher_share_total: share.get(s.id) ?? 0,
     };
   });
