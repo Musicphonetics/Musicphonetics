@@ -92,6 +92,7 @@ function StudentDetail({ stat, onReport }: { stat: StudentStat; onReport: () => 
   const [classes, setClasses] = useState<ClassUpdate[] | null>(null);
   const [payments, setPayments] = useState<Payment[] | null>(null);
   const [showAdmission, setShowAdmission] = useState(false);
+  const [showClasses, setShowClasses] = useState(false);
   const [editId, setEditId] = useState<string | null>(null);
   const [ev, setEv] = useState<{ class_date: string; class_status: string; taught: string }>({ class_date: "", class_status: "", taught: "" });
   const [clsMsg, setClsMsg] = useState<string | null>(null);
@@ -129,27 +130,44 @@ function StudentDetail({ stat, onReport }: { stat: StudentStat; onReport: () => 
     <div className="border-t border-hairline bg-paper p-4">
       {(() => {
         const sp = computeSetProgress(stat.classes_completed, stat.classes_per_month, stat.classes_purchased);
+        const advanceSets = Math.max(0, sp.paidSets - sp.currentSet);
+        const pct = Math.round((sp.currentDone / sp.perSet) * 100);
         return (
-          <>
-            <div className="grid grid-cols-3 gap-2 text-center">
-              <Mini label={`Set ${sp.currentSet}`} value={`${sp.currentDone}/${sp.perSet}`} />
-              <Mini label="Sets done" value={`${sp.completedSets}${sp.paidSets ? `/${sp.paidSets}` : ""}`} />
-              <Mini label="Paid" value={formatMoney(stat.total_paid)} />
-            </div>
-            {sp.completedSets > 0 && (
-              <div className="mt-3 flex flex-wrap gap-1.5">
-                {Array.from({ length: sp.completedSets }).map((_, i) => (
-                  <span key={i} className="rounded-full bg-emerald-500/12 px-2.5 py-0.5 text-[11px] font-semibold text-emerald-700">Set {i + 1} · complete</span>
-                ))}
+          <div className="rounded-2xl border border-hairline bg-white p-4 shadow-card">
+            {/* The ONE thing that matters: how far into the current set of 8 */}
+            <div className="flex items-center justify-between">
+              <div className="flex items-baseline gap-2">
+                <span className="font-display text-3xl font-bold leading-none text-ink">{sp.currentDone}<span className="text-xl text-ink/35">/{sp.perSet}</span></span>
+                <span className="text-sm text-ink/55">this set</span>
               </div>
+              {sp.allComplete
+                ? <span className="rounded-full bg-gold px-3 py-1 text-[11px] font-semibold text-ink">Renewal due</span>
+                : sp.remainingInSet <= 2
+                  ? <span className="rounded-full bg-gold/20 px-3 py-1 text-[11px] font-semibold text-[#7A5E0F]">Renew soon</span>
+                  : <span className="rounded-full bg-emerald-500/12 px-3 py-1 text-[11px] font-semibold text-emerald-700">On track</span>}
+            </div>
+
+            <div className="mt-3 h-2.5 w-full overflow-hidden rounded-full bg-ink/[0.07]">
+              <div className="h-full rounded-full bg-gradient-to-r from-gold to-[#C6A02E] transition-all" style={{ width: `${pct}%` }} />
+            </div>
+            <p className="mt-2 text-xs text-ink/60">
+              {sp.allComplete
+                ? <>All paid classes complete — record a payment to start the next set.</>
+                : <><b className="text-ink">{sp.remainingInSet}</b> class{sp.remainingInSet === 1 ? "" : "es"} left in this set · {formatMoney(stat.total_paid)} paid</>}
+            </p>
+
+            {/* Advance: a whole set already paid but not started */}
+            {advanceSets > 0 && (
+              <p className="mt-2.5 rounded-lg bg-emerald-500/10 px-3 py-2 text-xs font-semibold text-emerald-700">
+                ✓ Advance paid — next {advanceSets * sp.perSet} classes already covered
+              </p>
             )}
-            {stat.status === "active" && sp.allComplete && (
-              <p className="mt-3 rounded-lg bg-gold/15 px-3 py-2 text-xs font-semibold text-[#7A5E0F]">Renewal due — all {sp.paidSets} paid set{sp.paidSets === 1 ? "" : "s"} of {sp.perSet} are complete.</p>
+
+            {/* Quiet history — no repeated "Set" labels */}
+            {sp.completedSets > 0 && (
+              <p className="mt-2.5 text-[11px] text-ink/45">{sp.completedSets} earlier set{sp.completedSets === 1 ? "" : "s"} of {sp.perSet} completed</p>
             )}
-            {stat.status === "active" && !sp.allComplete && sp.remainingInSet <= 2 && (
-              <p className="mt-3 rounded-lg bg-gold/15 px-3 py-2 text-xs font-semibold text-[#7A5E0F]">Renewal soon — {sp.remainingInSet} class{sp.remainingInSet === 1 ? "" : "es"} left in Set {sp.currentSet}.</p>
-            )}
-          </>
+          </div>
         );
       })()}
 
@@ -171,7 +189,12 @@ function StudentDetail({ stat, onReport }: { stat: StudentStat; onReport: () => 
 
       <FoundationTeacherPanel studentId={stat.student_id} instrument={stat.instrument} completed={stat.classes_completed} feeQuoted={stat.fee_quoted} />
 
-      <p className="mt-4 text-xs font-semibold uppercase tracking-wide text-ink/60">Recent classes · tap Edit to fix</p>
+      <button onClick={() => setShowClasses((v) => !v)}
+        className="mt-4 flex w-full items-center justify-between rounded-xl border border-hairline bg-white px-4 py-2.5 text-sm font-semibold text-ink hover:border-ink/30">
+        <span>Past classes{classes ? ` · ${classes.length}` : ""} {showClasses ? "" : "· tap to view or fix"}</span>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true" className={cn("text-ink/50 transition-transform", showClasses && "rotate-180")}><path d="M6 9l6 6 6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>
+      </button>
+      {showClasses && (<>
       {clsMsg && <p className="mt-1 text-xs text-red-600">{clsMsg}</p>}
       {!classes ? <p className="mt-1 text-xs text-ink/50">Loading…</p> :
         classes.length === 0 ? <p className="mt-1 text-xs text-ink/50">No classes logged yet.</p> : (
@@ -206,17 +229,24 @@ function StudentDetail({ stat, onReport }: { stat: StudentStat; onReport: () => 
           ))}
         </ul>
       )}
+      </>)}
 
-      <p className="mt-4 text-xs font-semibold uppercase tracking-wide text-ink/60">Recent payments</p>
+      <p className="mt-4 text-xs font-semibold uppercase tracking-wide text-ink/60">Payments · each buys a set of {stat.classes_per_month ?? 8}</p>
       {!payments ? <p className="mt-1 text-xs text-ink/50">Loading…</p> :
         payments.length === 0 ? <p className="mt-1 text-xs text-ink/50">No payments yet.</p> : (
         <ul className="mt-2 space-y-1.5">
-          {payments.map((p) => (
-            <li key={p.id} className="flex justify-between text-xs text-ink/75">
-              <span>{p.payment_date} · {p.payment_status}</span>
-              <span className="font-semibold">{formatMoney(p.amount_paid)}</span>
-            </li>
-          ))}
+          {payments.map((p) => {
+            const per = (stat.fee_quoted ?? 0) > 0 ? Math.round((Number(p.amount_paid) / (stat.fee_quoted as number)) * (stat.classes_per_month ?? 8)) : null;
+            return (
+              <li key={p.id} className="flex items-center justify-between text-xs text-ink/75">
+                <span>{p.payment_date} · {p.payment_status}</span>
+                <span className="flex items-center gap-2">
+                  {per ? <span className="rounded-full bg-emerald-500/12 px-2 py-0.5 text-[10px] font-semibold text-emerald-700">+{per} classes</span> : null}
+                  <span className="font-semibold text-ink">{formatMoney(p.amount_paid)}</span>
+                </span>
+              </li>
+            );
+          })}
         </ul>
       )}
     </div>
@@ -343,11 +373,3 @@ function FoundationTeacherPanel({ studentId, instrument, completed, feeQuoted }:
   );
 }
 
-function Mini({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="rounded-xl bg-white p-2.5">
-      <p className="font-display text-lg font-semibold text-ink">{value}</p>
-      <p className="text-[10px] uppercase tracking-wide text-ink/55">{label}</p>
-    </div>
-  );
-}

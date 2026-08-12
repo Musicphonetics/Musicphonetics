@@ -66,13 +66,11 @@ export function AdvanceFeeCard({ student, payments, completed, completedDates = 
         </div>
       </div>
 
-      {/* Completed sets — the months already finished */}
-      {sp.completedSets > 0 && (
-        <div className="mt-3 flex flex-wrap gap-1.5">
-          {Array.from({ length: sp.completedSets }).map((_, i) => (
-            <span key={i} className="rounded-full bg-emerald-500/12 px-2.5 py-0.5 text-[11px] font-semibold text-emerald-700">Set {i + 1} · complete</span>
-          ))}
-        </div>
+      {/* Advance: a whole set already paid but not started */}
+      {Math.max(0, sp.paidSets - sp.currentSet) > 0 && (
+        <p className="mt-3 rounded-2xl bg-emerald-500/10 px-3 py-2 text-sm font-semibold text-emerald-700">
+          ✓ Advance received — {name}&rsquo;s next {Math.max(0, sp.paidSets - sp.currentSet) * sp.perSet} classes are already paid.
+        </p>
       )}
 
       {/* Human line */}
