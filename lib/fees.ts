@@ -88,6 +88,45 @@ export function computeFeeCycles(
   });
 }
 
+// Classes are counted in SETS (one set = one paid month = classes_per_month
+// classes). The counter never goes past the set size: 14 completed at 8/set is
+// "Set 1 done + 6 of 8 in Set 2", shown as 6/8, not 14/16. Each payment funds a
+// set; renewal is due only once every funded set is complete.
+export interface SetProgress {
+  perSet: number;         // classes in one set (classes_per_month)
+  paidSets: number;       // sets funded by payments (min 1)
+  completedSets: number;  // sets fully finished
+  currentSet: number;     // 1-based index of the set in progress
+  currentDone: number;    // classes done in the current set (0..perSet)
+  remainingInSet: number; // perSet - currentDone
+  totalCompleted: number; // raw completed classes (all sets)
+  allComplete: boolean;   // every paid set finished → renewal due
+}
+
+export function computeSetProgress(
+  completedClasses: number,
+  classesPerMonth: number | null | undefined,
+  classesPurchased: number | null | undefined,
+): SetProgress {
+  const perSet = Number(classesPerMonth) > 0 ? Number(classesPerMonth) : 8;
+  const done = Math.max(0, Math.floor(completedClasses || 0));
+  const purchased = Number(classesPurchased) > 0 ? Number(classesPurchased) : perSet;
+  const paidSets = Math.max(1, Math.round(purchased / perSet));
+  const capacity = paidSets * perSet;
+  const used = Math.min(done, capacity);        // never count past what's paid for
+  const fullSets = Math.floor(used / perSet);
+  const allComplete = used >= capacity;
+  const completedSets = Math.min(fullSets, paidSets);
+  const currentSet = allComplete ? paidSets : completedSets + 1;
+  const currentDone = allComplete ? perSet : used - completedSets * perSet;
+  return {
+    perSet, paidSets, completedSets, currentSet, currentDone,
+    remainingInSet: perSet - currentDone,
+    totalCompleted: done,
+    allComplete,
+  };
+}
+
 export function computeFeeStanding(
   monthlyFee: number | null | undefined,
   classesPerMonth: number | null | undefined,

@@ -10,6 +10,7 @@ import { getSupabase, isSupabaseConfigured } from "@/lib/supabase/client";
 import { loadRoster } from "@/lib/supabase/roster";
 import type { StudentStat, ClassUpdate, Payment } from "@/lib/supabase/types";
 import { studentPlan, PLAN_LABEL, type Plan } from "@/lib/plan";
+import { computeSetProgress } from "@/lib/fees";
 import { computeFoundation } from "@/lib/foundation";
 import { FoundationCard } from "@/components/portal/FoundationCard";
 import { MonthlyPlanEditor } from "@/components/teach/MonthlyPlanEditor";
@@ -60,7 +61,10 @@ export default function MyStudents() {
                   <div className="text-right">
                     <span className={cn("inline-block rounded-full px-2 py-0.5 text-[11px] font-semibold",
                       s.status === "active" ? "bg-feature-green/10 text-feature-green" : "bg-mist text-ink/60")}>{s.status}</span>
-                    <p className="mt-1 text-xs text-ink/60">{s.classes_completed}/{s.classes_purchased} classes</p>
+                    {(() => {
+                      const sp = computeSetProgress(s.classes_completed, s.classes_per_month, s.classes_purchased);
+                      return <p className="mt-1 text-xs text-ink/60">{sp.currentDone}/{sp.perSet} · Set {sp.currentSet}{sp.paidSets > 1 ? ` of ${sp.paidSets}` : ""}</p>;
+                    })()}
                   </div>
                 </button>
                 {openId === s.student_id && (
@@ -123,17 +127,31 @@ function StudentDetail({ stat, onReport }: { stat: StudentStat; onReport: () => 
 
   return (
     <div className="border-t border-hairline bg-paper p-4">
-      <div className="grid grid-cols-3 gap-2 text-center">
-        <Mini label="Completed" value={String(stat.classes_completed)} />
-        <Mini label="Remaining" value={String(stat.classes_remaining)} />
-        <Mini label="Paid" value={formatMoney(stat.total_paid)} />
-      </div>
-      {stat.status === "active" && stat.classes_remaining === 0 && (
-        <p className="mt-3 rounded-lg bg-gold/15 px-3 py-2 text-xs font-semibold text-[#7A5E0F]">Renewal due — all {stat.classes_purchased} paid classes are complete.</p>
-      )}
-      {stat.status === "active" && stat.classes_remaining > 0 && stat.classes_remaining <= 2 && (
-        <p className="mt-3 rounded-lg bg-gold/15 px-3 py-2 text-xs font-semibold text-[#7A5E0F]">Renewal soon — {stat.classes_remaining} class{stat.classes_remaining === 1 ? "" : "es"} left.</p>
-      )}
+      {(() => {
+        const sp = computeSetProgress(stat.classes_completed, stat.classes_per_month, stat.classes_purchased);
+        return (
+          <>
+            <div className="grid grid-cols-3 gap-2 text-center">
+              <Mini label={`Set ${sp.currentSet}`} value={`${sp.currentDone}/${sp.perSet}`} />
+              <Mini label="Sets done" value={`${sp.completedSets}${sp.paidSets ? `/${sp.paidSets}` : ""}`} />
+              <Mini label="Paid" value={formatMoney(stat.total_paid)} />
+            </div>
+            {sp.completedSets > 0 && (
+              <div className="mt-3 flex flex-wrap gap-1.5">
+                {Array.from({ length: sp.completedSets }).map((_, i) => (
+                  <span key={i} className="rounded-full bg-emerald-500/12 px-2.5 py-0.5 text-[11px] font-semibold text-emerald-700">Set {i + 1} · complete</span>
+                ))}
+              </div>
+            )}
+            {stat.status === "active" && sp.allComplete && (
+              <p className="mt-3 rounded-lg bg-gold/15 px-3 py-2 text-xs font-semibold text-[#7A5E0F]">Renewal due — all {sp.paidSets} paid set{sp.paidSets === 1 ? "" : "s"} of {sp.perSet} are complete.</p>
+            )}
+            {stat.status === "active" && !sp.allComplete && sp.remainingInSet <= 2 && (
+              <p className="mt-3 rounded-lg bg-gold/15 px-3 py-2 text-xs font-semibold text-[#7A5E0F]">Renewal soon — {sp.remainingInSet} class{sp.remainingInSet === 1 ? "" : "es"} left in Set {sp.currentSet}.</p>
+            )}
+          </>
+        );
+      })()}
 
       <button onClick={onReport}
         className="mt-3 flex w-full items-center justify-center gap-2 rounded-xl bg-ink px-4 py-2.5 text-sm font-semibold text-paper hover:bg-[#0f131c]">
