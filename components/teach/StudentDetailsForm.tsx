@@ -21,6 +21,7 @@ const PHOTO_BUCKET = "student-photos";
 export function StudentDetailsForm({ studentId, onSaved }: { studentId: string; onSaved?: () => void }) {
   const [f, setF] = useState<Form>({});
   const [loaded, setLoaded] = useState(false);
+  const [editing, setEditing] = useState(false);
   const [needsMigration, setNeedsMigration] = useState(false);
   const [busy, setBusy] = useState(false);
   const [msg, setMsg] = useState<string | null>(null);
@@ -41,6 +42,10 @@ export function StudentDetailsForm({ studentId, onSaved }: { studentId: string; 
         const next: Form = {};
         for (const [k, v] of Object.entries(row)) next[k] = v == null ? "" : String(v);
         setF(next);
+        // If nothing meaningful is filled in yet, open straight into the form;
+        // otherwise show the saved summary with an Edit button.
+        const filled = !!(next.parent_name || next.parent_phone || next.fee_quoted || next.dob || next.address || next.instrument);
+        setEditing(!filled);
         if (row.photo_url) {
           setPhotoPath(String(row.photo_url));
           const { data: signed } = await getSupabase().storage.from(PHOTO_BUCKET).createSignedUrl(String(row.photo_url), 3600);
@@ -91,10 +96,16 @@ export function StudentDetailsForm({ studentId, onSaved }: { studentId: string; 
     const body: Record<string, unknown> = { ...payload };
     const skipped: string[] = [];
     for (let i = 0; i < 12; i++) {
-      const { error } = await getSupabase().from("students").update(body).eq("id", studentId);
+      // .select() so we can tell a real save from a silent RLS 0-row "success".
+      const { data, error } = await getSupabase().from("students").update(body).eq("id", studentId).select("id");
       if (!error) {
         setBusy(false);
+        if (!data || data.length === 0) {
+          setErr("Couldn't save — you may not have permission to edit this student yet. Ask the office to run supabase/student_update_policy.sql once, then try again.");
+          return;
+        }
         setMsg(skipped.length ? `Saved. (Not-yet-enabled fields skipped: ${skipped.join(", ")} — run the latest SQL to include them.)` : "Saved.");
+        setEditing(false);
         onSaved?.();
         return;
       }
@@ -118,6 +129,37 @@ export function StudentDetailsForm({ studentId, onSaved }: { studentId: string; 
   if (!loaded) return <p className="mt-3 text-xs text-ink/50">Loading…</p>;
 
   const age = ageFromDob(f.dob);
+
+  // Saved summary — shown once details exist, so the form doesn't reopen blank.
+  if (!editing) {
+    const fee = Number(f.fee_quoted);
+    return (
+      <div className="mt-3 rounded-xl border border-hairline bg-white p-4">
+        <div className="flex items-start justify-between gap-3">
+          <p className="text-xs font-semibold uppercase tracking-wide text-[#7A5E0F]">Admission details</p>
+          <button type="button" onClick={() => { setEditing(true); setMsg(null); setErr(null); }}
+            className="shrink-0 rounded-full border border-hairline px-3 py-1 text-[11px] font-semibold text-ink/70 hover:border-gold hover:text-ink">
+            Edit
+          </button>
+        </div>
+        <dl className="mt-3 space-y-1.5">
+          <SumLine label="Name" value={[f.name, age != null ? `${age} yrs` : ""].filter(Boolean).join(" · ")} />
+          <SumLine label="Parent" value={[f.parent_name, f.parent_phone].filter(Boolean).join(" · ")} />
+          <SumLine label="Contact" value={[f.parent_email, f.area].filter(Boolean).join(" · ")} />
+          <SumLine label="Instrument" value={[f.instrument, f.previous_experience].filter(Boolean).join(" · ")} />
+          <SumLine label="Schedule" value={[f.class_mode, f.preferred_days, f.preferred_time].filter(Boolean).join(" · ")} />
+          <SumLine label="Goal" value={f.learning_goal} />
+          <SumLine label="Monthly fee" value={fee > 0 ? `₹${fee.toLocaleString("en-IN")} · one set of classes` : ""} strong />
+          <SumLine label="Joined" value={f.start_date} />
+          <SumLine label="Status" value={f.status} />
+        </dl>
+        {fee > 0 ? null : (
+          <p className="mt-3 rounded-lg bg-gold/15 px-3 py-2 text-[11px] font-semibold text-[#7A5E0F]">Add this student&rsquo;s monthly fee so their class sets are tracked — tap Edit.</p>
+        )}
+        {msg && <p className="mt-2 text-xs font-semibold text-feature-green">{msg}</p>}
+      </div>
+    );
+  }
 
   return (
     <div className="mt-3 space-y-5">
@@ -189,10 +231,26 @@ export function StudentDetailsForm({ studentId, onSaved }: { studentId: string; 
 
       {err && <p className="text-sm text-red-600">{err}</p>}
       {msg && <p className="text-sm font-semibold text-feature-green">{msg}</p>}
-      <button onClick={save} disabled={busy}
-        className={cn("w-full rounded-xl py-2.5 text-sm font-semibold text-ink", busy ? "bg-gold/50" : "bg-gold hover:bg-deep-gold")}>
-        {busy ? "Saving…" : "Save admission details"}
-      </button>
+      <div className="flex gap-2">
+        <button onClick={() => { setEditing(false); setErr(null); setMsg(null); }} disabled={busy}
+          className="rounded-xl border border-hairline px-4 py-2.5 text-sm font-semibold text-ink/70 hover:border-ink/30">
+          Cancel
+        </button>
+        <button onClick={save} disabled={busy}
+          className={cn("flex-1 rounded-xl py-2.5 text-sm font-semibold text-ink", busy ? "bg-gold/50" : "bg-gold hover:bg-deep-gold")}>
+          {busy ? "Saving…" : "Save admission details"}
+        </button>
+      </div>
+    </div>
+  );
+}
+
+function SumLine({ label, value, strong }: { label: string; value: string; strong?: boolean }) {
+  if (!value) return null;
+  return (
+    <div className="flex justify-between gap-3 text-sm">
+      <dt className="shrink-0 text-ink/50">{label}</dt>
+      <dd className={cn("text-right", strong ? "font-semibold text-[#7A5E0F]" : "text-ink")}>{value}</dd>
     </div>
   );
 }

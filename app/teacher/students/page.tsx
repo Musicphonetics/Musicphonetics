@@ -91,7 +91,6 @@ const CINP = "rounded-lg border border-hairline bg-white px-2 py-1.5 text-xs foc
 function StudentDetail({ stat, onReport }: { stat: StudentStat; onReport: () => void }) {
   const [classes, setClasses] = useState<ClassUpdate[] | null>(null);
   const [payments, setPayments] = useState<Payment[] | null>(null);
-  const [showAdmission, setShowAdmission] = useState(false);
   const [showClasses, setShowClasses] = useState(false);
   const [editId, setEditId] = useState<string | null>(null);
   const [ev, setEv] = useState<{ class_date: string; class_status: string; taught: string }>({ class_date: "", class_status: "", taught: "" });
@@ -177,13 +176,9 @@ function StudentDetail({ stat, onReport }: { stat: StudentStat; onReport: () => 
         Progress report card
       </button>
 
-      {/* Full admission form — the detailed student/parent/demographic record */}
-      <button onClick={() => setShowAdmission((v) => !v)}
-        className="mt-3 flex w-full items-center justify-between rounded-xl border border-hairline bg-white px-4 py-2.5 text-sm font-semibold text-ink hover:border-ink/30">
-        <span>Admission details {showAdmission ? "" : "· tap to fill"}</span>
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true" className={cn("text-ink/50 transition-transform", showAdmission && "rotate-180")}><path d="M6 9l6 6 6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>
-      </button>
-      {showAdmission && <StudentDetailsForm studentId={stat.student_id} />}
+      {/* Admission details — shows a saved summary with a small Edit button;
+          opens the full form only when adding or editing. */}
+      <StudentDetailsForm studentId={stat.student_id} />
 
       <GoalEditor studentId={stat.student_id} feeQuoted={stat.fee_quoted} studentName={stat.name} instrument={stat.instrument} level={stat.level} />
 
