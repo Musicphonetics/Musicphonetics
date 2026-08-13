@@ -88,22 +88,24 @@ export function computeFeeCycles(
   });
 }
 
-// How many SETS the payments have funded. The rule the studio actually uses:
-// each payment received = one set of classes. A larger payment (e.g. two months
-// in one go) counts as however many whole fees it covers, but never less than
-// one set per payment — and it works even when fee_quoted isn't filled in, so a
-// payment always creates a set. Only Received/Partial payments count.
+// How many SETS the payments have funded. There is NO fixed fee — each student's
+// fee is whatever the teacher entered in Admission details (₹6k, ₹10k, ₹16k…),
+// and one set = one such fee. So the number of paid sets is simply the money
+// received ÷ that student's fee (a two-month payment = two sets). If the fee
+// hasn't been entered yet, we fall back to one set per payment so recording a
+// payment still creates a set until the fee is filled in. Received/Partial only.
 export function countPaidSets(
   payments: FeePaymentLite[],
   monthlyFee: number | null | undefined,
 ): number {
   const fee = Number(monthlyFee) || 0;
-  let sets = 0;
-  for (const p of payments) {
-    if (p.payment_status !== "Received" && p.payment_status !== "Partial") continue;
-    sets += fee > 0 ? Math.max(1, Math.round((Number(p.amount_paid) || 0) / fee)) : 1;
+  const valid = payments.filter((p) => p.payment_status === "Received" || p.payment_status === "Partial");
+  if (valid.length === 0) return 0;
+  if (fee > 0) {
+    const totalPaid = valid.reduce((s, p) => s + (Number(p.amount_paid) || 0), 0);
+    return Math.max(1, Math.round(totalPaid / fee));
   }
-  return sets;
+  return valid.length; // fee not entered yet — one set per payment
 }
 
 // Total classes the payments have bought (whole sets). Falls back to one set
