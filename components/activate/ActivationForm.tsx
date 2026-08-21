@@ -127,6 +127,12 @@ export function ActivationForm() {
         {!busy && <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>}
       </button>
 
+      <p className="mt-3 text-center text-[11px] leading-relaxed text-ivory/55">
+        By activating, you agree to all our{" "}
+        <Link href="/enrolment-agreement" target="_blank" className="font-semibold text-gold underline underline-offset-2">Terms &amp; Conditions</Link>,
+        including that each paid set of classes is valid for 35 days.
+      </p>
+
       {error && (
         <div role="alert" className="mt-3 rounded-xl border border-red-400/40 bg-red-500/10 p-3 text-center text-sm text-red-200">{error}</div>
       )}

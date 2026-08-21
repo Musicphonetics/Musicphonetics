@@ -165,6 +165,11 @@ export function computeSetProgress(
 // the limit. Nothing is deleted — this only informs; the studio decides.
 export const SET_LIMIT_DAYS = 35;
 export const SET_ALERT_DAYS = 30;
+export const FEE_DUE_DAYS = 30; // fee for the next set is due 30 days from payment
+
+export function addDaysIso(iso: string, days: number): string {
+  return new Date(new Date(iso + "T00:00:00").getTime() + days * 86400000).toISOString().slice(0, 10);
+}
 
 export interface SetDeadline {
   start: string;          // ISO date the current set's clock started

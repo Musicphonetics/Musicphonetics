@@ -4,6 +4,8 @@ import Link from "next/link";
 import type { DirectorCustom } from "@/components/portal/DirectorNote";
 import { DirectorNotification } from "@/components/parent/DirectorNotification";
 import { FeedbackCard } from "@/components/parent/FeedbackCard";
+import { StudentSnapshot } from "@/components/parent/StudentSnapshot";
+import { FeeDueSoonPopup } from "@/components/parent/FeeDueSoonPopup";
 import type { StudentView } from "@/lib/supabase/parent";
 import type { Student, Payment } from "@/lib/supabase/types";
 import { MonthlyPlanCard } from "@/components/portal/MonthlyPlanCard";
@@ -11,6 +13,7 @@ import { planHasContent } from "@/lib/ai";
 import { FOUNDATION, type FoundationProgress, type ChapterState } from "@/lib/foundation";
 import { studentPlan, PLAN_LABEL, type Plan } from "@/lib/plan";
 import { whatsappLink } from "@/lib/data";
+import { addDaysIso, FEE_DUE_DAYS } from "@/lib/fees";
 import { cn } from "@/lib/utils";
 
 const clamp = (n: number, lo: number, hi: number) => Math.max(lo, Math.min(hi, n));
@@ -20,10 +23,6 @@ const prettyDate = (iso: string | null) =>
   iso ? new Date(iso + "T00:00:00").toLocaleDateString("en-IN", { weekday: "long", day: "numeric", month: "long", year: "numeric" }) : "To be scheduled";
 const monthLabel = (iso?: string | null) =>
   new Date(iso ? iso + (iso.length <= 10 ? "T00:00:00" : "") : Date.now()).toLocaleDateString("en-IN", { month: "long", year: "numeric" });
-const addMonth = (iso: string) => {
-  const d = new Date(iso + "T00:00:00"); d.setMonth(d.getMonth() + 1);
-  return d.toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" });
-};
 const gcalLink = (iso: string, title: string) => {
   const d = iso.replaceAll("-", "");
   const nxt = new Date(iso + "T00:00:00"); nxt.setDate(nxt.getDate() + 1);
@@ -36,11 +35,14 @@ const GOLD = "text-[#7A5E0F]"; // gold that reads on white
 // Parent dashboard, light and focused: progress, the next class, the last
 // update and fees. Reports live on their own tab.
 export function DashboardBody({
-  student, view, foundation, pay, directorMessage,
-}: { student: Student; view: StudentView; foundation: FoundationProgress; pay: Payment | null; directorMessage?: DirectorCustom | null }) {
+  student, view, foundation, pay, pays = [], completedDates = [], directorMessage,
+}: { student: Student; view: StudentView; foundation: FoundationProgress; pay: Payment | null; pays?: Payment[]; completedDates?: string[]; directorMessage?: DirectorCustom | null }) {
   const plan = studentPlan(student);
   return (
     <div className="space-y-4">
+      {/* Fee-due-soon popup — fires once per set after the 6th class */}
+      <FeeDueSoonPopup student={student} completed={view.completed} pays={pays} />
+
       {/* Greeting */}
       <div>
         <h1 className="font-display text-[1.6rem] font-semibold leading-tight text-ink">{firstName(student.name)}&apos;s learning journey</h1>
@@ -49,6 +51,9 @@ export function DashboardBody({
           {student.student_code && <span className="ml-2 rounded-full bg-ink/[0.05] px-2 py-0.5 font-mono text-[11px] text-ink/60">{student.student_code}</span>}
         </p>
       </div>
+
+      {/* At-a-glance snapshot: profile · classes · days remaining · fee due · health */}
+      <StudentSnapshot student={student} view={view} pays={pays} completedDates={completedDates} />
 
       {/* Director's message, shown like a notification (only when there is one) */}
       {directorMessage && <DirectorNotification message={directorMessage} />}
@@ -142,7 +147,7 @@ export function DashboardBody({
           <div>
             <CardHead icon={<svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3" y="6" width="18" height="13" rx="2.5" stroke="currentColor" strokeWidth="1.7" /><path d="M3 10h18M16.5 14.5h1.5" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" /></svg>}>{monthLabel(pay?.payment_date)} fees</CardHead>
             <p className="mt-3 font-display text-2xl font-semibold text-ink">₹{(pay?.amount_paid ?? student.fee_quoted ?? 8000).toLocaleString("en-IN")}</p>
-            {pay?.payment_date && <p className="mt-1 text-xs text-ink/70">Next billing on {addMonth(pay.payment_date)}</p>}
+            {pay?.payment_date && <p className="mt-1 text-xs text-ink/70">Fee due on {new Date(addDaysIso(pay.payment_date, FEE_DUE_DAYS) + "T00:00:00").toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}</p>}
           </div>
           <PayPill status={view.paymentStatus} />
         </div>
