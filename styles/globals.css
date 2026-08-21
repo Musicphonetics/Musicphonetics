@@ -337,7 +337,16 @@
   .avoid-break { break-inside: avoid; page-break-inside: avoid; }
 }
 
-/* Delhi Cantt promo bar (components/layout/PromoBar.tsx): when active, shift the
-   fixed navbar and main content down by the bar's 2.25rem height. */
-[data-promo] .site-nav { top: 2.25rem; }
-[data-promo] #main { padding-top: calc(4rem + 2.25rem); }
+/* Top headline ticker (components/layout/TopTicker.tsx): a slim 1.75rem bar
+   fixed above the navbar. Shift the fixed navbar and main content down by its
+   height. body-scoped selector so it out-ranks Tailwind's .top-0 on .site-nav. */
+body .site-nav { top: 1.75rem; }
+#main { padding-top: calc(4rem + 1.75rem); }
+
+/* The single headline drifts leftwards forever. Two identical copies sit in the
+   track and it translates -50%, so the loop is seamless. Subtle and slow;
+   pauses on hover and honours reduced-motion. */
+.mp-ticker-track { display: inline-flex; align-items: center; white-space: nowrap; will-change: transform; animation: mp-marquee 42s linear infinite; }
+.mp-ticker:hover .mp-ticker-track { animation-play-state: paused; }
+@keyframes mp-marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+@media (prefers-reduced-motion: reduce) { .mp-ticker-track { animation: none; } }

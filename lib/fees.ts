@@ -159,6 +159,42 @@ export function computeSetProgress(
   };
 }
 
+// Class-validity clock. Each set of classes must be finished within a window
+// (policy: 35 days from when the set starts). We nudge quietly from day 0, raise
+// a clear alert once it crosses the alert threshold, and mark it lapsed after
+// the limit. Nothing is deleted — this only informs; the studio decides.
+export const SET_LIMIT_DAYS = 35;
+export const SET_ALERT_DAYS = 30;
+
+export interface SetDeadline {
+  start: string;          // ISO date the current set's clock started
+  deadline: string;       // ISO date the set lapses (start + limit)
+  daysElapsed: number;
+  daysLeft: number;       // limit − elapsed (negative once lapsed)
+  state: "ok" | "urgent" | "expired";
+}
+
+// Works off the payment→class cycles. The current set's clock starts at its
+// first class; if it hasn't started yet, at the date it was paid for — so a
+// student who paid but keeps delaying still sees the clock running.
+export function computeSetDeadline(cycles: FeeCycle[], now: Date = new Date()): SetDeadline | null {
+  const active = cycles.find((c) => c.status === "active") || cycles.find((c) => c.status === "upcoming");
+  const startIso = active?.startedOn || active?.paidOn;
+  if (!startIso) return null;
+  const day = 86400000;
+  const start = new Date(startIso + "T00:00:00").getTime();
+  const today = new Date(now.toISOString().slice(0, 10) + "T00:00:00").getTime();
+  const daysElapsed = Math.max(0, Math.round((today - start) / day));
+  const deadline = new Date(start + SET_LIMIT_DAYS * day).toISOString().slice(0, 10);
+  return {
+    start: startIso,
+    deadline,
+    daysElapsed,
+    daysLeft: SET_LIMIT_DAYS - daysElapsed,
+    state: daysElapsed >= SET_LIMIT_DAYS ? "expired" : daysElapsed >= SET_ALERT_DAYS ? "urgent" : "ok",
+  };
+}
+
 export function computeFeeStanding(
   monthlyFee: number | null | undefined,
   classesPerMonth: number | null | undefined,

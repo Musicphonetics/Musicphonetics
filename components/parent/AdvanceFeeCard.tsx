@@ -1,7 +1,7 @@
 "use client";
 
 import { formatMoney } from "@/components/portal/kit";
-import { computeFeeStanding, computeFeeCycles, computeSetProgress, type FeePaymentLite, type FeeCyclePayment } from "@/lib/fees";
+import { computeFeeStanding, computeFeeCycles, computeSetProgress, computeSetDeadline, type FeePaymentLite, type FeeCyclePayment } from "@/lib/fees";
 import type { Student, Payment } from "@/lib/supabase/types";
 
 const shortDate = (iso: string) => new Date(iso + "T00:00:00").toLocaleDateString("en-IN", { day: "numeric", month: "short" });
@@ -28,6 +28,7 @@ export function AdvanceFeeCard({ student, payments, completed, completedDates = 
   );
 
   const sp = computeSetProgress(completed, student.classes_per_month, s.classesPurchased);
+  const deadline = computeSetDeadline(cycles);
   const name = student.name.split(" ")[0];
   const setPctW = `${Math.round((sp.currentDone / sp.perSet) * 100)}%`;
 
@@ -64,6 +65,22 @@ export function AdvanceFeeCard({ student, payments, completed, completedDates = 
           <span>{sp.currentDone} of {sp.perSet} this set</span>
           <span>{sp.completedSets} set{sp.completedSets === 1 ? "" : "s"} completed</span>
         </div>
+
+        {/* Class-validity clock. Subtle from day 0 (plants the deadline), turns
+            into a clear nudge past the alert threshold, then a lapsed notice. */}
+        {deadline && !sp.allComplete && (
+          deadline.state === "ok" ? (
+            <p className="mt-2 text-right text-[11px] text-ink/40">Valid till {shortDate(deadline.deadline)}</p>
+          ) : deadline.state === "urgent" ? (
+            <p className="mt-2 rounded-lg bg-gold/15 px-3 py-2 text-xs font-semibold text-[#7A5E0F]">
+              ⏳ {deadline.daysLeft > 0 ? <>Only <b>{deadline.daysLeft} day{deadline.daysLeft === 1 ? "" : "s"}</b> left to finish this set — it&rsquo;s valid till {shortDate(deadline.deadline)}.</> : <>This set is valid till {shortDate(deadline.deadline)} — please finish the remaining classes now.</>}
+            </p>
+          ) : (
+            <p className="mt-2 rounded-lg bg-red-50 px-3 py-2 text-xs font-semibold text-red-700">
+              This set of classes has passed its {deadline.daysElapsed}-day validity. Please message us to keep {name}&rsquo;s remaining classes active.
+            </p>
+          )
+        )}
       </div>
 
       {/* Advance: a whole set already paid but not started */}

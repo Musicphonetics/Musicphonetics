@@ -37,6 +37,17 @@ const SECTIONS: { h: string; p?: string[]; li?: string[] }[] = [
     ],
   },
   {
+    h: "Class validity - finishing each set on time",
+    p: [
+      "Each paid set of classes is valid for 35 days from the date the set begins. This keeps learning regular and continuous, which is when students actually progress.",
+    ],
+    li: [
+      "You will see the validity date for the current set in the student portal, and a reminder as it approaches.",
+      "Classes not completed within the 35-day validity may lapse and are not carried forward, except where we agree otherwise in writing (for example, genuine illness or travel with prior notice).",
+      "Please book and attend regularly, and give us advance notice if you need to pause - we will always try to help where notice is given.",
+    ],
+  },
+  {
     h: "Teacher verification is done in good faith - not a guarantee",
     p: [
       "We select and verify teachers carefully and in good faith - checking the information, identity and documents they provide, and matching them to our teaching standard. We do this to the best of our ability.",
@@ -89,6 +100,7 @@ const SECTIONS: { h: string; p?: string[]; li?: string[] }[] = [
 const ACK = [
   "I have read and understood this Enrolment Agreement.",
   "I agree to pay fees only through the official Musicphonetics payment channel, and not directly to any teacher.",
+  "I understand each paid set of classes is valid for 35 days from when it begins, and that classes not completed within that window may lapse unless we agree otherwise in writing.",
   "I understand teachers are verified in good faith but their future conduct is not guaranteed, and that each teacher is personally responsible for their own acts.",
   "I understand Musicphonetics is not liable for a teacher’s independent wrongful acts (such as theft or misconduct), and that any such claim lies against that individual.",
   "I will keep guardian awareness for my minor child and report any safety concern immediately.",

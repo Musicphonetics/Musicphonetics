@@ -116,7 +116,7 @@ export function ActivationForm() {
         <span>
           I have read and agree to the{" "}
           <Link href="/enrolment-agreement" target="_blank" className="font-semibold text-gold underline underline-offset-4">Enrolment Agreement &amp; Parent Acknowledgement</Link>
-          {" "}(fees, safety, teacher verification and liability).
+          {" "}(fees, 35-day class validity, safety, teacher verification and liability).
         </span>
       </label>
 
