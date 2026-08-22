@@ -27,7 +27,7 @@ export function FeedbackCard({ studentId, studentName, dark }: { studentId: stri
       });
       if (error) {
         setErr(/relation|schema cache|does not exist|column/i.test(error.message)
-          ? "Feedback isn’t enabled yet — please run supabase/parent_feedback.sql."
+          ? "Feedback will be available here shortly. Thank you for your patience!"
           : /row-level security|policy|permission/i.test(error.message)
             ? "We couldn’t save that under your account. Please refresh and try again."
             : "Couldn’t send your feedback. Please try again.");

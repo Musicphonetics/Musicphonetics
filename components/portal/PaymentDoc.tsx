@@ -44,6 +44,7 @@ export function PaymentDoc({
           <Field label="Student code" value={studentCode || "—"} />
           <Field label="Programme" value={planName || "Musicphonetics classes"} />
           <Field label="Billing cycle" value={p.payment_cycle || p.billing_cycle || "Monthly"} />
+          {paid && p.payment_mode && <Field label="Paid via" value={p.payment_mode} />}
           <Field label="Classes included" value={p.classes_included != null ? String(p.classes_included) : "8 classes / month"} />
           {p.renewal_due_date && <Field label="Renewal due" value={d(p.renewal_due_date)} />}
           {teacherName && <Field label="Teacher" value={teacherName} />}

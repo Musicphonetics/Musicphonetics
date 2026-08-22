@@ -32,22 +32,32 @@ export function DirectorNotification({ message }: { message: DirectorCustom }) {
 
   return (
     <>
-      {/* Notification banner */}
-      <button
-        type="button"
-        onClick={() => setOpen(true)}
-        className="flex w-full items-center gap-3 rounded-2xl border border-gold/45 bg-gold/[0.08] p-3.5 text-left transition hover:bg-gold/[0.12]"
-      >
-        <span className="relative grid h-11 w-11 shrink-0 place-items-center rounded-full border border-gold/40 bg-white text-[#7A5E0F]">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9a6 6 0 1 1 12 0c0 5 2 6 2 6H4s2-1 2-6ZM10 20a2 2 0 0 0 4 0" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" /></svg>
-          {!read && <span className="absolute -right-0.5 -top-0.5 h-3 w-3 rounded-full border-2 border-[#fdf6e6] bg-red-500" />}
-        </span>
-        <span className="min-w-0 flex-1">
-          <span className="block text-sm font-semibold text-ink">{read ? "A note from the Founder" : "New message from the Founder"}</span>
-          <span className="block truncate text-xs text-ink/65">{message.title?.trim() || "Tap to read"}</span>
-        </span>
-        <span className={read ? "text-xs font-semibold text-[#7A5E0F]" : "rounded-full bg-red-500 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-white"}>{read ? "Open →" : "New"}</span>
-      </button>
+      {/* Unread: a prominent banner the parent can't miss. Once read, it collapses
+          to a quiet one-line history link so the same note is never shouted again. */}
+      {!read ? (
+        <button
+          type="button"
+          onClick={() => setOpen(true)}
+          className="flex w-full items-center gap-3 rounded-2xl border border-gold/45 bg-gold/[0.08] p-3.5 text-left transition hover:bg-gold/[0.12]"
+        >
+          <span className="relative grid h-11 w-11 shrink-0 place-items-center rounded-full border border-gold/40 bg-white text-[#7A5E0F]">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9a6 6 0 1 1 12 0c0 5 2 6 2 6H4s2-1 2-6ZM10 20a2 2 0 0 0 4 0" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" /></svg>
+            <span className="absolute -right-0.5 -top-0.5 h-3 w-3 rounded-full border-2 border-[#fdf6e6] bg-red-500" />
+          </span>
+          <span className="min-w-0 flex-1">
+            <span className="block text-sm font-semibold text-ink">New message from the Founder</span>
+            <span className="block truncate text-xs text-ink/65">{message.title?.trim() || "Tap to read"}</span>
+          </span>
+          <span className="rounded-full bg-red-500 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-white">New</span>
+        </button>
+      ) : (
+        <button type="button" onClick={() => setOpen(true)}
+          className="flex w-full items-center gap-2 px-1 text-left text-xs text-ink/45 transition hover:text-ink/70">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9a6 6 0 1 1 12 0c0 5 2 6 2 6H4s2-1 2-6Z" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" /></svg>
+          <span className="truncate">Founder&rsquo;s note{dateLabel ? ` · ${dateLabel}` : ""}</span>
+          <span className="ml-auto shrink-0 font-semibold text-[#7A5E0F]/70">View</span>
+        </button>
+      )}
 
       {/* Forced pop-up */}
       {open && (

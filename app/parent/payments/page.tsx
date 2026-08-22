@@ -110,7 +110,10 @@ export default function ParentPayments() {
                   <div key={p.id} className="flex items-center justify-between rounded-2xl border border-hairline bg-white p-4">
                     <div>
                       <p className="text-sm font-semibold text-ink">{pretty(p.payment_date)}</p>
-                      <p className="mt-0.5 text-xs text-ink/65">{p.billing_cycle || "Monthly"}</p>
+                      <p className="mt-0.5 text-xs text-ink/65">
+                        {p.billing_cycle || "Monthly"}
+                        {/received/i.test(p.payment_status) && p.payment_mode && <span> · paid via {p.payment_mode}</span>}
+                      </p>
                     </div>
                     <div className="flex items-center gap-3 text-right">
                       <div>

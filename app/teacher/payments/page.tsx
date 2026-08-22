@@ -11,7 +11,7 @@ import type { StudentStat } from "@/lib/supabase/types";
 
 const CYCLES = ["-", "Monthly", "Quarterly", "Half-yearly", "One-time"];
 const PAY_STATUS = ["Received", "Pending", "Partial"];
-const MODES = ["Secure gateway", "Other"];
+const MODES = ["Secure gateway", "UPI", "Paytm", "PhonePe", "Google Pay", "Bank transfer", "Cash", "Other"];
 const today = () => new Date().toISOString().slice(0, 10);
 
 export default function PaymentsPage() {
