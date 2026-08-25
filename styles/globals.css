@@ -367,3 +367,22 @@ html:not([data-deck]) #main section[id] { scroll-snap-align: start; scroll-snap-
 html[data-deck] { scroll-snap-type: y mandatory; }
 html[data-deck] [data-panel] { scroll-snap-align: start; scroll-snap-stop: always; }
 @media (prefers-reduced-motion: reduce) { html { scroll-snap-type: none !important; scroll-behavior: auto; } }
+
+/* ── Bespoke cinematic slide deck (components/deck/*) ──────────────────────
+   Each .deck-slide is exactly one screen and snaps hard. Content that enters
+   the active slide reveals with a bold, layered rise; the background layer
+   scales in behind it for depth. Guaranteed-fit is handled in the component
+   (safe padding for header/bottom bar + internal scroll fallback). */
+.deck-slide { scroll-snap-align: start; scroll-snap-stop: always; }
+.deck-bg { transform: scale(1.15); opacity: 0; transition: transform 1.3s cubic-bezier(.16,.84,.24,1), opacity 1.1s ease; }
+.deck-slide.is-active .deck-bg { transform: scale(1); opacity: 1; }
+[data-reveal] { opacity: 0; transform: translateY(46px); transition: opacity .85s cubic-bezier(.16,.84,.24,1), transform .85s cubic-bezier(.16,.84,.24,1); }
+.deck-slide.is-active [data-reveal] { opacity: 1; transform: none; }
+[data-reveal][data-delay="1"] { transition-delay: .08s; }
+[data-reveal][data-delay="2"] { transition-delay: .18s; }
+[data-reveal][data-delay="3"] { transition-delay: .30s; }
+[data-reveal][data-delay="4"] { transition-delay: .44s; }
+[data-reveal][data-delay="5"] { transition-delay: .58s; }
+@media (prefers-reduced-motion: reduce) {
+  .deck-bg, [data-reveal] { transition: none !important; opacity: 1 !important; transform: none !important; }
+}
