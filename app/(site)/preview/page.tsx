@@ -16,10 +16,10 @@ const glow = (pos: string) => (
 );
 
 const PILLARS = [
-  { n: "01", t: "Match", d: "One teacher, chosen for you — not a rotating queue." },
-  { n: "02", t: "Method", d: "A real, structured curriculum. Deliberate, not random songs." },
-  { n: "03", t: "Track", d: "Every class logged in your portal. You always know where you stand." },
-  { n: "04", t: "Perform", d: "A stage to play on — open mics, showcases, exams." },
+  { n: "01", t: "Match", d: "Your teacher, chosen for you." },
+  { n: "02", t: "Method", d: "A real, structured curriculum." },
+  { n: "03", t: "Track", d: "Every class logged in your portal." },
+  { n: "04", t: "Perform", d: "A real stage — open mics & exams." },
 ];
 
 const TIER_LIST = [TIERS.foundation, TIERS.main, TIERS.signature, TIERS.abhishek];
@@ -29,38 +29,51 @@ const TIER_LIST = [TIERS.foundation, TIERS.main, TIERS.signature, TIERS.abhishek
 export default function PreviewPage() {
   return (
     <SlideDeck>
-      {/* 1 — HERO */}
-      <DeckSlide bg={glow("30% 15%")} contentClassName="text-center">
-        <p data-reveal data-delay="1" className="inline-flex items-center gap-2 rounded-full border border-gold/40 px-4 py-1.5 text-[11px] font-bold uppercase tracking-[0.22em] text-gold">
-          ★ Learn · Practise · Perform
-        </p>
-        <h1 data-reveal data-delay="2" className="mt-6 font-display text-[3rem] font-black leading-[1.02] text-paper sm:text-6xl">
+      {/* 1 — HERO (full-bleed stage image, content anchored low) */}
+      <DeckSlide
+        align="end"
+        maxW="max-w-xl"
+        bg={
+          <>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/gallery/03-stage-guitar.jpg" alt="A Musicphonetics student performing on stage" className="h-full w-full object-cover object-[50%_30%]" />
+            <div className="absolute inset-0 bg-gradient-to-b from-[#0a0d14]/70 via-[#0a0d14]/30 to-[#0a0d14]" />
+            <div className="absolute inset-0 bg-gradient-to-t from-[#0a0d14] via-transparent to-transparent" />
+          </>
+        }
+      >
+        <div data-reveal data-delay="1" className="flex items-center gap-2">
+          <span className="rounded-full bg-white/10 px-3 py-1 text-xs font-semibold text-paper backdrop-blur">★ 4.8 on Google</span>
+          <span className="rounded-full bg-white/10 px-3 py-1 text-xs font-semibold text-paper backdrop-blur">1,100+ students</span>
+        </div>
+        <h1 data-reveal data-delay="2" className="mt-4 font-display text-[2.6rem] font-black leading-[1.03] text-paper">
           Music education,<br />built like an <span className="text-gold">institution.</span>
         </h1>
-        <p data-reveal data-delay="3" className="mx-auto mt-5 max-w-md text-[15px] leading-relaxed text-paper/70">
-          One matched teacher. A real curriculum. Every class tracked — and a stage to perform on. Delhi NCR &amp; online.
+        <p data-reveal data-delay="3" className="mt-4 max-w-md text-[15px] leading-relaxed text-paper/80">
+          One matched teacher. A real curriculum. Every class tracked — and a stage to perform on.
         </p>
-        <div data-reveal data-delay="4" className="mt-8 flex flex-col items-center gap-3">
-          <Link href="/studio" className="w-full max-w-xs rounded-full bg-gold px-8 py-4 text-base font-bold text-ink transition hover:bg-[#f0d783]">Book a free trial →</Link>
-          <Link href="#" className="text-sm font-semibold text-paper/60 underline underline-offset-4 hover:text-paper">See how it works</Link>
+        <div data-reveal data-delay="4" className="mt-6 flex items-center gap-3">
+          <Link href="/studio" className="rounded-full bg-gold px-7 py-3.5 text-base font-bold text-ink transition hover:bg-[#f0d783]">Book a free trial →</Link>
+          <span className="text-sm font-semibold text-paper/70">Free first class</span>
         </div>
       </DeckSlide>
 
       {/* 2 — THE METHOD */}
-      <DeckSlide bg={glow("80% 30%")}>
+      <DeckSlide bg={glow("80% 25%")}>
         <p data-reveal data-delay="1" className="text-[11px] font-bold uppercase tracking-[0.22em] text-gold">The Musicphonetics way</p>
-        <h2 data-reveal data-delay="2" className="mt-3 font-display text-[2.3rem] font-black leading-[1.05] text-paper sm:text-5xl">
+        <h2 data-reveal data-delay="2" className="mt-3 font-display text-[2rem] font-black leading-[1.08] text-paper sm:text-4xl">
           One teacher. One method.<br />Every class tracked.
         </h2>
-        <div className="mt-8 grid grid-cols-1 gap-3 sm:grid-cols-2">
+        <div className="mt-7 grid grid-cols-2 gap-3">
           {PILLARS.map((p, i) => (
             <div key={p.n} data-reveal data-delay={i + 2} className="rounded-2xl border border-white/12 bg-white/[0.04] p-4">
-              <span className="font-display text-lg font-black text-gold">{p.n}</span>
-              <p className="mt-1 font-display text-lg font-bold text-paper">{p.t}</p>
-              <p className="mt-1 text-sm leading-relaxed text-paper/65">{p.d}</p>
+              <span className="font-display text-base font-black text-gold">{p.n}</span>
+              <p className="mt-1.5 font-display text-lg font-bold leading-tight text-paper">{p.t}</p>
+              <p className="mt-1 text-[13px] leading-snug text-paper/60">{p.d}</p>
             </div>
           ))}
         </div>
+        <p data-reveal data-delay="5" className="mt-6 text-sm text-paper/55">Guitar · Piano · Keyboard · Vocals &amp; more — for every age and level.</p>
       </DeckSlide>
 
       {/* 3 — PROGRAMMES (carousel) */}

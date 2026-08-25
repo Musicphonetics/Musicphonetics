@@ -373,7 +373,7 @@ html[data-deck] [data-panel] { scroll-snap-align: start; scroll-snap-stop: alway
    the active slide reveals with a bold, layered rise; the background layer
    scales in behind it for depth. Guaranteed-fit is handled in the component
    (safe padding for header/bottom bar + internal scroll fallback). */
-.deck-slide { scroll-snap-align: start; scroll-snap-stop: always; }
+.deck-slide { scroll-snap-align: start; }
 .deck-bg { transform: scale(1.15); opacity: 0; transition: transform 1.3s cubic-bezier(.16,.84,.24,1), opacity 1.1s ease; }
 .deck-slide.is-active .deck-bg { transform: scale(1); opacity: 1; }
 [data-reveal] { opacity: 0; transform: translateY(46px); transition: opacity .85s cubic-bezier(.16,.84,.24,1), transform .85s cubic-bezier(.16,.84,.24,1); }
