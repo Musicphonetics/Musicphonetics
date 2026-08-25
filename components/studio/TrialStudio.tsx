@@ -236,8 +236,11 @@ function Reveal(props: {
   const skills = skillsFor(inst);
   const weeks = roadmapFor(inst);
   const tier = isBeginner ? TIERS.foundation : TIERS[chosen];
-  const [saving, setSaving] = useState(false);
+  const [step, setStep] = useState(0);
   const [local, setLocal] = useState("");
+  const STEPS = 5;
+  const next = () => setStep((s) => Math.min(STEPS - 1, s + 1));
+  const prev = () => (step === 0 ? onBack() : setStep((s) => s - 1));
 
   function trySave() {
     if (!/^\S+@\S+\.\S+$/.test(email)) return setLocal("Enter a valid email — it becomes your login.");
@@ -245,99 +248,141 @@ function Reveal(props: {
     setLocal(""); onStart();
   }
 
+  // One panel at a time, always full-height, never the page scrolls.
+  const cta = (label: string, onClick: () => void, primary = true) => (
+    <button onClick={onClick} disabled={busy}
+      className={"flex-1 rounded-full px-6 py-4 text-base font-bold transition disabled:opacity-60 " + (primary ? "bg-gold text-ink hover:bg-[#f0d783]" : "border border-white/15 text-paper/80")}>
+      {label}
+    </button>
+  );
+
   return (
-    <div className="mx-auto max-w-md px-5 py-8">
-      <Header />
-
-      {/* DNA hero — bold and colourful, the reward moment */}
-      <div className="mt-7 overflow-hidden rounded-[26px] border border-gold/40 bg-gradient-to-br from-gold/25 via-gold/[0.07] to-transparent p-6">
-        <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-gold">🧬 Your Musical DNA</p>
-        <h1 className="mt-2 font-display text-[2.1rem] font-black leading-[1.05] text-paper">You&rsquo;re {dna.label}.</h1>
-        <p className="mt-2 text-sm leading-relaxed text-paper/75">{dna.blurb}</p>
-        <div className="mt-4 flex flex-wrap gap-2">
-          <Chip>{instEmoji(inst)} {inst}</Chip>
-          {inspiration && <Chip>✨ {inspiration}</Chip>}
-          {song && <Chip>🎯 {song}</Chip>}
-          {level && <Chip>{level.label}</Chip>}
-        </div>
+    <div className="mx-auto flex h-[100dvh] max-w-md flex-col px-5 pb-6 pt-5">
+      <div className="flex items-center justify-between">
+        <Header />
+        <Dots n={STEPS} i={step} />
       </div>
 
-      {/* First song — ONE line of AI + skills as chips */}
-      <div className="mt-4 rounded-3xl border border-white/12 bg-white/[0.04] p-5">
-        <p className="font-display text-lg font-bold text-paper">🎯 Your first song: “{song}”</p>
-        <p className="mt-1.5 text-sm leading-relaxed text-paper/80">{report?.message || `You won't need to learn everything before you're playing “${song}”.`}</p>
-        <div className="mt-3.5 flex flex-wrap gap-1.5">
-          {skills.map((s) => <span key={s} className="rounded-full border border-white/12 bg-white/5 px-2.5 py-1 text-[11px] text-paper/75">{s}</span>)}
-        </div>
-      </div>
-
-      {/* 30-day roadmap — compact timeline, one line per week */}
-      <p className="mt-6 px-1 text-[11px] font-bold uppercase tracking-[0.2em] text-gold">Your 30-day roadmap</p>
-      <div className="mt-3 space-y-2">
-        {weeks.map((w, i) => (
-          <div key={w.title} className="flex items-center gap-3 rounded-2xl border border-white/12 bg-white/[0.04] px-4 py-3">
-            <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-gold/15 text-sm font-bold text-gold">{i + 1}</span>
-            <div className="min-w-0">
-              <p className="text-sm font-semibold text-paper">{w.title.replace(/^Week \d+ — /, "")}</p>
-              <p className="truncate text-xs text-paper/55">{w.items.slice(0, 3).join(" · ")}</p>
+      <div key={step} className="flex flex-1 flex-col justify-center overflow-y-auto py-3 animate-[fadeIn_.4s_ease] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+        {step === 0 && (
+          <div className="overflow-hidden rounded-[28px] border border-gold/40 bg-gradient-to-br from-gold/25 via-gold/[0.07] to-transparent p-7">
+            <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-gold">🧬 Your Musical DNA</p>
+            <h1 className="mt-3 font-display text-[2.4rem] font-black leading-[1.02] text-paper">You&rsquo;re {dna.label}.</h1>
+            <p className="mt-3 text-sm leading-relaxed text-paper/75">{dna.blurb}</p>
+            <div className="mt-5 flex flex-wrap gap-2">
+              <Chip>{instEmoji(inst)} {inst}</Chip>
+              {inspiration && <Chip>✨ {inspiration}</Chip>}
+              {song && <Chip>🎯 {song}</Chip>}
+              {level && <Chip>{level.label}</Chip>}
             </div>
           </div>
-        ))}
-      </div>
-      <p className="mt-2 px-1 text-xs text-paper/45">🎓 Your hand-matched mentor personalises this after your free trial.</p>
+        )}
 
-      {/* Programme — compact */}
-      <p className="mt-6 px-1 text-[11px] font-bold uppercase tracking-[0.2em] text-gold">Where you&rsquo;ll begin</p>
-      {!isBeginner && (
-        <div className="mt-3 flex gap-1.5">
-          {NON_BEGINNER_ROUTES.map((k) => (
-            <button key={k} onClick={() => setChosen(k)}
-              className={"flex-1 rounded-full px-3 py-2 text-xs font-semibold transition " + (chosen === k ? "bg-gold text-ink" : "border border-white/15 text-paper/70 hover:text-paper")}>
-              {TIERS[k].name.replace(/^The /, "")}
-            </button>
-          ))}
-        </div>
-      )}
-      <div className="mt-3 rounded-3xl border border-gold/40 bg-gold/[0.06] p-5">
-        <div className="flex items-start justify-between gap-3">
+        {step === 1 && (
           <div>
-            <h3 className="font-display text-xl font-bold text-paper">{tier.name}</h3>
-            <p className="text-sm text-gold">{tier.tagline}</p>
+            <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-gold">🎯 Your first song</p>
+            <h2 className="mt-2 font-display text-3xl font-black leading-tight text-paper">“{song}”</h2>
+            <p className="mt-3 text-[15px] leading-relaxed text-paper/85">{report?.message || `You won't need to learn everything before you're playing “${song}”.`}</p>
+            <p className="mt-6 text-[11px] font-bold uppercase tracking-wide text-paper/50">The skills we&rsquo;ll build</p>
+            <div className="mt-2.5 flex flex-wrap gap-1.5">
+              {skills.map((s) => <span key={s} className="rounded-full border border-white/12 bg-white/[0.06] px-3 py-1.5 text-xs text-paper/80">{s}</span>)}
+            </div>
           </div>
-          <div className="text-right">
-            {tier.strike && <div className="text-xs text-paper/40 line-through">{tier.strike}</div>}
-            <div className="font-display text-lg font-bold text-paper">{tier.price}<span className="text-xs font-normal text-paper/50">{tier.unit || ""}</span></div>
-          </div>
-        </div>
-        <ul className="mt-3 space-y-1.5">
-          {tier.points.slice(0, 3).map((pt) => <li key={pt} className="flex items-start gap-2 text-sm text-paper/80"><span className="mt-0.5 text-gold">✦</span>{pt}</li>)}
-        </ul>
-      </div>
+        )}
 
-      {/* Save the journey → profile */}
-      <div className="mt-5 rounded-3xl border border-gold/50 bg-gradient-to-br from-gold/20 to-transparent p-5">
-        <p className="font-display text-lg font-bold text-paper">🎉 Ready, {first}? Let&rsquo;s begin.</p>
-        <p className="mt-1 text-sm text-paper/75">Save your journey and book your <b className="text-paper">free trial</b> — no card, no obligation.</p>
-        {!saving ? (
-          <button onClick={() => setSaving(true)} className="mt-4 w-full rounded-full bg-gold px-6 py-4 text-base font-bold text-ink transition hover:bg-[#f0d783]">Book my free trial →</button>
-        ) : (
-          <div className="mt-4 space-y-3">
-            <input autoFocus className={INP} inputMode="email" placeholder="Email (your portal login)" value={email} onChange={(e) => setEmail(e.target.value)} />
-            <input className={INP} inputMode="tel" placeholder="Phone / WhatsApp number" value={phone} onChange={(e) => setPhone(e.target.value)} />
-            {(local || err) && <p className="text-sm text-red-300">{local || err}</p>}
-            <button onClick={trySave} disabled={busy} className="w-full rounded-full bg-gold px-6 py-4 text-base font-bold text-ink transition hover:bg-[#f0d783] disabled:opacity-60">
-              {busy ? "Saving…" : "Create my profile & continue →"}
-            </button>
-            <p className="text-center text-[11px] text-paper/45">🔒 Private to you · first class free</p>
+        {step === 2 && (
+          <div>
+            <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-gold">Your 30-day roadmap</p>
+            <h2 className="mt-2 font-display text-2xl font-black text-paper">From zero to your first song.</h2>
+            <div className="mt-4 space-y-2">
+              {weeks.map((w, i) => (
+                <div key={w.title} className="flex items-center gap-3 rounded-2xl border border-white/12 bg-white/[0.04] px-4 py-3">
+                  <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-gold/15 text-sm font-bold text-gold">{i + 1}</span>
+                  <div className="min-w-0">
+                    <p className="text-sm font-semibold text-paper">{w.title.replace(/^Week \d+ — /, "")}</p>
+                    <p className="truncate text-xs text-paper/55">{w.items.slice(0, 3).join(" · ")}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+            <p className="mt-3 text-xs text-paper/45">🎓 A hand-matched mentor personalises this after your free trial.</p>
+          </div>
+        )}
+
+        {step === 3 && (
+          <div>
+            <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-gold">This is where you begin</p>
+            {!isBeginner && (
+              <div className="mt-3 flex gap-1.5">
+                {NON_BEGINNER_ROUTES.map((k) => (
+                  <button key={k} onClick={() => setChosen(k)}
+                    className={"flex-1 rounded-full px-3 py-2 text-xs font-semibold transition " + (chosen === k ? "bg-gold text-ink" : "border border-white/15 text-paper/70 hover:text-paper")}>
+                    {TIERS[k].name.replace(/^The /, "")}
+                  </button>
+                ))}
+              </div>
+            )}
+            <div className="relative mt-3 overflow-hidden rounded-[28px] border border-gold/50 bg-gradient-to-b from-gold/[0.16] to-transparent p-6 shadow-[0_0_60px_-15px_rgba(231,203,110,0.5)]">
+              <div className="flex items-start justify-between gap-3">
+                <div>
+                  <h3 className="font-display text-2xl font-black text-paper">{tier.name}</h3>
+                  <p className="text-sm text-gold">{tier.tagline}</p>
+                </div>
+                {tier.badge && <span className="shrink-0 rounded-full bg-gold px-2.5 py-1 text-[10px] font-bold uppercase text-ink">{tier.badge}</span>}
+              </div>
+              <div className="mt-4 flex items-baseline gap-2">
+                {tier.strike && <span className="text-lg text-paper/40 line-through">{tier.strike}</span>}
+                <span className="font-display text-4xl font-black text-paper">{tier.price}</span>
+                <span className="text-sm text-paper/55">{tier.unit || "/ month"}</span>
+              </div>
+              <ul className="mt-4 space-y-2">
+                {tier.points.slice(0, 4).map((pt) => (
+                  <li key={pt} className="flex items-start gap-2.5 text-sm text-paper/85">
+                    <span className="mt-0.5 grid h-4 w-4 shrink-0 place-items-center rounded-full bg-gold text-[10px] text-ink">✓</span>{pt}
+                  </li>
+                ))}
+              </ul>
+              <p className="mt-4 text-center text-xs font-semibold text-gold">🎁 Your first class is 100% free.</p>
+            </div>
+          </div>
+        )}
+
+        {step === 4 && (
+          <div>
+            <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-gold">🎉 One last step</p>
+            <h2 className="mt-2 font-display text-3xl font-black leading-tight text-paper">Ready, {first}?</h2>
+            <p className="mt-2 text-sm text-paper/75">Save your journey and lock your <b className="text-paper">free trial</b>. No card, no obligation.</p>
+            <div className="mt-5 space-y-3">
+              <input autoFocus className={INP} inputMode="email" placeholder="Email (your portal login)" value={email} onChange={(e) => setEmail(e.target.value)} />
+              <input className={INP} inputMode="tel" placeholder="Phone / WhatsApp number" value={phone} onChange={(e) => setPhone(e.target.value)} />
+              {(local || err) && <p className="text-sm text-red-300">{local || err}</p>}
+              <p className="text-[11px] text-paper/45">🔒 Private to you — only for your trial and portal login.</p>
+            </div>
           </div>
         )}
       </div>
 
-      <button onClick={onBack} className="mx-auto mt-5 block text-sm text-paper/50 hover:text-paper">← Change my answers</button>
+      <div className="flex items-center gap-3 pt-2">
+        <button onClick={prev} className="grid h-12 w-12 shrink-0 place-items-center rounded-full border border-white/15 text-paper/70 hover:text-paper" aria-label="Back">←</button>
+        {step === 0 && cta("See your song →", next)}
+        {step === 1 && cta("See your roadmap →", next)}
+        {step === 2 && cta("See where you begin →", next)}
+        {step === 3 && cta("Book my free trial →", next)}
+        {step === 4 && cta(busy ? "Saving…" : "Create my profile →", trySave)}
+      </div>
     </div>
   );
 }
 
+function Dots({ n, i }: { n: number; i: number }) {
+  return (
+    <div className="flex items-center gap-1.5">
+      {Array.from({ length: n }).map((_, k) => (
+        <span key={k} className={"h-1.5 rounded-full transition-all " + (k === i ? "w-5 bg-gold" : k < i ? "w-1.5 bg-gold/50" : "w-1.5 bg-white/20")} />
+      ))}
+    </div>
+  );
+}
 function Chip({ children }: { children: React.ReactNode }) {
   return <span className="rounded-full border border-white/15 bg-white/[0.06] px-3 py-1 text-xs font-medium text-paper/90">{children}</span>;
 }

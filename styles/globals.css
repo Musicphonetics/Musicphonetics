@@ -350,3 +350,13 @@ body .site-nav { top: 1.75rem; }
 .mp-ticker:hover .mp-ticker-track { animation-play-state: paused; }
 @keyframes mp-marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
 @media (prefers-reduced-motion: reduce) { .mp-ticker-track { animation: none; } }
+
+/* ── Premium page-snap ─────────────────────────────────────────────────────
+   As you scroll the marketing site it settles onto each major section, like
+   flipping a page. We use `proximity` (NOT mandatory): a section taller than
+   the screen still scrolls through fully, so text is never cut off — it only
+   snaps when you're near a boundary. Portal/app pages have no section[id]
+   targets, so they're unaffected. scroll-margin clears the fixed ticker+nav. */
+html { scroll-behavior: smooth; scroll-snap-type: y proximity; }
+#main section[id] { scroll-snap-align: start; scroll-snap-stop: normal; scroll-margin-top: calc(4rem + 1.75rem); }
+@media (prefers-reduced-motion: reduce) { html { scroll-snap-type: none; scroll-behavior: auto; } }
