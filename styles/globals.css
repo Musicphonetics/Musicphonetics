@@ -357,6 +357,13 @@ body .site-nav { top: 1.75rem; }
    the screen still scrolls through fully, so text is never cut off — it only
    snaps when you're near a boundary. Portal/app pages have no section[id]
    targets, so they're unaffected. scroll-margin clears the fixed ticker+nav. */
-html { scroll-behavior: smooth; scroll-snap-type: y proximity; }
-#main section[id] { scroll-snap-align: start; scroll-snap-stop: normal; scroll-margin-top: calc(4rem + 1.75rem); }
-@media (prefers-reduced-motion: reduce) { html { scroll-snap-type: none; scroll-behavior: auto; } }
+html { scroll-behavior: smooth; }
+/* Content pages: gentle proximity snap on major sections (never traps). */
+html:not([data-deck]) { scroll-snap-type: y proximity; }
+html:not([data-deck]) #main section[id] { scroll-snap-align: start; scroll-snap-stop: normal; scroll-margin-top: calc(4rem + 1.75rem); }
+/* The homepage elite deck (components/deck/DeckShell.tsx sets data-deck): true
+   full-page snap — one flick per page. Tall panels still scroll through, so
+   nothing is cut. */
+html[data-deck] { scroll-snap-type: y mandatory; }
+html[data-deck] [data-panel] { scroll-snap-align: start; scroll-snap-stop: always; }
+@media (prefers-reduced-motion: reduce) { html { scroll-snap-type: none !important; scroll-behavior: auto; } }
