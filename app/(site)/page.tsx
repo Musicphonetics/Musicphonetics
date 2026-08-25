@@ -13,8 +13,6 @@ import { FounderSection } from "@/components/home/FounderSection";
 import { FounderCredibility } from "@/components/home/FounderCredibility";
 import { FinalCTA } from "@/components/home/FinalCTA";
 import { JsonLd } from "@/components/seo/JsonLd";
-import { DeckShell } from "@/components/deck/DeckShell";
-import { SnapPanel } from "@/components/deck/SnapPanel";
 import { REVIEWS, HOME_REVIEW_COUNT } from "@/lib/home-config";
 
 const SITE = "https://musicphonetics.com";
@@ -55,24 +53,22 @@ export default function HomePage() {
   return (
     <>
       <JsonLd data={localBusiness} />
-      {/* Elite full-page deck: each beat is its own screen, one flick per page,
-          with a side dot-rail. Tall panels scroll within themselves so nothing
-          is ever cut; fees & reviews flip as carousels inside their panel. */}
-      <DeckShell>
-        <SnapPanel><HeroInstitution /></SnapPanel>
-        <SnapPanel><HowItWorks /></SnapPanel>
-        <SnapPanel><FunnelPackages /></SnapPanel>
-        <SnapPanel><PracticeCalculator /></SnapPanel>
-        <SnapPanel><AchievementsBand /></SnapPanel>
-        <SnapPanel><NightPortalShowcase /></SnapPanel>
-        <SnapPanel><RealMoments /></SnapPanel>
-        <SnapPanel><ReviewsSection files={homeReviews} /></SnapPanel>
-        <SnapPanel><NightOnlinePresence /></SnapPanel>
-        <SnapPanel><CentreEvents /></SnapPanel>
-        <SnapPanel><FounderSection /></SnapPanel>
-        <SnapPanel><FounderCredibility /></SnapPanel>
-        <SnapPanel><FinalCTA /></SnapPanel>
-      </DeckShell>
+      {/* Cinematic mobile-first flow with gentle section snap. The elite
+          full-page deck is being rebuilt section-by-section (each redesigned to
+          fit one screen) rather than wrapped generically. */}
+      <HeroInstitution />
+      <HowItWorks />
+      <FunnelPackages />
+      <PracticeCalculator />
+      <AchievementsBand />
+      <NightPortalShowcase />
+      <RealMoments />
+      <ReviewsSection files={homeReviews} />
+      <NightOnlinePresence />
+      <CentreEvents />
+      <FounderSection />
+      <FounderCredibility />
+      <FinalCTA />
     </>
   );
 }
