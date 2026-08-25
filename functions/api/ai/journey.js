@@ -19,10 +19,13 @@ HARD RULES:
 - Be specific to THEIR song and inspiration by NAME. Warm, encouraging Indian-English.
 - Make them feel understood, not sold to. No prices, no hard sell.
 
+STYLE: punchy and exciting, NOT an essay. Short lines. No rambling, no clichés like
+"aiming high". Talk like a cool mentor texting a friend, not a brochure.
+
 OUTPUT EXACTLY these three labelled lines and nothing else:
-ACK: <one sentence reacting to their inspiration + instrument choice>
-MESSAGE: <2-3 sentences: why their first song is a wonderful goal and the reassuring idea that they don't need to learn everything before they start playing it>
-FOCUS: <one short sentence naming the single most exciting thing we'll build first>`;
+ACK: <one short line reacting to their inspiration + instrument — max 14 words>
+MESSAGE: <ONE punchy sentence, max 22 words: their song is a great first goal AND they don't need to learn everything first>
+FOCUS: <one short line naming the first exciting thing we'll build — max 12 words>`;
 
 function template({ instrument, inspiration, song }) {
   const inst = (instrument || "music").toLowerCase();
@@ -30,9 +33,9 @@ function template({ instrument, inspiration, song }) {
     ? `${inspiration} is a beautiful inspiration — we'll shape your ${inst} around the music you actually love.`
     : `Wonderful — we'll shape your ${inst} around the music you actually love.`;
   const message = song
-    ? `“${song}” is a fantastic first goal. Here's the good news: you don't need to learn everything before you can start playing it — we break it into a few core skills and get you into the song early, one satisfying piece at a time.`
-    : `Here's the good news: you don't need to learn everything before you start playing the music you love — we build a few core skills and get you into real songs early.`;
-  return { ack, message, focus: "First, we'll get a clean, confident sound and a steady rhythm under your fingers." };
+    ? `“${song}” is a brilliant first goal — and you won't need to learn everything before you're playing it.`
+    : `You won't need to learn everything before you're playing the music you love.`;
+  return { ack, message, focus: "A clean, confident first sound and a steady rhythm." };
 }
 
 function line(text, label) {
@@ -63,11 +66,13 @@ export async function onRequestPost({ request, env }) {
     "Write the ACK, MESSAGE and FOCUS lines now.",
   ].filter(Boolean).join("\n");
 
-  const res = await callAI(env, { system: SYSTEM, user, temperature: 0.7, maxTokens: 320 });
+  const res = await callAI(env, { system: SYSTEM, user, temperature: 0.7, maxTokens: 180 });
   if (res.error || !res.text) return json({ ok: true, ...fb, fallback: true });
 
-  const ack = line(res.text, "ACK") || fb.ack;
-  const message = line(res.text, "MESSAGE") || fb.message;
-  const focus = line(res.text, "FOCUS") || fb.focus;
+  // Keep it tight — one sentence each, even if the model over-writes.
+  const oneSentence = (s, cap) => { const t = (s || "").split(/(?<=[.!?])\s/)[0].trim(); return t.length > cap ? t.slice(0, cap).trim() + "…" : t; };
+  const ack = oneSentence(line(res.text, "ACK"), 110) || fb.ack;
+  const message = oneSentence(line(res.text, "MESSAGE"), 160) || fb.message;
+  const focus = oneSentence(line(res.text, "FOCUS"), 90) || fb.focus;
   return json({ ok: true, ack, message, focus });
 }

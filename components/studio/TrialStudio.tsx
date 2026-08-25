@@ -7,7 +7,6 @@ import { track } from "@/lib/track";
 import { TIERS, NON_BEGINNER_ROUTES, type Tier } from "@/lib/programTiers";
 import {
   MOTIVATIONS, LEVELS, INSTRUMENTS, skillsFor, roadmapFor, dnaFor,
-  type RoadmapWeek,
 } from "@/lib/journey";
 
 // ---------------------------------------------------------------------------
@@ -224,6 +223,8 @@ function ackFor(inspiration: string, inst: string) {
 }
 
 // -------------------- Reveal: the journey + save --------------------
+const instEmoji = (k: string) => INSTRUMENTS.find((i) => i.key === k)?.icon || "🎵";
+
 function Reveal(props: {
   first: string; inst: string; inspiration: string; song: string;
   level: { label: string } | null; isBeginner: boolean; dna: { label: string; blurb: string }; report: Report | null;
@@ -234,6 +235,7 @@ function Reveal(props: {
   const { first, inst, inspiration, song, level, isBeginner, dna, report, chosen, setChosen, email, setEmail, phone, setPhone, onStart, busy, err, onBack } = props;
   const skills = skillsFor(inst);
   const weeks = roadmapFor(inst);
+  const tier = isBeginner ? TIERS.foundation : TIERS[chosen];
   const [saving, setSaving] = useState(false);
   const [local, setLocal] = useState("");
 
@@ -244,90 +246,89 @@ function Reveal(props: {
   }
 
   return (
-    <div className="mx-auto max-w-xl px-5 py-8">
+    <div className="mx-auto max-w-md px-5 py-8">
       <Header />
 
-      {/* We don't just take leads */}
-      <div className="mt-8 rounded-2xl border border-gold/30 bg-gold/[0.06] p-4">
-        <p className="text-sm font-semibold text-gold">We don&rsquo;t just take down your details.</p>
-        <p className="mt-1 text-sm text-paper/80">{first}, here&rsquo;s a real plan for your music — built around <b className="text-paper">you</b>, before you pay a rupee.</p>
-      </div>
-
-      {/* Musical DNA */}
-      <div className="mt-5 rounded-3xl border border-white/12 bg-white/[0.04] p-5">
-        <p className="text-xs font-semibold uppercase tracking-widest text-gold">🧬 Your Musical DNA</p>
-        <h2 className="mt-2 font-display text-2xl font-bold text-paper">You&rsquo;re {dna.label}.</h2>
-        <p className="mt-1 text-sm text-paper/70">{dna.blurb}</p>
-        <div className="mt-4 grid grid-cols-2 gap-2 text-sm">
-          <DnaRow k="Instrument" v={inst || "—"} />
-          <DnaRow k="Inspired by" v={inspiration || "—"} />
-          <DnaRow k="First goal" v={song || "—"} />
-          <DnaRow k="Level" v={level?.label || "—"} />
+      {/* DNA hero — bold and colourful, the reward moment */}
+      <div className="mt-7 overflow-hidden rounded-[26px] border border-gold/40 bg-gradient-to-br from-gold/25 via-gold/[0.07] to-transparent p-6">
+        <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-gold">🧬 Your Musical DNA</p>
+        <h1 className="mt-2 font-display text-[2.1rem] font-black leading-[1.05] text-paper">You&rsquo;re {dna.label}.</h1>
+        <p className="mt-2 text-sm leading-relaxed text-paper/75">{dna.blurb}</p>
+        <div className="mt-4 flex flex-wrap gap-2">
+          <Chip>{instEmoji(inst)} {inst}</Chip>
+          {inspiration && <Chip>✨ {inspiration}</Chip>}
+          {song && <Chip>🎯 {song}</Chip>}
+          {level && <Chip>{level.label}</Chip>}
         </div>
       </div>
 
-      {/* AI report on the first song */}
-      <div className="mt-5 rounded-3xl border border-white/12 bg-white/[0.04] p-5">
-        <p className="text-xs font-semibold uppercase tracking-widest text-gold">Your path to “{song}”</p>
-        {report?.message
-          ? <p className="mt-2 text-sm leading-relaxed text-paper/85">{report.message}</p>
-          : <p className="mt-2 text-sm leading-relaxed text-paper/85">Great news — you don&rsquo;t need to learn everything before you can start playing “{song}”. We break it into a few core skills and get you into the song early.</p>}
-
-        <p className="mt-4 text-xs font-semibold uppercase tracking-wide text-paper/50">Skills we&rsquo;ll build</p>
-        <div className="mt-2 flex flex-wrap gap-2">
-          {skills.map((s) => <span key={s} className="rounded-full border border-white/12 bg-white/5 px-3 py-1 text-xs text-paper/80">🎵 {s}</span>)}
-        </div>
-        {report?.focus && <p className="mt-4 border-l-2 border-gold pl-3 text-sm italic text-paper/80">{report.focus}</p>}
-      </div>
-
-      {/* 30-day roadmap */}
-      <div className="mt-5">
-        <p className="px-1 text-xs font-semibold uppercase tracking-widest text-gold">Your 30-day roadmap</p>
-        <div className="mt-3 grid gap-3 sm:grid-cols-2">
-          {weeks.map((w) => <WeekCard key={w.title} w={w} />)}
-        </div>
-        <p className="mt-3 px-1 text-xs text-paper/50">Your teacher personalises this roadmap after your free trial — this is the direction, they add the human touch.</p>
-      </div>
-
-      {/* Mentor preview (honest — matched, not invented) */}
-      <div className="mt-5 flex items-center gap-4 rounded-3xl border border-white/12 bg-white/[0.04] p-5">
-        <span className="grid h-14 w-14 shrink-0 place-items-center rounded-2xl bg-gold/15 text-2xl">🎓</span>
-        <div className="min-w-0">
-          <p className="text-xs font-semibold uppercase tracking-wide text-gold">Meet your mentor</p>
-          <p className="mt-0.5 text-sm text-paper/85">A specialist {(inst || "music").toLowerCase()} mentor from our faculty will be hand-matched to you — and confirmed by the Director — before your trial.</p>
-          <p className="mt-1 text-xs text-paper/50">10+ years faculty · Trinity-experienced · beginner-friendly</p>
+      {/* First song — ONE line of AI + skills as chips */}
+      <div className="mt-4 rounded-3xl border border-white/12 bg-white/[0.04] p-5">
+        <p className="font-display text-lg font-bold text-paper">🎯 Your first song: “{song}”</p>
+        <p className="mt-1.5 text-sm leading-relaxed text-paper/80">{report?.message || `You won't need to learn everything before you're playing “${song}”.`}</p>
+        <div className="mt-3.5 flex flex-wrap gap-1.5">
+          {skills.map((s) => <span key={s} className="rounded-full border border-white/12 bg-white/5 px-2.5 py-1 text-[11px] text-paper/75">{s}</span>)}
         </div>
       </div>
 
-      {/* Programme fit */}
-      <div className="mt-5">
-        <p className="px-1 text-xs font-semibold uppercase tracking-widest text-gold">Where you&rsquo;ll begin</p>
-        {isBeginner ? (
-          <div className="mt-3"><ProgramCard p={TIERS.foundation} highlight /></div>
-        ) : (
-          <div className="mt-3 space-y-3">
-            {NON_BEGINNER_ROUTES.map((k) => (
-              <button key={k} onClick={() => setChosen(k)} className="block w-full text-left"><ProgramCard p={TIERS[k]} selected={chosen === k} selectable /></button>
-            ))}
+      {/* 30-day roadmap — compact timeline, one line per week */}
+      <p className="mt-6 px-1 text-[11px] font-bold uppercase tracking-[0.2em] text-gold">Your 30-day roadmap</p>
+      <div className="mt-3 space-y-2">
+        {weeks.map((w, i) => (
+          <div key={w.title} className="flex items-center gap-3 rounded-2xl border border-white/12 bg-white/[0.04] px-4 py-3">
+            <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-gold/15 text-sm font-bold text-gold">{i + 1}</span>
+            <div className="min-w-0">
+              <p className="text-sm font-semibold text-paper">{w.title.replace(/^Week \d+ — /, "")}</p>
+              <p className="truncate text-xs text-paper/55">{w.items.slice(0, 3).join(" · ")}</p>
+            </div>
           </div>
-        )}
+        ))}
+      </div>
+      <p className="mt-2 px-1 text-xs text-paper/45">🎓 Your hand-matched mentor personalises this after your free trial.</p>
+
+      {/* Programme — compact */}
+      <p className="mt-6 px-1 text-[11px] font-bold uppercase tracking-[0.2em] text-gold">Where you&rsquo;ll begin</p>
+      {!isBeginner && (
+        <div className="mt-3 flex gap-1.5">
+          {NON_BEGINNER_ROUTES.map((k) => (
+            <button key={k} onClick={() => setChosen(k)}
+              className={"flex-1 rounded-full px-3 py-2 text-xs font-semibold transition " + (chosen === k ? "bg-gold text-ink" : "border border-white/15 text-paper/70 hover:text-paper")}>
+              {TIERS[k].name.replace(/^The /, "")}
+            </button>
+          ))}
+        </div>
+      )}
+      <div className="mt-3 rounded-3xl border border-gold/40 bg-gold/[0.06] p-5">
+        <div className="flex items-start justify-between gap-3">
+          <div>
+            <h3 className="font-display text-xl font-bold text-paper">{tier.name}</h3>
+            <p className="text-sm text-gold">{tier.tagline}</p>
+          </div>
+          <div className="text-right">
+            {tier.strike && <div className="text-xs text-paper/40 line-through">{tier.strike}</div>}
+            <div className="font-display text-lg font-bold text-paper">{tier.price}<span className="text-xs font-normal text-paper/50">{tier.unit || ""}</span></div>
+          </div>
+        </div>
+        <ul className="mt-3 space-y-1.5">
+          {tier.points.slice(0, 3).map((pt) => <li key={pt} className="flex items-start gap-2 text-sm text-paper/80"><span className="mt-0.5 text-gold">✦</span>{pt}</li>)}
+        </ul>
       </div>
 
       {/* Save the journey → profile */}
-      <div className="mt-6 rounded-3xl border border-gold/40 bg-gold/[0.07] p-5">
-        <p className="font-display text-lg font-bold text-paper">Let&rsquo;s save your musical journey</p>
-        <p className="mt-1 text-sm text-paper/75">Your Musical DNA, first song and roadmap are ready. Create your free Musicphonetics profile so we can save everything and book your trial.</p>
+      <div className="mt-5 rounded-3xl border border-gold/50 bg-gradient-to-br from-gold/20 to-transparent p-5">
+        <p className="font-display text-lg font-bold text-paper">🎉 Ready, {first}? Let&rsquo;s begin.</p>
+        <p className="mt-1 text-sm text-paper/75">Save your journey and book your <b className="text-paper">free trial</b> — no card, no obligation.</p>
         {!saving ? (
-          <button onClick={() => setSaving(true)} className="mt-4 w-full rounded-full bg-gold px-6 py-4 text-base font-semibold text-ink transition hover:bg-[#f0d783]">Save my journey & book my free trial →</button>
+          <button onClick={() => setSaving(true)} className="mt-4 w-full rounded-full bg-gold px-6 py-4 text-base font-bold text-ink transition hover:bg-[#f0d783]">Book my free trial →</button>
         ) : (
           <div className="mt-4 space-y-3">
-            <input className={INP} inputMode="email" placeholder="Email (your portal login)" value={email} onChange={(e) => setEmail(e.target.value)} />
+            <input autoFocus className={INP} inputMode="email" placeholder="Email (your portal login)" value={email} onChange={(e) => setEmail(e.target.value)} />
             <input className={INP} inputMode="tel" placeholder="Phone / WhatsApp number" value={phone} onChange={(e) => setPhone(e.target.value)} />
-            <p className="text-xs text-paper/45">🔒 Private to you — only for your trial and portal login. Your first class is free, no card needed.</p>
             {(local || err) && <p className="text-sm text-red-300">{local || err}</p>}
-            <button onClick={trySave} disabled={busy} className="w-full rounded-full bg-gold px-6 py-4 text-base font-semibold text-ink transition hover:bg-[#f0d783] disabled:opacity-60">
+            <button onClick={trySave} disabled={busy} className="w-full rounded-full bg-gold px-6 py-4 text-base font-bold text-ink transition hover:bg-[#f0d783] disabled:opacity-60">
               {busy ? "Saving…" : "Create my profile & continue →"}
             </button>
+            <p className="text-center text-[11px] text-paper/45">🔒 Private to you · first class free</p>
           </div>
         )}
       </div>
@@ -337,46 +338,8 @@ function Reveal(props: {
   );
 }
 
-function DnaRow({ k, v }: { k: string; v: string }) {
-  return (
-    <div className="rounded-xl bg-white/[0.04] px-3 py-2">
-      <p className="text-[10px] uppercase tracking-wide text-paper/45">{k}</p>
-      <p className="truncate text-sm font-semibold text-paper">{v}</p>
-    </div>
-  );
-}
-function WeekCard({ w }: { w: RoadmapWeek }) {
-  return (
-    <div className="rounded-2xl border border-white/12 bg-white/[0.04] p-4">
-      <p className="text-sm font-bold text-paper">{w.title}</p>
-      <ul className="mt-2 space-y-1">
-        {w.items.map((it) => <li key={it} className="flex items-start gap-2 text-xs text-paper/75"><span className="mt-0.5 text-gold">✦</span>{it}</li>)}
-      </ul>
-    </div>
-  );
-}
-
-function ProgramCard({ p, highlight, selected, selectable }: { p: Tier; highlight?: boolean; selected?: boolean; selectable?: boolean }) {
-  return (
-    <div className={"rounded-3xl border p-5 transition " + (selected ? "border-gold bg-gold/10" : highlight ? "border-gold/50 bg-gold/[0.06]" : "border-white/12 bg-white/[0.04]")}>
-      <div className="flex items-start justify-between gap-3">
-        <div>
-          <h3 className="font-display text-xl font-bold text-paper">{p.name}</h3>
-          <p className="text-sm text-gold">{p.tagline}</p>
-        </div>
-        <div className="text-right">
-          {p.strike && <div className="text-sm text-paper/40 line-through">{p.strike}</div>}
-          <div className="font-display text-lg font-bold text-paper">{p.price}<span className="text-sm font-normal text-paper/50">{p.unit || ""}</span></div>
-        </div>
-      </div>
-      {p.badge && <span className="mt-2 inline-block rounded-full bg-gold px-2.5 py-0.5 text-[11px] font-bold text-ink">{p.badge}</span>}
-      <p className="mt-3 text-sm leading-relaxed text-paper/70">{p.note}</p>
-      <ul className="mt-3 space-y-1.5">
-        {p.points.map((pt) => <li key={pt} className="flex items-start gap-2 text-sm text-paper/80"><span className="mt-0.5 text-gold">✦</span>{pt}</li>)}
-      </ul>
-      {selectable && <p className={"mt-3 text-sm font-semibold " + (selected ? "text-gold" : "text-paper/40")}>{selected ? "Selected ✓" : "Tap to choose"}</p>}
-    </div>
-  );
+function Chip({ children }: { children: React.ReactNode }) {
+  return <span className="rounded-full border border-white/15 bg-white/[0.06] px-3 py-1 text-xs font-medium text-paper/90">{children}</span>;
 }
 
 const INP = "w-full rounded-xl border border-white/15 bg-white/5 px-4 py-3.5 text-paper placeholder-paper/40 outline-none focus:border-gold";
