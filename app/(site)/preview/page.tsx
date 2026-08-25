@@ -3,6 +3,7 @@ import Link from "next/link";
 import { SlideDeck } from "@/components/deck/SlideDeck";
 import { DeckSlide } from "@/components/deck/DeckSlide";
 import { DeckCarousel } from "@/components/deck/DeckCarousel";
+import { HeroInstitution } from "@/components/home/HeroInstitution";
 import { TIERS } from "@/lib/programTiers";
 import { REVIEWS } from "@/lib/home-config";
 
@@ -29,34 +30,10 @@ const TIER_LIST = [TIERS.foundation, TIERS.main, TIERS.signature, TIERS.abhishek
 export default function PreviewPage() {
   return (
     <SlideDeck>
-      {/* 1 — HERO (full-bleed stage image, content anchored low) */}
-      <DeckSlide
-        align="end"
-        maxW="max-w-xl"
-        bg={
-          <>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/gallery/03-stage-guitar.jpg" alt="A Musicphonetics student performing on stage" className="h-full w-full object-cover object-[50%_30%]" />
-            <div className="absolute inset-0 bg-gradient-to-b from-[#0a0d14]/70 via-[#0a0d14]/30 to-[#0a0d14]" />
-            <div className="absolute inset-0 bg-gradient-to-t from-[#0a0d14] via-transparent to-transparent" />
-          </>
-        }
-      >
-        <div data-reveal data-delay="1" className="flex items-center gap-2">
-          <span className="rounded-full bg-white/10 px-3 py-1 text-xs font-semibold text-paper backdrop-blur">★ 4.8 on Google</span>
-          <span className="rounded-full bg-white/10 px-3 py-1 text-xs font-semibold text-paper backdrop-blur">1,100+ students</span>
-        </div>
-        <h1 data-reveal data-delay="2" className="mt-4 font-display text-[2.6rem] font-black leading-[1.03] text-paper">
-          Music education,<br />built like an <span className="text-gold">institution.</span>
-        </h1>
-        <p data-reveal data-delay="3" className="mt-4 max-w-md text-[15px] leading-relaxed text-paper/80">
-          One matched teacher. A real curriculum. Every class tracked — and a stage to perform on.
-        </p>
-        <div data-reveal data-delay="4" className="mt-6 flex items-center gap-3">
-          <Link href="/studio" className="rounded-full bg-gold px-7 py-3.5 text-base font-bold text-ink transition hover:bg-[#f0d783]">Book a free trial →</Link>
-          <span className="text-sm font-semibold text-paper/70">Free first class</span>
-        </div>
-      </DeckSlide>
+      {/* 1 — HERO (your existing hero, kept exactly, as the first snap panel) */}
+      <div data-slide className="deck-slide">
+        <HeroInstitution />
+      </div>
 
       {/* 2 — THE METHOD */}
       <DeckSlide bg={glow("80% 25%")}>
