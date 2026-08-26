@@ -6,7 +6,10 @@ import { TIERS } from "@/lib/programTiers";
 import { REVIEWS } from "@/lib/home-config";
 
 const LABELS = ["Discover", "Philosophy", "Why us", "Instruments", "Journey", "Portal", "Stories", "Packages", "Begin"];
-const THEMES: ("light" | "dark")[] = ["light", "dark", "dark", "dark", "dark", "dark", "dark", "dark", "dark"];
+const THEMES: ("light" | "dark")[] = ["dark", "dark", "dark", "dark", "dark", "dark", "dark", "dark", "dark"];
+const TEACH = [
+  { i: "🎸", n: "Guitar" }, { i: "🎤", n: "Vocals" }, { i: "🎹", n: "Keyboard" }, { i: "🪕", n: "Ukulele" }, { i: "🥁", n: "Drums" },
+];
 const TIER_LIST = [TIERS.foundation, TIERS.main, TIERS.signature, TIERS.abhishek];
 const eyebrow = "text-[11px] font-bold uppercase tracking-[0.24em] text-gold";
 
@@ -36,48 +39,60 @@ function Frame({ children, image, className = "", justify = "center" }: {
 export function ExperienceDeck() {
   return (
     <ChapterDeck labels={LABELS} themes={THEMES}>
-      {/* 01 — THE COVER: the whole brand at a glance, luxuriously prioritised */}
-      <div className="relative h-full w-full overflow-hidden bg-paper">
-        <div className="absolute inset-0" style={{ background: "radial-gradient(55% 42% at 80% 14%, rgba(201,162,39,0.18), transparent 70%)" }} />
-        <div className="pointer-events-none absolute -right-12 bottom-4 select-none font-display text-[14rem] leading-none text-charcoal/[0.035]">♪</div>
+      {/* 01 — THE COVER: dark, cinematic, whole ecosystem at a glance */}
+      <div className="relative h-full w-full overflow-hidden bg-[#0a0d14]">
+        {/* cinematic performer, kept as a shadow (no face focus) on the right */}
+        <div data-depth="bg" className="absolute inset-0">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/gallery/03-stage-guitar.jpg" alt="" className="h-full w-full object-cover object-[75%_25%] opacity-70" />
+          <div className="absolute inset-0" style={{ background: "radial-gradient(45% 35% at 82% 12%, rgba(201,162,39,0.28), transparent 65%)" }} />
+          <div className="absolute inset-0 bg-gradient-to-r from-[#0a0d14] via-[#0a0d14]/85 to-[#0a0d14]/25" />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#0a0d14] via-[#0a0d14]/40 to-transparent" />
+        </div>
+
         <div className="relative z-10 flex h-full flex-col justify-center px-6 pb-24 pt-24 sm:px-12">
           <div className="mx-auto w-full max-w-xl">
-            {/* what + where + trust, in one refined line */}
-            <div data-reveal className="flex flex-wrap items-center gap-x-2.5 gap-y-1 text-[11px] font-bold uppercase tracking-[0.16em] text-deep-gold">
-              <span>Premium music school</span>
-              <span className="h-1 w-1 rounded-full bg-gold/70" />
-              <span>Delhi NCR &amp; Online</span>
-              <span className="h-1 w-1 rounded-full bg-gold/70" />
-              <span>Since 2015</span>
-            </div>
+            <span data-reveal className="inline-flex items-center gap-2 rounded-full border border-gold/40 bg-gold/[0.08] px-3.5 py-1.5 text-[10px] font-bold uppercase tracking-[0.18em] text-gold backdrop-blur">
+              ★ Premium music school
+            </span>
+            <p data-reveal className="mt-3 text-[11px] font-semibold uppercase tracking-[0.18em] text-paper/55">Delhi NCR &amp; Online · Since 2015</p>
 
-            {/* the brand */}
-            <h1 data-reveal className="mt-4 font-body text-[clamp(2.5rem,11.5vw,4.2rem)] font-extrabold leading-[0.98] tracking-tight text-charcoal">
+            <h1 data-reveal className="mt-3 font-body text-[clamp(2.4rem,11vw,4rem)] font-extrabold leading-[0.98] tracking-tight text-paper">
               Structured Music Learning
-              <span className="mt-1 block font-script text-[1.18em] font-bold leading-none text-gold">That Lasts.</span>
+              <span className="mt-1 block font-script text-[1.16em] font-bold leading-none text-gold">That Lasts.</span>
             </h1>
 
-            {/* the whole ecosystem, filtered into one sentence */}
-            <p data-reveal className="mt-6 max-w-md text-[1.02rem] font-medium leading-relaxed text-charcoal/75">
-              A one-to-one school where a <b className="text-charcoal">matched mentor</b>, a <b className="text-charcoal">real curriculum</b> and a <b className="text-charcoal">live portal</b> take you from first note to the stage.
+            <p data-reveal className="mt-5 max-w-md text-[15px] font-medium leading-relaxed text-paper/75">
+              A one-to-one school where a <b className="text-paper">matched mentor</b>, a <b className="text-paper">real curriculum</b> and a <b className="text-paper">live portal</b> take you from first note to the stage.
             </p>
 
-            {/* proof strip */}
-            <div data-reveal className="mt-6 flex w-fit divide-x divide-charcoal/15 rounded-2xl border border-charcoal/10 bg-white/60 backdrop-blur">
-              {[["4.8★", "Google"], ["1,100+", "students"], ["200+", "Trinity"]].map(([n, l]) => (
-                <div key={l} className="px-4 py-2 text-center">
-                  <div className="font-display text-lg font-bold leading-none text-charcoal">{n}</div>
-                  <div className="mt-0.5 text-[10px] uppercase tracking-wide text-charcoal/55">{l}</div>
+            {/* proof strip with icons */}
+            <div data-reveal className="mt-5 flex w-fit divide-x divide-white/10 rounded-2xl border border-white/10 bg-white/[0.04] backdrop-blur">
+              {[["★", "4.8", "Google"], ["♫", "1,100+", "Students"], ["✦", "200+", "Trinity"]].map(([ic, n, l]) => (
+                <div key={l} className="flex items-center gap-2 px-3.5 py-2.5">
+                  <span className="text-gold">{ic}</span>
+                  <div><div className="font-display text-base font-bold leading-none text-paper">{n}</div><div className="mt-0.5 text-[10px] uppercase tracking-wide text-paper/50">{l}</div></div>
                 </div>
               ))}
             </div>
 
-            <div data-reveal className="mt-7 flex items-center gap-4">
-              <Link href="/studio" className="inline-flex items-center gap-2 rounded-full bg-charcoal px-8 py-4 text-base font-semibold text-cream shadow-[0_16px_40px_-12px_rgba(22,27,38,0.5)] transition hover:brightness-125">Book a free trial →</Link>
+            <div data-reveal className="mt-5">
+              <Link href="/studio" className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-gold px-8 py-3.5 text-base font-bold text-ink shadow-[0_18px_45px_-14px_rgba(201,162,39,0.8)] transition hover:bg-[#f0d783] sm:w-auto">Book a free trial →</Link>
             </div>
 
-            {/* a book's "contents" — what the swipes reveal */}
-            <p data-reveal className="mt-7 text-[10.5px] font-semibold uppercase tracking-[0.18em] text-charcoal/40">
+            {/* what we teach */}
+            <div data-reveal className="mt-6">
+              <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-paper/45">What we teach</p>
+              <div className="mt-2.5 flex flex-wrap gap-x-4 gap-y-2">
+                {TEACH.map((t) => (
+                  <div key={t.n} className="flex items-center gap-1.5 text-sm text-paper/80">
+                    <span className="grid h-8 w-8 place-items-center rounded-full border border-gold/30 bg-white/[0.03] text-base">{t.i}</span>{t.n}
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <p data-reveal className="mt-5 text-[10.5px] font-semibold uppercase tracking-[0.18em] text-paper/40">
               Swipe to explore · Method · Portal · Packages · Results
             </p>
           </div>
