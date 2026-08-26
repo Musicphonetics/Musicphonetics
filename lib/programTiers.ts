@@ -1,5 +1,5 @@
 // ============================================================================
-// Canonical Musicphonetics PRICING TIERS. Edit fees/copy here once — the
+// Canonical Musicphonetics PRICING TIERS. Edit fees/copy here once, the
 // concierge intake, the /learn page and the trial portal read from this.
 // (Distinct from lib/programs.ts, which lists instruments & brand divisions.)
 // ============================================================================
@@ -22,7 +22,7 @@ export const TIERS: Record<Tier["key"], Tier> = {
   foundation: {
     key: "foundation",
     name: "The Foundation",
-    tagline: "Beginner module — your correct first start",
+    tagline: "Beginner module, your correct first start",
     price: "₹10,000",
     unit: "/month",
     forWhom: "Complete beginners only",
@@ -41,9 +41,9 @@ export const TIERS: Record<Tier["key"], Tier> = {
     price: "₹12,000",
     strike: "₹15,000",
     unit: "/month",
-    badge: "Offer — till seats last",
+    badge: "Offer, till seats last",
     forWhom: "Anyone past the basics, or ready to get genuinely good",
-    note: "The full Musicphonetics system — technique, theory, performance, exam preparation and tracked progress. This is the heart of what we do.",
+    note: "The full Musicphonetics system, technique, theory, performance, exam preparation and tracked progress. This is the heart of what we do.",
     points: [
       "8 one-hour classes a month",
       "Theory, performance & Trinity / exam pathway",
@@ -58,7 +58,7 @@ export const TIERS: Record<Tier["key"], Tier> = {
     price: "By consultation",
     premium: true,
     forWhom: "Families who want the very best service",
-    note: "Everything in the Main Pathway, delivered as a white-glove service. Not because a different person teaches — but because the entire experience is built around you and your schedule.",
+    note: "Everything in the Main Pathway, delivered as a white-glove service. Not because a different person teaches, but because the entire experience is built around you and your schedule.",
     points: [
       "A dedicated teacher, held only for you",
       "No class cancellations, ever",
@@ -77,7 +77,7 @@ export const TIERS: Record<Tier["key"], Tier> = {
     points: [
       "Taught personally by Abhishek",
       "Founder-led, one-to-one mentorship",
-      "Highly limited — by application",
+      "Highly limited, by application",
       "A discretionary, invitation-led place",
     ],
   },

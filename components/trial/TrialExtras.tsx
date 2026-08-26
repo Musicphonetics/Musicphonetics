@@ -27,9 +27,9 @@ export function TrialAsk() {
     <div className="space-y-5">
       <div className="rounded-3xl border border-hairline bg-white p-6 shadow-card">
         <h1 className="font-display text-xl font-bold text-ink">A question or concern?</h1>
-        <p className="mt-1 text-sm text-ink/60">Ask us anything before you begin — a worry, a request, or a question about how classes work. We read every message.</p>
+        <p className="mt-1 text-sm text-ink/60">Ask us anything before you begin, a worry, a request, or a question about how classes work. We read every message.</p>
         {sent ? (
-          <p className="mt-4 rounded-xl bg-gold/10 p-3 text-sm font-semibold text-[#7A5E0F]">Got it — we&rsquo;ll bring this up personally. 🙌</p>
+          <p className="mt-4 rounded-xl bg-gold/10 p-3 text-sm font-semibold text-[#7A5E0F]">Got it, we&rsquo;ll bring this up personally. 🙌</p>
         ) : (
           <>
             <textarea className={inp + " mt-4"} rows={4} value={text} onChange={(e) => setText(e.target.value)}
@@ -108,9 +108,9 @@ export function TrialProfile() {
       <div className="rounded-3xl border border-hairline bg-white p-6 shadow-card">
         <h1 className="font-display text-xl font-bold text-ink">Your account</h1>
         <div className="mt-4 space-y-1 text-sm">
-          <Row k="Name" v={s?.student_name || "—"} />
-          <Row k="Email" v={email || "—"} />
-          <Row k="Instrument" v={s?.instrument || "—"} />
+          <Row k="Name" v={s?.student_name || "-"} />
+          <Row k="Email" v={email || "-"} />
+          <Row k="Instrument" v={s?.instrument || "-"} />
         </div>
       </div>
       <div className="rounded-3xl border border-hairline bg-white p-6 shadow-card">

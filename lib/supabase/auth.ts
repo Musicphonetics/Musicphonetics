@@ -60,7 +60,7 @@ export function useAuth(): AuthState {
       if (active) setState((s) => ({ ...s, loading: false, error: e?.message || "Auth error" }));
     });
 
-    // IMPORTANT: do NOT run Supabase queries directly inside this callback — it
+    // IMPORTANT: do NOT run Supabase queries directly inside this callback, it
     // holds an internal auth lock and an awaited query deadlocks (portal hangs
     // on reload). Defer the work to a microtask so the lock is released first,
     // and skip redundant reloads when the user id hasn't changed.

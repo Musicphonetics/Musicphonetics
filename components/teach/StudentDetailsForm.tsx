@@ -15,7 +15,7 @@ const opt = (list: readonly string[]) => ["-", ...list];
 type Form = Record<string, string>;
 const PHOTO_BUCKET = "student-photos";
 
-// The full admission form the teacher fills for each student — captures the
+// The full admission form the teacher fills for each student, captures the
 // demographic + operational data that powers the owner Statistics dashboard.
 // Works on existing students (edit) as well as freshly-activated ones.
 export function StudentDetailsForm({ studentId, onSaved }: { studentId: string; onSaved?: () => void }) {
@@ -35,7 +35,7 @@ export function StudentDetailsForm({ studentId, onSaved }: { studentId: string; 
   useEffect(() => {
     getSupabase().from("students").select("*").eq("id", studentId).single().then(async ({ data, error }) => {
       if (error) {
-        // select("*") only errors if the whole table is missing — a genuine setup issue.
+        // select("*") only errors if the whole table is missing, a genuine setup issue.
         if (/relation .*students.* does not exist/i.test(error.message)) setNeedsMigration(true);
       } else if (data) {
         const row = data as Record<string, unknown>;
@@ -67,9 +67,9 @@ export function StudentDetailsForm({ studentId, onSaved }: { studentId: string; 
       if (error) throw error;
       setPhotoPath(path);
       setPhotoUrl(URL.createObjectURL(file));
-      setMsg("Photo added — remember to Save.");
+      setMsg("Photo added, remember to Save.");
     } catch (e2) {
-      setErr(/bucket|not found/i.test((e2 as Error)?.message || "") ? "Photo storage isn't set up yet — run supabase/student_admission_fields.sql." : "Couldn't upload the photo.");
+      setErr(/bucket|not found/i.test((e2 as Error)?.message || "") ? "Photo storage isn't set up yet, run supabase/student_admission_fields.sql." : "Couldn't upload the photo.");
     }
     setUploading(false);
   }
@@ -101,10 +101,10 @@ export function StudentDetailsForm({ studentId, onSaved }: { studentId: string; 
       if (!error) {
         setBusy(false);
         if (!data || data.length === 0) {
-          setErr("Couldn't save — you may not have permission to edit this student yet. Ask the office to run supabase/student_update_policy.sql once, then try again.");
+          setErr("Couldn't save, you may not have permission to edit this student yet. Ask the office to run supabase/student_update_policy.sql once, then try again.");
           return;
         }
-        setMsg(skipped.length ? `Saved. (Not-yet-enabled fields skipped: ${skipped.join(", ")} — run the latest SQL to include them.)` : "Saved.");
+        setMsg(skipped.length ? `Saved. (Not-yet-enabled fields skipped: ${skipped.join(", ")}, run the latest SQL to include them.)` : "Saved.");
         setEditing(false);
         onSaved?.();
         return;
@@ -122,7 +122,7 @@ export function StudentDetailsForm({ studentId, onSaved }: { studentId: string; 
       return;
     }
     setBusy(false);
-    setErr("Couldn't save — please try again.");
+    setErr("Couldn't save, please try again.");
   }
 
   if (needsMigration) return <p className="mt-3 rounded-lg bg-mist px-3 py-2 text-xs text-ink/70">Run <code className="rounded bg-white px-1">supabase/student_admission_fields.sql</code> once in Supabase to enable the admission form.</p>;
@@ -130,7 +130,7 @@ export function StudentDetailsForm({ studentId, onSaved }: { studentId: string; 
 
   const age = ageFromDob(f.dob);
 
-  // Saved summary — shown once details exist, so the form doesn't reopen blank.
+  // Saved summary, shown once details exist, so the form doesn't reopen blank.
   if (!editing) {
     const fee = Number(f.fee_quoted);
     return (
@@ -154,7 +154,7 @@ export function StudentDetailsForm({ studentId, onSaved }: { studentId: string; 
           <SumLine label="Status" value={f.status} />
         </dl>
         {fee > 0 ? null : (
-          <p className="mt-3 rounded-lg bg-gold/15 px-3 py-2 text-[11px] font-semibold text-[#7A5E0F]">Add this student&rsquo;s monthly fee so their class sets are tracked — tap Edit.</p>
+          <p className="mt-3 rounded-lg bg-gold/15 px-3 py-2 text-[11px] font-semibold text-[#7A5E0F]">Add this student&rsquo;s monthly fee so their class sets are tracked, tap Edit.</p>
         )}
         {msg && <p className="mt-2 text-xs font-semibold text-feature-green">{msg}</p>}
       </div>
@@ -221,7 +221,7 @@ export function StudentDetailsForm({ studentId, onSaved }: { studentId: string; 
           </div>
           <div>
             <MoneyField label="Monthly fee (per set of classes)" value={f.fee_quoted || ""} onChange={(v) => set("fee_quoted", v)} />
-            <p className="mt-1 text-[11px] leading-relaxed text-ink/55">Enter this student&rsquo;s own fee — it can be anything. One payment of this amount = one set of classes, and that&rsquo;s what drives their class tracking and the family&rsquo;s portal.</p>
+            <p className="mt-1 text-[11px] leading-relaxed text-ink/55">Enter this student&rsquo;s own fee, it can be anything. One payment of this amount = one set of classes, and that&rsquo;s what drives their class tracking and the family&rsquo;s portal.</p>
           </div>
           <Select label="Lead source" value={f.lead_source || "-"} onChange={(v) => set("lead_source", v)} options={opt(LEAD_SOURCES)} />
           <Field label="Referred by (optional)" value={f.referred_by || ""} onChange={(v) => set("referred_by", v)} placeholder="Name of who referred them" />

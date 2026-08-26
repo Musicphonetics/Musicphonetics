@@ -3,7 +3,7 @@
 import { useMemo, useState } from "react";
 import { cn } from "@/lib/utils";
 
-// A normalised calendar item — classes and free-form events both map to this.
+// A normalised calendar item, classes and free-form events both map to this.
 export interface CalEvent {
   id: string;
   date: string;            // YYYY-MM-DD
@@ -126,7 +126,7 @@ export function CalendarView({ events, initialView = "month" }: { events: CalEve
                   <p className={cn("mx-auto mt-0.5 grid h-7 w-7 place-items-center rounded-full text-sm font-semibold tabular-nums", isToday ? "bg-ink text-paper" : "text-ink")}>{d.getDate()}</p>
                 </div>
                 <div className="min-w-0 flex-1 space-y-1.5 py-0.5">
-                  {evs.length === 0 ? <p className="text-sm text-ink/35">—</p> : evs.map((e) => (
+                  {evs.length === 0 ? <p className="text-sm text-ink/35">, </p> : evs.map((e) => (
                     <div key={e.id} className={cn("flex items-center gap-2 rounded-lg border px-2.5 py-1.5",
                       e.cancelled ? "border-hairline bg-mist" : e.kind === "class" ? "border-gold/30 bg-gold/[0.06]" : "border-forest/25 bg-forest/[0.05]")}>
                       {e.start && <span className="shrink-0 text-xs font-semibold tabular-nums text-ink/60">{hm(e.start)}{e.end ? `–${hm(e.end)}` : ""}</span>}

@@ -41,7 +41,7 @@ export async function unreadCount(): Promise<number> {
   return count ?? 0;
 }
 
-// Read/ack state changes go through SECURITY DEFINER functions — recipients have
+// Read/ack state changes go through SECURITY DEFINER functions, recipients have
 // no direct UPDATE grant, so they can only flip read/ack on their own rows.
 export async function markRead(id: string): Promise<void> {
   await getSupabase().rpc("mp_mark_notification_read", { p_notification_id: id });

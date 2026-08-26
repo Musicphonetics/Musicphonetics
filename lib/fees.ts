@@ -1,6 +1,6 @@
 // ============================================================================
 // Class-based fee accounting for the Student Portal. Fees buy CLASSES:
-// ₹12,000 = 8 classes. As classes are completed the fee is "consumed" — the
+// ₹12,000 = 8 classes. As classes are completed the fee is "consumed", the
 // parent sees a progress bar, how much is left, and when renewal is coming.
 // Advance payments simply add more purchased classes; everything stays countable
 // across every transaction. Recomputed from data, so recording a payment (or a
@@ -20,7 +20,7 @@ export interface FeeStanding {
   completed: number;          // classes actually taken
   used: number;               // completed, capped at purchased
   remaining: number;          // classes still available
-  pct: number;                // used / purchased (0..1) — the progress bar
+  pct: number;                // used / purchased (0..1), the progress bar
   feeConsumed: number;        // ₹ used up so far
   feeRemaining: number;       // ₹ still "in the bank"
   monthsAhead: number;        // remaining / classesPerMonth (1 dp)
@@ -31,14 +31,14 @@ export interface FeeStanding {
 // One payment's block of classes, mapped onto the REAL dates classes were taken.
 // This is what lets the family see the story: paid on X → these classes → the
 // block got finished on Y (which is when the next payment fell due). Nothing is
-// projected or invented — finishedOn only appears once enough real classes exist.
+// projected or invented, finishedOn only appears once enough real classes exist.
 export interface FeeCycle {
   index: number;
   paidOn: string;              // payment_date
   amount: number;
   classes: number;             // classes this payment bought
   startedOn: string | null;    // date of the first class drawn from this block
-  finishedOn: string | null;   // date the block ran out — i.e. renewal fell due
+  finishedOn: string | null;   // date the block ran out, i.e. renewal fell due
   done: number;                // completed classes within this block
   status: "done" | "active" | "upcoming";
 }
@@ -88,7 +88,7 @@ export function computeFeeCycles(
   });
 }
 
-// How many SETS the payments have funded. There is NO fixed fee — each student's
+// How many SETS the payments have funded. There is NO fixed fee, each student's
 // fee is whatever the teacher entered in Admission details (₹6k, ₹10k, ₹16k…),
 // and one set = one such fee. So the number of paid sets is simply the money
 // received ÷ that student's fee (a two-month payment = two sets). If the fee
@@ -105,7 +105,7 @@ export function countPaidSets(
     const totalPaid = valid.reduce((s, p) => s + (Number(p.amount_paid) || 0), 0);
     return Math.max(1, Math.round(totalPaid / fee));
   }
-  return valid.length; // fee not entered yet — one set per payment
+  return valid.length; // fee not entered yet, one set per payment
 }
 
 // Total classes the payments have bought (whole sets). Falls back to one set
@@ -162,7 +162,7 @@ export function computeSetProgress(
 // Class-validity clock. Each set of classes must be finished within a window
 // (policy: 35 days from when the set starts). We nudge quietly from day 0, raise
 // a clear alert once it crosses the alert threshold, and mark it lapsed after
-// the limit. Nothing is deleted — this only informs; the studio decides.
+// the limit. Nothing is deleted, this only informs; the studio decides.
 export const SET_LIMIT_DAYS = 35;
 export const SET_ALERT_DAYS = 30;
 export const FEE_DUE_DAYS = 30; // fee for the next set is due 30 days from payment
@@ -180,7 +180,7 @@ export interface SetDeadline {
 }
 
 // Works off the payment→class cycles. The current set's clock starts at its
-// first class; if it hasn't started yet, at the date it was paid for — so a
+// first class; if it hasn't started yet, at the date it was paid for, so a
 // student who paid but keeps delaying still sees the clock running.
 export function computeSetDeadline(cycles: FeeCycle[], now: Date = new Date()): SetDeadline | null {
   const active = cycles.find((c) => c.status === "active") || cycles.find((c) => c.status === "upcoming");

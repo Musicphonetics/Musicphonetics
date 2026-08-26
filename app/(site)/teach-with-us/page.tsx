@@ -21,7 +21,7 @@ const SITE = "https://musicphonetics.com";
 export const metadata: Metadata = {
   title: "Teach With Musicphonetics - Earn What Your Craft Is Worth",
   description:
-    "Music teacher jobs in Delhi NCR and online. Keep 70% of every fee and get a real teaching platform — AI lesson planning, students brought to you, progress tracking, live earnings and a verified public profile. Payments and scheduling handled for you.",
+    "Music teacher jobs in Delhi NCR and online. Keep 70% of every fee and get a real teaching platform, AI lesson planning, students brought to you, progress tracking, live earnings and a verified public profile. Payments and scheduling handled for you.",
   alternates: { canonical: `${SITE}/teach-with-us` },
   openGraph: {
     title: "Teach With Musicphonetics - Earn What Your Craft Is Worth",

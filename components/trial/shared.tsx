@@ -4,7 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { getSupabaseSafe } from "@/lib/supabase/client";
 
-// Shared data + primitives for the Trial Portal (light, premium — built to sit
+// Shared data + primitives for the Trial Portal (light, premium, built to sit
 // inside PortalShell so it looks identical to the Student Portal).
 
 export interface TrialSession {
@@ -84,7 +84,7 @@ export function useTrial() {
       const { data, error } = await client.rpc("mp_trial_mine");
       if (error) setErr(error.message);
       const sess = (data as TrialSession) || null;
-      // Once enrolled, the SAME account is a full Student Portal — send them there.
+      // Once enrolled, the SAME account is a full Student Portal, send them there.
       if (sess && (sess.stage === "enrolled" || sess.converted_student_id)) {
         router.replace("/parent/dashboard");
         return;

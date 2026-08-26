@@ -387,7 +387,7 @@ function UploadRow({ label, hint, kind, saved, onFile }: { label: string; hint?:
     <div className="flex items-center justify-between gap-3 rounded-xl border border-hairline bg-paper p-3">
       <div className="min-w-0">
         <p className="text-sm font-medium text-ink">{label}</p>
-        <p className={cn("text-xs", saved ? "text-feature-green" : "text-ink/55")}>{saved ? "Uploaded — awaiting review" : hint || "PNG, JPG or PDF · under 5 MB"}</p>
+        <p className={cn("text-xs", saved ? "text-feature-green" : "text-ink/55")}>{saved ? "Uploaded, awaiting review" : hint || "PNG, JPG or PDF · under 5 MB"}</p>
       </div>
       {kind && onFile && (
         <label className="shrink-0 cursor-pointer rounded-full border border-hairline bg-white px-4 py-2 text-xs font-semibold text-ink/80 hover:border-ink/40">

@@ -127,9 +127,9 @@ export default function TeacherReports() {
               {existing && (
                 <div className={cn("rounded-xl px-3 py-2 text-xs font-semibold",
                   published ? "bg-feature-green/12 text-feature-green" : existing.status === "submitted" ? "bg-gold/15 text-[#7A5E0F]" : "bg-ink/5 text-ink/60")}>
-                  {published ? "Published — visible to the family."
-                    : existing.status === "submitted" ? "Submitted — awaiting owner review. You can't edit until it's reviewed."
-                    : "Draft — edit and submit when ready."}
+                  {published ? "Published, visible to the family."
+                    : existing.status === "submitted" ? "Submitted, awaiting owner review. You can't edit until it's reviewed."
+                    : "Draft, edit and submit when ready."}
                 </div>
               )}
 
@@ -154,7 +154,7 @@ export default function TeacherReports() {
                   {published ? "Published" : existing?.status === "submitted" ? "Submitted" : "Submit for review"}
                 </button>
               </div>
-              <p className="text-xs text-ink/55">Once submitted, the report locks for review. The owner reviews and publishes it — then the family can read and print it.</p>
+              <p className="text-xs text-ink/55">Once submitted, the report locks for review. The owner reviews and publishes it, then the family can read and print it.</p>
             </>
           ))}
         </div>

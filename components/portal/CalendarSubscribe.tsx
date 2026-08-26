@@ -25,7 +25,7 @@ export function CalendarSubscribe({ token, who = "your" }: { token: string | nul
       <div className="flex items-start justify-between gap-3">
         <div>
           <p className="text-[11px] font-bold uppercase tracking-wider text-[#7A5E0F]">Sync to your phone</p>
-          <p className="mt-1 text-sm text-ink/70">Subscribe once and {who} classes appear in your phone&apos;s calendar — and stay up to date automatically.</p>
+          <p className="mt-1 text-sm text-ink/70">Subscribe once and {who} classes appear in your phone&apos;s calendar, and stay up to date automatically.</p>
         </div>
         <a href={webcalUrl} className="shrink-0 rounded-full bg-ink px-4 py-2 text-sm font-semibold text-paper hover:bg-[#0f131c]">Add to calendar</a>
       </div>
@@ -45,7 +45,7 @@ export function CalendarSubscribe({ token, who = "your" }: { token: string | nul
         <div className="mt-2 grid gap-3 text-xs leading-relaxed text-ink/70 sm:grid-cols-2">
           <div className="rounded-xl border border-hairline bg-white p-3">
             <p className="font-semibold text-ink">iPhone / iPad</p>
-            <p className="mt-1">Tap <b>Add to calendar</b> above — iOS offers to subscribe. Or: Settings → Calendar → Accounts → Add Account → Other → <b>Add Subscribed Calendar</b> → paste the link.</p>
+            <p className="mt-1">Tap <b>Add to calendar</b> above, iOS offers to subscribe. Or: Settings → Calendar → Accounts → Add Account → Other → <b>Add Subscribed Calendar</b> → paste the link.</p>
           </div>
           <div className="rounded-xl border border-hairline bg-white p-3">
             <p className="font-semibold text-ink">Google Calendar</p>

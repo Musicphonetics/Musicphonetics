@@ -21,7 +21,7 @@ import { cn } from "@/lib/utils";
 const PLAN_AMOUNTS: Record<string, { name: string; amount: number }> = {
   foundation: { name: "Foundation", amount: 10000 },
   main: { name: "Main Musicphonetics Pathway", amount: 15000 },
-  "directors-circle": { name: "Director's Circle", amount: 0 }, // by consultation — no fixed fee
+  "directors-circle": { name: "Director's Circle", amount: 0 }, // by consultation, no fixed fee
 };
 
 const inr = (n: number) => "₹" + n.toLocaleString("en-IN");
@@ -51,13 +51,13 @@ export function PayClient() {
   const [agreed, setAgreed] = useState(false);
   const [paying, setPaying] = useState(false);
   const [leadBusy, setLeadBusy] = useState(false);
-  // The form doubles as our lead form — it's the primary action; payment is
+  // The form doubles as our lead form, it's the primary action; payment is
   // optional. "form" = filling it in, "trial_done" = free-trial request sent.
   const [view, setView] = useState<"form" | "trial_done">("form");
   const [error, setError] = useState<string | null>(null);
   // Two-step booking: 1 = details, 2 = read the terms and pay.
   const [step, setStep] = useState<1 | 2>(1);
-  // Optional teacher coupon (codes only) — validated on the server via RPC, and
+  // Optional teacher coupon (codes only), validated on the server via RPC, and
   // re-validated again at order creation so the discount can't be spoofed.
   const [couponInput, setCouponInput] = useState("");
   const [couponCode, setCouponCode] = useState<string | null>(null);
@@ -103,7 +103,7 @@ export function PayClient() {
   const detailsReady = Boolean(name.trim() && phoneOk && emailOk && instrument);
   const ready = detailsReady && agreed && payNow > 0;
 
-  // Save the lead to the CRM (DB-first) — the PRIMARY action for both paths.
+  // Save the lead to the CRM (DB-first), the PRIMARY action for both paths.
   async function submitLead(intent: "trial" | "pay"): Promise<boolean> {
     try {
       const res = await fetch("/api/lead", {
@@ -134,7 +134,7 @@ export function PayClient() {
     } catch { return false; }
   }
 
-  // "Book a free trial" — no payment. Save the lead, show the confirmation.
+  // "Book a free trial", no payment. Save the lead, show the confirmation.
   async function bookTrial() {
     if (!detailsReady || leadBusy) return;
     setError(null); setLeadBusy(true);
@@ -160,7 +160,7 @@ export function PayClient() {
     setError(null);
     setPaying(true);
 
-    // Capture the lead FIRST — so even if they abandon checkout, we have them.
+    // Capture the lead FIRST, so even if they abandon checkout, we have them.
     await submitLead("pay");
 
     // Save the enrolment first so /welcome can show the confirmation on success.
@@ -262,7 +262,7 @@ export function PayClient() {
           <div className="mt-4 rounded-2xl border border-white/10 bg-white/[0.04] p-3">
             {couponCode ? (
               <div className="flex items-center justify-between gap-2 text-sm">
-                <span className="text-paper/80">Coupon <b className="font-mono text-gold">{couponCode}</b> applied — {discountPct}% off</span>
+                <span className="text-paper/80">Coupon <b className="font-mono text-gold">{couponCode}</b> applied, {discountPct}% off</span>
                 <button type="button" onClick={clearCoupon} className="text-xs font-semibold text-paper/50 hover:text-paper">Remove</button>
               </div>
             ) : (
@@ -292,7 +292,7 @@ export function PayClient() {
           />
         </Group>
 
-        {/* Contact — needed so we can reach you */}
+        {/* Contact, needed so we can reach you */}
         <Group n={2} label="How can we reach you?">
           <div className="flex items-stretch overflow-hidden rounded-xl border border-white/15 bg-white/[0.04] focus-within:outline-2 focus-within:outline-gold">
             <span className="flex items-center border-r border-white/15 px-3 text-sm text-paper/55">+91</span>
@@ -393,7 +393,7 @@ export function PayClient() {
           type="button" onClick={goToTerms} disabled={!detailsReady}
           className={cn("mt-7 inline-flex min-h-[54px] w-full items-center justify-center gap-2 rounded-full px-6 text-base font-semibold transition-all active:scale-[0.99]",
             detailsReady ? "bg-gold text-ink shadow-card hover:bg-deep-gold" : "cursor-not-allowed bg-white/10 text-paper/40")}>
-          {detailsReady ? "Continue — review & choose" : "Fill your details to continue"}
+          {detailsReady ? "Continue, review & choose" : "Fill your details to continue"}
           {detailsReady && <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>}
         </button>
         <p className="mt-2 text-center text-xs text-paper/50">
@@ -460,21 +460,21 @@ export function PayClient() {
           <span className="text-sm leading-relaxed text-paper/90">
             I have read and I agree to the class schedule, fees, refund policy and the{" "}
             <Link href="/enrolment-agreement" target="_blank" className="font-semibold text-gold underline underline-offset-2">Enrolment Agreement &amp; Parent Acknowledgement</Link>{" "}
-            above. I understand a login is not issued at payment — I will activate it myself through Student Activation.
+            above. I understand a login is not issued at payment, I will activate it myself through Student Activation.
           </span>
         </label>
 
-        {/* Two ways to proceed — submitting the form is the goal; paying is optional. */}
+        {/* Two ways to proceed, submitting the form is the goal; paying is optional. */}
         <div className="mt-6 space-y-3">
           <p className="text-center text-sm font-medium text-paper/80">Ready? Choose how you’d like to begin.</p>
 
-          {/* Free trial — primary, NO payment */}
+          {/* Free trial, primary, NO payment */}
           <button type="button" onClick={bookTrial} disabled={!detailsReady || leadBusy}
             className={cn("inline-flex min-h-[54px] w-full items-center justify-center gap-2 rounded-full px-6 text-base font-semibold transition-all active:scale-[0.99]",
               detailsReady && !leadBusy ? "bg-gold text-ink shadow-card hover:bg-deep-gold" : "cursor-not-allowed bg-white/10 text-paper/40")}>
-            {leadBusy ? "Sending your request…" : "Book a free trial — no payment"}
+            {leadBusy ? "Sending your request…" : "Book a free trial, no payment"}
           </button>
-          <p className="text-center text-xs text-paper/55">Just submit — we’ll contact you to schedule it. No card, no fees to enquire.</p>
+          <p className="text-center text-xs text-paper/55">Just submit, we’ll contact you to schedule it. No card, no fees to enquire.</p>
 
           {payNow > 0 && (
             <>
@@ -521,7 +521,7 @@ function TrialDone({ name, planName, instrument, phone }: { name: string; planNa
         <h1 className="mt-6 font-display text-2xl font-semibold text-paper sm:text-3xl">Your free trial request is in, {first}!</h1>
         <p className="mt-3 text-sm leading-relaxed text-paper/70">
           We’ve received your details for <b className="text-paper/90">{instrument || planName}</b>. Our team will reach out shortly to
-          confirm a teacher and schedule your <b className="text-paper/90">free trial class</b> — no payment needed.
+          confirm a teacher and schedule your <b className="text-paper/90">free trial class</b>, no payment needed.
         </p>
         <div className="mt-5 rounded-2xl border border-white/10 bg-white/[0.04] p-4 text-left text-sm text-paper/75">
           <p><span className="text-paper/50">What happens next:</span> we match a teacher to your goals, then message you on WhatsApp{phone ? ` at +91 ${phone}` : ""} to lock a time. You only pay once you’re happy after the trial.</p>
@@ -556,7 +556,7 @@ function SummaryItem({ label, value, highlight }: { label: string; value: string
   return (
     <div className={cn(highlight && "col-span-2 border-t border-white/10 pt-2.5")}>
       <p className="text-[11px] uppercase tracking-wide text-paper/50">{label}</p>
-      <p className={cn("mt-0.5 font-medium", highlight ? "text-lg text-gold" : "text-paper")}>{value || "—"}</p>
+      <p className={cn("mt-0.5 font-medium", highlight ? "text-lg text-gold" : "text-paper")}>{value || "-"}</p>
     </div>
   );
 }

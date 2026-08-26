@@ -129,7 +129,7 @@ export default function OwnerSchedule() {
                     <div key={r.id} className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-hairline bg-white p-3.5">
                       <div className="min-w-0">
                         <p className="text-sm font-semibold text-ink">{names.students[r.student_id] || "Student"} <span className="text-ink/50">· {names.teachers[r.teacher_id] || "Teacher"}</span></p>
-                        <p className="text-xs text-ink/60">{prettyDate(r.scheduled_date)} · {r.start_time.slice(0, 5)}–{r.end_time.slice(0, 5)} · {r.mode || "—"}{r.location ? ` · ${r.location}` : ""}</p>
+                        <p className="text-xs text-ink/60">{prettyDate(r.scheduled_date)} · {r.start_time.slice(0, 5)}–{r.end_time.slice(0, 5)} · {r.mode || "-"}{r.location ? ` · ${r.location}` : ""}</p>
                       </div>
                       <span className={cn("shrink-0 rounded-full px-2.5 py-0.5 text-[11px] font-semibold",
                         r.status === "scheduled" ? "bg-gold/15 text-[#7A5E0F]" : r.status === "present" ? "bg-feature-green/12 text-feature-green" : "bg-mist text-ink/60")}>

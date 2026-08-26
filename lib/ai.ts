@@ -59,7 +59,7 @@ export async function aiGeneratePlan(input: {
     body: JSON.stringify(input),
   });
   const data = (await res.json().catch(() => ({}))) as { ok?: boolean; plan?: { big_goal: string; classes: PlanClass[] }; error?: string; detail?: string };
-  if (!res.ok || !data.ok || !data.plan) throw new Error((data.error || "Couldn't generate the plan.") + (data.detail ? ` — ${data.detail}` : ""));
+  if (!res.ok || !data.ok || !data.plan) throw new Error((data.error || "Couldn't generate the plan.") + (data.detail ? `, ${data.detail}` : ""));
   return data.plan;
 }
 
@@ -71,6 +71,6 @@ export async function aiAsk(question: string, ctx?: { student_name?: string; ins
     body: JSON.stringify({ question, ...ctx }),
   });
   const data = (await res.json().catch(() => ({}))) as { ok?: boolean; answer?: string; error?: string; detail?: string };
-  if (!res.ok || !data.ok || !data.answer) throw new Error((data.error || "Couldn't get an answer.") + (data.detail ? ` — ${data.detail}` : ""));
+  if (!res.ok || !data.ok || !data.answer) throw new Error((data.error || "Couldn't get an answer.") + (data.detail ? `, ${data.detail}` : ""));
   return data.answer;
 }

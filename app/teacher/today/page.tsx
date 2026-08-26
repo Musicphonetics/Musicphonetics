@@ -93,7 +93,7 @@ function SchedCard({ s, info }: { s: ScheduledClass; info?: { name: string; code
         <span className={cn("rounded-full px-2.5 py-0.5 text-[11px] font-semibold", s.status === "scheduled" ? "bg-gold/15 text-[#7A5E0F]" : "bg-mist text-ink/60")}>{ATTENDANCE_LABEL[s.status] ?? s.status}</span>
       </div>
       <p className="mt-0.5 text-xs text-ink/60">
-        {s.start_time?.slice(0, 5)}{s.end_time ? `–${s.end_time.slice(0, 5)}` : ""} · {s.mode || "—"}{s.location ? ` · ${s.location}` : ""}
+        {s.start_time?.slice(0, 5)}{s.end_time ? `–${s.end_time.slice(0, 5)}` : ""} · {s.mode || "-"}{s.location ? ` · ${s.location}` : ""}
         {info?.code ? ` · ${info.code}` : ""}
       </p>
     </div>

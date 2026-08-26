@@ -45,7 +45,7 @@ export default function ProfileMaker() {
       if (error) throw error;
       const { data } = getSupabase().storage.from(BUCKET).getPublicUrl(path);
       set("photo_url", data.publicUrl);
-      setMsg("Photo added — remember to Save.");
+      setMsg("Photo added, remember to Save.");
     } catch {
       setErr("Couldn't upload the photo. If this keeps happening, run the profiles SQL.");
     }
@@ -60,7 +60,7 @@ export default function ProfileMaker() {
         age_group: p.age_group, languages: p.languages, approach: p.approach, about, advice: p.advice,
       });
       setP((s) => ({ ...s, headline: out.headline || s.headline, bio: out.bio || s.bio }));
-      setMsg("Bio drafted — review and edit, then Save.");
+      setMsg("Bio drafted, review and edit, then Save.");
     } catch (e) { setErr(e instanceof Error ? e.message : "Couldn't write the bio."); }
     setGenBusy(false);
   }
@@ -90,7 +90,7 @@ export default function ProfileMaker() {
           ) : pending ? (
             <p className="text-sm text-ink"><b className="text-[#7A5E0F]">Awaiting approval.</b> Your update is with the office; it goes live once approved.</p>
           ) : (
-            <p className="text-sm text-ink/70">Fill the questionnaire, let AI draft your bio, then publish. Your answers become your public profile page — like the faculty pages on the site.</p>
+            <p className="text-sm text-ink/70">Fill the questionnaire, let AI draft your bio, then publish. Your answers become your public profile page, like the faculty pages on the site.</p>
           )}
           {published && !freeUsed && <p className="mt-1 text-xs text-ink/60">You can make <b>one more free edit</b>. After that, changes need office approval.</p>}
           {published && freeUsed && <p className="mt-1 text-xs text-ink/60">Further edits will be sent to the office for approval before going live.</p>}

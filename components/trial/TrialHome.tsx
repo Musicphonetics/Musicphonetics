@@ -4,7 +4,7 @@ import Link from "next/link";
 import { Loading } from "@/components/portal/kit";
 import { useTrial, STAGES, currentStep, EXPECT, firstNameOf, type TrialSession } from "./shared";
 
-// The Trial Portal home — a premium, warm assessment dashboard (light theme).
+// The Trial Portal home, a premium, warm assessment dashboard (light theme).
 export function TrialHome() {
   const { session: s, loading } = useTrial();
   if (loading) return <Loading />;
@@ -20,7 +20,7 @@ export function TrialHomeView({ s }: { s: TrialSession | null }) {
 
   const NEXT: Record<number, { t: string; note: string }> = {
     1: { t: "Build your profile", note: "Takes 2–3 minutes" },
-    2: { t: "Book your trial class", note: "Pick a date & time — confirmed instantly" },
+    2: { t: "Book your trial class", note: "Pick a date & time, confirmed instantly" },
     3: { t: "Your trial is confirmed", note: "See what to expect" },
     4: { t: "Share your trial feedback", note: "It unlocks your learning pathway" },
     5: { t: "View your learning pathway", note: "Your personalised plan is ready" },
@@ -30,7 +30,7 @@ export function TrialHomeView({ s }: { s: TrialSession | null }) {
 
   return (
     <div className="space-y-5">
-      {/* Hero — no photo, warm gradient */}
+      {/* Hero, no photo, warm gradient */}
       <div className="relative overflow-hidden rounded-3xl border border-gold/30 bg-gradient-to-br from-[#FBF6E9] via-white to-[#F4ECD8] p-6 shadow-card sm:p-8">
         <div className="pointer-events-none absolute -right-8 -top-10 h-40 w-40 rounded-full bg-gold/15 blur-2xl" />
         <p className="relative text-[11px] font-bold uppercase tracking-[0.2em] text-[#7A5E0F]">Welcome to Musicphonetics</p>

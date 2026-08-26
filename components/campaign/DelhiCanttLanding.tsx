@@ -129,11 +129,11 @@ function Hero({ live, onClaim }: { live: boolean; onClaim: (plan: string) => voi
         Give their musical journey the <span className="text-gold-soft">right beginning.</span>
       </h1>
       <p className="mt-4 text-[15px] leading-relaxed text-paper/70">
-        Structured music lessons with carefully selected teachers — clear learning direction, homework, attendance
+        Structured music lessons with carefully selected teachers, clear learning direction, homework, attendance
         tracking and regular parent updates.
       </p>
 
-      {/* Offer card — Main Pathway, first month */}
+      {/* Offer card, Main Pathway, first month */}
       <div className="mt-7 rounded-2xl border border-gold/30 bg-gradient-to-b from-gold/[0.08] to-transparent p-5">
         <div className="flex items-center justify-between">
           <span className="text-[11px] font-semibold uppercase tracking-[0.16em] text-gold-soft">Main Pathway</span>
@@ -190,7 +190,7 @@ function Hero({ live, onClaim }: { live: boolean; onClaim: (plan: string) => voi
         <h2 className="mt-2 font-display text-[26px] font-semibold leading-tight text-paper">Three ways to learn. One standard.</h2>
         <p className="mt-2 text-[13px] leading-relaxed text-paper/60">
           The Delhi Cantt launch benefit applies to the <span className="text-gold-soft">Main Pathway</span> (first month).
-          Foundation and Director’s Circle are shown so you can choose what fits the learner — every programme includes
+          Foundation and Director’s Circle are shown so you can choose what fits the learner, every programme includes
           matched teachers, parent visibility and secure company payments.
         </p>
 

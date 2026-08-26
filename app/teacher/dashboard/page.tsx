@@ -61,7 +61,7 @@ export default function TeacherDashboard() {
           pending: Math.max(expected - received, 0),
         });
       } catch (e) {
-        // Never leave the dashboard spinning — surface a bounded error instead.
+        // Never leave the dashboard spinning, surface a bounded error instead.
         setErr(e instanceof Error ? e.message : "Couldn’t load your data. Please retry.");
         setStats({ students: 0, week: 0, received: 0, pending: 0 });
       }
@@ -118,7 +118,7 @@ export default function TeacherDashboard() {
   );
 }
 
-// New assigned leads the teacher hasn't contacted yet — surfaced up front so
+// New assigned leads the teacher hasn't contacted yet, surfaced up front so
 // they never hunt for them (RLS scopes the count to their own leads).
 function NewLeadsAlert() {
   const [count, setCount] = useState(0);

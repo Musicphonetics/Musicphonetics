@@ -26,7 +26,7 @@ export function TeachHero() {
           Teach music. Earn what your craft is <span className="italic text-gold">actually worth.</span>
         </h1>
         <p className="mt-5 max-w-xl text-lg leading-relaxed text-paper/80">
-          Students, scheduling and payments are handled for you — through a modern teacher app with
+          Students, scheduling and payments are handled for you, through a modern teacher app with
           AI lesson planning, progress tracking and live earnings. You walk into a ready ecosystem,
           teach, and keep 70% of every fee.
         </p>

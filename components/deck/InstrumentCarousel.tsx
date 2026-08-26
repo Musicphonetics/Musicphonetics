@@ -5,16 +5,16 @@ import Link from "next/link";
 import { INSTRUMENTS } from "@/lib/journey";
 
 const LINE: Record<string, string> = {
-  Guitar: "Chords, rhythm, and the songs you love — acoustic or electric.",
+  Guitar: "Chords, rhythm, and the songs you love, acoustic or electric.",
   Piano: "Both hands, real music, from your very first note.",
-  Keyboard: "Sounds, chords and songs — versatile and endlessly fun.",
-  Vocals: "Your own voice — pitch, tone, breath and confidence.",
-  Ukulele: "The happiest four strings — playing songs in weeks.",
+  Keyboard: "Sounds, chords and songs, versatile and endlessly fun.",
+  Vocals: "Your own voice, pitch, tone, breath and confidence.",
+  Ukulele: "The happiest four strings, playing songs in weeks.",
   Drums: "Groove, timing and pure energy behind the kit.",
 };
 
 // Active instrument is dominant; the neighbours peek at the edges. A horizontal
-// swipe (or tap on a neighbour) glides to the next — nothing stacks vertically,
+// swipe (or tap on a neighbour) glides to the next, nothing stacks vertically,
 // and the vertical deck gesture is untouched (we only act on horizontal drags).
 export function InstrumentCarousel() {
   const [i, setI] = useState(0);

@@ -10,8 +10,7 @@ import { SalesTeam } from "@/components/owner/SalesTeam";
 import { AiKnowledge } from "@/components/owner/AiKnowledge";
 import { cn } from "@/lib/utils";
 
-// Operational settings & admin index. No secrets are shown or editable here —
-// keys (Supabase service role, Razorpay, Resend) live only in Cloudflare env.
+// Operational settings & admin index. No secrets are shown or editable here, // keys (Supabase service role, Razorpay, Resend) live only in Cloudflare env.
 const LINKS: { href: string; title: string; sub: string }[] = [
   { href: "/owner/leads", title: "Leads", sub: "Enquiries, pipeline, assignment, conversion" },
   { href: "/owner/students", title: "Students", sub: "Codes, plans, teacher assignment, search" },
@@ -32,7 +31,7 @@ const PROGRAMS: { name: string; price: string; note: string; tone: string }[] = 
   { name: "Main Pathway", price: priceLabel("main"), tone: "bg-forest/12 text-forest",
     note: "Ongoing structured development, guided by a fresh monthly goal the teacher sets." },
   { name: "Director's Circle", price: "From ₹2,500/class", tone: "bg-ink/10 text-ink/70",
-    note: "Bespoke, director-guided. By consultation — from ₹2,500 per class, up to ₹5,000. Owner-managed." },
+    note: "Bespoke, director-guided. By consultation, from ₹2,500 per class, up to ₹5,000. Owner-managed." },
 ];
 
 const ENV_NOTES = [
@@ -78,7 +77,7 @@ export default function OwnerSettings() {
         <p className="mt-3 text-xs text-ink/50">To change a list price, update <code className="rounded bg-mist px-1">lib/pricing.ts</code> (single source) and redeploy. A student&apos;s program is set per-student under <Link href="/owner/students" className="font-semibold text-[#7A5E0F]">Students</Link>.</p>
       </section>
 
-      {/* Teacher commercial settings — coupons */}
+      {/* Teacher commercial settings, coupons */}
       <section className="mt-6 rounded-2xl border border-hairline bg-white p-5">
         <div className="flex flex-wrap items-center justify-between gap-2">
           <p className="font-display text-lg font-semibold text-ink">Teacher commercial settings</p>
@@ -127,7 +126,7 @@ export default function OwnerSettings() {
       {/* Env / config */}
       <div className="mt-6 rounded-2xl border border-hairline bg-white p-5">
         <p className="font-display text-lg font-semibold text-ink">Configuration</p>
-        <p className="mt-0.5 text-sm text-ink/60">These are set as environment variables in Cloudflare Pages — never in the app. Values are never shown here.</p>
+        <p className="mt-0.5 text-sm text-ink/60">These are set as environment variables in Cloudflare Pages, never in the app. Values are never shown here.</p>
         <div className="mt-3 divide-y divide-hairline">
           {ENV_NOTES.map(([k, v]) => (
             <div key={k} className="flex flex-wrap items-center justify-between gap-2 py-2.5">

@@ -39,7 +39,7 @@ function Frame({ children, image, className = "", justify = "center" }: {
 export function ExperienceDeck() {
   return (
     <ChapterDeck labels={LABELS} themes={THEMES}>
-      {/* 01 — THE COVER: dark, cinematic, whole ecosystem at a glance */}
+      {/* 01, THE COVER: dark, cinematic, whole ecosystem at a glance */}
       <div className="relative h-full w-full overflow-hidden bg-[#0a0d14]">
         {/* cinematic performer, kept as a shadow (no face focus) on the right */}
         <div data-depth="bg" className="absolute inset-0">
@@ -99,24 +99,24 @@ export function ExperienceDeck() {
         </div>
       </div>
 
-      {/* 02 — PHILOSOPHY */}
+      {/* 02, PHILOSOPHY */}
       <Frame>
         <p data-reveal className={eyebrow}>Our philosophy</p>
         <h2 data-reveal className="mt-4 font-display text-[2.6rem] font-black leading-[1.05] text-paper sm:text-6xl">
           We don&rsquo;t teach songs.<br /><span className="text-gold">We build musicians.</span>
         </h2>
         <p data-reveal className="mt-6 max-w-md text-[16px] leading-relaxed text-paper/70">
-          Anyone can copy a tune. We build real musicianship — technique, ear, theory and stage-craft — so the music stays with you for life.
+          Anyone can copy a tune. We build real musicianship, technique, ear, theory and stage-craft, so the music stays with you for life.
         </p>
       </Frame>
 
-      {/* 03 — WHY US (why pay) */}
+      {/* 03, WHY US (why pay) */}
       <Frame>
         <p data-reveal className={eyebrow}>Why families choose us</p>
         <h2 data-reveal className="mt-3 font-display text-[2.1rem] font-black leading-[1.08] text-paper sm:text-5xl">Not a class. A whole system.</h2>
         <div className="mt-7 grid grid-cols-2 gap-3">
           {[
-            { i: "🎯", t: "One matched mentor", d: "Chosen for you — never a rotating queue." },
+            { i: "🎯", t: "One matched mentor", d: "Chosen for you, never a rotating queue." },
             { i: "📚", t: "A real curriculum", d: "Structured, graded, deliberate." },
             { i: "📲", t: "Tracked every week", d: "Every class logged in your portal." },
             { i: "🏆", t: "Exams & stage", d: "Trinity prep, open mics, showcases." },
@@ -128,17 +128,17 @@ export function ExperienceDeck() {
             </div>
           ))}
         </div>
-        <p data-reveal className="mt-6 text-sm text-paper/70">An institution&rsquo;s system — with the care of a personal mentor.</p>
+        <p data-reveal className="mt-6 text-sm text-paper/70">An institution&rsquo;s system, with the care of a personal mentor.</p>
       </Frame>
 
-      {/* 04 — INSTRUMENTS */}
+      {/* 04, INSTRUMENTS */}
       <Frame>
         <p data-reveal className={eyebrow + " text-center"}>Choose your instrument</p>
         <h2 data-reveal className="mt-2 text-center font-display text-3xl font-black text-paper sm:text-4xl">What will you play?</h2>
         <div data-reveal className="mt-8"><InstrumentCarousel /></div>
       </Frame>
 
-      {/* 05 — JOURNEY */}
+      {/* 05, JOURNEY */}
       <Frame>
         <p data-reveal className={eyebrow}>How the journey works</p>
         <h2 data-reveal className="mt-3 font-display text-[2.1rem] font-black leading-[1.08] text-paper sm:text-5xl">Four steps. One musician.</h2>
@@ -158,7 +158,7 @@ export function ExperienceDeck() {
         </div>
       </Frame>
 
-      {/* 06 — PORTAL (the system, shown) */}
+      {/* 06, PORTAL (the system, shown) */}
       <Frame>
         <p data-reveal className={eyebrow + " text-center"}>Your private portal</p>
         <h2 data-reveal className="mt-2 text-center font-display text-[1.9rem] font-black leading-tight text-paper sm:text-4xl">You&rsquo;ll always know exactly where you stand.</h2>
@@ -173,7 +173,7 @@ export function ExperienceDeck() {
         </div>
       </Frame>
 
-      {/* 07 — STORIES / PROOF */}
+      {/* 07, STORIES / PROOF */}
       <Frame>
         <p data-reveal className={eyebrow + " text-center"}>Proof</p>
         <div data-reveal className="mt-3 flex items-center justify-center gap-3">
@@ -193,7 +193,7 @@ export function ExperienceDeck() {
         </div>
       </Frame>
 
-      {/* 08 — PACKAGES */}
+      {/* 08, PACKAGES */}
       <Frame>
         <p data-reveal className={eyebrow}>Packages</p>
         <h2 data-reveal className="mt-2 font-display text-3xl font-black text-paper sm:text-4xl">A path for every stage.</h2>
@@ -229,11 +229,11 @@ export function ExperienceDeck() {
         </div>
       </Frame>
 
-      {/* 09 — BEGIN */}
+      {/* 09, BEGIN */}
       <Frame image="/gallery/02-openmic.jpg" justify="center" className="text-center">
         <p data-reveal className={eyebrow}>Your first note is waiting</p>
         <h2 data-reveal className="mt-4 font-display text-[2.7rem] font-black leading-[1.03] text-paper sm:text-6xl">Begin your<br /><span className="text-gold">music story.</span></h2>
-        <p data-reveal className="mx-auto mt-4 max-w-sm text-[15px] leading-relaxed text-paper/80">Your first class is free. No card, no obligation — just you and your instrument.</p>
+        <p data-reveal className="mx-auto mt-4 max-w-sm text-[15px] leading-relaxed text-paper/80">Your first class is free. No card, no obligation, just you and your instrument.</p>
         <div data-reveal className="mt-7">
           <Link href="/studio" className="rounded-full bg-gold px-9 py-4 text-base font-bold text-ink transition hover:bg-[#f0d783]">Book my free trial →</Link>
         </div>

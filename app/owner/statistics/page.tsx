@@ -38,7 +38,7 @@ export default function OwnerStatistics() {
 
           <p className="text-xs leading-relaxed text-ink/55">
             Ask your teachers to open each student → <b>Admission details</b> and fill the form. As you approach 100 students,
-            these charts become a real map of your market — schools, localities, ages, instruments and the families you serve.
+            these charts become a real map of your market, schools, localities, ages, instruments and the families you serve.
           </p>
 
           <div className="grid gap-4 lg:grid-cols-2">

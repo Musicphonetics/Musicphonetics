@@ -60,7 +60,7 @@ export default function ParentProgress() {
               <div className="rounded-2xl border border-gold/40 bg-white p-5">
                 <p className="text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-[#7A5E0F]">Learning path</p>
                 <h3 className="mt-1 font-display text-lg font-semibold text-ink">Main Musicphonetics Pathway</h3>
-                <p className="mt-1 text-sm text-ink/70">Ongoing, structured growth in confidence, theory, ear training and performance — guided by a fresh goal each month.</p>
+                <p className="mt-1 text-sm text-ink/70">Ongoing, structured growth in confidence, theory, ear training and performance, guided by a fresh goal each month.</p>
               </div>
               {planHasContent(student.monthly_plan) ? (
                 <MonthlyPlanCard studentName={student.name} instrument={student.instrument} monthlyPlan={student.monthly_plan} plan={plan} />

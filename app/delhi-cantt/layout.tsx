@@ -12,7 +12,7 @@ export const metadata: Metadata = {
     title: "Delhi Cantt Music Lessons Offer | Musicphonetics",
     description:
       "Save ₹2,000 on the Musicphonetics Main Pathway for new learners in Delhi Cantt. 8 structured classes every month.",
-    images: [{ url: "/og-delhi-cantt.png", width: 1200, height: 630, alt: "Musicphonetics — Delhi Cantt launch benefit" }],
+    images: [{ url: "/og-delhi-cantt.png", width: 1200, height: 630, alt: "Musicphonetics, Delhi Cantt launch benefit" }],
   },
   twitter: {
     card: "summary_large_image",

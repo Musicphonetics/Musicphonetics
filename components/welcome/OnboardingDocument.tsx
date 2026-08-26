@@ -124,7 +124,7 @@ export function OnboardingDocument() {
         <SectionTitle>Getting your portal login</SectionTitle>
         <div className="rounded-2xl border border-gold/35 bg-gold/[0.06] p-5">
           <p className="text-sm leading-relaxed text-ink/80">
-            A login is <b>not</b> issued at payment — not even a temporary one. To access your Student Portal and
+            A login is <b>not</b> issued at payment, not even a temporary one. To access your Student Portal and
             follow progress, activate your own login on the{" "}
             <Link href="/activate" className="font-semibold text-[#7A5E0F] underline underline-offset-2">Student Activation</Link>{" "}
             page using your batch access code.

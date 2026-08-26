@@ -56,7 +56,7 @@ export default function MyStudents() {
                   className="flex w-full items-center justify-between gap-3 p-4 text-left">
                   <div className="min-w-0">
                     <p className="truncate font-semibold text-ink">{s.name}</p>
-                    <p className="mt-0.5 text-xs text-ink/60"><span className="font-mono">{s.student_code || "—"}</span> · {s.instrument || "-"} · {s.level || "-"}</p>
+                    <p className="mt-0.5 text-xs text-ink/60"><span className="font-mono">{s.student_code || "-"}</span> · {s.instrument || "-"} · {s.level || "-"}</p>
                   </div>
                   <div className="text-right">
                     <span className={cn("inline-block rounded-full px-2 py-0.5 text-[11px] font-semibold",
@@ -151,18 +151,18 @@ function StudentDetail({ stat, onReport }: { stat: StudentStat; onReport: () => 
             </div>
             <p className="mt-2 text-xs text-ink/60">
               {sp.allComplete
-                ? <>All paid classes complete — record a payment to start the next set.</>
+                ? <>All paid classes complete, record a payment to start the next set.</>
                 : <><b className="text-ink">{sp.remainingInSet}</b> class{sp.remainingInSet === 1 ? "" : "es"} left in this set · {formatMoney(stat.total_paid)} paid</>}
             </p>
 
             {/* Advance: a whole set already paid but not started */}
             {advanceSets > 0 && (
               <p className="mt-2.5 rounded-lg bg-emerald-500/10 px-3 py-2 text-xs font-semibold text-emerald-700">
-                ✓ Advance paid — next {advanceSets * sp.perSet} classes already covered
+                ✓ Advance paid, next {advanceSets * sp.perSet} classes already covered
               </p>
             )}
 
-            {/* Quiet history — no repeated "Set" labels */}
+            {/* Quiet history, no repeated "Set" labels */}
             {sp.completedSets > 0 && (
               <p className="mt-2.5 text-[11px] text-ink/45">{sp.completedSets} earlier set{sp.completedSets === 1 ? "" : "s"} of {sp.perSet} completed</p>
             )}
@@ -176,7 +176,7 @@ function StudentDetail({ stat, onReport }: { stat: StudentStat; onReport: () => 
         Progress report card
       </button>
 
-      {/* Admission details — shows a saved summary with a small Edit button;
+      {/* Admission details, shows a saved summary with a small Edit button;
           opens the full form only when adding or editing. */}
       <StudentDetailsForm studentId={stat.student_id} />
 
@@ -284,7 +284,7 @@ function GoalEditor({ studentId, feeQuoted, studentName, instrument, level }: { 
 
   return (
     <div className="mt-4">
-      {/* Program is READ-ONLY — set by the office at enrolment. */}
+      {/* Program is READ-ONLY, set by the office at enrolment. */}
       <div className="flex items-center gap-2">
         <span className={cn("rounded-full px-3 py-1 text-xs font-semibold", planTone)}>{PLAN_LABEL[plan]}</span>
         <span className="text-[10px] uppercase tracking-wide text-ink/40">Set by the office</span>

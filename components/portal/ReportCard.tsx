@@ -41,7 +41,7 @@ export function ReportCard({ student, teacherName, report, narrative }: {
 
   return (
     <div id="report-doc" className="overflow-hidden rounded-3xl border border-hairline bg-white shadow-card">
-      {/* ===================== PAGE 1 — celebration ===================== */}
+      {/* ===================== PAGE 1, celebration ===================== */}
       <div className="relative p-7 sm:p-10">
         {/* soft festive header band */}
         <div className="pointer-events-none absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-gold/[0.14] to-transparent" />
@@ -100,7 +100,7 @@ export function ReportCard({ student, teacherName, report, narrative }: {
         </div>
       </div>
 
-      {/* ===================== PAGE 2 — detail + forward ===================== */}
+      {/* ===================== PAGE 2, detail + forward ===================== */}
       <div style={{ pageBreakBefore: "always", breakBefore: "page" }} className="border-t border-dashed border-hairline p-7 sm:p-10">
         <p className="font-display text-lg font-semibold text-ink">{name}&rsquo;s journey, class by class</p>
         <p className="mt-0.5 text-xs text-ink/55">What we actually worked on together</p>
@@ -224,7 +224,7 @@ export function ReportCardModal({ student, teacherName, onClose }: {
         {report && (
           <div className="no-print mb-3 rounded-2xl border border-gold/40 bg-white p-4">
             <p className="text-xs font-semibold uppercase tracking-wide text-[#7A5E0F]">✨ Draft this report with AI</p>
-            <p className="mt-1 text-xs text-ink/60">Say how you want it written — the tone, what to highlight. The AI reads {firstName(student.name)}&rsquo;s actual class notes (what was taught, practice, responses) and drafts observations, achievements, growth areas and what&rsquo;s next. Nothing is invented — edit every word below before you print.</p>
+            <p className="mt-1 text-xs text-ink/60">Say how you want it written, the tone, what to highlight. The AI reads {firstName(student.name)}&rsquo;s actual class notes (what was taught, practice, responses) and drafts observations, achievements, growth areas and what&rsquo;s next. Nothing is invented, edit every word below before you print.</p>
             <textarea value={prompt} onChange={(e) => setPrompt(e.target.value)} rows={2}
               placeholder="e.g. Warm and proud. Celebrate her rhythm and first full song; gently push daily practice; mention the upcoming Trinity prep."
               className="mt-2.5 w-full rounded-xl border border-hairline bg-white px-3 py-2.5 text-sm focus-visible:outline-2 focus-visible:outline-gold focus:outline-none" />
@@ -236,7 +236,7 @@ export function ReportCardModal({ student, teacherName, onClose }: {
 
             {narrative && (
               <div className="mt-4 space-y-2.5 border-t border-hairline pt-3">
-                <p className="text-[11px] font-semibold uppercase tracking-wide text-ink/50">Review &amp; edit — this is what prints</p>
+                <p className="text-[11px] font-semibold uppercase tracking-wide text-ink/50">Review &amp; edit, this is what prints</p>
                 <Editable label="Headline" value={narrative.headline} onChange={(v) => upd("headline", v)} rows={2} />
                 <Editable label="Observations" value={narrative.observations} onChange={(v) => upd("observations", v)} rows={3} />
                 <Editable label="Achievements (one per line)" value={narrative.achievements} onChange={(v) => upd("achievements", v)} rows={4} />

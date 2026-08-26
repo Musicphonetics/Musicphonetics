@@ -80,7 +80,7 @@ export default function OwnerTeaching() {
                   <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-gold/15 font-display text-sm font-bold text-[#7A5E0F]">{(s.name[0] || "?").toUpperCase()}</span>
                   <div className="min-w-0 flex-1">
                     <p className="truncate text-sm font-semibold text-ink">{s.name} {s.student_code && <span className="ml-1 font-mono text-[11px] text-ink/45">{s.student_code}</span>}</p>
-                    <p className="truncate text-xs text-ink/60">{teacherName(s.teacher_id)} · {s.instrument || "—"} · {done} classes done</p>
+                    <p className="truncate text-xs text-ink/60">{teacherName(s.teacher_id)} · {s.instrument || "-"} · {done} classes done</p>
                   </div>
                   <span className={cn("shrink-0 rounded-full px-2.5 py-1 text-[11px] font-semibold", planBadge(plan))}>{PLAN_LABEL[plan]}</span>
                   <span className={cn("shrink-0 rounded-full px-2.5 py-1 text-[11px] font-semibold", hasPlan ? "bg-feature-green/12 text-feature-green" : "bg-mist text-ink/50")}>{hasPlan ? "Plan set" : "No plan"}</span>

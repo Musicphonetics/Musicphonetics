@@ -174,7 +174,7 @@ function AssessDetail({ id, onBack }: { id: string; onBack: () => void }) {
         <Sel label="Parent interested?" value={parentInterested} set={setParentInterested} options={["Very", "Somewhat", "Unsure", "No"]} />
         <Sel label="Instrument owned?" value={instrumentOwned} set={setInstrumentOwned} options={["Yes", "No", "Needs guidance"]} />
         <Txt label="Objection / concern" value={objection} set={setObjection} placeholder="Any hesitation to address before enrolment." />
-        <Sel label="Follow-up needed?" value={followUp} set={setFollowUp} options={["Yes — soon", "Yes — later", "No"]} />
+        <Sel label="Follow-up needed?" value={followUp} set={setFollowUp} options={["Yes, soon", "Yes, later", "No"]} />
       </div>
 
       {msg && <p className="text-sm text-red-600">{msg}</p>}

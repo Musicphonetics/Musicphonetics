@@ -1,4 +1,4 @@
-// The Musicphonetics "music journey" intake — content + logic shared by the
+// The Musicphonetics "music journey" intake, content + logic shared by the
 // concierge. Skills and the 30-day roadmap are GENERIC foundations (safe, never
 // fabricated song-specific chords); the AI writes only the warm, personal
 // narrative around them, and the teacher personalises everything after the trial.
@@ -46,10 +46,10 @@ export interface RoadmapWeek { title: string; items: string[] }
 export function roadmapFor(instrument: string): RoadmapWeek[] {
   const chordy = /Guitar|Ukulele|Piano|Keyboard/.test(instrument);
   return [
-    { title: "Week 1 — Foundations", items: ["Correct posture & hold", "Your very first clean sound", "Feeling the beat", "A daily practice habit"] },
-    { title: "Week 2 — First progression", items: [chordy ? "Your first chords" : "Your first patterns", chordy ? "Changing between them" : "Steady control", "Timing & counting", "Playing slowly & cleanly"] },
-    { title: "Week 3 — Song building", items: ["The first section of your song", "Keeping tempo", chordy ? "Strumming / both hands together" : "Playing with feel", "Building confidence"] },
-    { title: "Week 4 — Perform", items: ["Playing your song through", "Adding expression", "A little recording", "Your first performance moment"] },
+    { title: "Week 1, Foundations", items: ["Correct posture & hold", "Your very first clean sound", "Feeling the beat", "A daily practice habit"] },
+    { title: "Week 2, First progression", items: [chordy ? "Your first chords" : "Your first patterns", chordy ? "Changing between them" : "Steady control", "Timing & counting", "Playing slowly & cleanly"] },
+    { title: "Week 3, Song building", items: ["The first section of your song", "Keeping tempo", chordy ? "Strumming / both hands together" : "Playing with feel", "Building confidence"] },
+    { title: "Week 4, Perform", items: ["Playing your song through", "Adding expression", "A little recording", "Your first performance moment"] },
   ];
 }
 
@@ -60,8 +60,8 @@ export function dnaFor(levelKey: string, motivationKey: string): Dna {
   if (motivationKey === "career")
     return { type: "builder", label: "The Skill Builder", blurb: "You want real mastery. We'll build deep, correct technique and theory." };
   if (levelKey === "play")
-    return { type: "returning", label: "The Rising Musician", blurb: "You already play — now we sharpen technique and unlock harder music." };
+    return { type: "returning", label: "The Rising Musician", blurb: "You already play, now we sharpen technique and unlock harder music." };
   if (levelKey === "tried")
-    return { type: "returning", label: "The Returning Musician", blurb: "You've dabbled before — this time we make it stick, properly." };
-  return { type: "song-first", label: "The Song-First Learner", blurb: "You learn best by chasing songs you love — so that's exactly how we'll teach." };
+    return { type: "returning", label: "The Returning Musician", blurb: "You've dabbled before, this time we make it stick, properly." };
+  return { type: "song-first", label: "The Song-First Learner", blurb: "You learn best by chasing songs you love, so that's exactly how we'll teach." };
 }

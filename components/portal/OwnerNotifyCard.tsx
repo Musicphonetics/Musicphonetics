@@ -14,7 +14,7 @@ interface TeacherOpt { id: string; name: string }
 const SELECT = "w-full rounded-xl border border-hairline bg-white px-4 py-3 text-base text-ink placeholder:text-ink/40 focus:border-ink focus-visible:outline-2 focus-visible:outline-gold focus:outline-none";
 
 // Owner sends an in-app notification (the bell feed). Complements the pinned
-// Director's message above — this reaches parents/teachers as a dismissable alert.
+// Director's message above, this reaches parents/teachers as a dismissable alert.
 export function OwnerNotifyCard() {
   const [students, setStudents] = useState<StudentOpt[]>([]);
   const [teachers, setTeachers] = useState<TeacherOpt[]>([]);

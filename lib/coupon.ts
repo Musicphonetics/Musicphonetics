@@ -1,8 +1,7 @@
 // ============================================================================
-// Musicphonetics — teacher coupon helpers (codes only).
+// Musicphonetics, teacher coupon helpers (codes only).
 // Owner-created, teacher-carried. The percent lives on the code. The final
-// charged amount is always validated server-side (functions/api/razorpay) —
-// these helpers are for display + storing the breakdown.
+// charged amount is always validated server-side (functions/api/razorpay), // these helpers are for display + storing the breakdown.
 // ============================================================================
 
 import { inr } from "./money";

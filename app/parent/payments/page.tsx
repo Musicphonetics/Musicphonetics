@@ -18,7 +18,7 @@ import { cn } from "@/lib/utils";
 
 const pretty = (iso: string) => new Date(iso + "T00:00:00").toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" });
 
-// Already-enrolled families renew here — the monthly fee is paid on the single
+// Already-enrolled families renew here, the monthly fee is paid on the single
 // official Musicphonetics monthly payment page (NOT the new-enrolment form).
 const RENEWAL_LINK = "https://rzp.io/rzp/mpmonthly";
 
@@ -55,7 +55,7 @@ export default function ParentPayments() {
         <div className="space-y-4">
           <h1 className="font-display text-[1.6rem] font-semibold leading-tight text-ink">Fees &amp; renewal</h1>
 
-          {/* Family fees — tick children, adjust the amount, pay in one go */}
+          {/* Family fees, tick children, adjust the amount, pay in one go */}
           {data.students.length > 1 && <FamilyPay data={data} onFocus={select} focusedId={student.id} link={RENEWAL_LINK} />}
 
           {/* Current status (selected child) */}
@@ -70,10 +70,10 @@ export default function ParentPayments() {
             </div>
           </div>
 
-          {/* Classes & fees — progress bar of classes used vs paid-for */}
+          {/* Classes & fees, progress bar of classes used vs paid-for */}
           <AdvanceFeeCard student={student} payments={pays} completed={view.completed} completedDates={completedDates} />
 
-          {/* Renew — pay the monthly fee on the official payment page */}
+          {/* Renew, pay the monthly fee on the official payment page */}
           <div className="rounded-3xl border border-hairline bg-white p-5 shadow-[0_12px_34px_-20px_rgba(22,27,38,0.2)]">
             <p className="text-sm font-semibold text-ink">Renew {student.name.split(" ")[0]}&apos;s monthly fee</p>
             <p className="mt-1 text-xs text-ink/70">
@@ -149,7 +149,7 @@ export default function ParentPayments() {
 }
 
 // Family fees: tick which children to pay for, adjust the amount if needed, then
-// pay in one go on the official page. The payment link is the same — the amount
+// pay in one go on the official page. The payment link is the same, the amount
 // shown is what to enter there; the office reconciles it to the ticked children.
 function FamilyPay({ data, onFocus, focusedId, link }: { data: ParentData; onFocus: (id: string) => void; focusedId?: string; link: string }) {
   const students = data.students;
@@ -187,7 +187,7 @@ function FamilyPay({ data, onFocus, focusedId, link }: { data: ParentData; onFoc
         })}
       </div>
 
-      {/* Amount to pay — auto-summed from ticked children, editable */}
+      {/* Amount to pay, auto-summed from ticked children, editable */}
       <label className="mt-3 flex items-center justify-between gap-3 border-t border-hairline pt-3">
         <span className="text-sm font-semibold text-ink">Amount to pay</span>
         <span className="flex items-center rounded-xl border border-hairline bg-white px-3 py-2">

@@ -1,7 +1,7 @@
 // A single, very subtle headline that drifts across the very top of the site.
 // Server-rendered (pure CSS animation) so there is no layout shift on load.
-// To change the words, edit HEADLINE — that is the only thing you need to touch.
-const HEADLINE = "Music education, built like an institution — now enrolling across Delhi NCR";
+// To change the words, edit HEADLINE, that is the only thing you need to touch.
+const HEADLINE = "Music education, built like an institution, now enrolling across Delhi NCR";
 
 export function TopTicker() {
   return (

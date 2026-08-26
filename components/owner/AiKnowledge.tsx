@@ -55,7 +55,7 @@ export function AiKnowledge() {
       </div>
       <p className="mt-0.5 text-sm text-ink/60">
         This is what the parent &ldquo;Ask&rdquo; assistant answers from. Paste your real curriculum, FAQs, fees and
-        policies here — the more complete, the better and safer the answers. It never fine-tunes the model; it grounds it.
+        policies here, the more complete, the better and safer the answers. It never fine-tunes the model; it grounds it.
       </p>
 
       {needsSetup ? (
@@ -72,7 +72,7 @@ export function AiKnowledge() {
           <label className="mt-3 flex cursor-pointer items-start gap-3 rounded-xl border border-hairline bg-paper/60 p-3">
             <input type="checkbox" checked={strict} onChange={(e) => { setStrict(e.target.checked); setMsg(null); }} className="mt-0.5 h-5 w-5 accent-gold" />
             <span className="text-sm text-ink/80">
-              <b>Strict mode</b> — only answer what&apos;s in the knowledge above. If it&apos;s not covered, the assistant says it isn&apos;t sure and points to WhatsApp (recommended to stop random answers).
+              <b>Strict mode</b>, only answer what&apos;s in the knowledge above. If it&apos;s not covered, the assistant says it isn&apos;t sure and points to WhatsApp (recommended to stop random answers).
             </span>
           </label>
 
@@ -82,7 +82,7 @@ export function AiKnowledge() {
             className={cn("mt-3 rounded-full px-6 py-2.5 text-sm font-semibold text-ink", busy ? "bg-gold/50" : "bg-gold hover:bg-deep-gold")}>
             {busy ? "Saving…" : "Save knowledge"}
           </button>
-          <p className="mt-2 text-[11px] text-ink/45">Also requires an AI provider in Cloudflare Pages — a <b>Workers AI</b> binding named <code className="rounded bg-mist px-1">AI</code> (free, recommended) or <code className="rounded bg-mist px-1">GEMINI_API_KEY</code>. Leave this blank to use the built-in defaults.</p>
+          <p className="mt-2 text-[11px] text-ink/45">Also requires an AI provider in Cloudflare Pages, a <b>Workers AI</b> binding named <code className="rounded bg-mist px-1">AI</code> (free, recommended) or <code className="rounded bg-mist px-1">GEMINI_API_KEY</code>. Leave this blank to use the built-in defaults.</p>
         </>
       )}
     </section>

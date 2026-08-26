@@ -41,7 +41,7 @@ export function InstallPWA() {
     window.addEventListener("beforeinstallprompt", onBIP);
     window.addEventListener("appinstalled", () => setShow(false));
 
-    // iOS never fires beforeinstallprompt — show the manual hint after a moment.
+    // iOS never fires beforeinstallprompt, show the manual hint after a moment.
     if (isIos && isSafari) {
       setIos(true);
       const t = setTimeout(() => setShow(true), 2500);
@@ -77,7 +77,7 @@ export function InstallPWA() {
           {ios ? (
             <p className="text-xs text-paper/70">Tap <b>Share</b> <span aria-hidden>⎋</span> then <b>“Add to Home Screen”</b>.</p>
           ) : (
-            <p className="text-xs text-paper/70">One tap — full screen, fast, on your home screen.</p>
+            <p className="text-xs text-paper/70">One tap, full screen, fast, on your home screen.</p>
           )}
         </div>
         {!ios && (

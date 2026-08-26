@@ -1,6 +1,6 @@
 "use client";
 
-// Lead detail drawer — full info, activity timeline, and every pipeline action.
+// Lead detail drawer, full info, activity timeline, and every pipeline action.
 // Used by the owner Leads centre (and reusable by the sales workspace). All
 // writes go through the SECURITY DEFINER RPCs so RLS + activity + notifications
 // stay authoritative.
@@ -28,7 +28,7 @@ export function LeadDetailPanel({ leadId, teachers, onClose, onChanged }: {
   }, [leadId]);
   useEffect(() => { load(); }, [load]);
 
-  const teacherName = (id: string | null) => (id ? teachers.find((t) => t.id === id)?.name ?? "—" : "—");
+  const teacherName = (id: string | null) => (id ? teachers.find((t) => t.id === id)?.name ?? "-" : "-");
 
   async function run(rpc: string, args: Record<string, unknown>, okMsg?: string) {
     setBusy(true); setMsg(null);
@@ -78,16 +78,16 @@ export function LeadDetailPanel({ leadId, teachers, onClose, onChanged }: {
 
             {/* Contact + interest */}
             <div className="mt-4 grid grid-cols-2 gap-3 rounded-xl border border-hairline bg-white p-4 text-sm">
-              <Info label="Phone">{lead.phone ? <a href={`tel:${lead.phone}`} className="text-[#7A5E0F]">{lead.phone}</a> : "—"}</Info>
-              <Info label="WhatsApp">{lead.phone ? <a href={`https://wa.me/${lead.phone.replace(/\D/g, "")}`} target="_blank" rel="noopener noreferrer" className="text-[#7A5E0F]">Message</a> : "—"}</Info>
-              <Info label="Email">{lead.email || "—"}</Info>
-              <Info label="Parent">{lead.parent_name || "—"}</Info>
-              <Info label="Instrument">{lead.instrument_interest || "—"}</Info>
-              <Info label="Mode">{lead.preferred_mode || "—"}</Info>
-              <Info label="Area">{lead.preferred_area || "—"}</Info>
-              <Info label="Age">{lead.student_age || "—"}</Info>
-              <Info label="Experience">{lead.experience_level || "—"}</Info>
-              <Info label="Preferred time">{lead.preferred_time || "—"}</Info>
+              <Info label="Phone">{lead.phone ? <a href={`tel:${lead.phone}`} className="text-[#7A5E0F]">{lead.phone}</a> : "-"}</Info>
+              <Info label="WhatsApp">{lead.phone ? <a href={`https://wa.me/${lead.phone.replace(/\D/g, "")}`} target="_blank" rel="noopener noreferrer" className="text-[#7A5E0F]">Message</a> : "-"}</Info>
+              <Info label="Email">{lead.email || "-"}</Info>
+              <Info label="Parent">{lead.parent_name || "-"}</Info>
+              <Info label="Instrument">{lead.instrument_interest || "-"}</Info>
+              <Info label="Mode">{lead.preferred_mode || "-"}</Info>
+              <Info label="Area">{lead.preferred_area || "-"}</Info>
+              <Info label="Age">{lead.student_age || "-"}</Info>
+              <Info label="Experience">{lead.experience_level || "-"}</Info>
+              <Info label="Preferred time">{lead.preferred_time || "-"}</Info>
               {lead.learning_goal && <div className="col-span-2"><Info label="Goal">{lead.learning_goal}</Info></div>}
               {lead.message && <div className="col-span-2"><Info label="Message">{lead.message}</Info></div>}
             </div>

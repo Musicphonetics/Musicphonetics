@@ -13,11 +13,11 @@ export const MIN_BIO = 120;
 // ---- Masking (never render full sensitive values) --------------------------
 export const maskAccount = (num?: string | null) => {
   const d = (num || "").replace(/\D/g, "");
-  return d ? "•".repeat(Math.max(d.length - 4, 2)) + d.slice(-4) : "—";
+  return d ? "•".repeat(Math.max(d.length - 4, 2)) + d.slice(-4) : "-";
 };
 export const maskPan = (pan?: string | null) => {
   const p = (pan || "").trim().toUpperCase();
-  return /^[A-Z]{5}[0-9]{4}[A-Z]$/.test(p) ? `${p.slice(0, 3)}•••${p.slice(-4)}` : "—";
+  return /^[A-Z]{5}[0-9]{4}[A-Z]$/.test(p) ? `${p.slice(0, 3)}•••${p.slice(-4)}` : "-";
 };
 
 // ---- Item catalog: how each item maps to a profile section + UI copy --------

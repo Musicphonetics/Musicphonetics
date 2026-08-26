@@ -97,7 +97,7 @@ function RecordPayment({ students, onDone }: { students: Student[]; onDone: () =
   return (
     <div className="rounded-2xl border border-hairline bg-white p-5 shadow-card">
       <h2 className="font-display text-lg font-bold text-ink">Record a payment (incl. advance)</h2>
-      <p className="mt-1 text-sm text-ink/60">Record any amount a parent pays — one month, or several in advance. The parent&rsquo;s portal updates instantly with classes bought and remaining.</p>
+      <p className="mt-1 text-sm text-ink/60">Record any amount a parent pays, one month, or several in advance. The parent&rsquo;s portal updates instantly with classes bought and remaining.</p>
       <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         <label className="block">
           <span className="mb-1.5 block text-sm font-semibold text-ink">Student *</span>

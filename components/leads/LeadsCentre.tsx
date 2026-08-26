@@ -1,7 +1,7 @@
 "use client";
 
 // Shared lead operating-system UI used by BOTH the owner and the sales
-// workspace (they are equally "lead staff" — RLS is what actually gates access,
+// workspace (they are equally "lead staff", RLS is what actually gates access,
 // so this component holds no owner-only controls). Server-paginated, filterable,
 // with bulk actions and a full lead detail drawer.
 import { useCallback, useEffect, useMemo, useState } from "react";
@@ -96,7 +96,7 @@ export function LeadsCentre() {
         ] as { label: string; val?: number; onClick?: () => void }[]).map((k) => (
           <button key={k.label} onClick={k.onClick} disabled={!k.onClick}
             className="rounded-xl border border-hairline bg-white p-3 text-left transition enabled:hover:border-ink/30">
-            <p className="font-display text-xl font-semibold text-ink">{k.val ?? "—"}</p>
+            <p className="font-display text-xl font-semibold text-ink">{k.val ?? "-"}</p>
             <p className="text-[11px] text-ink/55">{k.label}</p>
           </button>
         ))}
@@ -141,17 +141,17 @@ export function LeadsCentre() {
                 <tr key={r.id} className="border-b border-hairline last:border-0 hover:bg-mist/40">
                   <td className="p-3"><input type="checkbox" checked={sel.has(r.id)} onChange={() => toggle(r.id)} /></td>
                   <td className="p-3">
-                    <p className="font-medium text-ink">{r.student_name || r.parent_name || "—"}{r.enquiry_count > 1 && <span className="ml-1.5 rounded-full bg-gold/15 px-1.5 py-0.5 text-[10px] font-semibold text-[#7A5E0F]">×{r.enquiry_count}</span>}</p>
+                    <p className="font-medium text-ink">{r.student_name || r.parent_name || "-"}{r.enquiry_count > 1 && <span className="ml-1.5 rounded-full bg-gold/15 px-1.5 py-0.5 text-[10px] font-semibold text-[#7A5E0F]">×{r.enquiry_count}</span>}</p>
                     <p className="font-mono text-[11px] text-ink/45">{r.lead_code}</p>
                   </td>
-                  <td className="p-3 text-ink/70"><p>{r.phone || "—"}</p><p className="text-[11px] text-ink/45">{r.email || ""}</p></td>
-                  <td className="p-3 text-ink/70">{r.instrument_interest || "—"}</td>
-                  <td className="p-3 text-ink/70">{r.preferred_area || "—"}</td>
-                  <td className="p-3 text-ink/60">{r.source || "—"}</td>
+                  <td className="p-3 text-ink/70"><p>{r.phone || "-"}</p><p className="text-[11px] text-ink/45">{r.email || ""}</p></td>
+                  <td className="p-3 text-ink/70">{r.instrument_interest || "-"}</td>
+                  <td className="p-3 text-ink/70">{r.preferred_area || "-"}</td>
+                  <td className="p-3 text-ink/60">{r.source || "-"}</td>
                   <td className="p-3"><span className={cn("rounded-full px-2.5 py-1 text-[11px] font-semibold", LEAD_STATUS_TONE[r.status] || "bg-ink/10 text-ink/60")}>{LEAD_STATUS_LABEL[r.status] || r.status}</span></td>
-                  <td className="p-3 text-ink/70">{r.assigned_teacher_id ? (teacherName[r.assigned_teacher_id] || "—") : <span className="text-ink/40">—</span>}</td>
+                  <td className="p-3 text-ink/70">{r.assigned_teacher_id ? (teacherName[r.assigned_teacher_id] || "-") : <span className="text-ink/40">, </span>}</td>
                   <td className="p-3 text-[11px] text-ink/55">{new Date(r.created_at).toLocaleDateString("en-IN", { day: "numeric", month: "short" })}</td>
-                  <td className="p-3 text-[11px]">{r.next_follow_up_at ? <span className={cn(new Date(r.next_follow_up_at) < new Date() ? "font-semibold text-red-600" : "text-ink/60")}>{new Date(r.next_follow_up_at).toLocaleDateString("en-IN", { day: "numeric", month: "short" })}</span> : <span className="text-ink/35">—</span>}</td>
+                  <td className="p-3 text-[11px]">{r.next_follow_up_at ? <span className={cn(new Date(r.next_follow_up_at) < new Date() ? "font-semibold text-red-600" : "text-ink/60")}>{new Date(r.next_follow_up_at).toLocaleDateString("en-IN", { day: "numeric", month: "short" })}</span> : <span className="text-ink/35">, </span>}</td>
                   <td className="p-3"><button onClick={() => setOpenId(r.id)} className="rounded-full bg-ink px-3 py-1.5 text-xs font-semibold text-paper">Open</button></td>
                 </tr>
               ))}

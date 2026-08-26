@@ -6,7 +6,7 @@ import type { Student, Payment } from "@/lib/supabase/types";
 
 const shortDate = (iso: string) => new Date(iso + "T00:00:00").toLocaleDateString("en-IN", { day: "numeric", month: "short" });
 
-// Shows the family exactly where their fees stand — as CLASSES. Fees buy classes;
+// Shows the family exactly where their fees stand, as CLASSES. Fees buy classes;
 // as classes are taken, the bar fills and the balance drops, so parents see their
 // money being used and know when renewal is near. Advance payments add classes.
 // completedDates are the REAL class dates, used to show when each payment's block
@@ -73,7 +73,7 @@ export function AdvanceFeeCard({ student, payments, completed, completedDates = 
             <p className="mt-2 text-right text-[11px] text-ink/40">Valid till {shortDate(deadline.deadline)}</p>
           ) : deadline.state === "urgent" ? (
             <p className="mt-2 rounded-lg bg-gold/15 px-3 py-2 text-xs font-semibold text-[#7A5E0F]">
-              ⏳ {deadline.daysLeft > 0 ? <>Only <b>{deadline.daysLeft} day{deadline.daysLeft === 1 ? "" : "s"}</b> left to finish this set — it&rsquo;s valid till {shortDate(deadline.deadline)}.</> : <>This set is valid till {shortDate(deadline.deadline)} — please finish the remaining classes now.</>}
+              ⏳ {deadline.daysLeft > 0 ? <>Only <b>{deadline.daysLeft} day{deadline.daysLeft === 1 ? "" : "s"}</b> left to finish this set, it&rsquo;s valid till {shortDate(deadline.deadline)}.</> : <>This set is valid till {shortDate(deadline.deadline)}, please finish the remaining classes now.</>}
             </p>
           ) : (
             <p className="mt-2 rounded-lg bg-red-50 px-3 py-2 text-xs font-semibold text-red-700">
@@ -86,14 +86,14 @@ export function AdvanceFeeCard({ student, payments, completed, completedDates = 
       {/* Advance: a whole set already paid but not started */}
       {Math.max(0, sp.paidSets - sp.currentSet) > 0 && (
         <p className="mt-3 rounded-2xl bg-emerald-500/10 px-3 py-2 text-sm font-semibold text-emerald-700">
-          ✓ Advance received — {name}&rsquo;s next {Math.max(0, sp.paidSets - sp.currentSet) * sp.perSet} classes are already paid.
+          ✓ Advance received, {name}&rsquo;s next {Math.max(0, sp.paidSets - sp.currentSet) * sp.perSet} classes are already paid.
         </p>
       )}
 
       {/* Human line */}
       <p className="mt-4 rounded-2xl bg-ink/[0.04] p-3 text-sm text-ink/75">
         {s.monthsAhead >= 1
-          ? <>You&rsquo;re paid <b>~{s.monthsAhead} month{s.monthsAhead >= 1.5 ? "s" : ""}</b> in advance — {name}&rsquo;s next {s.remaining} classes are fully covered. 🎵</>
+          ? <>You&rsquo;re paid <b>~{s.monthsAhead} month{s.monthsAhead >= 1.5 ? "s" : ""}</b> in advance, {name}&rsquo;s next {s.remaining} classes are fully covered. 🎵</>
           : sp.remainingInSet <= 2 && !sp.allComplete
             ? <>Just <b>{sp.remainingInSet} class{sp.remainingInSet === 1 ? "" : "es"}</b> left in this set. Renew soon so {name}&rsquo;s classes never pause.</>
             : s.fullyUsed
@@ -110,7 +110,7 @@ export function AdvanceFeeCard({ student, payments, completed, completedDates = 
         <Row k="Classes remaining" v={`${s.remaining}`} highlight />
       </div>
 
-      {/* Payment cycles — each payment mapped to the real classes it covered */}
+      {/* Payment cycles, each payment mapped to the real classes it covered */}
       {cycles.length > 0 && (
         <div className="mt-4">
           <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-ink/55">Each payment&rsquo;s classes</p>
@@ -128,7 +128,7 @@ export function AdvanceFeeCard({ student, payments, completed, completedDates = 
                 <p className="mt-1 text-xs text-ink/65">
                   Paid <b className="text-ink/80">{shortDate(c.paidOn)}</b> · {c.classes} classes
                   {c.status === "done" && c.finishedOn
-                    ? <> · finished <b className="text-ink/80">{shortDate(c.finishedOn)}</b> — renewal fell due</>
+                    ? <> · finished <b className="text-ink/80">{shortDate(c.finishedOn)}</b>, renewal fell due</>
                     : c.status === "active"
                       ? <> · <b className="text-[#7A5E0F]">{c.done} of {c.classes} done</b>, {c.classes - c.done} left</>
                       : <> · not started yet</>}

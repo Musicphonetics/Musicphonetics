@@ -64,7 +64,7 @@ function TrialLoginInner() {
 
         {isNew && (
           <p className="mt-6 rounded-xl border border-gold/40 bg-gold/10 p-3 text-center text-sm text-paper/85">
-            Your portal is ready. We emailed your login — enter it below to continue.
+            Your portal is ready. We emailed your login, enter it below to continue.
           </p>
         )}
         {!isSupabaseConfigured() && (

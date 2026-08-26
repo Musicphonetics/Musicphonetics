@@ -22,7 +22,7 @@ const WELCOME_VIDEO_ID = "";
 
 const NEXT_STEPS = [
   { n: 1, t: "We message you immediately", d: "A WhatsApp from our team is already on its way to schedule your first class." },
-  { n: 2, t: "Activate your Student Portal", d: "Use Student Activation with your access code to create your own login — it isn't issued here, not even a temporary one." },
+  { n: 2, t: "Activate your Student Portal", d: "Use Student Activation with your access code to create your own login, it isn't issued here, not even a temporary one." },
   { n: 3, t: "Track every class", d: "See progress, class notes, your monthly goal and fees in your Student Portal." },
 ];
 
@@ -80,7 +80,7 @@ export default function WelcomePage() {
             </div>
             <div className="px-7 py-7 sm:px-10">
               <p className="text-sm leading-relaxed text-ink/75">
-                Your login is <b>not</b> created automatically at payment — not even a temporary one. To see your
+                Your login is <b>not</b> created automatically at payment, not even a temporary one. To see your
                 progress, class notes, monthly goal and fees, you activate your own login through the
                 <b> Student Activation</b> page using the access code shared with your batch.
               </p>
@@ -88,7 +88,7 @@ export default function WelcomePage() {
                 {[
                   "Open the Student Activation page.",
                   "Enter your details and your access code.",
-                  "Get your login id and an easy password on screen — save them, and sign in.",
+                  "Get your login id and an easy password on screen, save them, and sign in.",
                 ].map((t, i) => (
                   <li key={t} className="flex items-start gap-3 text-sm text-ink/80">
                     <span className="grid h-6 w-6 shrink-0 place-items-center rounded-full bg-ink text-[11px] font-bold text-gold">{i + 1}</span>

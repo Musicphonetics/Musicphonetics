@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils";
 // One cinematic full-screen slide. GUARANTEED FIT: it's exactly one screen tall,
 // pads clear of the fixed header (ticker+nav) and the bottom trial bar, centres
 // its content, and if content ever exceeds the space on a tiny phone it scrolls
-// INSIDE the slide — so nothing is ever cut. When it becomes the active slide it
+// INSIDE the slide, so nothing is ever cut. When it becomes the active slide it
 // gets .is-active, which fires the background depth-in and the staggered reveals.
 export function DeckSlide({ children, className, bg, contentClassName, align = "center", maxW = "max-w-lg" }: {
   children: React.ReactNode; className?: string; bg?: React.ReactNode; contentClassName?: string;

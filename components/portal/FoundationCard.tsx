@@ -1,31 +1,31 @@
 // Reusable, data-driven Foundation progress card (EXPLORE / PLAY / MAKE MUSIC /
-// PERFORM — 4 stages × 8 = 32 classes). Progress is DERIVED from completed
+// PERFORM, 4 stages × 8 = 32 classes). Progress is DERIVED from completed
 // countable classes; the learning content (now learning / songs / milestone) is
 // teacher-entered, per student and therefore per instrument. Works for parent
 // (motivating) and teacher (operational) views. Supports future grades via the
-// `grade` prop. Purely presentational — pass it computed data.
+// `grade` prop. Purely presentational, pass it computed data.
 import { type FoundationProgress, type ChapterState, FOUNDATION } from "@/lib/foundation";
 import { cn } from "@/lib/utils";
 
-// What actually happens, class by class, inside each 8-class stage — so parents
+// What actually happens, class by class, inside each 8-class stage, so parents
 // understand the journey rather than just seeing "8 classes". Written for
 // families, in plain language, keyed by stage number.
 const STAGE_DETAIL: Record<number, { promise: string; classes: string[] }> = {
   1: {
-    promise: "Getting comfortable — holding the instrument, making a clean first sound, and building a daily practice habit.",
+    promise: "Getting comfortable, holding the instrument, making a clean first sound, and building a daily practice habit.",
     classes: [
       "Meet the instrument: posture, hand position and how sound is made",
       "First clean notes and a steady counting pulse",
       "Simple rhythm patterns and clapping/counting together",
       "Building finger strength and accuracy, one step at a time",
       "The first short exercise, played slowly and correctly",
-      "Ear warm-ups — hearing high vs low, loud vs soft",
+      "Ear warm-ups, hearing high vs low, loud vs soft",
       "Setting up a real practice routine for home",
-      "Stage review — a confident, comfortable beginner",
+      "Stage review, a confident, comfortable beginner",
     ],
   },
   2: {
-    promise: "Starting to actually play — real notes, chords or scales, steady rhythm, and the first piece of a song.",
+    promise: "Starting to actually play, real notes, chords or scales, steady rhythm, and the first piece of a song.",
     classes: [
       "First proper notes / chords / scales for the instrument",
       "Changing smoothly between notes or chords",
@@ -33,34 +33,34 @@ const STAGE_DETAIL: Record<number, { promise: string; classes: string[] }> = {
       "Reading simple patterns and following along",
       "The first section of a real song",
       "Playing to a count and staying in time",
-      "Homework habit — practising the right things at home",
-      "Stage review — the first recognisable playing",
+      "Homework habit, practising the right things at home",
+      "Stage review, the first recognisable playing",
     ],
   },
   3: {
-    promise: "Making real music — playing full songs with timing and visibly growing confidence.",
+    promise: "Making real music, playing full songs with timing and visibly growing confidence.",
     classes: [
       "Putting the basics together into complete songs",
       "Playing with correct timing from start to finish",
-      "Adding expression — dynamics, feel and smoothness",
+      "Adding expression, dynamics, feel and smoothness",
       "A second song to widen the repertoire",
       "Practising independently, spotting their own mistakes",
       "Playing along with a backing or the teacher",
       "Polishing a favourite piece to performance quality",
-      "Stage review — confident, musical and independent",
+      "Stage review, confident, musical and independent",
     ],
   },
   4: {
-    promise: "Preparing to perform — polishing a performance piece and getting ready for the Main Pathway.",
+    promise: "Preparing to perform, polishing a performance piece and getting ready for the Main Pathway.",
     classes: [
       "Choosing and shaping a performance piece",
       "Full run-throughs, start to finish, with confidence",
       "Strengthening any weak spots identified along the way",
-      "Foundation review — everything learned so far",
+      "Foundation review, everything learned so far",
       "A first performance for family or the teacher",
       "Understanding strengths and what to grow next",
       "Introduction to what the Main Pathway looks like",
-      "Foundation complete — ready for the next level",
+      "Foundation complete, ready for the next level",
     ],
   },
 };
@@ -99,7 +99,7 @@ export function FoundationCard({
         <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#7A5E0F]">
           {(instrument || "Music").toUpperCase()} • FOUNDATION
         </p>
-        <h3 className="mt-1 font-display text-xl font-semibold text-ink">Grade {grade} — My First Music Journey {emoji}</h3>
+        <h3 className="mt-1 font-display text-xl font-semibold text-ink">Grade {grade}, My First Music Journey {emoji}</h3>
 
         <div className="mt-4 flex items-end justify-between">
           <p className="font-display text-2xl font-semibold text-ink">
@@ -117,12 +117,12 @@ export function FoundationCard({
         <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-ink/45">The journey, explained</p>
         <p className="mt-1.5 text-sm leading-relaxed text-ink/75">
           The Foundation is a <b className="text-ink">{FOUNDATION.totalClasses}-class beginner path</b>, built as
-          four stages of {FOUNDATION.classesPerChapter} classes each. Every stage has a clear purpose — from the very
+          four stages of {FOUNDATION.classesPerChapter} classes each. Every stage has a clear purpose, from the very
           first sound to a confident performance. Here is exactly what happens along the way.
         </p>
       </div>
 
-      {/* Stages — elaborated so parents understand every class */}
+      {/* Stages, elaborated so parents understand every class */}
       <div className="divide-y divide-hairline">
         {foundation.chapters.map(({ chapter, state, completed }) => {
           const detail = STAGE_DETAIL[chapter.number];

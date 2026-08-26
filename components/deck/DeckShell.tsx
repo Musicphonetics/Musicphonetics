@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 
 // Turns the homepage into a full-page "deck": one flick / one dot = one page.
 // It flags <html data-deck> (which switches the site's gentle proximity snap to
-// full mandatory page-snap, scoped to this page only — see globals.css) and
+// full mandatory page-snap, scoped to this page only, see globals.css) and
 // renders a right-side dot rail that tracks and jumps between panels. The window
 // stays the scroller, so the navbar, ticker and footer keep working normally.
 export function DeckShell({ children }: { children: React.ReactNode }) {

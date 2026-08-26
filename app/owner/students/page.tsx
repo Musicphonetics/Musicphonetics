@@ -129,7 +129,7 @@ export default function OwnerStudents() {
         <div className="flex items-center gap-1.5">
           <span className="text-xs text-ink/40">₹</span>
           <input key={`${r.id}-${r.fee ?? ""}`} type="text" inputMode="numeric" defaultValue={r.fee ?? ""}
-            disabled={busyId === r.id} placeholder="—"
+            disabled={busyId === r.id} placeholder="-"
             onKeyDown={(e) => { if (e.key === "Enter") (e.target as HTMLInputElement).blur(); }}
             onBlur={(e) => { const v = e.target.value.replace(/[^\d]/g, ""); if (v !== String(r.fee ?? "")) setFee(r.id, v); }}
             className="w-24 rounded-lg border border-hairline bg-white px-2.5 py-1.5 text-sm focus-visible:outline-2 focus-visible:outline-gold focus:outline-none disabled:opacity-50" />

@@ -8,7 +8,7 @@ import { whatsappLink } from "@/lib/data";
 const FAQS: { q: string; a: string }[] = [
   { q: "How do I pay or renew fees?", a: "Open Fees in the menu, choose your plan and pay securely online. You'll get a receipt instantly." },
   { q: "Where do I see my child's progress?", a: "Home shows the current progress and this month's goal; Reports has published monthly reports; Classes shows every class update." },
-  { q: "A class needs to be rescheduled — what do I do?", a: "Message us on WhatsApp. Cancelled or rescheduled classes are tracked, and a make-up is arranged where needed." },
+  { q: "A class needs to be rescheduled, what do I do?", a: "Message us on WhatsApp. Cancelled or rescheduled classes are tracked, and a make-up is arranged where needed." },
   { q: "How do I get my login again?", a: "Use the same login id and password you set at activation. From the sign-in page you can reset your password any time." },
 ];
 

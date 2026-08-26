@@ -138,7 +138,7 @@ export const FACULTY: FacultyMember[] = [
     verified: true,
   },
   // --------------------------------------------------------------------------
-  // SAMPLE — shows the layout. Copy this block for a new teacher. It is
+  // SAMPLE, shows the layout. Copy this block for a new teacher. It is
   // `published: false`, so it never shows in the public grid; preview it at
   // /teachers/sample.
   // --------------------------------------------------------------------------

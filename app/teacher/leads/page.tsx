@@ -107,7 +107,7 @@ function LeadCard({ lead, open, onToggle, onChanged }: { lead: TeacherLead; open
             {lead.student_name || lead.parent_name || "New enquiry"}
             {isNew && <span className="ml-2 rounded-full bg-gold px-1.5 py-0.5 text-[10px] font-bold text-ink">NEW</span>}
           </p>
-          <p className="mt-0.5 text-xs text-ink/60">{[lead.instrument_interest, lead.preferred_mode, lead.preferred_area].filter(Boolean).join(" · ") || "—"}</p>
+          <p className="mt-0.5 text-xs text-ink/60">{[lead.instrument_interest, lead.preferred_mode, lead.preferred_area].filter(Boolean).join(" · ") || "-"}</p>
         </div>
         <span className={cn("shrink-0 rounded-full px-2.5 py-1 text-[11px] font-semibold", LEAD_STATUS_TONE[lead.status] || "bg-ink/10 text-ink/60")}>{LEAD_STATUS_LABEL[lead.status] || lead.status}</span>
       </button>

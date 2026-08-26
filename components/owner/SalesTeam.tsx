@@ -1,7 +1,7 @@
 "use client";
 
 // Owner-only: invite sales/marketing staff. Creates a role='sales' login (lead
-// department access only — never owner). Uses the owner's access token to
+// department access only, never owner). Uses the owner's access token to
 // authorise the server call; the service key stays on the server.
 import { useCallback, useEffect, useState } from "react";
 import { getSupabase } from "@/lib/supabase/client";
@@ -39,7 +39,7 @@ export function SalesTeam() {
       setBusy(false);
       if (!res.ok || !data.ok) { setMsg(data.error || "Could not create the login."); return; }
       setCred({ email: data.login_email, password: data.temp_password });
-      setMsg(data.emailed ? "Invited — a welcome email was sent." : "Created — share the temporary password below.");
+      setMsg(data.emailed ? "Invited, a welcome email was sent." : "Created, share the temporary password below.");
       setName(""); setEmail(""); load();
     } catch { setBusy(false); setMsg("Could not reach the server."); }
   }
@@ -72,7 +72,7 @@ export function SalesTeam() {
         <div className="mt-4 divide-y divide-hairline">
           {rows.map((r) => (
             <div key={r.id} className="flex items-center justify-between gap-2 py-2.5 text-sm">
-              <div><span className="font-medium text-ink">{r.full_name || "—"}</span> <span className="text-ink/50">· {r.email}</span></div>
+              <div><span className="font-medium text-ink">{r.full_name || "-"}</span> <span className="text-ink/50">· {r.email}</span></div>
               <span className="rounded-full bg-forest/12 px-2.5 py-1 text-[11px] font-semibold text-forest">{r.role}</span>
             </div>
           ))}

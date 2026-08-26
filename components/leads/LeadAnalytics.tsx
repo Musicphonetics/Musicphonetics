@@ -1,6 +1,6 @@
 "use client";
 
-// Lead analytics — computed in the DB (mp_lead_analytics), rendered here. Used by
+// Lead analytics, computed in the DB (mp_lead_analytics), rendered here. Used by
 // the sales dashboard and (collapsible) the owner/sales lead centre.
 import { useEffect, useState } from "react";
 import { getSupabase, isSupabaseConfigured } from "@/lib/supabase/client";
@@ -29,7 +29,7 @@ export function LeadAnalytics() {
   const kpis = [
     { label: "Total leads", val: a.total }, { label: "This week", val: a.week },
     { label: "Unassigned", val: a.unassigned }, { label: "Follow-up due", val: a.due },
-    { label: "Converted", val: a.converted }, { label: "Conversion", val: a.conversion_rate != null ? `${a.conversion_rate}%` : "—" },
+    { label: "Converted", val: a.converted }, { label: "Conversion", val: a.conversion_rate != null ? `${a.conversion_rate}%` : "-" },
   ];
 
   return (

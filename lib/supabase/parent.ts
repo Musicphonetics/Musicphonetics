@@ -20,7 +20,7 @@ export async function loadParentData(): Promise<ParentData> {
   const sb = getSupabase();
   // TENANT ISOLATION: the Student Portal must only ever load the signed-in
   // family's own children. We filter explicitly on parent_id = auth.uid() and
-  // do NOT rely on RLS alone — the students table also has teacher/owner SELECT
+  // do NOT rely on RLS alone, the students table also has teacher/owner SELECT
   // policies, so a broad select() would leak teacher-assigned students to any
   // staff account that opened this portal.
   const { data: { session } } = await sb.auth.getSession();
@@ -74,7 +74,7 @@ export function studentView(d: ParentData, student: Student): StudentView {
   const paymentStatus = pays[0]?.payment_status ?? "Not recorded";
   // Classes are bought by payments: each monthly fee buys one cycle (perMonth
   // classes); two payments = two cycles. Renewal is due only once every paid
-  // class is used up — not on a calendar month. Before any payment we assume
+  // class is used up, not on a calendar month. Before any payment we assume
   // one cycle so a new student isn't shown as due.
   const purchased = purchasedClasses(pays as unknown as FeePaymentLite[], student.fee_quoted, perMonth);
   const remaining = Math.max(purchased - completed, 0);

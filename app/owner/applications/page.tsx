@@ -166,7 +166,7 @@ export default function OwnerApplications() {
             )}
 
             <ol className="mt-4 space-y-3">
-              {/* Step 1 — offer */}
+              {/* Step 1, offer */}
               <Step n={1} title="Send the offer letter" done={!!sel.offer_sent_at}
                 sub={sel.offer_sent_at ? `Sent ${fmt(sel.offer_sent_at)}` : "Includes an “Accept my offer” button."}>
                 <button onClick={() => sendDoc(sel, "offer")} disabled={sending !== null}
@@ -175,7 +175,7 @@ export default function OwnerApplications() {
                 </button>
               </Step>
 
-              {/* Step 2 — acceptance (auto-provisions the login + emails credentials) */}
+              {/* Step 2, acceptance (auto-provisions the login + emails credentials) */}
               <Step n={2} title="Teacher accepts → login auto-created" done={!!sel.offer_accepted_at}
                 sub={sel.offer_accepted_at
                   ? `Accepted ${fmt(sel.offer_accepted_at)} · login created & credentials emailed`
@@ -187,18 +187,18 @@ export default function OwnerApplications() {
                 )}
               </Step>
 
-              {/* Step 3 — joining (optional re-send; happens automatically on acceptance) */}
+              {/* Step 3, joining (optional re-send; happens automatically on acceptance) */}
               <Step n={3} title="Joining agreement + login" done={!!sel.joining_sent_at}
                 sub={sel.joining_sent_at ? `Sent ${fmt(sel.joining_sent_at)} · re-send only if needed`
                   : sel.status !== "approved" ? "Sent automatically when they accept. Or approve now to create the login, then re-send here."
-                  : "Sent automatically on acceptance — use this only to re-send with a fresh password."}>
+                  : "Sent automatically on acceptance, use this only to re-send with a fresh password."}>
                 <button onClick={() => sendDoc(sel, "joining")} disabled={sending !== null || sel.status !== "approved"}
                   className="rounded-full border border-hairline px-4 py-2 text-sm font-semibold text-ink/70 hover:text-ink disabled:opacity-50">
                   {sending === "joining" ? "Sending…" : "Re-send joining + login"}
                 </button>
               </Step>
 
-              {/* Step 4 — leads */}
+              {/* Step 4, leads */}
               <Step n={4} title="Assign their first leads" done={false}
                 sub="Once they've joined, send students their way from Leads.">
                 <a href="/owner/leads" className="rounded-full border border-hairline px-4 py-2 text-sm font-semibold text-ink/70 hover:text-ink">

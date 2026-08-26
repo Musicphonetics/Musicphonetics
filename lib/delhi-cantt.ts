@@ -1,16 +1,16 @@
 // ============================================================================
-// Musicphonetics — Delhi Cantt launch offer (single source of truth)
+// Musicphonetics, Delhi Cantt launch offer (single source of truth)
 //
 // This module centralises ALL copy, pricing, package comparison and campaign
 // metadata for the /delhi-cantt landing page and poster. To pause the offer
-// later, set `active: false` (or an `expiresOn` date in the past) here — the
+// later, set `active: false` (or an `expiresOn` date in the past) here, the
 // landing page then hides the claim flow and shows a graceful "closed" state,
 // and no other file needs editing. The Cloudflare Function
 // (functions/api/delhi-cantt-lead.js) independently re-asserts the authoritative
 // prices server-side so the browser can never change the discount.
 //
 // The Delhi Cantt benefit is FIRST MONTH ONLY: ₹10,000 for month one, then the
-// regular ₹12,000/month — and it applies to the Main Pathway only. Foundation
+// regular ₹12,000/month, and it applies to the Main Pathway only. Foundation
 // and Director's Circle are shown for comparison at their normal terms.
 // ============================================================================
 
@@ -127,7 +127,7 @@ export const PACKAGES: Package[] = [
     features: [
       "Taught personally by Abhishek",
       "Founder-led, one-to-one mentorship",
-      "Highly limited — by application",
+      "Highly limited, by application",
       "Availability at the Founder's discretion",
     ],
   },

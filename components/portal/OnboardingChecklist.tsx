@@ -111,7 +111,7 @@ export function OnboardingChecklist({ mode, teacherId }: { mode: "teacher" | "ow
       }
       case "biography": {
         const bio = (p?.full_biography || p?.short_bio || "").trim();
-        return bio ? { text: `${bio.length} chars — ${clip(bio, 200)}` } : null;
+        return bio ? { text: `${bio.length} chars, ${clip(bio, 200)}` } : null;
       }
       case "availability":
         return availCount ? { text: `${availCount} active slot${availCount === 1 ? "" : "s"}` } : null;

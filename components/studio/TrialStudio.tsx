@@ -10,7 +10,7 @@ import {
 } from "@/lib/journey";
 
 // ---------------------------------------------------------------------------
-// The Musicphonetics "music journey" — not a form, a personalised experience
+// The Musicphonetics "music journey", not a form, a personalised experience
 // that gradually becomes the student's profile. Inspire → Discover → Dream →
 // (AI reads their first song) → Musical DNA + Roadmap → Mentor → Save → Portal.
 // No fabricated facts: skills/roadmap are generic foundations; the AI writes
@@ -40,7 +40,7 @@ export function TrialStudio() {
 
   const [key, setKey] = useState<Key>("name");
   const [hist, setHist] = useState<Key[]>([]);
-  const [react, setReact] = useState("Hi! 👋 Let's discover your musical goal together — this takes about a minute, and there's a nice surprise at the end.");
+  const [react, setReact] = useState("Hi! 👋 Let's discover your musical goal together, this takes about a minute, and there's a nice surprise at the end.");
   const [view, setView] = useState<"chat" | "analysing" | "reveal" | "opening">("chat");
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState("");
@@ -142,7 +142,7 @@ export function TrialStudio() {
 
       <div className="mt-8 flex-1">
         {key === "name" && (
-          <Q title="First — what should we call you?">
+          <Q title="First, what should we call you?">
             <input autoFocus className={INP} placeholder="Your name" value={name} onChange={(e) => setName(e.target.value)}
               onKeyDown={(e) => { if (e.key === "Enter" && name.trim()) go(`Lovely to meet you, ${name.split(" ")[0]}! 🎶`, nextKey("name") as Key); }} />
           </Q>
@@ -163,7 +163,7 @@ export function TrialStudio() {
           <Q title="Which instrument is calling you?">
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
               {INSTRUMENTS.map((o) => (
-                <button key={o.key} type="button" onClick={() => { setInst(o.key); go(`${o.key} — a wonderful choice. 🎶`, nextKey("instrument") as Key); }}
+                <button key={o.key} type="button" onClick={() => { setInst(o.key); go(`${o.key}, a wonderful choice. 🎶`, nextKey("instrument") as Key); }}
                   className={"flex flex-col items-center gap-1.5 rounded-2xl border px-3 py-5 font-semibold transition " +
                     (inst === o.key ? "border-gold bg-gold/15 text-paper" : "border-white/15 bg-white/5 text-paper/80 hover:border-white/35")}>
                   <span className="text-3xl">{o.icon}</span>{o.key}
@@ -174,18 +174,18 @@ export function TrialStudio() {
         )}
 
         {key === "inspiration" && (
-          <Q title="Who — or what — inspired you?" sub="An artist, a band, a song, a moment. Type whatever comes to mind.">
+          <Q title="Who, or what, inspired you?" sub="An artist, a band, a song, a moment. Type whatever comes to mind.">
             <input autoFocus className={INP} placeholder="e.g. Ed Sheeran, Arijit Singh, my grandfather…" value={inspiration} onChange={(e) => setInspiration(e.target.value)}
               onKeyDown={(e) => { if (e.key === "Enter" && inspiration.trim()) go(ackFor(inspiration, inst), nextKey("inspiration") as Key); }} />
           </Q>
         )}
 
         {key === "level" && (
-          <Q title="Where are you right now?" sub="Be honest — it just helps us start you in the right place.">
+          <Q title="Where are you right now?" sub="Be honest, it just helps us start you in the right place.">
             <div className="grid gap-3">
               {LEVELS.map((l) => (
                 <TileCard key={l.key} wide icon={l.icon} title={l.label} sub={l.sub} active={levelKey === l.key}
-                  onClick={() => { setLevelKey(l.key); go(l.beginner ? "Perfect — starting right is everything. 🌱" : "Great — we'll pick up right where you are. 💪", nextKey("level") as Key); }} />
+                  onClick={() => { setLevelKey(l.key); go(l.beginner ? "Perfect, starting right is everything. 🌱" : "Great, we'll pick up right where you are. 💪", nextKey("level") as Key); }} />
               ))}
             </div>
           </Q>
@@ -205,8 +205,8 @@ export function TrialStudio() {
         {hist.length > 0 && <button onClick={back} className="rounded-full border border-white/15 px-5 py-3 text-sm font-semibold text-paper/70 hover:text-paper">Back</button>}
         <button onClick={() => {
           if (key === "name") { if (!name.trim()) return setErr("Tell us your name to begin."); return go(`Lovely to meet you, ${first}! 🎶`, nextKey("name") as Key); }
-          if (key === "inspiration") { if (!inspiration.trim()) return setErr("Give us a name — anyone who inspires you."); return go(ackFor(inspiration, inst), nextKey("inspiration") as Key); }
-          if (key === "song") { if (!song.trim()) return setErr("One song — anything you love."); return analyse(); }
+          if (key === "inspiration") { if (!inspiration.trim()) return setErr("Give us a name, anyone who inspires you."); return go(ackFor(inspiration, inst), nextKey("inspiration") as Key); }
+          if (key === "song") { if (!song.trim()) return setErr("One song, anything you love."); return analyse(); }
           setErr("Pick an option above to continue.");
         }} disabled={busy}
           className="flex-1 rounded-full bg-gold px-6 py-3.5 text-base font-semibold text-ink transition hover:bg-[#f0d783] disabled:opacity-60">
@@ -219,7 +219,7 @@ export function TrialStudio() {
 
 function ackFor(inspiration: string, inst: string) {
   const i = (inst || "music").toLowerCase();
-  return `${inspiration.trim()} — brilliant. We can build your ${i} right around that sound. 🎯`;
+  return `${inspiration.trim()}, brilliant. We can build your ${i} right around that sound. 🎯`;
 }
 
 // -------------------- Reveal: the journey + save --------------------
@@ -243,7 +243,7 @@ function Reveal(props: {
   const prev = () => (step === 0 ? onBack() : setStep((s) => s - 1));
 
   function trySave() {
-    if (!/^\S+@\S+\.\S+$/.test(email)) return setLocal("Enter a valid email — it becomes your login.");
+    if (!/^\S+@\S+\.\S+$/.test(email)) return setLocal("Enter a valid email, it becomes your login.");
     if (phone.replace(/\D/g, "").length < 8) return setLocal("Enter a valid phone / WhatsApp number.");
     setLocal(""); onStart();
   }
@@ -299,7 +299,7 @@ function Reveal(props: {
                 <div key={w.title} className="flex items-center gap-3 rounded-2xl border border-white/12 bg-white/[0.04] px-4 py-3">
                   <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-gold/15 text-sm font-bold text-gold">{i + 1}</span>
                   <div className="min-w-0">
-                    <p className="text-sm font-semibold text-paper">{w.title.replace(/^Week \d+ — /, "")}</p>
+                    <p className="text-sm font-semibold text-paper">{w.title.replace(/^Week \d+, /, "")}</p>
                     <p className="truncate text-xs text-paper/55">{w.items.slice(0, 3).join(" · ")}</p>
                   </div>
                 </div>
@@ -356,7 +356,7 @@ function Reveal(props: {
               <input autoFocus className={INP} inputMode="email" placeholder="Email (your portal login)" value={email} onChange={(e) => setEmail(e.target.value)} />
               <input className={INP} inputMode="tel" placeholder="Phone / WhatsApp number" value={phone} onChange={(e) => setPhone(e.target.value)} />
               {(local || err) && <p className="text-sm text-red-300">{local || err}</p>}
-              <p className="text-[11px] text-paper/45">🔒 Private to you — only for your trial and portal login.</p>
+              <p className="text-[11px] text-paper/45">🔒 Private to you, only for your trial and portal login.</p>
             </div>
           </div>
         )}

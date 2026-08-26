@@ -1,4 +1,4 @@
-// Lead data layer — server-side pagination + filters, built for 1,000+ leads.
+// Lead data layer, server-side pagination + filters, built for 1,000+ leads.
 // Never SELECT * the whole table; the list pulls only the columns it shows and
 // pages with .range(). Writes go through the SECURITY DEFINER RPCs (assign,
 // update, convert) so RLS + activity logging + notifications stay authoritative.

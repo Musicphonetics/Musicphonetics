@@ -9,7 +9,7 @@ function ArrowIcon({ className }: { className?: string }) {
   );
 }
 
-// Primary "Book a free trial" CTA — opens the Trial Portal (no WhatsApp).
+// Primary "Book a free trial" CTA, opens the Trial Portal (no WhatsApp).
 export function TrialCTA({
   label = "Book a free trial", variant = "primary", size = "lg", className, fullWidth, instrument,
 }: {

@@ -108,7 +108,7 @@ function AddChildModal({ onClose, onAdded }: { onClose: () => void; onAdded: () 
               <h3 className="font-display text-lg font-semibold text-ink">Add a child</h3>
               <button onClick={onClose} className="text-ink/40 hover:text-ink" aria-label="Close">✕</button>
             </div>
-            <p className="mt-1 text-sm text-ink/60">Add another child to your family — same login, separate progress. The office will confirm their teacher and fees.</p>
+            <p className="mt-1 text-sm text-ink/60">Add another child to your family, same login, separate progress. The office will confirm their teacher and fees.</p>
 
             <label className="mt-4 block"><span className="text-xs font-semibold text-ink/70">Child&apos;s full name</span>
               <input value={name} onChange={(e) => { setName(e.target.value); setErr(null); }} placeholder="e.g. Aarav Sharma" className={cn(fld, "mt-1")} autoFocus /></label>

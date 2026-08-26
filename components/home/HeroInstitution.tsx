@@ -16,7 +16,7 @@ const FEATURES = [
   { top: "Stage", bottom: "Opportunities", d: "M9 18V6l10-2v12M9 18a3 3 0 11-6 0 3 3 0 016 0zm10-2a3 3 0 11-6 0 3 3 0 016 0z" },
 ];
 
-// Instruments we teach — clean line icons, no faces, no cheap emoji.
+// Instruments we teach, clean line icons, no faces, no cheap emoji.
 const INSTRUMENTS: { name: string; d: string }[] = [
   { name: "Guitar", d: "M15.5 3.5l1.6 1.6M14 5l2 2m-2.6.6a3 3 0 00-4.2 0l-3.5 3.5a3.5 3.5 0 104.9 4.9l3.5-3.5a3 3 0 000-4.2zM8.5 12.5a1 1 0 100-2 1 1 0 000 2z" },
   { name: "Piano", d: "M4 5h16v14H4zM9 5v9M15 5v9M4 14h16" },
@@ -36,8 +36,8 @@ function Note({ className }: { className?: string }) {
 }
 
 // White, premium hero. No faces: a bold headline with a gold script accent and,
-// beside it, an "at a glance" brand card — what we teach, exam pathway, and the
-// Google rating — so a first-time visitor understands the school in seconds.
+// beside it, an "at a glance" brand card, what we teach, exam pathway, and the
+// Google rating, so a first-time visitor understands the school in seconds.
 export function HeroInstitution() {
   return (
     <section className="relative -mt-16 flex min-h-[100svh] flex-col overflow-hidden bg-white" style={{ paddingTop: "env(safe-area-inset-top)" }}>
@@ -67,7 +67,7 @@ export function HeroInstitution() {
             </h1>
 
             <p className="mt-8 max-w-[26rem] text-[1.05rem] font-medium leading-relaxed text-charcoal/70">
-              A one-to-one music school in Delhi NCR and online — a matched teacher, a real curriculum, tracked progress in a live parent portal, and a stage to perform on.
+              A one-to-one music school in Delhi NCR and online, a matched teacher, a real curriculum, tracked progress in a live parent portal, and a stage to perform on.
             </p>
 
             <div className="mt-8 flex flex-col items-start gap-5 sm:flex-row sm:items-center">
@@ -83,7 +83,7 @@ export function HeroInstitution() {
             </div>
           </div>
 
-          {/* SHOWCASE: an "at a glance" brand card — no faces */}
+          {/* SHOWCASE: an "at a glance" brand card, no faces */}
           <div className="relative order-2 mx-auto w-full max-w-[24rem] lg:col-start-2 lg:row-span-2 lg:max-w-md">
             <div aria-hidden="true" className="absolute -inset-3 rounded-[2.5rem] bg-gold/10 blur-2xl" />
             <div className="relative overflow-hidden rounded-[2rem] border border-line/60 bg-white p-6 shadow-[0_30px_70px_-30px_rgba(22,27,38,0.4)] sm:p-7">

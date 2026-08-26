@@ -219,7 +219,7 @@ function BookingCalendar({ onBooked }: { onBooked: () => void }) {
       <div className="bg-gold/[0.08] p-6">
         <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#7A5E0F]">Step 3 · Book Your Trial</p>
         <h2 className="mt-1 font-display text-2xl font-bold text-ink">Choose your trial date &amp; time</h2>
-        <p className="mt-1 text-sm text-ink/60">Pick a slot that suits you. It&rsquo;s confirmed instantly — no waiting, no back-and-forth.</p>
+        <p className="mt-1 text-sm text-ink/60">Pick a slot that suits you. It&rsquo;s confirmed instantly, no waiting, no back-and-forth.</p>
       </div>
       <div className="p-6">
         <p className="mb-2 text-sm font-semibold text-ink">Select a date</p>
@@ -247,7 +247,7 @@ function BookingCalendar({ onBooked }: { onBooked: () => void }) {
 
         {err && <p className="mt-4 text-sm text-red-600">{err}</p>}
         <button onClick={confirm} disabled={busy || !day || !slot} className="mt-5 w-full rounded-full bg-ink py-3.5 text-base font-semibold text-paper disabled:opacity-50">
-          {busy ? "Confirming…" : "Confirm my trial — instant"}
+          {busy ? "Confirming…" : "Confirm my trial, instant"}
         </button>
       </div>
     </div>
@@ -285,7 +285,7 @@ function ConfirmationCard({ session, completed }: { session: TrialSession | null
         <div className="mt-4 rounded-2xl border border-gold/30 bg-gold/[0.06] p-4">
           <p className="text-sm font-bold text-[#7A5E0F]">🎓 Your teacher will be allotted in advance.</p>
           <p className="mt-1 text-sm text-ink/70">
-            Their details — along with the <b>Director&rsquo;s personal confirmation</b> — will reach you in a single message on <b>WhatsApp</b> before your class. You&rsquo;re not alone in this: Musicphonetics is with you at every step, from your very first class to the stage.
+            Their details, along with the <b>Director&rsquo;s personal confirmation</b>, will reach you in a single message on <b>WhatsApp</b> before your class. You&rsquo;re not alone in this: Musicphonetics is with you at every step, from your very first class to the stage.
           </p>
         </div>
 
@@ -346,7 +346,7 @@ function ConfirmationCard({ session, completed }: { session: TrialSession | null
         {exp?.partner && <p className="mt-4 rounded-xl bg-gold/[0.08] p-3 text-sm text-ink/70">🎸 {exp.partner}</p>}
 
         <p className="mt-4 text-xs text-ink/50">
-          {completed ? "Your trial is complete — share your feedback below to unlock your pathway." : "Your feedback opens the moment your teacher closes the class with your trial code."}
+          {completed ? "Your trial is complete, share your feedback below to unlock your pathway." : "Your feedback opens the moment your teacher closes the class with your trial code."}
         </p>
       </div>
     </div>
@@ -414,7 +414,7 @@ function PathwayCard({ session: s }: { session: TrialSession | null }) {
             </div>
             {s?.recommendation?.path && (
               <Link href="/pay" className="mt-5 inline-flex rounded-full bg-ink px-6 py-3 text-sm font-semibold text-paper">
-                Start my journey — {s.recommendation.path}{s.recommendation.monthly ? ` · ${s.recommendation.monthly}` : ""} →
+                Start my journey, {s.recommendation.path}{s.recommendation.monthly ? ` · ${s.recommendation.monthly}` : ""} →
               </Link>
             )}
           </>
@@ -422,9 +422,9 @@ function PathwayCard({ session: s }: { session: TrialSession | null }) {
           <>
             <h2 className="mt-2 font-display text-2xl font-bold text-ink">Thank you. 🎉</h2>
             <p className="mt-2 leading-relaxed text-ink/75">
-              Your teacher&rsquo;s assessment is with the Director now. Your personalised pathway — the right plan, pace and next songs for you — is being prepared and will appear here, and on your WhatsApp, very shortly.
+              Your teacher&rsquo;s assessment is with the Director now. Your personalised pathway, the right plan, pace and next songs for you, is being prepared and will appear here, and on your WhatsApp, very shortly.
             </p>
-            <p className="mt-3 text-sm text-ink/55">No templates, no guesswork — a real recommendation, made for you.</p>
+            <p className="mt-3 text-sm text-ink/55">No templates, no guesswork, a real recommendation, made for you.</p>
           </>
         )}
       </div>

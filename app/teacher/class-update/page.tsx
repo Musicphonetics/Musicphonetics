@@ -39,7 +39,7 @@ const addDays = (iso: string, n: number) => {
   return d.toISOString().slice(0, 10);
 };
 
-// Tap-to-pick durations — no typing. "55–60" stores 60.
+// Tap-to-pick durations, no typing. "55–60" stores 60.
 const DURATIONS: { v: number; label: string }[] = [
   { v: 30, label: "30 min" },
   { v: 45, label: "45 min" },
@@ -122,9 +122,9 @@ export default function ClassUpdatePage() {
             ))}
           </div>
           <p className="text-center text-xs text-ink/50">
-            {mode === "quick" && "Log one class in seconds — date, a tap for duration, and what you taught."}
-            {mode === "backfill" && "Add many past classes at once — perfect for entering a student’s attendance for the last few weeks."}
-            {mode === "detailed" && "The full record — attendance, homework, responses and internal notes."}
+            {mode === "quick" && "Log one class in seconds, date, a tap for duration, and what you taught."}
+            {mode === "backfill" && "Add many past classes at once, perfect for entering a student’s attendance for the last few weeks."}
+            {mode === "detailed" && "The full record, attendance, homework, responses and internal notes."}
           </p>
 
           {mode === "quick" && <QuickForm students={students} />}
@@ -137,7 +137,7 @@ export default function ClassUpdatePage() {
 }
 
 /* ------------------------------------------------------------------ */
-/* QUICK — one class, tap-based. Present + counts by default.          */
+/* QUICK, one class, tap-based. Present + counts by default.          */
 /* ------------------------------------------------------------------ */
 function QuickForm({ students }: { students: StudentStat[] }) {
   const [sid, setSid] = useState("");
@@ -217,7 +217,7 @@ function QuickForm({ students }: { students: StudentStat[] }) {
 }
 
 /* ------------------------------------------------------------------ */
-/* BACKFILL — many past classes at once. Date · duration · topic.      */
+/* BACKFILL, many past classes at once. Date · duration · topic.      */
 /* ------------------------------------------------------------------ */
 type BackRow = { id: number; date: string; duration: number; taught: string };
 const daysBetween = (a: string, b: string) =>
@@ -234,7 +234,7 @@ function BackfillForm({ students }: { students: StudentStat[] }) {
   const nextId = useMemo(() => ({ n: 1 }), []);
 
   // Spread the classes evenly between the first and last date. Real schedules
-  // are irregular (3 one week, 1 the next) — this is only a starting guess; every
+  // are irregular (3 one week, 1 the next), this is only a starting guess; every
   // date is editable below, so the teacher sets the exact dates that happened.
   function generate() {
     const n = Math.max(0, Math.min(60, Math.floor(Number(count) || 0)));
@@ -309,7 +309,7 @@ function BackfillForm({ students }: { students: StudentStat[] }) {
           Generate {Math.max(0, Math.min(60, Math.floor(Number(count) || 0)))} rows
         </button>
         <p className="text-xs text-ink/45">
-          We spread the classes evenly between those two dates as a starting point — no fixed weekly pattern.
+          We spread the classes evenly between those two dates as a starting point, no fixed weekly pattern.
           Every date below is editable, so set the exact days each class actually happened.
         </p>
       </div>
@@ -356,7 +356,7 @@ function BackfillForm({ students }: { students: StudentStat[] }) {
 }
 
 /* ------------------------------------------------------------------ */
-/* DETAILED — the full record (unchanged behaviour).                   */
+/* DETAILED, the full record (unchanged behaviour).                   */
 /* ------------------------------------------------------------------ */
 function DetailedForm({ students }: { students: StudentStat[] }) {
   const router = useRouter();

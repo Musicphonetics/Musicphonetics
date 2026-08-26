@@ -6,7 +6,7 @@ export const GENDERS = ["Male", "Female", "Other"] as const;
 
 export const RELATIONSHIPS = ["Father", "Mother", "Guardian", "Grandparent", "Sibling", "Other"] as const;
 
-// Broad occupation categories — insight without asking for a job title.
+// Broad occupation categories, insight without asking for a job title.
 export const OCCUPATIONS = [
   "Defence (Army / Navy / Air Force)",
   "Government Service",
@@ -55,7 +55,7 @@ export const LEAD_SOURCES = [
   "Other",
 ] as const;
 
-// School grades — Nursery/KG through 12 and college, plus a fallback.
+// School grades, Nursery/KG through 12 and college, plus a fallback.
 export const GRADES = [
   "Nursery", "LKG", "UKG",
   "Class 1", "Class 2", "Class 3", "Class 4", "Class 5", "Class 6",

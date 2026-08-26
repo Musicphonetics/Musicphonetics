@@ -40,7 +40,7 @@ export function DashboardBody({
   const plan = studentPlan(student);
   return (
     <div className="space-y-4">
-      {/* Fee-due-soon popup — fires once per set after the 6th class */}
+      {/* Fee-due-soon popup, fires once per set after the 6th class */}
       <FeeDueSoonPopup student={student} completed={view.completed} pays={pays} />
 
       {/* Greeting */}
@@ -98,7 +98,7 @@ export function DashboardBody({
         </Panel>
       )}
 
-      {/* This month's plan (one big goal + 8 classes) — every program once the
+      {/* This month's plan (one big goal + 8 classes), every program once the
           teacher has made one. Director's Circle always shows it (premium). */}
       {(planHasContent(student.monthly_plan) || plan === "directors") ? (
         <MonthlyPlanCard studentName={student.name} instrument={student.instrument} monthlyPlan={student.monthly_plan} plan={plan} />

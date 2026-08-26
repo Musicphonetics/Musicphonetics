@@ -354,16 +354,21 @@ body .site-nav { top: 1.75rem; }
 /* ── Premium page-snap ─────────────────────────────────────────────────────
    As you scroll the marketing site it settles onto each major section, like
    flipping a page. We use `proximity` (NOT mandatory): a section taller than
-   the screen still scrolls through fully, so text is never cut off — it only
+   the screen still scrolls through fully, so text is never cut off, it only
    snaps when you're near a boundary. Portal/app pages have no section[id]
    targets, so they're unaffected. scroll-margin clears the fixed ticker+nav. */
 html { scroll-behavior: smooth; }
-/* Content pages: gentle proximity snap on major sections (never traps). */
-html:not([data-deck]) { scroll-snap-type: y proximity; }
-html:not([data-deck]) #main section[id] { scroll-snap-align: start; scroll-snap-stop: normal; scroll-margin-top: calc(4rem + 1.75rem); }
-/* The homepage elite deck (components/deck/DeckShell.tsx sets data-deck): true
-   full-page snap — one flick per page. Tall panels still scroll through, so
-   nothing is cut. */
+/* Super-efficient scrolling: free flick with no snap friction. Off-screen
+   sections skip their layout and paint (content-visibility), so a long page
+   stays smooth even when scrolled fast. A remembered intrinsic size keeps the
+   scrollbar stable. Sections that paint decoration outside their own box can
+   opt out with .no-cv. Anchor jumps clear the fixed ticker + nav. */
+html:not([data-deck]) #main section[id] { scroll-margin-top: calc(4rem + 1.75rem); }
+html:not([data-deck]) #main > section:not(.no-cv) {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 720px;
+}
+/* Deck routes (components/deck/DeckShell.tsx sets data-deck) keep full-page snap. */
 html[data-deck] { scroll-snap-type: y mandatory; }
 html[data-deck] [data-panel] { scroll-snap-align: start; scroll-snap-stop: always; }
 @media (prefers-reduced-motion: reduce) { html { scroll-snap-type: none !important; scroll-behavior: auto; } }
@@ -390,7 +395,7 @@ html[data-deck] [data-panel] { scroll-snap-align: start; scroll-snap-stop: alway
 /* ── Immersive chapter deck (components/deck/ChapterDeck.tsx) ──────────────
    A controlled book: chapters are stacked; only the active one is visible.
    One gesture = one chapter. The incoming chapter rises from below and settles;
-   the outgoing lifts away and scales up — a consistent cinematic page-turn.
+   the outgoing lifts away and scales up, a consistent cinematic page-turn.
    Layered depth: elements tagged data-depth move at their own rate. */
 .chapter {
   position: absolute; inset: 0; overflow: hidden;
@@ -398,7 +403,7 @@ html[data-deck] [data-panel] { scroll-snap-align: start; scroll-snap-stop: alway
   will-change: transform;
 }
 /* Vertical page-slide: the next chapter slides up from below, the previous
-   slides away upward — a real "scrolling to the next page" feeling, one per gesture. */
+   slides away upward, a real "scrolling to the next page" feeling, one per gesture. */
 .chapter-active { transform: translateY(0); pointer-events: auto; z-index: 2; }
 .chapter-next   { transform: translateY(100%); pointer-events: none; z-index: 1; }
 .chapter-prev   { transform: translateY(-100%); pointer-events: none; z-index: 1; }
@@ -411,7 +416,7 @@ html[data-deck] [data-panel] { scroll-snap-align: start; scroll-snap-stop: alway
 .chapter-prev [data-depth="mid"] { transform: translateY(-30px); }
 
 /* Reveals rise and settle; a gentle cascade so the page composes itself
-   one line at a time — the "nice scrolling" feel, not a single hard cut. */
+   one line at a time, the "nice scrolling" feel, not a single hard cut. */
 .chapter [data-reveal] { opacity: 0; transform: translateY(42px); transition: opacity .8s cubic-bezier(.16,.84,.24,1), transform .8s cubic-bezier(.16,.84,.24,1); }
 .chapter-active [data-reveal] { opacity: 1; transform: none; }
 .chapter-active [data-reveal]:nth-child(1) { transition-delay: .10s; }

@@ -34,7 +34,7 @@ export default function ProgrammePage({ params }: { params: { slug: string } }) 
   const p = getProgramme(params.slug);
   if (!p) notFound();
 
-  // Always open the enrolment/lead form (free trial or pay) — never straight to
+  // Always open the enrolment/lead form (free trial or pay), never straight to
   // WhatsApp. Amount is included when known so the form can show the price.
   const enrolHref = `/pay?plan=${p.slug}${p.payAmount ? `&amt=${p.payAmount}` : ""}`;
 

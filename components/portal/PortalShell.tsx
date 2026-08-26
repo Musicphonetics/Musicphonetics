@@ -28,7 +28,7 @@ export function PortalShell({
   const night = theme === "night";
   const loginPath = role === "owner" ? "/owner/login" : role === "parent" ? "/parent/login" : role === "sales" ? "/sales/login" : "/teacher/login";
 
-  // Only bounce to login when genuinely signed out — NOT on a network/timeout
+  // Only bounce to login when genuinely signed out, NOT on a network/timeout
   // error (that would loop to a login page that also can't reach the server).
   useEffect(() => {
     if (!loading && configured && !userId && !error) router.replace(loginPath);
@@ -80,13 +80,13 @@ export function PortalShell({
       </Centered>
     );
   }
-  // Instant shell skeleton while auth resolves — the portal never shows a blank
+  // Instant shell skeleton while auth resolves, the portal never shows a blank
   // screen, and a slow secondary query can't hold up the whole chrome.
   if (loading) return <ShellSkeleton night={night} wide={variant === "wide"} />;
   if (!userId) return <ShellSkeleton night={night} wide={variant === "wide"} />;
 
   // A staff account (owner/teacher) must never render the Student (parent)
-  // portal — it would expose their teacher/owner-visible student rows. Block it
+  // portal, it would expose their teacher/owner-visible student rows. Block it
   // (an effect above also redirects them to their own portal).
   if (role === "parent" && profile && (profile.role === "owner" || profile.role === "teacher")) {
     return (

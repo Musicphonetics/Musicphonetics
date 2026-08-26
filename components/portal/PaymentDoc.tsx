@@ -5,10 +5,10 @@ import { feeBreakdown, inr } from "@/lib/money";
 import type { Payment } from "@/lib/supabase/types";
 
 // A printable A4 invoice or receipt. `showSplit` reveals the internal
-// gateway-charge → 70/30 breakdown (owner/teacher only — never on a family copy).
+// gateway-charge → 70/30 breakdown (owner/teacher only, never on a family copy).
 
 const d = (iso?: string | null) =>
-  iso ? new Date(iso + (iso.length <= 10 ? "T00:00:00" : "")).toLocaleDateString("en-IN", { day: "numeric", month: "long", year: "numeric" }) : "—";
+  iso ? new Date(iso + (iso.length <= 10 ? "T00:00:00" : "")).toLocaleDateString("en-IN", { day: "numeric", month: "long", year: "numeric" }) : "-";
 
 export function PaymentDoc({
   payment: p, kind, studentName, studentCode, planName, teacherName, showSplit = false, onClose,
@@ -41,7 +41,7 @@ export function PaymentDoc({
 
         <div className="mt-5 grid gap-x-8 gap-y-3 sm:grid-cols-2">
           <Field label="Billed to" value={studentName} />
-          <Field label="Student code" value={studentCode || "—"} />
+          <Field label="Student code" value={studentCode || "-"} />
           <Field label="Programme" value={planName || "Musicphonetics classes"} />
           <Field label="Billing cycle" value={p.payment_cycle || p.billing_cycle || "Monthly"} />
           {paid && p.payment_mode && <Field label="Paid via" value={p.payment_mode} />}
@@ -59,7 +59,7 @@ export function PaymentDoc({
           </thead>
           <tbody className="text-ink/85">
             <tr className="border-b border-hairline/70">
-              <td className="py-2.5">{planName || "Music classes"} — {p.payment_cycle || p.billing_cycle || "monthly fee"}</td>
+              <td className="py-2.5">{planName || "Music classes"}, {p.payment_cycle || p.billing_cycle || "monthly fee"}</td>
               <td className="py-2.5 text-right">{inr(f.gross)}</td>
             </tr>
             {(p.discount ?? 0) > 0 && (

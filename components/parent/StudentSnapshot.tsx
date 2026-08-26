@@ -10,10 +10,10 @@ import type { StudentView } from "@/lib/supabase/parent";
 import { cn } from "@/lib/utils";
 
 const shortDate = (iso: string | null) =>
-  iso ? new Date(iso + "T00:00:00").toLocaleDateString("en-IN", { day: "numeric", month: "short" }) : "—";
+  iso ? new Date(iso + "T00:00:00").toLocaleDateString("en-IN", { day: "numeric", month: "short" }) : "-";
 const initial = (n: string) => (n.trim()[0] || "?").toUpperCase();
 
-// The at-a-glance panel at the top of the student portal — profile, this set's
+// The at-a-glance panel at the top of the student portal, profile, this set's
 // classes, days left in the validity window, next class, fee-due date, and a
 // single honest health read: "On track" or "Needs attention".
 export function StudentSnapshot({ student, view, pays, completedDates }: {
@@ -53,7 +53,7 @@ export function StudentSnapshot({ student, view, pays, completedDates }: {
       {/* Metrics */}
       <div className="mt-4 grid grid-cols-2 gap-2.5 sm:grid-cols-4">
         <Metric big label="Classes" value={`${sp.currentDone}/${sp.perSet}`} sub="this set" />
-        <Metric big label="Days remaining" value={daysLeft != null ? String(daysLeft) : "—"} sub={daysLeft != null ? "to finish set" : "add a payment"} tone={deadline?.state === "urgent" ? "warn" : deadline?.state === "expired" ? "bad" : undefined} />
+        <Metric big label="Days remaining" value={daysLeft != null ? String(daysLeft) : "-"} sub={daysLeft != null ? "to finish set" : "add a payment"} tone={deadline?.state === "urgent" ? "warn" : deadline?.state === "expired" ? "bad" : undefined} />
         <Metric label="Next class" value={shortDate(view.nextClassDate)} />
         <Metric label="Fee due" value={shortDate(feeDue)} />
       </div>
@@ -64,12 +64,12 @@ export function StudentSnapshot({ student, view, pays, completedDates }: {
         <span aria-hidden>{attention ? "⚠️" : "✅"}</span>
         <span className="min-w-0 flex-1">
           {sp.allComplete
-            ? "This set is complete — renew to keep classes going."
+            ? "This set is complete, renew to keep classes going."
             : deadline?.state === "expired"
-              ? "This set has passed its 35-day validity — please message us."
+              ? "This set has passed its 35-day validity, please message us."
               : deadline?.state === "urgent"
-                ? `Only ${daysLeft} day${daysLeft === 1 ? "" : "s"} left to finish this set — book your classes now.`
-                : "Class schedule is healthy — keep up the steady pace."}
+                ? `Only ${daysLeft} day${daysLeft === 1 ? "" : "s"} left to finish this set, book your classes now.`
+                : "Class schedule is healthy, keep up the steady pace."}
         </span>
         {attention && <Link href="/parent/payments" className="shrink-0 font-semibold underline underline-offset-2">Fees →</Link>}
       </div>

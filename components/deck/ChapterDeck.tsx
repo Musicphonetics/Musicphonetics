@@ -3,7 +3,7 @@
 import { Children, useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 
-// A controlled, immersive "book". No native page scroll — ONE wheel/touch/key
+// A controlled, immersive "book". No native page scroll, ONE wheel/touch/key
 // gesture advances exactly ONE chapter, with a lock so rapid input can't skip.
 // Chapters are stacked (see .chapter CSS); only the active one is interactive.
 export function ChapterDeck({ children, labels, themes }: { children: React.ReactNode; labels: string[]; themes?: ("light" | "dark")[] }) {

@@ -1,7 +1,7 @@
 import type { AttendanceStatus, ClassUpdate } from "./supabase/types";
 
 // Attendance & class accounting. Progress and "classes completed" derive ONLY
-// from valid completed classes — a scheduled/cancelled/rescheduled class never
+// from valid completed classes, a scheduled/cancelled/rescheduled class never
 // silently counts as done.
 
 export const ATTENDANCE_STATUSES: AttendanceStatus[] = [

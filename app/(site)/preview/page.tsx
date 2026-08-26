@@ -7,7 +7,7 @@ import { HeroInstitution } from "@/components/home/HeroInstitution";
 import { TIERS } from "@/lib/programTiers";
 import { REVIEWS } from "@/lib/home-config";
 
-export const metadata: Metadata = { title: "Preview — Musicphonetics", robots: { index: false } };
+export const metadata: Metadata = { title: "Preview | Musicphonetics", robots: { index: false } };
 
 const glow = (pos: string) => (
   <>
@@ -20,22 +20,22 @@ const PILLARS = [
   { n: "01", t: "Match", d: "Your teacher, chosen for you." },
   { n: "02", t: "Method", d: "A real, structured curriculum." },
   { n: "03", t: "Track", d: "Every class logged in your portal." },
-  { n: "04", t: "Perform", d: "A real stage — open mics & exams." },
+  { n: "04", t: "Perform", d: "A real stage, open mics & exams." },
 ];
 
 const TIER_LIST = [TIERS.foundation, TIERS.main, TIERS.signature, TIERS.abhishek];
 
-// A cinematic, bespoke slide-deck homepage (preview only — noindex). Each slide
+// A cinematic, bespoke slide-deck homepage (preview only, noindex). Each slide
 // is exactly one screen; one flick per section; bold layered reveals.
 export default function PreviewPage() {
   return (
     <SlideDeck>
-      {/* 1 — HERO (your existing hero, kept exactly, as the first snap panel) */}
+      {/* 1, HERO (your existing hero, kept exactly, as the first snap panel) */}
       <div data-slide className="deck-slide">
         <HeroInstitution />
       </div>
 
-      {/* 2 — THE METHOD */}
+      {/* 2, THE METHOD */}
       <DeckSlide bg={glow("80% 25%")}>
         <p data-reveal data-delay="1" className="text-[11px] font-bold uppercase tracking-[0.22em] text-gold">The Musicphonetics way</p>
         <h2 data-reveal data-delay="2" className="mt-3 font-display text-[2rem] font-black leading-[1.08] text-paper sm:text-4xl">
@@ -50,10 +50,10 @@ export default function PreviewPage() {
             </div>
           ))}
         </div>
-        <p data-reveal data-delay="5" className="mt-6 text-sm text-paper/55">Guitar · Piano · Keyboard · Vocals &amp; more — for every age and level.</p>
+        <p data-reveal data-delay="5" className="mt-6 text-sm text-paper/55">Guitar · Piano · Keyboard · Vocals &amp; more, for every age and level.</p>
       </DeckSlide>
 
-      {/* 3 — PROGRAMMES (carousel) */}
+      {/* 3, PROGRAMMES (carousel) */}
       <DeckSlide bg={glow("50% 20%")}>
         <p data-reveal data-delay="1" className="text-[11px] font-bold uppercase tracking-[0.22em] text-gold">Programmes</p>
         <h2 data-reveal data-delay="2" className="mt-3 font-display text-[2.3rem] font-black leading-[1.05] text-paper sm:text-4xl">A path for every stage.</h2>
@@ -89,7 +89,7 @@ export default function PreviewPage() {
         </div>
       </DeckSlide>
 
-      {/* 4 — PROOF */}
+      {/* 4, PROOF */}
       <DeckSlide bg={glow("50% 80%")} contentClassName="text-center">
         <p data-reveal data-delay="1" className="text-[11px] font-bold uppercase tracking-[0.22em] text-gold">Proof</p>
         <div data-reveal data-delay="2" className="mt-4 flex items-center justify-center gap-3">

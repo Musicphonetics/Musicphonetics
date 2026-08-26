@@ -14,7 +14,7 @@ const STARTERS = [
   "What will my child learn in the first month?",
 ];
 
-// Free, instant curriculum Q&A for parents — answered by AI grounded in the
+// Free, instant curriculum Q&A for parents, answered by AI grounded in the
 // Musicphonetics method (server-side; no key in the browser).
 export function AskAI({ studentName, instrument }: { studentName?: string; instrument?: string | null }) {
   const [msgs, setMsgs] = useState<Msg[]>([]);

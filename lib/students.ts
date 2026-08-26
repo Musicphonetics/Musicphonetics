@@ -3,7 +3,7 @@ import type { Student } from "./supabase/types";
 // Human-readable student code, e.g. MP-2026-000123. Generated server-side by
 // the SQL trigger; this only formats/guards for display.
 export function studentCode(s: { student_code?: string | null }): string {
-  return (s.student_code || "").trim() || "—";
+  return (s.student_code || "").trim() || "-";
 }
 
 // Search a student by name, parent name, phone, email or student code.

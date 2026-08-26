@@ -147,7 +147,7 @@ export default function TeacherSchedule() {
         <div className="flex items-center justify-between gap-3">
           <div className="min-w-0">
             <p className="text-sm font-semibold text-ink">{nameOf[c.student_id] || "Student"}</p>
-            <p className="text-xs text-ink/60">{prettyDate(c.scheduled_date)} · {c.start_time.slice(0, 5)}–{c.end_time.slice(0, 5)} · {c.mode || "—"}</p>
+            <p className="text-xs text-ink/60">{prettyDate(c.scheduled_date)} · {c.start_time.slice(0, 5)}–{c.end_time.slice(0, 5)} · {c.mode || "-"}</p>
           </div>
           <div className="flex shrink-0 items-center gap-3">
             <button onClick={() => setEdit({ id: c.id, date: c.scheduled_date, start: c.start_time.slice(0, 5), end: c.end_time.slice(0, 5), mode: c.mode || "Online", location: c.location || "" })} className="text-xs font-semibold text-[#7A5E0F]">Edit</button>
@@ -224,7 +224,7 @@ export default function TeacherSchedule() {
             <div className="space-y-2">
               {avail.length === 0 ? <Empty text="No availability set yet." /> : avail.map((a) => (
                 <div key={a.id} className="flex items-center justify-between rounded-xl border border-hairline bg-white p-3 text-sm">
-                  <span className="text-ink/80">{WD[a.weekday]} · {a.start_time.slice(0, 5)}–{a.end_time.slice(0, 5)} · {a.mode || "—"}</span>
+                  <span className="text-ink/80">{WD[a.weekday]} · {a.start_time.slice(0, 5)}–{a.end_time.slice(0, 5)} · {a.mode || "-"}</span>
                   <button onClick={() => delAvail(a.id)} className="text-xs font-semibold text-red-600">Remove</button>
                 </div>
               ))}

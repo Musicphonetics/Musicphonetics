@@ -48,10 +48,10 @@ export function OwnerTrials() {
           <tbody>
             {rows.map((r) => (
               <tr key={r.id} className="border-t border-hairline">
-                <td className="p-3"><div className="font-semibold text-ink">{r.student_name || "—"}</div><div className="text-xs text-ink/50">{r.instrument}{r.school ? ` · ${r.school}` : ""}</div></td>
-                <td className="p-3 text-ink/70">{r.trial_datetime ? new Date(r.trial_datetime).toLocaleDateString("en-IN", { day: "numeric", month: "short", hour: "numeric", minute: "2-digit" }) : "—"}</td>
+                <td className="p-3"><div className="font-semibold text-ink">{r.student_name || "-"}</div><div className="text-xs text-ink/50">{r.instrument}{r.school ? ` · ${r.school}` : ""}</div></td>
+                <td className="p-3 text-ink/70">{r.trial_datetime ? new Date(r.trial_datetime).toLocaleDateString("en-IN", { day: "numeric", month: "short", hour: "numeric", minute: "2-digit" }) : "-"}</td>
                 <td className="p-3"><span className="rounded-full bg-gold/12 px-2.5 py-1 text-xs font-semibold text-[#7A5E0F]">{STAGE_LABEL[r.stage] || r.stage}</span></td>
-                <td className="p-3">{r.trial_rating ? "★".repeat(r.trial_rating) : "—"}</td>
+                <td className="p-3">{r.trial_rating ? "★".repeat(r.trial_rating) : "-"}</td>
                 <td className="p-3 text-right"><button onClick={() => setOpen(r.id)} className="rounded-full bg-ink px-4 py-1.5 text-xs font-semibold text-paper">Open</button></td>
               </tr>
             ))}
@@ -188,7 +188,7 @@ function Detail({ id, teachers, onBack }: { id: string; teachers: Row[]; onBack:
         </div>
       )}
 
-      {/* Director review — unlocks the pathway */}
+      {/* Director review, unlocks the pathway */}
       <div className={card + " border-gold/40"}>
         <h3 className="font-display text-lg font-bold text-ink">Director review &amp; recommendation</h3>
         <p className="mt-1 text-sm text-ink/55">Publishing this reveals the family&rsquo;s personalised pathway (after their feedback) and notifies them.</p>
@@ -209,12 +209,12 @@ function Detail({ id, teachers, onBack }: { id: string; teachers: Row[]; onBack:
         </div>
       </div>
 
-      {/* Enrolment — converts the trial account into the Student Portal */}
+      {/* Enrolment, converts the trial account into the Student Portal */}
       <div className={card + " border-feature-green/40"}>
         <h3 className="font-display text-lg font-bold text-ink">Enrol &amp; convert to Student Portal</h3>
         {row.converted_student_id || row.stage === "enrolled" ? (
           <div className="mt-2 rounded-xl bg-feature-green/10 p-4 text-sm font-semibold text-feature-green">
-            ✓ Enrolled. This family&rsquo;s login is now their full Student Portal — no second account, history preserved.
+            ✓ Enrolled. This family&rsquo;s login is now their full Student Portal, no second account, history preserved.
           </div>
         ) : (
           <>

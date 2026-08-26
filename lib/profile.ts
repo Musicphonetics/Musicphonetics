@@ -64,7 +64,7 @@ export async function submitProfile(p: TeacherProfile): Promise<{ status: string
 export async function aiBio(answers: Record<string, string>): Promise<{ headline: string; bio: string }> {
   const res = await fetch("/api/ai/bio", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ answers }) });
   const data = (await res.json().catch(() => ({}))) as { ok?: boolean; headline?: string; bio?: string; error?: string; detail?: string };
-  if (!res.ok || !data.ok) throw new Error((data.error || "Couldn't write the bio.") + (data.detail ? ` — ${data.detail}` : ""));
+  if (!res.ok || !data.ok) throw new Error((data.error || "Couldn't write the bio.") + (data.detail ? `, ${data.detail}` : ""));
   return { headline: data.headline || "", bio: data.bio || "" };
 }
 

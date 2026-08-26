@@ -52,7 +52,7 @@ const isToday = (dateStr: string) => {
 };
 const isReceived = (p: Payment) => /received/i.test(p.payment_status);
 
-// Rich operational metrics for the command dashboard — all from real data.
+// Rich operational metrics for the command dashboard, all from real data.
 export interface OwnerOps {
   revenueToday: number;
   grossMonth: number; chargeMonth: number; netMonth: number;

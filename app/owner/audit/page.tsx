@@ -33,7 +33,7 @@ export default function OwnerAudit() {
   return (
     <PortalShell role="owner" tabs={OWNER_TABS} variant="wide" title="Audit log">
       <p className="-mt-2 mb-4 max-w-2xl text-sm text-ink/60">An append-only record of important operational activity. Read-only; never editable. Sensitive data (passwords, tokens, full bank/ID details) is never stored here.</p>
-      {err && <div className="mb-4 rounded-xl border border-red-300 bg-red-50 p-3 text-sm text-red-700">{err} — have you run the operations upgrade migration?</div>}
+      {err && <div className="mb-4 rounded-xl border border-red-300 bg-red-50 p-3 text-sm text-red-700">{err}, have you run the operations upgrade migration?</div>}
 
       <div className="mb-4 flex flex-wrap gap-2">
         <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search…"
@@ -53,7 +53,7 @@ export default function OwnerAudit() {
             <div key={r.id} className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-hairline bg-white p-3.5">
               <div className="min-w-0">
                 <p className="text-sm font-semibold text-ink">{pretty(r.action)}</p>
-                <p className="text-xs text-ink/60">{r.summary || r.entity_type || "—"}{r.actor_role ? ` · by ${r.actor_role}` : ""}</p>
+                <p className="text-xs text-ink/60">{r.summary || r.entity_type || "-"}{r.actor_role ? ` · by ${r.actor_role}` : ""}</p>
               </div>
               <span className="shrink-0 text-xs text-ink/45">{when(r.created_at)}</span>
             </div>

@@ -73,7 +73,7 @@ function Body({ data }: { data: OwnerData }) {
         <Kpi label="Birthdays ≤30d" value={String(k.birthdays30)} />
       </div>
 
-      {/* Money this month — gross → charge → net → 70/30 (real data) */}
+      {/* Money this month, gross → charge → net → 70/30 (real data) */}
       <Card title="Money this month">
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
           <Stat label="Collected today" value={inr(ops.revenueToday)} />

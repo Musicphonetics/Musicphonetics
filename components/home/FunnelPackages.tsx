@@ -24,7 +24,7 @@ const PLANS: Plan[] = [
     slug: "foundation",
     tag: "Beginners only",
     name: "The Foundation",
-    line: "A calm, correct first start — exclusively for complete beginners.",
+    line: "A calm, correct first start, exclusively for complete beginners.",
     fee: "₹10,000",
     feeNote: "8 one-hour classes a month",
     facts: [
@@ -36,7 +36,7 @@ const PLANS: Plan[] = [
   },
   {
     slug: "main",
-    tag: "Offer — till seats last",
+    tag: "Offer, till seats last",
     name: "The Main Pathway",
     line: "The full Musicphonetics system, for real and lasting progress.",
     fee: "₹12,000",
@@ -54,7 +54,7 @@ const PLANS: Plan[] = [
     slug: "directors-circle",
     tag: "Premium service",
     name: "The Director's Circle",
-    line: "A white-glove service for families who want the very best — priced for the care, not a name.",
+    line: "A white-glove service for families who want the very best, priced for the care, not a name.",
     fee: "By consultation",
     feeNote: "priority & concierge",
     facts: [
