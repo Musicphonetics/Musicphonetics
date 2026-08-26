@@ -1,13 +1,26 @@
 import type { Metadata } from "next";
-import { ExperienceDeck } from "@/components/deck/ExperienceDeck";
+import { HeroInstitution } from "@/components/home/HeroInstitution";
+import { NightPortalShowcase } from "@/components/home/night/NightPortalShowcase";
+import { NightOnlinePresence } from "@/components/home/night/NightOnlinePresence";
+import { HowItWorks } from "@/components/home/HowItWorks";
+import { FunnelPackages } from "@/components/home/FunnelPackages";
+import { PracticeCalculator } from "@/components/home/PracticeCalculator";
+import { AchievementsBand } from "@/components/home/AchievementsBand";
+import { RealMoments } from "@/components/home/RealMoments";
+import { ReviewsSection } from "@/components/home/Reviews";
+import { CentreEvents } from "@/components/home/CentreEvents";
+import { FounderSection } from "@/components/home/FounderSection";
+import { FounderCredibility } from "@/components/home/FounderCredibility";
+import { FinalCTA } from "@/components/home/FinalCTA";
 import { JsonLd } from "@/components/seo/JsonLd";
+import { REVIEWS, HOME_REVIEW_COUNT } from "@/lib/home-config";
 
 const SITE = "https://musicphonetics.com";
 
 export const metadata: Metadata = {
   title: "Music education, built like an institution | Musicphonetics",
   description:
-    "A structured, one-to-one music school in Delhi NCR and online - a matched teacher, a real curriculum, tracked progress, and a stage to perform on. Guitar, piano/keyboard & vocals. Book a free trial.",
+    "A structured, one-to-one music school in Delhi NCR and online - a matched teacher, a real curriculum, tracked progress, and a stage to perform on. Guitar, piano/keyboard & vocals. Book a free trial on WhatsApp.",
   alternates: { canonical: "/" },
   openGraph: {
     title: "Music education, built like an institution - Musicphonetics",
@@ -35,13 +48,27 @@ const localBusiness = {
   ],
 };
 
-// The homepage IS the immersive experience. It renders full-screen over the site
-// chrome (the deck has a higher z-index), so it feels like an app, not a page.
 export default function HomePage() {
+  const homeReviews = REVIEWS.slice(0, HOME_REVIEW_COUNT);
   return (
     <>
       <JsonLd data={localBusiness} />
-      <ExperienceDeck />
+      {/* Cinematic mobile-first flow with gentle section snap. The elite
+          full-page deck is being rebuilt section-by-section (each redesigned to
+          fit one screen) rather than wrapped generically. */}
+      <HeroInstitution />
+      <HowItWorks />
+      <FunnelPackages />
+      <PracticeCalculator />
+      <AchievementsBand />
+      <NightPortalShowcase />
+      <RealMoments />
+      <ReviewsSection files={homeReviews} />
+      <NightOnlinePresence />
+      <CentreEvents />
+      <FounderSection />
+      <FounderCredibility />
+      <FinalCTA />
     </>
   );
 }
