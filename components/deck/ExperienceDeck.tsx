@@ -36,25 +36,50 @@ function Frame({ children, image, className = "", justify = "center" }: {
 export function ExperienceDeck() {
   return (
     <ChapterDeck labels={LABELS} themes={THEMES}>
-      {/* 01 — DISCOVER: the previous light hero style, no face */}
+      {/* 01 — THE COVER: the whole brand at a glance, luxuriously prioritised */}
       <div className="relative h-full w-full overflow-hidden bg-paper">
-        <div className="absolute inset-0" style={{ background: "radial-gradient(55% 45% at 78% 18%, rgba(201,162,39,0.16), transparent 70%)" }} />
-        <div className="pointer-events-none absolute -right-10 bottom-8 select-none font-display text-[13rem] leading-none text-charcoal/[0.04]">♪</div>
+        <div className="absolute inset-0" style={{ background: "radial-gradient(55% 42% at 80% 14%, rgba(201,162,39,0.18), transparent 70%)" }} />
+        <div className="pointer-events-none absolute -right-12 bottom-4 select-none font-display text-[14rem] leading-none text-charcoal/[0.035]">♪</div>
         <div className="relative z-10 flex h-full flex-col justify-center px-6 pb-24 pt-24 sm:px-12">
           <div className="mx-auto w-full max-w-xl">
-            <span data-reveal className="inline-flex items-center gap-2 rounded-full border border-gold/50 bg-white/60 px-4 py-2 text-[0.7rem] font-semibold uppercase tracking-[0.16em] text-deep-gold backdrop-blur">
-              ★ Learn · Practise · Perform
-            </span>
-            <h1 data-reveal className="mt-6 font-body text-[clamp(2.6rem,12vw,4.2rem)] font-extrabold leading-[0.98] tracking-tight text-charcoal">
+            {/* what + where + trust, in one refined line */}
+            <div data-reveal className="flex flex-wrap items-center gap-x-2.5 gap-y-1 text-[11px] font-bold uppercase tracking-[0.16em] text-deep-gold">
+              <span>Premium music school</span>
+              <span className="h-1 w-1 rounded-full bg-gold/70" />
+              <span>Delhi NCR &amp; Online</span>
+              <span className="h-1 w-1 rounded-full bg-gold/70" />
+              <span>Since 2015</span>
+            </div>
+
+            {/* the brand */}
+            <h1 data-reveal className="mt-4 font-body text-[clamp(2.5rem,11.5vw,4.2rem)] font-extrabold leading-[0.98] tracking-tight text-charcoal">
               Structured Music Learning
               <span className="mt-1 block font-script text-[1.18em] font-bold leading-none text-gold">That Lasts.</span>
             </h1>
-            <p data-reveal className="mt-7 max-w-sm text-[1.05rem] font-medium leading-relaxed text-charcoal/70">
-              Guitar, piano, vocals and more — for every age and level. Taught the right way, by the founder and our faculty.
+
+            {/* the whole ecosystem, filtered into one sentence */}
+            <p data-reveal className="mt-6 max-w-md text-[1.02rem] font-medium leading-relaxed text-charcoal/75">
+              A one-to-one school where a <b className="text-charcoal">matched mentor</b>, a <b className="text-charcoal">real curriculum</b> and a <b className="text-charcoal">live portal</b> take you from first note to the stage.
             </p>
-            <div data-reveal className="mt-8 flex items-center gap-4">
+
+            {/* proof strip */}
+            <div data-reveal className="mt-6 flex w-fit divide-x divide-charcoal/15 rounded-2xl border border-charcoal/10 bg-white/60 backdrop-blur">
+              {[["4.8★", "Google"], ["1,100+", "students"], ["200+", "Trinity"]].map(([n, l]) => (
+                <div key={l} className="px-4 py-2 text-center">
+                  <div className="font-display text-lg font-bold leading-none text-charcoal">{n}</div>
+                  <div className="mt-0.5 text-[10px] uppercase tracking-wide text-charcoal/55">{l}</div>
+                </div>
+              ))}
+            </div>
+
+            <div data-reveal className="mt-7 flex items-center gap-4">
               <Link href="/studio" className="inline-flex items-center gap-2 rounded-full bg-charcoal px-8 py-4 text-base font-semibold text-cream shadow-[0_16px_40px_-12px_rgba(22,27,38,0.5)] transition hover:brightness-125">Book a free trial →</Link>
             </div>
+
+            {/* a book's "contents" — what the swipes reveal */}
+            <p data-reveal className="mt-7 text-[10.5px] font-semibold uppercase tracking-[0.18em] text-charcoal/40">
+              Swipe to explore · Method · Portal · Packages · Results
+            </p>
           </div>
         </div>
       </div>

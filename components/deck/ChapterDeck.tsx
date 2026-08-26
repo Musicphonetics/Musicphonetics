@@ -115,10 +115,10 @@ export function ChapterDeck({ children, labels, themes }: { children: React.Reac
         ))}
       </div>
 
-      {/* Swipe hint (first chapter only) */}
-      {idx === 0 && (
-        <button onClick={() => go(1)} className={"absolute bottom-6 left-1/2 z-40 -translate-x-1/2 animate-bounce text-xs font-semibold uppercase tracking-[0.2em] " + fgSoft}>
-          Swipe ↓
+      {/* Down-chevron affordance (all but the last chapter) */}
+      {idx < n - 1 && (
+        <button onClick={() => go(idx + 1)} aria-label="Next chapter" className={"absolute bottom-5 left-1/2 z-40 -translate-x-1/2 animate-bounce " + fgSoft}>
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>
         </button>
       )}
     </div>
