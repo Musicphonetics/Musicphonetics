@@ -5,28 +5,27 @@ import { InstrumentCarousel } from "@/components/deck/InstrumentCarousel";
 import { TIERS } from "@/lib/programTiers";
 import { REVIEWS } from "@/lib/home-config";
 
-
-const LABELS = ["Discover", "Philosophy", "Instruments", "Journey", "Stories", "Packages", "Begin"];
+const LABELS = ["Discover", "Philosophy", "Why us", "Instruments", "Journey", "Portal", "Stories", "Packages", "Begin"];
+const THEMES: ("light" | "dark")[] = ["light", "dark", "dark", "dark", "dark", "dark", "dark", "dark", "dark"];
 const TIER_LIST = [TIERS.foundation, TIERS.main, TIERS.signature, TIERS.abhishek];
+const eyebrow = "text-[11px] font-bold uppercase tracking-[0.24em] text-gold";
 
-// A full-height chapter frame. `image` is a full-bleed background (with parallax
-// depth); content sits over it. Everything fits inside the viewport by design.
-function Frame({ children, image, overlay = true, className = "", justify = "center" }: {
-  children: React.ReactNode; image?: string; overlay?: boolean; className?: string; justify?: "center" | "end";
+// A full-height dark chapter frame with an optional full-bleed image + depth.
+function Frame({ children, image, className = "", justify = "center" }: {
+  children: React.ReactNode; image?: string; className?: string; justify?: "center" | "end";
 }) {
   return (
-    <div className={"relative h-full w-full overflow-hidden " + className}>
-      {image && (
+    <div className={"relative h-full w-full overflow-hidden bg-[#0a0d14] " + className}>
+      {image ? (
         <div data-depth="bg" className="absolute inset-0">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src={image} alt="" className="h-full w-full object-cover" />
-          {overlay && <>
-            <div className="absolute inset-0 bg-gradient-to-b from-[#0a0d14]/75 via-[#0a0d14]/40 to-[#0a0d14]" />
-            <div className="absolute inset-0 bg-gradient-to-t from-[#0a0d14] via-transparent to-transparent" />
-          </>}
+          <div className="absolute inset-0 bg-gradient-to-b from-[#0a0d14]/75 via-[#0a0d14]/40 to-[#0a0d14]" />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#0a0d14] via-transparent to-transparent" />
         </div>
+      ) : (
+        <div className="absolute inset-0" style={{ background: "radial-gradient(65% 55% at 50% 30%, rgba(231,203,110,0.14), transparent 70%)" }} />
       )}
-      {!image && <div className="absolute inset-0" style={{ background: "radial-gradient(65% 55% at 50% 30%, rgba(231,203,110,0.14), transparent 70%)" }} />}
       <div className={"relative z-10 flex h-full flex-col px-6 pb-24 pt-24 sm:px-12 " + (justify === "end" ? "justify-end" : "justify-center")}>
         <div className="mx-auto w-full max-w-xl">{children}</div>
       </div>
@@ -34,27 +33,31 @@ function Frame({ children, image, overlay = true, className = "", justify = "cen
   );
 }
 
-const eyebrow = "text-[11px] font-bold uppercase tracking-[0.24em] text-gold";
-
 export function ExperienceDeck() {
   return (
-    <ChapterDeck labels={LABELS}>
-      {/* 01 — DISCOVER (cover) */}
-      <Frame image="/gallery/03-stage-guitar.jpg" justify="end">
-        <div data-reveal className="flex flex-wrap gap-2">
-          <span className="rounded-full bg-white/10 px-3 py-1 text-xs font-semibold text-paper backdrop-blur">★ 4.8 on Google</span>
-          <span className="rounded-full bg-white/10 px-3 py-1 text-xs font-semibold text-paper backdrop-blur">Est. 2015 · Delhi NCR</span>
+    <ChapterDeck labels={LABELS} themes={THEMES}>
+      {/* 01 — DISCOVER: the previous light hero style, no face */}
+      <div className="relative h-full w-full overflow-hidden bg-paper">
+        <div className="absolute inset-0" style={{ background: "radial-gradient(55% 45% at 78% 18%, rgba(201,162,39,0.16), transparent 70%)" }} />
+        <div className="pointer-events-none absolute -right-10 bottom-8 select-none font-display text-[13rem] leading-none text-charcoal/[0.04]">♪</div>
+        <div className="relative z-10 flex h-full flex-col justify-center px-6 pb-24 pt-24 sm:px-12">
+          <div className="mx-auto w-full max-w-xl">
+            <span data-reveal className="inline-flex items-center gap-2 rounded-full border border-gold/50 bg-white/60 px-4 py-2 text-[0.7rem] font-semibold uppercase tracking-[0.16em] text-deep-gold backdrop-blur">
+              ★ Learn · Practise · Perform
+            </span>
+            <h1 data-reveal className="mt-6 font-body text-[clamp(2.6rem,12vw,4.2rem)] font-extrabold leading-[0.98] tracking-tight text-charcoal">
+              Structured Music Learning
+              <span className="mt-1 block font-script text-[1.18em] font-bold leading-none text-gold">That Lasts.</span>
+            </h1>
+            <p data-reveal className="mt-7 max-w-sm text-[1.05rem] font-medium leading-relaxed text-charcoal/70">
+              Guitar, piano, vocals and more — for every age and level. Taught the right way, by the founder and our faculty.
+            </p>
+            <div data-reveal className="mt-8 flex items-center gap-4">
+              <Link href="/studio" className="inline-flex items-center gap-2 rounded-full bg-charcoal px-8 py-4 text-base font-semibold text-cream shadow-[0_16px_40px_-12px_rgba(22,27,38,0.5)] transition hover:brightness-125">Book a free trial →</Link>
+            </div>
+          </div>
         </div>
-        <h1 data-reveal className="mt-4 font-display text-[2.7rem] font-black leading-[1.02] text-paper sm:text-6xl">
-          Music education,<br />built like an <span className="text-gold">institution.</span>
-        </h1>
-        <p data-reveal className="mt-4 max-w-md text-[15px] leading-relaxed text-paper/80">
-          One matched mentor. A real curriculum. Every class tracked — and a stage to perform on.
-        </p>
-        <div data-reveal className="mt-6">
-          <Link href="/studio" className="rounded-full bg-gold px-8 py-4 text-base font-bold text-ink transition hover:bg-[#f0d783]">Book a free trial →</Link>
-        </div>
-      </Frame>
+      </div>
 
       {/* 02 — PHILOSOPHY */}
       <Frame>
@@ -67,14 +70,35 @@ export function ExperienceDeck() {
         </p>
       </Frame>
 
-      {/* 03 — INSTRUMENTS */}
+      {/* 03 — WHY US (why pay) */}
+      <Frame>
+        <p data-reveal className={eyebrow}>Why families choose us</p>
+        <h2 data-reveal className="mt-3 font-display text-[2.1rem] font-black leading-[1.08] text-paper sm:text-5xl">Not a class. A whole system.</h2>
+        <div className="mt-7 grid grid-cols-2 gap-3">
+          {[
+            { i: "🎯", t: "One matched mentor", d: "Chosen for you — never a rotating queue." },
+            { i: "📚", t: "A real curriculum", d: "Structured, graded, deliberate." },
+            { i: "📲", t: "Tracked every week", d: "Every class logged in your portal." },
+            { i: "🏆", t: "Exams & stage", d: "Trinity prep, open mics, showcases." },
+          ].map((v, k) => (
+            <div key={v.t} data-reveal style={{ transitionDelay: `${0.12 + k * 0.08}s` }} className="rounded-2xl border border-white/12 bg-white/[0.04] p-4">
+              <span className="text-xl">{v.i}</span>
+              <p className="mt-1.5 font-display text-base font-bold text-paper">{v.t}</p>
+              <p className="mt-1 text-[12px] leading-snug text-paper/60">{v.d}</p>
+            </div>
+          ))}
+        </div>
+        <p data-reveal className="mt-6 text-sm text-paper/70">An institution&rsquo;s system — with the care of a personal mentor.</p>
+      </Frame>
+
+      {/* 04 — INSTRUMENTS */}
       <Frame>
         <p data-reveal className={eyebrow + " text-center"}>Choose your instrument</p>
         <h2 data-reveal className="mt-2 text-center font-display text-3xl font-black text-paper sm:text-4xl">What will you play?</h2>
         <div data-reveal className="mt-8"><InstrumentCarousel /></div>
       </Frame>
 
-      {/* 04 — JOURNEY */}
+      {/* 05 — JOURNEY */}
       <Frame>
         <p data-reveal className={eyebrow}>How the journey works</p>
         <h2 data-reveal className="mt-3 font-display text-[2.1rem] font-black leading-[1.08] text-paper sm:text-5xl">Four steps. One musician.</h2>
@@ -94,7 +118,22 @@ export function ExperienceDeck() {
         </div>
       </Frame>
 
-      {/* 05 — STORIES / PROOF */}
+      {/* 06 — PORTAL (the system, shown) */}
+      <Frame>
+        <p data-reveal className={eyebrow + " text-center"}>Your private portal</p>
+        <h2 data-reveal className="mt-2 text-center font-display text-[1.9rem] font-black leading-tight text-paper sm:text-4xl">You&rsquo;ll always know exactly where you stand.</h2>
+        <div data-reveal className="mt-6 flex justify-center">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/images/portal-preview.webp" alt="The Musicphonetics parent portal" className="max-h-[38vh] w-auto rounded-2xl border border-white/12 shadow-[0_30px_70px_-25px_rgba(0,0,0,0.6)]" />
+        </div>
+        <div data-reveal className="mt-6 flex flex-wrap justify-center gap-2">
+          {["After every class: what was taught", "Live progress & attendance", "Fees & renewals, crystal clear", "Monthly report cards"].map((c) => (
+            <span key={c} className="rounded-full border border-white/12 bg-white/[0.05] px-3 py-1.5 text-[12px] text-paper/80">✓ {c}</span>
+          ))}
+        </div>
+      </Frame>
+
+      {/* 07 — STORIES / PROOF */}
       <Frame>
         <p data-reveal className={eyebrow + " text-center"}>Proof</p>
         <div data-reveal className="mt-3 flex items-center justify-center gap-3">
@@ -114,7 +153,7 @@ export function ExperienceDeck() {
         </div>
       </Frame>
 
-      {/* 06 — PACKAGES */}
+      {/* 08 — PACKAGES */}
       <Frame>
         <p data-reveal className={eyebrow}>Packages</p>
         <h2 data-reveal className="mt-2 font-display text-3xl font-black text-paper sm:text-4xl">A path for every stage.</h2>
@@ -150,7 +189,7 @@ export function ExperienceDeck() {
         </div>
       </Frame>
 
-      {/* 07 — BEGIN */}
+      {/* 09 — BEGIN */}
       <Frame image="/gallery/02-openmic.jpg" justify="center" className="text-center">
         <p data-reveal className={eyebrow}>Your first note is waiting</p>
         <h2 data-reveal className="mt-4 font-display text-[2.7rem] font-black leading-[1.03] text-paper sm:text-6xl">Begin your<br /><span className="text-gold">music story.</span></h2>

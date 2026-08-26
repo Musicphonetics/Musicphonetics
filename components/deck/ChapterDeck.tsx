@@ -6,7 +6,7 @@ import Link from "next/link";
 // A controlled, immersive "book". No native page scroll — ONE wheel/touch/key
 // gesture advances exactly ONE chapter, with a lock so rapid input can't skip.
 // Chapters are stacked (see .chapter CSS); only the active one is interactive.
-export function ChapterDeck({ children, labels }: { children: React.ReactNode; labels: string[] }) {
+export function ChapterDeck({ children, labels, themes }: { children: React.ReactNode; labels: string[]; themes?: ("light" | "dark")[] }) {
   const chapters = Children.toArray(children);
   const n = chapters.length;
   const [idx, setIdx] = useState(0);
@@ -68,6 +68,9 @@ export function ChapterDeck({ children, labels }: { children: React.ReactNode; l
   }, [go, n]);
 
   const two = (k: number) => String(k + 1).padStart(2, "0");
+  const light = (themes?.[idx] ?? "dark") === "light";
+  const fg = light ? "text-ink" : "text-paper";
+  const fgSoft = light ? "text-ink/70" : "text-paper/70";
 
   return (
     <div className="fixed inset-0 z-[90] overflow-hidden bg-[#0a0d14] text-paper">
@@ -81,9 +84,9 @@ export function ChapterDeck({ children, labels }: { children: React.ReactNode; l
       <div className="pointer-events-none absolute inset-x-0 top-0 z-40 flex items-center justify-between px-5 py-4 sm:px-8">
         <Link href="/" className="pointer-events-auto flex items-center gap-2">
           <span className="grid h-8 w-8 place-items-center rounded-full border border-gold/50 bg-gold/10 font-display text-base font-bold text-gold">♪</span>
-          <span className="font-display text-base font-bold text-paper">Musicphonetics</span>
+          <span className={"font-display text-base font-bold " + fg}>Musicphonetics</span>
         </Link>
-        <button onClick={() => setMenu((m) => !m)} className="pointer-events-auto flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-paper/70 hover:text-paper">
+        <button onClick={() => setMenu((m) => !m)} className={"pointer-events-auto flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] " + fgSoft + " hover:opacity-100"}>
           <span className="tabular-nums">{two(idx)} / {two(n - 1)}</span>
           <span className="flex flex-col gap-[3px]"><span className="h-px w-5 bg-current" /><span className="h-px w-5 bg-current" /></span>
         </button>
@@ -108,13 +111,13 @@ export function ChapterDeck({ children, labels }: { children: React.ReactNode; l
       <div className="absolute right-4 top-1/2 z-40 hidden -translate-y-1/2 flex-col items-center gap-2.5 sm:flex">
         {chapters.map((_, i) => (
           <button key={i} aria-label={`Chapter ${i + 1}`} onClick={() => go(i)}
-            className={"rounded-full transition-all duration-300 " + (i === idx ? "h-6 w-1.5 bg-gold" : "h-1.5 w-1.5 bg-white/30 hover:bg-white/60")} />
+            className={"rounded-full transition-all duration-300 " + (i === idx ? "h-6 w-1.5 bg-gold" : "h-1.5 w-1.5 " + (light ? "bg-ink/25 hover:bg-ink/50" : "bg-white/30 hover:bg-white/60"))} />
         ))}
       </div>
 
       {/* Swipe hint (first chapter only) */}
       {idx === 0 && (
-        <button onClick={() => go(1)} className="absolute bottom-6 left-1/2 z-40 -translate-x-1/2 animate-bounce text-xs font-semibold uppercase tracking-[0.2em] text-paper/60 hover:text-paper">
+        <button onClick={() => go(1)} className={"absolute bottom-6 left-1/2 z-40 -translate-x-1/2 animate-bounce text-xs font-semibold uppercase tracking-[0.2em] " + fgSoft}>
           Swipe ↓
         </button>
       )}
