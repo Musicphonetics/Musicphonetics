@@ -70,7 +70,7 @@ export function ChapterDeck({ children, labels }: { children: React.ReactNode; l
   const two = (k: number) => String(k + 1).padStart(2, "0");
 
   return (
-    <div className="fixed inset-0 overflow-hidden bg-[#0a0d14] text-paper">
+    <div className="fixed inset-0 z-[90] overflow-hidden bg-[#0a0d14] text-paper">
       {chapters.map((ch, i) => (
         <div key={i} aria-hidden={i !== idx} className={"chapter " + (i === idx ? "chapter-active" : i < idx ? "chapter-prev" : "chapter-next")}>
           {ch}
