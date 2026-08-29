@@ -20,11 +20,23 @@ export const NOTIF_LABEL: Record<NotificationType, string> = {
   general_announcement: "Announcement",
 };
 
+// The signed-in user's own id. The bell is personal: an owner can *read* every
+// notification via RLS, but only ever marks their OWN rows read, so we must
+// scope the list/count to the recipient. Without this the owner's bell shows
+// everyone's notifications and none of them can be cleared.
+async function myId(): Promise<string | null> {
+  const { data: { session } } = await getSupabase().auth.getSession();
+  return session?.user?.id ?? null;
+}
+
 export async function listNotifications(limit = 50): Promise<Notification[]> {
+  const uid = await myId();
+  if (!uid) return [];
   const nowIso = new Date().toISOString();
   const { data } = await getSupabase()
     .from("notifications")
     .select("*")
+    .eq("recipient_id", uid)
     .or(`expires_at.is.null,expires_at.gte.${nowIso}`)
     .order("created_at", { ascending: false })
     .limit(limit);
@@ -32,10 +44,13 @@ export async function listNotifications(limit = 50): Promise<Notification[]> {
 }
 
 export async function unreadCount(): Promise<number> {
+  const uid = await myId();
+  if (!uid) return 0;
   const nowIso = new Date().toISOString();
   const { count } = await getSupabase()
     .from("notifications")
     .select("id", { count: "exact", head: true })
+    .eq("recipient_id", uid)
     .eq("is_read", false)
     .or(`expires_at.is.null,expires_at.gte.${nowIso}`);
   return count ?? 0;

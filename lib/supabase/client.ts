@@ -24,6 +24,19 @@ export function isSupabaseConfigured(): boolean {
   return Boolean(rawUrl() && rawKey());
 }
 
+// Auth session storage key, namespaced per portal. By default Supabase keeps ONE
+// session per origin, so signing into the teacher portal in a second window
+// overwrites the owner session (and vice-versa) — you can't hold both at once.
+// Keying the session by the portal you're in (owner / teacher / parent / sales /
+// admin / trial) gives each its own independent session, so the same person can
+// keep the owner portal open in one window and the teacher portal in another.
+const PORTAL_SEGMENTS = new Set(["owner", "teacher", "parent", "sales", "admin", "trial"]);
+function authStorageKey(): string {
+  if (typeof window === "undefined") return "mp-auth-default";
+  const seg = (window.location.pathname.split("/")[1] || "").toLowerCase();
+  return "mp-auth-" + (PORTAL_SEGMENTS.has(seg) ? seg : "default");
+}
+
 // Every Supabase request goes through this fetch so a single call can never hang
 // the portal for minutes (e.g. a paused/cold project). It aborts after a bound
 // and surfaces as a normal query error the UI can show + retry. Uploads get a
@@ -59,7 +72,7 @@ export function getSupabaseSafe(): { client: SupabaseClient | null; error: strin
   }
   try {
     _client = createClient(url, key, {
-      auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true },
+      auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true, storageKey: authStorageKey() },
       global: { fetch: timeoutFetch },
     });
     return { client: _client, error: null };

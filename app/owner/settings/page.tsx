@@ -36,7 +36,7 @@ const PROGRAMS: { name: string; price: string; note: string; tone: string }[] = 
 
 const ENV_NOTES = [
   ["ACTIVATION_CODE", "The code families use on Student Activation"],
-  ["RESEND_API_KEY / MAIL_FROM", "Auto-emails teacher offers on approval"],
+  ["BREVO_API_KEY (or RESEND_API_KEY) / MAIL_FROM", "Sends offers, notifications & update emails. Brevo needs no domain (verify one sender)."],
   ["RAZORPAY_KEY_ID / KEY_SECRET", "Enrolment payments (server-only)"],
   ["DIRECTOR_TEACHER_ID", "Default teacher for activated students"],
   ["ALLOWED_ORIGIN_HOSTS", "Optional: restrict which origins may call public APIs"],
@@ -47,6 +47,21 @@ interface CouponRow { code: string; discount_percent: number; active: boolean; l
 export default function OwnerSettings() {
   const [coupons, setCoupons] = useState<CouponRow[] | null>(null);
   const [couponNote, setCouponNote] = useState<string | null>(null);
+  const [emailTest, setEmailTest] = useState<{ busy: boolean; ok: boolean | null; note: string | null }>({ busy: false, ok: null, note: null });
+
+  async function sendTestEmail() {
+    setEmailTest({ busy: true, ok: null, note: null });
+    try {
+      const { data: { session } } = await getSupabase().auth.getSession();
+      const token = session?.access_token;
+      if (!token) { setEmailTest({ busy: false, ok: false, note: "Please sign in again." }); return; }
+      const res = await fetch("/api/email-test", { method: "POST", headers: { "content-type": "application/json", authorization: `Bearer ${token}` }, body: "{}" });
+      const j = await res.json().catch(() => ({}));
+      setEmailTest({ busy: false, ok: !!j.sent, note: j.sent ? `Sent to ${j.to} via ${j.note?.replace(/^sent via /, "") || "provider"}. Check your inbox (and spam).` : (j.note || "Could not send.") });
+    } catch (e) {
+      setEmailTest({ busy: false, ok: false, note: (e as Error)?.message || "Request failed." });
+    }
+  }
 
   useEffect(() => {
     if (!isSupabaseConfigured()) { setCoupons([]); return; }
@@ -136,6 +151,23 @@ export default function OwnerSettings() {
           ))}
         </div>
         <p className="mt-3 text-xs text-ink/55">Database migrations live in <code className="rounded bg-mist px-1">/supabase/*.sql</code> and are run in the Supabase SQL editor.</p>
+      </div>
+
+      {/* Email delivery self-test */}
+      <div className="mt-6 rounded-2xl border border-hairline bg-white p-5">
+        <p className="font-display text-lg font-semibold text-ink">Email delivery</p>
+        <p className="mt-0.5 text-sm text-ink/60">Sends a test email to your owner account address, straight through the mail provider. Use it to confirm updates and notifications can actually reach inboxes.</p>
+        <div className="mt-3 flex flex-wrap items-center gap-3">
+          <button onClick={sendTestEmail} disabled={emailTest.busy}
+            className="rounded-full bg-ink px-5 py-2.5 text-sm font-semibold text-paper transition hover:brightness-125 disabled:opacity-50">
+            {emailTest.busy ? "Sending…" : "Send test email"}
+          </button>
+          {emailTest.ok !== null && (
+            <span className={cn("text-sm", emailTest.ok ? "text-feature-green" : "text-red-600")}>{emailTest.ok ? "✓ Sent" : "✗ Failed"}</span>
+          )}
+        </div>
+        {emailTest.note && <p className={cn("mt-3 rounded-lg px-3 py-2 text-xs", emailTest.ok ? "bg-feature-green/10 text-ink/70" : "bg-red-500/10 text-ink/75")}>{emailTest.note}</p>}
+        <p className="mt-3 text-xs text-ink/55">A successful test confirms the provider. For automatic update/notification emails, also run <code className="rounded bg-mist px-1">supabase/notifications_email_all.sql</code> and schedule the outbox drainer (see <code className="rounded bg-mist px-1">supabase/notifications_email.sql</code>).</p>
       </div>
     </PortalShell>
   );
