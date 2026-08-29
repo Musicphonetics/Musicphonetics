@@ -49,8 +49,11 @@ export async function linkChild(input: {
       headers: { "content-type": "application/json", authorization: `Bearer ${token}` },
       body: JSON.stringify(input),
     });
-    const body = (await res.json().catch(() => ({}))) as { ok?: boolean; error?: string };
-    if (!res.ok || !body.ok) return { ok: false, error: body.error || "Couldn't add the child. Please try again." };
+    const body = (await res.json().catch(() => ({}))) as { ok?: boolean; error?: string; detail?: string };
+    if (!res.ok || !body.ok) {
+      if (body.detail) console.warn("[link-child] server detail:", body.detail);
+      return { ok: false, error: body.error || "Couldn't add the child. Please try again." };
+    }
     return { ok: true };
   } catch {
     return { ok: false, error: "Couldn't reach the server. Please try again." };
