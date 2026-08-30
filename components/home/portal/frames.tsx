@@ -7,9 +7,8 @@ import type { ReactNode } from "react";
 // display + sans body. Sample learner: "Abhishek", monthly fee ₹12,000.
 // ---------------------------------------------------------------------------
 
-const STUDENT = "Akshay";
-const STUDENT_FULL = "Akshay";
-const TEACHER = "Abhishek";
+export const STUDENT = "Abhishek";
+export const STUDENT_FULL = "Abhishek";
 const CODE = "MP-2026-000004";
 
 // ---- shared chrome --------------------------------------------------------
@@ -80,7 +79,7 @@ const Check = ({ className = "" }: { className?: string }) => (
 
 // ---- 01 Journey -----------------------------------------------------------
 
-function JourneyScreen() {
+export function JourneyScreen() {
   const stats: [string, string, string][] = [
     ["Classes", "1/8", "this set"],
     ["Days remaining", "27", "to finish set"],
@@ -122,7 +121,7 @@ function JourneyScreen() {
           <span className="rounded-full border border-gold/40 px-2 py-0.5 text-[7px] font-semibold uppercase tracking-wide text-gold">Premium</span>
         </div>
         <p className="mt-1.5 font-display text-[14px] font-bold text-ivory">{STUDENT}&apos;s direct mentorship</p>
-        <p className="mt-0.5 text-[9.5px] text-ivory/55">One-to-one with {TEACHER}, the Director · Guitar</p>
+        <p className="mt-0.5 text-[9.5px] text-ivory/55">One-to-one, guided by the Director · Guitar</p>
       </div>
     </Phone>
   );
@@ -130,7 +129,7 @@ function JourneyScreen() {
 
 // ---- 02 Home --------------------------------------------------------------
 
-function HomeScreen() {
+export function HomeScreen() {
   const tiles = ["Homework", "Reports", "Documents", "Notifications"];
   return (
     <Phone active="home">
@@ -166,7 +165,7 @@ function HomeScreen() {
 
 // ---- 03 Lesson Plan -------------------------------------------------------
 
-function LessonPlanScreen() {
+export function LessonPlanScreen() {
   const classes: [string, string, string][] = [
     ["1", "Rhythm Basics", "Basic strumming patterns and timing, from down-strum to down-up, with songs like Twinkle Twinkle and Vande Mataram."],
     ["2", "Time Signature", "Understand 4/4 time and practise strumming to a metronome on Happy Birthday and You Are My Sunshine."],
@@ -196,7 +195,7 @@ function LessonPlanScreen() {
 
 // ---- 04 Progress ----------------------------------------------------------
 
-function ProgressScreen() {
+export function ProgressScreen() {
   const milestones: [string, boolean][] = [
     ["First open chords", true],
     ["Down-up strumming", true],
@@ -234,38 +233,9 @@ function ProgressScreen() {
   );
 }
 
-// ---- 05 Reports -----------------------------------------------------------
-
-function ReportsScreen() {
-  return (
-    <Phone active="reports">
-      <div className="flex items-center justify-between">
-        <Kicker>Monthly report</Kicker>
-        <span className="rounded-full bg-cream px-2 py-0.5 text-[8px] font-semibold text-deep-gold">August 2026</span>
-      </div>
-      <h3 className="mt-1 font-display text-[17px] font-bold leading-tight text-ink">{STUDENT_FULL}, Guitar</h3>
-      <p className="text-[9px] text-ink/50">Teacher · {TEACHER}</p>
-
-      <div className="mt-3 rounded-2xl bg-white p-3.5 ring-1 ring-hairline/70">
-        <div className="flex items-center justify-between border-b border-hairline pb-2">
-          <span className="text-[10px] text-ink/55">Attendance</span>
-          <span className="text-[11px] font-semibold text-ink">4 of 4 classes</span>
-        </div>
-        <p className="mt-2.5 text-[8px] font-semibold uppercase tracking-wide text-ink/45">What we covered</p>
-        <p className="mt-1 text-[10px] leading-snug text-ink/70">Rhythm basics, steady 4/4 timing, and the first Em and G chord changes.</p>
-        <p className="mt-2.5 text-[8px] font-semibold uppercase tracking-wide text-ink/45">Teacher&apos;s note</p>
-        <p className="mt-1 text-[10px] leading-snug text-ink/70">{STUDENT} is strumming with real confidence. A little daily practice on chord changes and he is ready for the song.</p>
-        <p className="mt-2.5 text-[8px] font-semibold uppercase tracking-wide text-ink/45">What&apos;s next</p>
-        <p className="mt-1 text-[10px] leading-snug text-ink/70">Bring it together on &quot;Kesariya&quot; for the family performance.</p>
-      </div>
-      <div className="mt-2.5 rounded-full bg-charcoal py-2 text-center text-[10px] font-semibold text-cream">Download report</div>
-    </Phone>
-  );
-}
-
 // ---- 06 Fees --------------------------------------------------------------
 
-function FeesScreen() {
+export function FeesScreen() {
   return (
     <Phone active="fees">
       <Kicker>Fees</Kicker>
@@ -294,7 +264,7 @@ function FeesScreen() {
 
 // ---- 07 Ask ---------------------------------------------------------------
 
-function AskScreen() {
+export function AskScreen() {
   const qs = ["How does the Foundation journey work?", "What happens in a free trial class?", "How are the monthly fees billed?", "What will my child learn in the first month?"];
   return (
     <Phone active="ask">
@@ -321,22 +291,3 @@ function AskScreen() {
   );
 }
 
-// ---- registry -------------------------------------------------------------
-
-export interface PortalScreen {
-  num: string;
-  tag: string;
-  title: string;
-  blurb: string;
-  Screen: () => JSX.Element;
-}
-
-export const PORTAL_SCREENS: PortalScreen[] = [
-  { num: "01", tag: "Journey", title: "See the journey.", blurb: "Every learner has a structured path, with goals, classes and milestones.", Screen: JourneyScreen },
-  { num: "02", tag: "Home", title: "Everything in one place.", blurb: "Classes, updates, homework, reports and more.", Screen: HomeScreen },
-  { num: "03", tag: "Lesson Plan", title: "Every class has a purpose.", blurb: "Your teacher's plan is built around the learner, not just the calendar.", Screen: LessonPlanScreen },
-  { num: "04", tag: "Progress", title: "Know where they stand.", blurb: "Parents can see the journey instead of wondering how it's going.", Screen: ProgressScreen },
-  { num: "05", tag: "Reports", title: "Progress, documented.", blurb: "Monthly reporting turns learning into something you can actually see.", Screen: ReportsScreen },
-  { num: "06", tag: "Fees", title: "No guesswork.", blurb: "Classes, payments and remaining sessions stay clear and connected.", Screen: FeesScreen },
-  { num: "07", tag: "Ask", title: "Questions? Just ask.", blurb: "Instant guidance about the Musicphonetics curriculum, classes and learning system.", Screen: AskScreen },
-];
