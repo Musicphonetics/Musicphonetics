@@ -81,6 +81,15 @@ export function HeroInstitution() {
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>
               </a>
             </div>
+
+            {/* Portal cue: the differentiator, leading into the reveal below. */}
+            <a href="#portal" className="mt-7 inline-flex items-center gap-2.5 rounded-full border border-gold/40 bg-gold/[0.06] py-2 pl-2 pr-4 transition hover:border-gold/70">
+              <span className="grid h-7 w-7 place-items-center rounded-full bg-charcoal text-cream">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><rect x="6" y="3" width="12" height="18" rx="2.5" stroke="currentColor" strokeWidth="1.7" /><path d="M10.5 6.5h3" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" /></svg>
+              </span>
+              <span className="text-[0.8rem] font-semibold text-charcoal">Meet your Student Portal</span>
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" className="text-deep-gold"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>
+            </a>
           </div>
 
           {/* SHOWCASE: an "at a glance" brand card, no faces */}

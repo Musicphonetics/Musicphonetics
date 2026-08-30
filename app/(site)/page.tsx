@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { HeroInstitution } from "@/components/home/HeroInstitution";
-import { NightPortalShowcase } from "@/components/home/night/NightPortalShowcase";
+import { PortalShowcase } from "@/components/home/portal/PortalShowcase";
 import { NightOnlinePresence } from "@/components/home/night/NightOnlinePresence";
 import { HowItWorks } from "@/components/home/HowItWorks";
 import { FunnelPackages } from "@/components/home/FunnelPackages";
@@ -57,11 +57,13 @@ export default function HomePage() {
           full-page deck is being rebuilt section-by-section (each redesigned to
           fit one screen) rather than wrapped generically. */}
       <HeroInstitution />
+      {/* The Student Portal reveal, our differentiator, sits right after the hero
+          and then leads into the existing packages / fees / reviews / trial flow. */}
+      <PortalShowcase />
       <HowItWorks />
       <FunnelPackages />
       <PracticeCalculator />
       <AchievementsBand />
-      <NightPortalShowcase />
       <RealMoments />
       <ReviewsSection files={homeReviews} />
       <NightOnlinePresence />
