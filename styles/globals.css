@@ -431,3 +431,7 @@ html[data-deck] [data-panel] { scroll-snap-align: start; scroll-snap-stop: alway
   .chapter { transition: opacity .3s ease; filter: none !important; }
   .chapter [data-depth], .chapter [data-reveal] { transition: none !important; transform: none !important; opacity: 1; }
 }
+
+/* While the Student Portal takeover owns the viewport, hide the mobile sticky
+   trial bar so the immersive reveal stays clean (PortalShowcase toggles this). */
+body.mp-portal-pinned [data-trialbar] { transform: translateY(120%) !important; }

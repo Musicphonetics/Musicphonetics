@@ -7,8 +7,9 @@ import type { ReactNode } from "react";
 // display + sans body. Sample learner: "Abhishek", monthly fee ₹12,000.
 // ---------------------------------------------------------------------------
 
-const STUDENT = "Abhishek";
-const STUDENT_FULL = "Abhishek Rao";
+const STUDENT = "Akshay";
+const STUDENT_FULL = "Akshay";
+const TEACHER = "Abhishek";
 const CODE = "MP-2026-000004";
 
 // ---- shared chrome --------------------------------------------------------
@@ -29,7 +30,7 @@ const NAV: { label: string; key: string; d: string }[] = [
 // The phone shell: dark bezel, cream screen, portal top bar + bottom nav.
 function Phone({ active, children }: { active: string; children: ReactNode }) {
   return (
-    <div className="relative mx-auto w-[clamp(258px,80vw,300px)]">
+    <div className="relative mx-auto w-[300px]">
       <span aria-hidden="true" className="pointer-events-none absolute -inset-5 rounded-[3rem] bg-gold/15 blur-3xl" />
       <div className="relative rounded-[2.4rem] border-[7px] border-[#0b0e15] bg-[#0b0e15] shadow-[0_40px_90px_-30px_rgba(22,27,38,0.55)]">
         <div className="relative flex h-[588px] flex-col overflow-hidden rounded-[1.9rem] bg-paper">
@@ -121,7 +122,7 @@ function JourneyScreen() {
           <span className="rounded-full border border-gold/40 px-2 py-0.5 text-[7px] font-semibold uppercase tracking-wide text-gold">Premium</span>
         </div>
         <p className="mt-1.5 font-display text-[14px] font-bold text-ivory">{STUDENT}&apos;s direct mentorship</p>
-        <p className="mt-0.5 text-[9.5px] text-ivory/55">One-to-one, guided by the Director · Guitar</p>
+        <p className="mt-0.5 text-[9.5px] text-ivory/55">One-to-one with {TEACHER}, the Director · Guitar</p>
       </div>
     </Phone>
   );
@@ -243,6 +244,7 @@ function ReportsScreen() {
         <span className="rounded-full bg-cream px-2 py-0.5 text-[8px] font-semibold text-deep-gold">August 2026</span>
       </div>
       <h3 className="mt-1 font-display text-[17px] font-bold leading-tight text-ink">{STUDENT_FULL}, Guitar</h3>
+      <p className="text-[9px] text-ink/50">Teacher · {TEACHER}</p>
 
       <div className="mt-3 rounded-2xl bg-white p-3.5 ring-1 ring-hairline/70">
         <div className="flex items-center justify-between border-b border-hairline pb-2">

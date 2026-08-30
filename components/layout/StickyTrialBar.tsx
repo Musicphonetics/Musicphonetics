@@ -24,6 +24,7 @@ export function StickyTrialBar() {
 
   return (
     <div
+      data-trialbar=""
       className={cn(
         "fixed inset-x-0 bottom-0 z-40 border-t border-line/15 bg-charcoal/90 backdrop-blur-md transition-transform duration-300 lg:hidden",
         show ? "translate-y-0" : "translate-y-full"
