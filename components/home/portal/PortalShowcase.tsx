@@ -17,13 +17,14 @@ import { PORTAL_SCREENS } from "./frames";
 // smooth. Screens cross-fade; the active one is chosen by scroll progress.
 
 const N = PORTAL_SCREENS.length;
-const STEP_VH = 85;            // scroll travel per screen
+const STEP_VH = 72;            // scroll travel per screen (one flick ~ one screen)
 const PHONE_W = 316;          // natural phone size (px) for fit-scaling
 const PHONE_H = 606;
 
 export function PortalShowcase() {
   const sectionRef = useRef<HTMLElement>(null);
   const areaRef = useRef<HTMLDivElement>(null);
+  const programmatic = useRef(false); // true while a snap / dot-jump is animating
   const [idx, setIdx] = useState(0);
   const [scale, setScale] = useState(1);
 
@@ -37,41 +38,69 @@ export function PortalShowcase() {
 
   useLayoutEffect(() => { fit(); }, [fit]);
 
-  // Track scroll progress through the section -> active screen index.
+  // Scroll drives the active screen; when scrolling stops we settle-snap to the
+  // nearest screen's centre, so one swipe crisply lands on one screen.
   useEffect(() => {
     const el = sectionRef.current;
     if (!el) return;
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     let raf = 0;
+    let settle: number | undefined;
+
+    const metrics = () => {
+      const rect = el.getBoundingClientRect();
+      const total = el.offsetHeight - window.innerHeight;
+      const scrolled = Math.min(Math.max(-rect.top, 0), total);
+      const p = total > 0 ? scrolled / total : 0;
+      const pinned = rect.top <= 1 && rect.bottom >= window.innerHeight - 1;
+      return { total, p, pinned, topDoc: rect.top + window.scrollY };
+    };
+
+    const snap = () => {
+      if (reduce || programmatic.current) return;
+      const { total, p, pinned, topDoc } = metrics();
+      if (!pinned || total <= 0) return;
+      const i = Math.min(N - 1, Math.floor(p * N));
+      const target = topDoc + ((i + 0.5) / N) * total;
+      if (Math.abs(target - window.scrollY) < 6) return;
+      programmatic.current = true;
+      window.scrollTo({ top: target, behavior: "smooth" });
+      window.setTimeout(() => { programmatic.current = false; }, 650);
+    };
+
     const onScroll = () => {
-      if (raf) return;
-      raf = requestAnimationFrame(() => {
+      if (!raf) raf = requestAnimationFrame(() => {
         raf = 0;
-        const rect = el.getBoundingClientRect();
-        const total = el.offsetHeight - window.innerHeight;
-        const scrolled = Math.min(Math.max(-rect.top, 0), total);
-        const p = total > 0 ? scrolled / total : 0;
-        // Equal band per screen (last one holds a full swipe before releasing).
+        const { p, pinned } = metrics();
         setIdx(Math.min(N - 1, Math.floor(p * N)));
-        // Pinned = the section fully owns the viewport; hide site chrome then.
-        const pinned = rect.top <= 1 && rect.bottom >= window.innerHeight - 1;
         document.body.classList.toggle("mp-portal-pinned", pinned);
       });
+      if (settle) clearTimeout(settle);
+      settle = window.setTimeout(snap, 130);
     };
+
     const onResize = () => { fit(); onScroll(); };
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", onResize);
-    return () => { window.removeEventListener("scroll", onScroll); window.removeEventListener("resize", onResize); if (raf) cancelAnimationFrame(raf); document.body.classList.remove("mp-portal-pinned"); };
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onResize);
+      if (raf) cancelAnimationFrame(raf);
+      if (settle) clearTimeout(settle);
+      document.body.classList.remove("mp-portal-pinned");
+    };
   }, [fit]);
 
-  // Jump to a screen when a dot is tapped.
+  // Jump to a screen when a dot is tapped (guarded so settle-snap won't fight it).
   const goTo = useCallback((i: number) => {
     const el = sectionRef.current;
     if (!el) return;
     const total = el.offsetHeight - window.innerHeight;
     const topDoc = el.getBoundingClientRect().top + window.scrollY;
-    const p = (i + 0.5) / N; // centre of screen i's band
-    window.scrollTo({ top: topDoc + p * total, behavior: "smooth" });
+    programmatic.current = true;
+    window.scrollTo({ top: topDoc + ((i + 0.5) / N) * total, behavior: "smooth" });
+    window.setTimeout(() => { programmatic.current = false; }, 650);
   }, []);
 
   const active = PORTAL_SCREENS[idx];
@@ -104,8 +133,8 @@ export function PortalShowcase() {
               const Screen = s.Screen;
               return (
                 <div key={s.num} aria-hidden={k !== idx}
-                  className="absolute transition-opacity duration-500 ease-out"
-                  style={{ opacity: k === idx ? 1 : 0, transform: `scale(${scale})`, pointerEvents: k === idx ? "auto" : "none" }}>
+                  className="absolute transition-[opacity,transform] duration-[450ms] ease-out"
+                  style={{ opacity: k === idx ? 1 : 0, transform: `scale(${scale}) translateY(${k === idx ? 0 : 14}px)`, pointerEvents: k === idx ? "auto" : "none" }}>
                   <Screen />
                 </div>
               );
