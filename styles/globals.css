@@ -368,14 +368,6 @@ html:not([data-deck]) #main > section:not(.no-cv) {
   content-visibility: auto;
   contain-intrinsic-size: auto 720px;
 }
-/* The Student Portal is a full-screen horizontal book. A gentle vertical
-   proximity-snap settles it to fill the viewport as the reader arrives, so its
-   pages read as whole screens. ONLY #portal snaps (it is the only element with a
-   snap-align); the rest of the page keeps its free, snap-free scrolling, and
-   proximity means the reader is never trapped, they can always scroll on. */
-html:not([data-deck]) { scroll-snap-type: y proximity; }
-html:not([data-deck]) #portal { scroll-snap-align: start; scroll-snap-stop: normal; scroll-margin-top: 0; }
-
 /* Deck routes (components/deck/DeckShell.tsx sets data-deck) keep full-page snap. */
 html[data-deck] { scroll-snap-type: y mandatory; }
 html[data-deck] [data-panel] { scroll-snap-align: start; scroll-snap-stop: always; }

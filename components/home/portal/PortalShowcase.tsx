@@ -76,6 +76,33 @@ export function PortalShowcase() {
     onWinScroll();
     window.addEventListener("scroll", onWinScroll, { passive: true });
 
+    // Mobile: axis-locked horizontal paging. A vertical drag is left to the
+    // native page scroll (touch-action: pan-y), so the reader can always leave.
+    // A clearly horizontal drag is captured: the finger drives it, then it snaps
+    // to exactly one page on release. No diagonal drift, no multi-page skip.
+    let x0 = 0, y0 = 0, startLeft = 0, axis: "h" | "v" | null = null, lastX = 0, lastT = 0, vx = 0;
+    const onTS = (e: TouchEvent) => { const t = e.touches[0]; x0 = t.clientX; y0 = t.clientY; startLeft = sc.scrollLeft; axis = null; lastX = t.clientX; lastT = performance.now(); vx = 0; };
+    const onTM = (e: TouchEvent) => {
+      const t = e.touches[0]; const dx = t.clientX - x0, dy = t.clientY - y0;
+      if (axis === null) { if (Math.abs(dx) < 8 && Math.abs(dy) < 8) return; axis = Math.abs(dx) > Math.abs(dy) ? "h" : "v"; }
+      if (axis !== "h") return;
+      e.preventDefault();
+      sc.scrollLeft = startLeft - dx;
+      const now = performance.now(), dt = now - lastT; if (dt > 0) { vx = (t.clientX - lastX) / dt; lastX = t.clientX; lastT = now; }
+    };
+    const onTE = () => {
+      if (axis !== "h") return;
+      const w = sc.clientWidth, start = Math.round(startLeft / w);
+      let target = Math.round(sc.scrollLeft / w);
+      if (Math.abs(vx) > 0.3) target = start + (vx < 0 ? 1 : -1);
+      target = clamp(clamp(target, start - 1, start + 1), 0, N - 1);
+      sc.scrollTo({ left: target * w, behavior: "smooth" });
+      axis = null;
+    };
+    sc.addEventListener("touchstart", onTS, { passive: true });
+    sc.addEventListener("touchmove", onTM, { passive: false });
+    sc.addEventListener("touchend", onTE, { passive: true });
+
     // Desktop: wheel/trackpad pages one at a time while the section fills the
     // viewport, and releases at the ends so the page scrolls on normally.
     const fine = window.matchMedia("(pointer: fine)").matches;
@@ -106,6 +133,9 @@ export function PortalShowcase() {
       sc.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", onResize);
       window.removeEventListener("scroll", onWinScroll);
+      sc.removeEventListener("touchstart", onTS);
+      sc.removeEventListener("touchmove", onTM);
+      sc.removeEventListener("touchend", onTE);
       sc.removeEventListener("wheel", onWheel);
       window.removeEventListener("keydown", onKey);
       document.body.classList.remove("mp-portal-pinned");
@@ -121,10 +151,10 @@ export function PortalShowcase() {
 
   return (
     <section ref={sectionRef} id="portal" className="no-cv relative h-[100svh] overflow-hidden bg-paper">
-      <div ref={scRef} className="portal-pager flex h-full snap-x snap-mandatory overflow-x-auto overflow-y-hidden" style={{ touchAction: "pan-x", scrollbarWidth: "none" }}>
+      <div ref={scRef} className="portal-pager flex h-full overflow-x-auto overflow-y-hidden" style={{ touchAction: "pan-y", scrollbarWidth: "none", overscrollBehaviorX: "contain" }}>
         {PAGES.map((pg, i) => (
           <div key={i} data-active={i === idx ? "" : undefined}
-            className="page relative flex h-full w-full shrink-0 snap-start flex-col items-center justify-center px-6 pt-[max(5.5rem,calc(env(safe-area-inset-top)+4.5rem))] pb-[max(4.5rem,calc(env(safe-area-inset-bottom)+3rem))] text-center">
+            className="page relative flex h-full w-full shrink-0 flex-col items-center justify-center px-6 pt-[max(5.5rem,calc(env(safe-area-inset-top)+4.5rem))] pb-[max(4.5rem,calc(env(safe-area-inset-bottom)+3rem))] text-center">
             {pg.kind === "intro" && (
               <div className="max-w-lg">
                 <p data-stag className="text-[0.72rem] font-semibold uppercase tracking-[0.22em] text-deep-gold">Musicphonetics Portal</p>
