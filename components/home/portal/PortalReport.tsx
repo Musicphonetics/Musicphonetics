@@ -53,7 +53,7 @@ function Month({ title, count, rows }: { title: string; count: string; rows: [st
 
 export function PortalReport() {
   return (
-    <div className="mx-auto w-[min(94vw,600px)] overflow-hidden rounded-[1.6rem] bg-white shadow-[0_40px_100px_-40px_rgba(22,27,38,0.5)] ring-1 ring-hairline">
+    <div className="mx-auto w-full max-w-[600px] overflow-hidden rounded-[1.6rem] bg-white shadow-[0_40px_100px_-40px_rgba(22,27,38,0.5)] ring-1 ring-hairline">
       <div className="px-5 py-6 sm:px-8 sm:py-8">
         {/* header */}
         <div className="flex items-start justify-between gap-3">
