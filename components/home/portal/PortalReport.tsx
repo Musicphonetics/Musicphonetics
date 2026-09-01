@@ -2,7 +2,7 @@
 // the climax of the reveal). Faithful to the real portal report: header, a set
 // celebration, the tremendous-progress quote, four stat tiles, observations,
 // achievements, a class-by-class journey, where-we-grow-next, what's-next, and a
-// faculty signature. Sample learner Abhishek, Guitar. No em dashes, no AI wording.
+// faculty signature. Sample learner Aarav, Guitar. No em dashes, no AI wording.
 
 const STAT: [string, string, string][] = [
   ["8", "Classes completed", ""],
@@ -65,11 +65,11 @@ export function PortalReport() {
         </div>
 
         <p className="mt-5 inline-flex items-center gap-1.5 text-[13px] font-semibold text-ink">🎉 1 set of classes complete!</p>
-        <h3 className="mt-2 font-display text-[clamp(1.7rem,5vw,2.3rem)] font-bold leading-tight text-ink">Abhishek</h3>
+        <h3 className="mt-2 font-display text-[clamp(1.7rem,5vw,2.3rem)] font-bold leading-tight text-ink">Aarav</h3>
         <p className="text-[13px] text-ink/55">Guitar · with the faculty</p>
 
         <blockquote className="mt-4 border-l-2 border-gold pl-4 font-display text-[15px] italic leading-relaxed text-ink/80">
-          Abhishek has made tremendous progress on the guitar, confidently playing his first songs and reaching his goal of playing them cleanly, without mistakes.
+          Aarav has made tremendous progress on the guitar, confidently playing his first songs and reaching his goal of playing them cleanly, without mistakes.
         </blockquote>
 
         {/* stat tiles */}
@@ -86,7 +86,7 @@ export function PortalReport() {
         {/* observations */}
         <h4 className="mt-7 font-display text-base font-bold text-ink">Our observations</h4>
         <p className="mt-2 text-[13px] leading-relaxed text-ink/70">
-          Abhishek started from scratch, learning the fundamentals of the guitar, and has shown remarkable focus in his classes. He takes a few minutes to warm up, then his practice becomes sharp and productive. Playing his first songs confidently is a big win, and his dedication to practice shows in his progress.
+          Aarav started from scratch, learning the fundamentals of the guitar, and has shown remarkable focus in his classes. He takes a few minutes to warm up, then his practice becomes sharp and productive. Playing his first songs confidently is a big win, and his dedication to practice shows in his progress.
         </p>
 
         {/* achievements */}
@@ -102,7 +102,7 @@ export function PortalReport() {
         <div className="my-7 border-t border-dashed border-hairline" />
 
         {/* journey */}
-        <h4 className="font-display text-lg font-bold text-ink">Abhishek&apos;s journey, class by class</h4>
+        <h4 className="font-display text-lg font-bold text-ink">Aarav&apos;s journey, class by class</h4>
         <p className="text-xs text-ink/50">What we actually worked on together</p>
         <div className="mt-4 space-y-3">
           <Month title="July 2026" count="2 classes" rows={JULY} />
@@ -119,7 +119,7 @@ export function PortalReport() {
         {/* what's next */}
         <h4 className="mt-6 flex items-center gap-2 font-display text-base font-bold text-ink"><span className="text-gold">🎯</span> What&apos;s next</h4>
         <p className="mt-2 text-[13px] leading-relaxed text-ink/70">
-          In the next phase of his journey, Abhishek will learn songs that use a few more chords, adding richness to his playing. He will also sharpen his strumming and timing, so he can play more intricate tunes. With steady practice and dedication, Abhishek will keep growing as a guitarist.
+          In the next phase of his journey, Aarav will learn songs that use a few more chords, adding richness to his playing. He will also sharpen his strumming and timing, so he can play more intricate tunes. With steady practice and dedication, Aarav will keep growing as a guitarist.
         </p>
 
         {/* signature */}

@@ -63,6 +63,13 @@ export interface TeacherPrivateDetails {
   updated_at: string;
 }
 
+// One recurring weekly class slot (day of week + time), used by the planner.
+export interface WeeklySlot {
+  day: number;      // 0 = Sunday ... 6 = Saturday
+  time: string;     // "HH:MM" (24h)
+  mode?: string | null; // Online | Home | Studio
+}
+
 export interface Student {
   id: string;
   student_code?: string | null; // MP-YYYY-000001, generated server-side
@@ -119,6 +126,10 @@ export interface Student {
     month?: string; big_goal?: string;
     classes?: { n: number; title: string; focus: string }[]; updated_at?: string;
   } | null;
+  // Weekly planner (supabase/teacher_weekly_planner.sql). Recurring schedule +
+  // a per-student target; optional so pre-migration rows read undefined.
+  weekly_slots?: WeeklySlot[] | null;
+  weekly_target?: number | null;
   created_at: string;
   updated_at: string;
 }
@@ -382,6 +393,8 @@ export interface StudentStat {
   classes_purchased: number;   // classes the recorded payments have bought
   total_paid: number;
   teacher_share_total: number;
+  weekly_slots?: WeeklySlot[] | null;
+  weekly_target?: number | null;
 }
 
 export interface OwnerStats {

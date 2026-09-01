@@ -4,11 +4,11 @@ import type { ReactNode } from "react";
 // Faithful, on-brand recreations of the seven Student Portal screens, rendered
 // as crisp UI inside a phone frame (no raster screenshots). They reuse the same
 // tokens as the real portal: paper/cream, charcoal ink, muted gold, serif
-// display + sans body. Sample learner: "Abhishek", monthly fee ₹12,000.
+// display + sans body. Sample learner: "Aarav", monthly fee ₹12,000.
 // ---------------------------------------------------------------------------
 
-export const STUDENT = "Abhishek";
-export const STUDENT_FULL = "Abhishek";
+export const STUDENT = "Aarav";
+export const STUDENT_FULL = "Aarav Kapoor";
 const CODE = "MP-2026-000004";
 
 // ---- shared chrome --------------------------------------------------------

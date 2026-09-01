@@ -15,6 +15,7 @@ import { computeFoundation } from "@/lib/foundation";
 import { FoundationCard } from "@/components/portal/FoundationCard";
 import { MonthlyPlanEditor } from "@/components/teach/MonthlyPlanEditor";
 import { StudentDetailsForm } from "@/components/teach/StudentDetailsForm";
+import { WeeklyScheduleEditor } from "@/components/teach/WeeklyScheduleEditor";
 import { cn } from "@/lib/utils";
 
 
@@ -179,6 +180,15 @@ function StudentDetail({ stat, onReport }: { stat: StudentStat; onReport: () => 
       {/* Admission details, shows a saved summary with a small Edit button;
           opens the full form only when adding or editing. */}
       <StudentDetailsForm studentId={stat.student_id} />
+
+      {/* Recurring weekly schedule, fills the calendar and drives the planner. */}
+      <div className="mt-4">
+        <WeeklyScheduleEditor
+          studentId={stat.student_id}
+          initialSlots={stat.weekly_slots}
+          initialTarget={stat.weekly_target}
+        />
+      </div>
 
       <GoalEditor studentId={stat.student_id} feeQuoted={stat.fee_quoted} studentName={stat.name} instrument={stat.instrument} level={stat.level} />
 

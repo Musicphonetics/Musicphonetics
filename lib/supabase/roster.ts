@@ -60,6 +60,8 @@ export async function loadRoster(): Promise<{ rows: StudentStat[]; error: string
       classes_remaining: Math.max(purchased - done, 0),
       total_paid: totalPaid,
       teacher_share_total: share.get(s.id) ?? 0,
+      weekly_slots: (s.weekly_slots as StudentStat["weekly_slots"]) ?? [],
+      weekly_target: s.weekly_target ?? null,
     };
   });
 
