@@ -45,8 +45,8 @@ export const phoneLink = `tel:+${WHATSAPP_NUMBER}`;
 export const RAZORPAY_PAY_LINK = "https://razorpay.me/@musicphonetics";
 
 /** Social, Instagram. */
-export const INSTAGRAM_HANDLE = "abhisheksessions";
-export const INSTAGRAM_URL = "https://instagram.com/abhisheksessions";
+export const INSTAGRAM_HANDLE = "musicphonetics";
+export const INSTAGRAM_URL = "https://instagram.com/musicphonetics";
 
 /**
  * Google Business Profile, fill these once the profile exists and the section

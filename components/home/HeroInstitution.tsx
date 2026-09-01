@@ -83,7 +83,7 @@ export function HeroInstitution() {
             </div>
 
             {/* Portal cue: the differentiator, leading into the reveal below. */}
-            <a href="#portal" className="mt-7 inline-flex items-center gap-2.5 rounded-full border border-gold/40 bg-gold/[0.06] py-2 pl-2 pr-4 transition hover:border-gold/70">
+            <a href="#how" className="mt-7 inline-flex items-center gap-2.5 rounded-full border border-gold/40 bg-gold/[0.06] py-2 pl-2 pr-4 transition hover:border-gold/70">
               <span className="grid h-7 w-7 place-items-center rounded-full bg-charcoal text-cream">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><rect x="6" y="3" width="12" height="18" rx="2.5" stroke="currentColor" strokeWidth="1.7" /><path d="M10.5 6.5h3" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" /></svg>
               </span>
