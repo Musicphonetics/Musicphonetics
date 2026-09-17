@@ -5,10 +5,11 @@ import { FeedbackCard } from "@/components/parent/FeedbackCard";
 import { StudentSnapshot } from "@/components/parent/StudentSnapshot";
 import { FeeDueSoonPopup } from "@/components/parent/FeeDueSoonPopup";
 import type { StudentView } from "@/lib/supabase/parent";
-import type { Student, Payment } from "@/lib/supabase/types";
+import type { Student, Payment, ClassUpdate } from "@/lib/supabase/types";
 import { FOUNDATION, type FoundationProgress, type ChapterState } from "@/lib/foundation";
 import { studentPlan } from "@/lib/plan";
 import { quoteOfTheDay } from "@/lib/quotes";
+import { accuracyMeta, practiceLevel, classHeadline } from "@/lib/classNotes";
 import { whatsappLink } from "@/lib/data";
 import { addDaysIso, FEE_DUE_DAYS } from "@/lib/fees";
 import { cn } from "@/lib/utils";
@@ -33,8 +34,8 @@ const GOLD = "text-[#7A5E0F]"; // gold that reads on white
 // a daily line of encouragement, progress, the next class, the last update and
 // fees. Deeper pages (classes, reports, documents) are one tap away.
 export function DashboardBody({
-  student, view, foundation, pay, pays = [], completedDates = [],
-}: { student: Student; view: StudentView; foundation: FoundationProgress; pay: Payment | null; pays?: Payment[]; completedDates?: string[] }) {
+  student, view, foundation, pay, pays = [], completedDates = [], lastClass = null,
+}: { student: Student; view: StudentView; foundation: FoundationProgress; pay: Payment | null; pays?: Payment[]; completedDates?: string[]; lastClass?: ClassUpdate | null }) {
   const plan = studentPlan(student);
   const quote = quoteOfTheDay();
   return (
@@ -56,6 +57,9 @@ export function DashboardBody({
 
       {/* A daily line of encouragement for the family */}
       <QuoteCard text={quote.text} author={quote.author} />
+
+      {/* How the last class went - the teacher's learning notes, front and centre */}
+      <LastClassCard update={lastClass} studentName={student.name} />
 
       {/* Progress bar - Foundation only. Foundation + Main also get a monthly
           goal. Director's Circle gets a bespoke card (no progress bar). */}
@@ -96,40 +100,28 @@ export function DashboardBody({
         </Panel>
       )}
 
-      {/* Next class + last update */}
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-        <Card>
-          <CardHead icon={<svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15" rx="2.5" stroke="currentColor" strokeWidth="1.7" /><path d="M3.5 9.5h17M8 3v4M16 3v4" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" /></svg>}>Next class</CardHead>
-          <p className={cn("mt-3 text-sm font-semibold", GOLD)}>{prettyDate(view.nextClassDate)}</p>
-          {student.class_time && <p className="mt-1 font-display text-lg font-semibold text-ink">{student.class_time}</p>}
-          {student.class_mode && (
-            <span className="mt-3 inline-flex w-fit items-center gap-1.5 rounded-full bg-ink/[0.05] px-2.5 py-1 text-[11px] font-medium text-ink/70">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3" y="6" width="12" height="12" rx="2" stroke="currentColor" strokeWidth="1.7" /><path d="M15 10l6-3v10l-6-3" stroke="currentColor" strokeWidth="1.7" strokeLinejoin="round" /></svg>
-              {/online/i.test(student.class_mode) ? "Online class" : student.class_mode}
-            </span>
-          )}
+      {/* Next class */}
+      <Card>
+        <CardHead icon={<svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15" rx="2.5" stroke="currentColor" strokeWidth="1.7" /><path d="M3.5 9.5h17M8 3v4M16 3v4" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" /></svg>}>Next class</CardHead>
+        <div className="mt-3 flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <p className={cn("text-sm font-semibold", GOLD)}>{prettyDate(view.nextClassDate)}</p>
+            {student.class_time && <p className="mt-1 font-display text-lg font-semibold text-ink">{student.class_time}</p>}
+            {student.class_mode && (
+              <span className="mt-2 inline-flex w-fit items-center gap-1.5 rounded-full bg-ink/[0.05] px-2.5 py-1 text-[11px] font-medium text-ink/70">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3" y="6" width="12" height="12" rx="2" stroke="currentColor" strokeWidth="1.7" /><path d="M15 10l6-3v10l-6-3" stroke="currentColor" strokeWidth="1.7" strokeLinejoin="round" /></svg>
+                {/online/i.test(student.class_mode) ? "Online class" : student.class_mode}
+              </span>
+            )}
+          </div>
           {view.nextClassDate && (
             <a href={gcalLink(view.nextClassDate, `Music class - ${firstName(student.name)}`)} target="_blank" rel="noopener noreferrer"
-              className="mt-auto flex items-center justify-center gap-2 rounded-full border border-hairline py-2.5 text-sm font-semibold text-ink/80 hover:border-ink/40">
+              className="flex items-center justify-center gap-2 rounded-full border border-hairline px-4 py-2.5 text-sm font-semibold text-ink/80 hover:border-ink/40">
               Add to calendar
             </a>
           )}
-        </Card>
-
-        <Card>
-          <CardHead icon={<svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 5.5A2 2 0 0 1 6 4h5v15H6a2 2 0 0 0-2 1.5V5.5ZM20 5.5A2 2 0 0 0 18 4h-5v15h5a2 2 0 0 1 2 1.5V5.5Z" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" /></svg>}>Last class update</CardHead>
-          {view.latest ? (
-            <>
-              <div className="mt-3 space-y-2.5">
-                {view.latest.taught && <FieldRow label="Topic taught">{view.latest.taught}</FieldRow>}
-                {view.latest.homework && <FieldRow label="Homework">{view.latest.homework}</FieldRow>}
-                {view.latest.teacher_notes && <FieldRow label="Teacher notes">{view.latest.teacher_notes}</FieldRow>}
-              </div>
-              <Link href="/parent/classes" className={cn("mt-auto inline-block pt-3 text-sm font-semibold", GOLD)}>View all updates →</Link>
-            </>
-          ) : <p className="mt-3 text-sm text-ink/65">No class updates yet. They&apos;ll appear here right after each class.</p>}
-        </Card>
-      </div>
+        </div>
+      </Card>
 
       {/* Fees */}
       <Card>
@@ -248,6 +240,96 @@ function QuoteCard({ text, author }: { text: string; author: string }) {
           <p className="font-display text-[1.05rem] font-semibold leading-snug text-ink">&ldquo;{text}&rdquo;</p>
           <p className={cn("mt-1.5 text-xs font-semibold uppercase tracking-wide", GOLD)}>{author}</p>
         </div>
+      </div>
+    </div>
+  );
+}
+
+// The teacher's learning notes for the most recent class, the centrepiece of
+// the home screen: topic, how accurately it went, where the child struggled,
+// and how much practice is needed before next time.
+function LastClassCard({ update, studentName }: { update: ClassUpdate | null; studentName: string }) {
+  const first = firstName(studentName);
+  const dateLabel = update?.class_date
+    ? new Date(update.class_date + "T00:00:00").toLocaleDateString("en-IN", { weekday: "short", day: "numeric", month: "short" })
+    : null;
+  const isPresent = update ? (update.attendance_status === "present" || (!update.attendance_status && update.class_status === "Completed")) : false;
+  const acc = typeof update?.accuracy_percent === "number" ? update.accuracy_percent : null;
+  const meta = acc != null ? accuracyMeta(acc) : null;
+  const practice = practiceLevel(update?.practice_level);
+  const hasNotes = !!(update && (update.taught || acc != null || update.error_areas || practice || update.homework));
+
+  return (
+    <div className="overflow-hidden rounded-3xl border border-hairline bg-white shadow-[0_16px_40px_-24px_rgba(22,27,38,0.28)]">
+      <div className="flex items-center justify-between gap-3 border-b border-hairline bg-gradient-to-r from-gold/[0.09] to-transparent px-5 py-3.5">
+        <div className="flex items-center gap-2.5">
+          <span className="grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-gold/15 text-[#7A5E0F]">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 5.5A2 2 0 0 1 6 4h5v15H6a2 2 0 0 0-2 1.5V5.5ZM20 5.5A2 2 0 0 0 18 4h-5v15h5a2 2 0 0 1 2 1.5V5.5Z" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" /></svg>
+          </span>
+          <span className="font-display text-[0.95rem] font-semibold text-ink">How the last class went</span>
+        </div>
+        {dateLabel && <span className="shrink-0 rounded-full bg-ink/[0.05] px-2.5 py-1 text-[11px] font-medium text-ink/65">{dateLabel}</span>}
+      </div>
+
+      <div className="p-5">
+        {!update || !hasNotes ? (
+          <div className="py-2">
+            {update && !isPresent ? (
+              <p className="text-sm text-ink/70">The last session was marked <b className="text-ink">{update.parent_reason ? "changed" : (update.class_status || "not held").toLowerCase()}</b>. Notes will appear after the next class.</p>
+            ) : (
+              <p className="text-sm text-ink/65">No class notes yet. Right after each class, your teacher&apos;s update for {first} appears here, topic, accuracy and what to practise.</p>
+            )}
+          </div>
+        ) : (
+          <div className="space-y-4">
+            <p className="font-display text-lg font-semibold text-ink">{classHeadline(acc)}</p>
+
+            {update.taught && (
+              <div className="rounded-2xl bg-paper p-3.5">
+                <p className={cn("text-[11px] font-semibold uppercase tracking-wide", GOLD)}>Topic taught</p>
+                <p className="mt-1 text-sm leading-snug text-ink/85">{update.taught}</p>
+              </div>
+            )}
+
+            {acc != null && meta && (
+              <div>
+                <div className="mb-1.5 flex items-center justify-between">
+                  <span className="text-sm font-semibold text-ink">Accuracy</span>
+                  <span className={cn("text-sm font-bold", meta.tone)}>{acc}% · {meta.label}</span>
+                </div>
+                <div className={cn("h-2.5 w-full overflow-hidden rounded-full", meta.track)}>
+                  <div className={cn("h-full rounded-full transition-all", meta.bar)} style={{ width: `${clamp(acc, 0, 100)}%` }} />
+                </div>
+              </div>
+            )}
+
+            {update.error_areas && (
+              <div className="flex gap-2.5 rounded-2xl bg-orange-500/[0.07] p-3.5">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true" className="mt-0.5 shrink-0 text-orange-500"><path d="M12 9v4M12 17h.01M10.3 3.9 2.4 18a2 2 0 0 0 1.7 3h15.8a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" /></svg>
+                <div>
+                  <p className="text-[11px] font-semibold uppercase tracking-wide text-orange-600">Where {first} struggled</p>
+                  <p className="mt-0.5 text-sm leading-snug text-ink/85">{update.error_areas}</p>
+                </div>
+              </div>
+            )}
+
+            {practice && (
+              <div className="flex items-center gap-3 rounded-2xl border border-hairline p-3.5">
+                <span className={cn("grid h-10 w-10 shrink-0 place-items-center rounded-full", practice.chip, practice.text)}>
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 6v6l4 2" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" /><circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="1.7" /></svg>
+                </span>
+                <div className="min-w-0">
+                  <p className="text-[11px] font-semibold uppercase tracking-wide text-ink/55">Practice needed</p>
+                  <p className="text-sm font-semibold text-ink">{practice.label} <span className={cn("font-normal", practice.text)}>· {practice.hint}</span></p>
+                </div>
+              </div>
+            )}
+
+            {update.homework && <FieldRow label="Homework">{update.homework}</FieldRow>}
+
+            <Link href="/parent/classes" className={cn("inline-block text-sm font-semibold", GOLD)}>View all class updates →</Link>
+          </div>
+        )}
       </div>
     </div>
   );

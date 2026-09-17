@@ -35,6 +35,14 @@ export default function ParentDashboard() {
     () => (data && student ? data.classes.filter((c) => c.student_id === student.id && isValidCompleted(c)).map((c) => c.class_date) : []),
     [data, student],
   );
+  // The class to show learning notes for: the most recent attended one (so a
+  // later cancellation doesn't hide the real last lesson), newest first.
+  const lastClass = useMemo(() => {
+    if (!data || !student) return null;
+    const mine = [...data.classes.filter((c) => c.student_id === student.id)]
+      .sort((a, b) => (b.class_date || "").localeCompare(a.class_date || ""));
+    return mine.find(isValidCompleted) ?? mine[0] ?? null;
+  }, [data, student]);
 
   const switcher = data
     ? <FamilySwitcher students={data.students} selectedId={student?.id ?? null} onSelect={select} onAdded={reload} />
@@ -46,7 +54,7 @@ export default function ParentDashboard() {
       {!data ? <Loading /> : data.students.length === 0 ? (
         <EmptyState title="No student linked yet" hint="Message us on WhatsApp and we'll link your child's profile to your login." />
       ) : view && student && foundation ? (
-        <DashboardBody student={student} view={view} foundation={foundation} pay={pay} pays={pays} completedDates={completedDates} />
+        <DashboardBody student={student} view={view} foundation={foundation} pay={pay} pays={pays} completedDates={completedDates} lastClass={lastClass} />
       ) : <Loading />}
     </PortalShell>
   );

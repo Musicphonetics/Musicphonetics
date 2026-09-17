@@ -10,6 +10,7 @@ import { loadRoster } from "@/lib/supabase/roster";
 import type { StudentStat } from "@/lib/supabase/types";
 import type { AttendanceStatus, ClassUpdate } from "@/lib/supabase/types";
 import { ATTENDANCE_LABEL } from "@/lib/attendance";
+import { LearningNotesFields, EMPTY_LEARNING, type LearningNotes } from "@/components/teach/LearningNotesFields";
 import { logAudit, AUDIT } from "@/lib/audit";
 import { studentCode } from "@/lib/students";
 import { cn } from "@/lib/utils";
@@ -39,12 +40,12 @@ const addDays = (iso: string, n: number) => {
   return d.toISOString().slice(0, 10);
 };
 
-// Tap-to-pick durations, no typing. "55–60" stores 60.
+// Tap-to-pick durations, no typing. "55-60" stores 60.
 const DURATIONS: { v: number; label: string }[] = [
   { v: 30, label: "30 min" },
   { v: 45, label: "45 min" },
   { v: 50, label: "50 min" },
-  { v: 60, label: "55–60 min" },
+  { v: 60, label: "55-60 min" },
 ];
 
 function DurationChips({ value, onChange }: { value: number | null; onChange: (v: number) => void }) {
@@ -145,6 +146,7 @@ function QuickForm({ students }: { students: StudentStat[] }) {
   const [duration, setDuration] = useState<number>(50);
   const [present, setPresent] = useState(true);
   const [taught, setTaught] = useState("");
+  const [learning, setLearning] = useState<LearningNotes>(EMPTY_LEARNING);
   const [busy, setBusy] = useState(false);
   const [toast, setToast] = useState<{ kind: "success" | "error"; message: string } | null>(null);
 
@@ -167,6 +169,9 @@ function QuickForm({ students }: { students: StudentStat[] }) {
       makeup_completed: false,
       duration_min: duration,
       taught: taught || null,
+      accuracy_percent: present ? learning.accuracy : null,
+      error_areas: present ? (learning.errors || null) : null,
+      practice_level: present ? (learning.practice || null) : null,
       last_modified_by: uid,
     });
     setBusy(false);
@@ -176,6 +181,7 @@ function QuickForm({ students }: { students: StudentStat[] }) {
     setToast({ kind: "success", message: "Saved. Ready for the next one." });
     // Keep the student selected for fast repeat entry; clear the rest.
     setTaught("");
+    setLearning(EMPTY_LEARNING);
     setDate(today());
   }
 
@@ -205,7 +211,9 @@ function QuickForm({ students }: { students: StudentStat[] }) {
         </div>
       </div>
 
-      <TextArea label="What was taught" value={taught} onChange={setTaught} placeholder="e.g. G–C–D chord changes, strumming pattern 1" />
+      <TextArea label="What was taught" value={taught} onChange={setTaught} placeholder="e.g. G-C-D chord changes, strumming pattern 1" />
+
+      {present && <LearningNotesFields value={learning} onChange={setLearning} />}
 
       <button disabled={busy} onClick={save}
         className="w-full rounded-full bg-ink py-4 text-base font-semibold text-paper shadow-card disabled:opacity-60">
@@ -365,6 +373,7 @@ function DetailedForm({ students }: { students: StudentStat[] }) {
   const [counts, setCounts] = useState(true);
   const [makeup, setMakeup] = useState(false);
   const [f, setF] = useState<Record<string, string>>({ class_date: today() });
+  const [learning, setLearning] = useState<LearningNotes>(EMPTY_LEARNING);
   const [busy, setBusy] = useState(false);
   const [toast, setToast] = useState<{ kind: "success" | "error"; message: string } | null>(null);
   const set = (k: string, v: string) => setF((p) => ({ ...p, [k]: v }));
@@ -404,6 +413,9 @@ function DetailedForm({ students }: { students: StudentStat[] }) {
       duration_min: f.duration_min ? Number(f.duration_min) : null,
       taught: f.taught || null,
       homework: f.homework || null,
+      accuracy_percent: attendance === "present" ? learning.accuracy : null,
+      error_areas: attendance === "present" ? (learning.errors || null) : null,
+      practice_level: attendance === "present" ? (learning.practice || null) : null,
       student_response: f.student_response || null,
       parent_feedback: f.parent_feedback || null,
       parent_reason: cancelledOrMoved ? (f.parent_reason || null) : null,
@@ -460,6 +472,9 @@ function DetailedForm({ students }: { students: StudentStat[] }) {
         </div>
       </div>
       <TextArea label="What was taught" value={f.taught || ""} onChange={(v) => set("taught", v)} />
+
+      {attendance === "present" && <LearningNotesFields value={learning} onChange={setLearning} />}
+
       <TextArea label="Homework given" value={f.homework || ""} onChange={(v) => set("homework", v)} />
       <TextArea label="Student response" value={f.student_response || ""} onChange={(v) => set("student_response", v)} />
       <TextArea label="Parent feedback / concern" value={f.parent_feedback || ""} onChange={(v) => set("parent_feedback", v)} />

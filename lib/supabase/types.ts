@@ -164,6 +164,11 @@ export interface ClassUpdate {
   makeup_completed?: boolean | null;
   parent_reason?: string | null;
   last_modified_by?: string | null;
+  // Learning notes (supabase/class_update_learning_notes.sql). Teacher-entered,
+  // shown to the family on the portal home. Optional so pre-migration rows read.
+  accuracy_percent?: number | null;
+  error_areas?: string | null;
+  practice_level?: string | null;
   created_at: string;
   updated_at: string;
 }
