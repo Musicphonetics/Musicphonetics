@@ -187,13 +187,15 @@ export const HOW_STEPS: HowStep[] = [
   },
 ];
 
-// Short milestone cards, image with text over it. Teaching-story photos only.
-export interface Achievement { img: string; objectPos?: string; title: string; sub: string }
+// Short milestone cards. Icon-led, no student photos (child privacy / POCSO):
+// the milestones speak for themselves and stay elegant on the dark section.
+export type AchievementIcon = "song" | "ensemble" | "recognition" | "stage";
+export interface Achievement { icon: AchievementIcon; title: string; sub: string }
 export const ACHIEVEMENTS: Achievement[] = [
-  { img: "/images/classes/ukulele.webp", objectPos: "50% 18%", title: "Play your first song", sub: "In your early weeks, not someday." },
-  { img: "/images/classes/trio.webp", objectPos: "50% 28%", title: "Play alongside others", sub: "Group sessions and jams." },
-  { img: "/images/hero/slide-1.webp", objectPos: "50% 30%", title: "Earn real recognition", sub: "Student of the term and showcases." },
-  { img: "/images/moments/openmic-audience.webp", objectPos: "50% 50%", title: "Perform on a real stage", sub: "Open mics every few months." },
+  { icon: "song", title: "Play your first song", sub: "In your early weeks, not someday." },
+  { icon: "ensemble", title: "Play alongside others", sub: "Group sessions and jams." },
+  { icon: "recognition", title: "Earn real recognition", sub: "Student of the term and showcases." },
+  { icon: "stage", title: "Perform on a real stage", sub: "Open mics every few months." },
 ];
 
 // Founder credibility (network photos live here, never in the teaching story).
