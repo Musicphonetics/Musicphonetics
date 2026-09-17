@@ -8,7 +8,6 @@ import { DashboardBody } from "@/components/parent/DashboardBody";
 import { isSupabaseConfigured } from "@/lib/supabase/client";
 import { loadParentData, studentView, completedCount, type ParentData } from "@/lib/supabase/parent";
 import { isValidCompleted } from "@/lib/attendance";
-import { loadReadableMessages, pickParentMessage, type DirectorMessage } from "@/lib/supabase/director";
 import { computeFoundation } from "@/lib/foundation";
 import { studentPlan } from "@/lib/plan";
 import { useSelectedStudent } from "@/lib/family";
@@ -17,13 +16,11 @@ import { FamilySwitcher } from "@/components/parent/FamilySwitcher";
 export default function ParentDashboard() {
   const [data, setData] = useState<ParentData | null>(null);
   const [err, setErr] = useState<string | null>(null);
-  const [directorRows, setDirectorRows] = useState<DirectorMessage[]>([]);
 
   const reload = () => loadParentData().then((d) => { setErr(d.error); setData(d); });
   useEffect(() => {
     if (!isSupabaseConfigured()) return;
     reload();
-    loadReadableMessages().then(setDirectorRows);
   }, []);
 
   const { student, select } = useSelectedStudent(data?.students);
@@ -38,7 +35,6 @@ export default function ParentDashboard() {
     () => (data && student ? data.classes.filter((c) => c.student_id === student.id && isValidCompleted(c)).map((c) => c.class_date) : []),
     [data, student],
   );
-  const directorMsg = useMemo(() => (student ? pickParentMessage(directorRows, student.id) : null), [directorRows, student]);
 
   const switcher = data
     ? <FamilySwitcher students={data.students} selectedId={student?.id ?? null} onSelect={select} onAdded={reload} />
@@ -50,8 +46,7 @@ export default function ParentDashboard() {
       {!data ? <Loading /> : data.students.length === 0 ? (
         <EmptyState title="No student linked yet" hint="Message us on WhatsApp and we'll link your child's profile to your login." />
       ) : view && student && foundation ? (
-        <DashboardBody student={student} view={view} foundation={foundation} pay={pay} pays={pays} completedDates={completedDates}
-          directorMessage={directorMsg ? { title: directorMsg.title, body: directorMsg.body, date: directorMsg.created_at } : null} />
+        <DashboardBody student={student} view={view} foundation={foundation} pay={pay} pays={pays} completedDates={completedDates} />
       ) : <Loading />}
     </PortalShell>
   );

@@ -1,17 +1,14 @@
 "use client";
 
 import Link from "next/link";
-import type { DirectorCustom } from "@/components/portal/DirectorNote";
-import { DirectorNotification } from "@/components/parent/DirectorNotification";
 import { FeedbackCard } from "@/components/parent/FeedbackCard";
 import { StudentSnapshot } from "@/components/parent/StudentSnapshot";
 import { FeeDueSoonPopup } from "@/components/parent/FeeDueSoonPopup";
 import type { StudentView } from "@/lib/supabase/parent";
 import type { Student, Payment } from "@/lib/supabase/types";
-import { MonthlyPlanCard } from "@/components/portal/MonthlyPlanCard";
-import { planHasContent } from "@/lib/ai";
 import { FOUNDATION, type FoundationProgress, type ChapterState } from "@/lib/foundation";
-import { studentPlan, PLAN_LABEL, type Plan } from "@/lib/plan";
+import { studentPlan } from "@/lib/plan";
+import { quoteOfTheDay } from "@/lib/quotes";
 import { whatsappLink } from "@/lib/data";
 import { addDaysIso, FEE_DUE_DAYS } from "@/lib/fees";
 import { cn } from "@/lib/utils";
@@ -32,12 +29,14 @@ const gcalLink = (iso: string, title: string) => {
 
 const GOLD = "text-[#7A5E0F]"; // gold that reads on white
 
-// Parent dashboard, light and focused: progress, the next class, the last
-// update and fees. Reports live on their own tab.
+// Parent dashboard: one calm page with everything a family checks - a snapshot,
+// a daily line of encouragement, progress, the next class, the last update and
+// fees. Deeper pages (classes, reports, documents) are one tap away.
 export function DashboardBody({
-  student, view, foundation, pay, pays = [], completedDates = [], directorMessage,
-}: { student: Student; view: StudentView; foundation: FoundationProgress; pay: Payment | null; pays?: Payment[]; completedDates?: string[]; directorMessage?: DirectorCustom | null }) {
+  student, view, foundation, pay, pays = [], completedDates = [],
+}: { student: Student; view: StudentView; foundation: FoundationProgress; pay: Payment | null; pays?: Payment[]; completedDates?: string[] }) {
   const plan = studentPlan(student);
+  const quote = quoteOfTheDay();
   return (
     <div className="space-y-4">
       {/* Fee-due-soon popup, fires once per set after the 6th class */}
@@ -55,8 +54,8 @@ export function DashboardBody({
       {/* At-a-glance snapshot: profile · classes · days remaining · fee due · health */}
       <StudentSnapshot student={student} view={view} pays={pays} completedDates={completedDates} />
 
-      {/* Director's message, shown like a notification (only when there is one) */}
-      {directorMessage && <DirectorNotification message={directorMessage} />}
+      {/* A daily line of encouragement for the family */}
+      <QuoteCard text={quote.text} author={quote.author} />
 
       {/* Progress bar - Foundation only. Foundation + Main also get a monthly
           goal. Director's Circle gets a bespoke card (no progress bar). */}
@@ -86,25 +85,16 @@ export function DashboardBody({
               </div>
             </div>
           </div>
-          <div className="mt-4 flex items-center justify-between gap-3 border-t border-hairline pt-3.5">
+          <div className="mt-4 flex items-center gap-2 border-t border-hairline pt-3.5">
             <p className="flex items-center gap-2 text-sm text-ink/70">
               <span className="text-gold">★</span>
               {foundation.progressPercent >= 100
                 ? `${firstName(student.name)} has completed the Foundation.`
                 : `${firstName(student.name)} is ${foundation.progressPercent >= 50 ? "right on track" : "off to a great start"}.`}
             </p>
-            <Link href="/parent/progress" className={cn("shrink-0 whitespace-nowrap text-sm font-semibold", GOLD)}>View journey →</Link>
           </div>
         </Panel>
       )}
-
-      {/* This month's plan (one big goal + 8 classes), every program once the
-          teacher has made one. Director's Circle always shows it (premium). */}
-      {(planHasContent(student.monthly_plan) || plan === "directors") ? (
-        <MonthlyPlanCard studentName={student.name} instrument={student.instrument} monthlyPlan={student.monthly_plan} plan={plan} />
-      ) : (plan === "main" || (plan === "foundation" && !!student.monthly_goal?.trim())) ? (
-        <GoalPanel plan={plan} student={student} />
-      ) : null}
 
       {/* Next class + last update */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
@@ -242,31 +232,24 @@ function ChapterNode({ state, pct }: { state: ChapterState; pct: number }) {
   );
 }
 
-// This month's goal, set by the teacher. Shown for Foundation + Main Pathway.
-function GoalPanel({ plan, student }: { plan: Plan; student: Student }) {
-  const goal = student.monthly_goal?.trim();
-  const monthTxt = student.goal_month
-    ? new Date(student.goal_month + "-01T00:00:00").toLocaleDateString("en-IN", { month: "long", year: "numeric" })
-    : monthLabel();
+// A warm daily line of encouragement, shown in place of a monthly goal so the
+// family always sees something uplifting even when no goal has been written.
+function QuoteCard({ text, author }: { text: string; author: string }) {
   return (
-    <Panel>
-      <div className="flex items-start gap-4">
-        <span className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-gold/12 text-[#7A5E0F]">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="8" stroke="currentColor" strokeWidth="1.7" /><circle cx="12" cy="12" r="3.4" stroke="currentColor" strokeWidth="1.7" /><path d="M12 2v3M12 19v3M2 12h3M19 12h3" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" /></svg>
+    <div className="relative overflow-hidden rounded-3xl border border-gold/30 bg-gradient-to-br from-gold/[0.10] via-white to-white p-5 shadow-[0_12px_34px_-22px_rgba(22,27,38,0.2)]">
+      <svg aria-hidden="true" width="40" height="40" viewBox="0 0 24 24" fill="currentColor" className="absolute -right-1 -top-1 text-gold/25">
+        <path d="M7 7H4a1 1 0 0 0-1 1v5a1 1 0 0 0 1 1h3a1 1 0 0 0 1-1v-1l-2 3h2l2-3V8a1 1 0 0 0-1-1H7Zm10 0h-3a1 1 0 0 0-1 1v5a1 1 0 0 0 1 1h3a1 1 0 0 0 1-1v-1l-2 3h2l2-3V8a1 1 0 0 0-1-1Z" />
+      </svg>
+      <div className="flex items-start gap-3">
+        <span className="mt-0.5 grid h-9 w-9 shrink-0 place-items-center rounded-full bg-gold/15 text-[#7A5E0F]">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9 18V6l10-2v11" stroke="currentColor" strokeWidth="1.7" strokeLinejoin="round" /><circle cx="6.5" cy="18" r="2.5" stroke="currentColor" strokeWidth="1.7" /><circle cx="16.5" cy="15" r="2.5" stroke="currentColor" strokeWidth="1.7" /></svg>
         </span>
-        <div className="min-w-0 flex-1">
-          <p className={cn("text-[0.68rem] font-semibold uppercase tracking-[0.16em]", GOLD)}>{PLAN_LABEL[plan]} · This month</p>
-          <h2 className="mt-1 font-display text-lg font-semibold text-ink">{monthTxt} goal</h2>
-          {goal
-            ? <p className="mt-1.5 text-sm leading-relaxed text-ink/80">{goal}</p>
-            : <p className="mt-1.5 text-sm leading-relaxed text-ink/65">Your teacher will set this month&apos;s goal soon.</p>}
+        <div className="min-w-0">
+          <p className="font-display text-[1.05rem] font-semibold leading-snug text-ink">&ldquo;{text}&rdquo;</p>
+          <p className={cn("mt-1.5 text-xs font-semibold uppercase tracking-wide", GOLD)}>{author}</p>
         </div>
       </div>
-      <div className="mt-4 flex items-center justify-between gap-3 border-t border-hairline pt-3.5">
-        <p className="flex items-center gap-2 text-sm text-ink/70"><span className="text-gold">★</span> A little practice every day gets you there.</p>
-        <Link href="/parent/classes" className={cn("shrink-0 whitespace-nowrap text-sm font-semibold", GOLD)}>View updates →</Link>
-      </div>
-    </Panel>
+    </div>
   );
 }
 
