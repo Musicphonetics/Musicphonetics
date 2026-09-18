@@ -68,8 +68,8 @@ export function CentreEvents() {
                 </div>
                 <div className="grid grid-cols-2 gap-3">
                   {[
-                    { src: "/images/classes/trio.webp", alt: "Students making music together in class", pos: "50% 30%" },
-                    { src: "/images/hero/slide-1.webp", alt: "Musicphonetics students celebrated together", pos: "50% 32%" },
+                    { src: "/images/moments/02-openmic.webp", alt: "A performer singing with a guitar at Open Mic and Chai", pos: "50% 40%" },
+                    { src: "/images/moments/09-mentor.webp", alt: "A Musicphonetics performer on stage with a guitar", pos: "50% 25%" },
                   ].map((p) => (
                     <div key={p.src} className="relative aspect-[4/3] overflow-hidden rounded-xl">
                       <img src={p.src} alt={p.alt} loading="lazy" decoding="async" style={{ objectPosition: p.pos }} className="h-full w-full object-cover" />
