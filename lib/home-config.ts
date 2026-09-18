@@ -138,18 +138,17 @@ export const HERO_SLIDES: string[] = [
   "/images/hero/slide-5.webp",
 ];
 
-// Real, unstaged moments from our classes and student wins across Delhi NCR.
-// Real students and real teaching only. Founder-only and network photos live in
-// the Founder section, never here.
+// Real, unstaged moments from our stages and community across Delhi NCR.
+// Stage, recital and event photos only, so we never publish images of children
+// (child privacy / POCSO). Close-up class photos of students are not used here.
 export interface Moment { src: string; alt: string; caption: string; objectPos?: string }
 export const REAL_MOMENTS: Moment[] = [
-  { src: "/images/classes/ukulele.webp", objectPos: "50% 20%", alt: "A young Musicphonetics student learning the ukulele one to one", caption: "One to one, from the very first note." },
-  { src: "/images/classes/keys-duet.webp", objectPos: "50% 35%", alt: "A student and teacher at the keyboard in a Musicphonetics class", caption: "Real lessons, real attention." },
-  { src: "/images/hero/slide-1.webp", objectPos: "50% 32%", alt: "A group of Musicphonetics students together after class", caption: "Our students, celebrated together." },
-  { src: "/images/classes/duet.webp", objectPos: "50% 22%", alt: "A student learning guitar alongside their teacher", caption: "Learning to play, side by side." },
-  { src: "/images/classes/jam.webp", objectPos: "50% 40%", alt: "A student and teacher jamming on keyboard and guitar", caption: "Where practice becomes fun." },
-  { src: "/images/classes/trio.webp", objectPos: "50% 30%", alt: "Two students making music together with their teacher", caption: "Making music as a group." },
-  { src: "/images/moments/openmic-audience.webp", objectPos: "50% 50%", alt: "A full house at a Musicphonetics Open Mic and Chai evening", caption: "A full house at Open Mic and Chai." },
+  { src: "/images/moments/09-mentor.webp", objectPos: "50% 25%", alt: "A Musicphonetics performer on stage with an electric guitar under the lights", caption: "Live on stage, under the lights." },
+  { src: "/images/moments/02-openmic.webp", objectPos: "50% 40%", alt: "A performer singing with a guitar at the Musicphonetics Open Mic and Chai evening", caption: "Open Mic and Chai, our own stage." },
+  { src: "/images/moments/openmic-audience.webp", objectPos: "50% 35%", alt: "A full house watching the stage at a Musicphonetics Open Mic and Chai evening", caption: "A full house cheering them on." },
+  { src: "/images/moments/03-stage-guitar.webp", objectPos: "50% 40%", alt: "A Musicphonetics performer playing electric guitar on stage with a drummer behind", caption: "Where practice becomes performance." },
+  { src: "/images/moments/04-award.webp", objectPos: "50% 30%", alt: "Musicphonetics founder receiving a certificate of appreciation", caption: "Recognised for our work in the city." },
+  { src: "/images/moments/08-stage.webp", objectPos: "50% 30%", alt: "The Musicphonetics team together at a music event", caption: "Our music community, together." },
 ];
 
 // "How it works". Teaching-story photos only: real students and teachers, never

@@ -28,7 +28,7 @@ export function RealMoments() {
           <span aria-hidden="true" className="w-1 shrink-0 sm:hidden" />
         </div>
 
-        <Reveal><p className="mt-8 text-center text-sm text-ivory/60">Want your child in the next photo? It starts with one message.</p></Reveal>
+        <Reveal><p className="mt-8 text-center text-sm text-ivory/60">Want your child on our next stage? It starts with one message.</p></Reveal>
       </div>
     </section>
   );
