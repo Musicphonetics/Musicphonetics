@@ -39,6 +39,7 @@ export const OWNER_TABS: Tab[] = [
   { href: "/owner/statistics", label: "Stats", icon: I("M4 19V5M4 19h16M9 16V9M14 16v-4M19 16V7") },
   { href: "/owner/payouts", label: "Payouts", icon: I("M12 3v18M17 7H9.5a2.5 2.5 0 0 0 0 5h5a2.5 2.5 0 0 1 0 5H6") },
   { href: "/owner/documents", label: "Documents", icon: I("M7 3h7l5 5v11a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1ZM14 3v5h5") },
+  { href: "/owner/qr", label: "Scans", icon: I("M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4zM14 14h3v3h-3zM20 14v6M17 20h3") },
   { href: "/owner/audit", label: "Audit", icon: I("M4 5h16M4 12h16M4 19h10M18 16l2 2 3-3") },
   { href: "/owner/settings", label: "Settings", icon: I("M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM19 12a7 7 0 0 0-.1-1l2-1.5-2-3.5-2.4 1a7 7 0 0 0-1.7-1L14.5 2h-5l-.3 2.5a7 7 0 0 0-1.7 1l-2.4-1-2 3.5L5 11a7 7 0 0 0 0 2l-2 1.5 2 3.5 2.4-1a7 7 0 0 0 1.7 1l.3 2.5h5l.3-2.5a7 7 0 0 0 1.7-1l2.4 1 2-3.5-2-1.5a7 7 0 0 0 .1-1Z") },
 ];
