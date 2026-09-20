@@ -8,10 +8,7 @@ import { isSupabaseConfigured } from "@/lib/supabase/client";
 import { loadParentData, type ParentData } from "@/lib/supabase/parent";
 import { useSelectedStudent } from "@/lib/family";
 import { FamilySwitcher } from "@/components/parent/FamilySwitcher";
-import { accuracyMeta, practiceLevel } from "@/lib/classNotes";
-import { cn } from "@/lib/utils";
-
-const pretty = (iso: string) => new Date(iso + "T00:00:00").toLocaleDateString("en-IN", { weekday: "short", day: "numeric", month: "short", year: "numeric" });
+import { ParentClassCycles } from "@/components/parent/ParentClassCycles";
 
 export default function ParentClasses() {
   const [data, setData] = useState<ParentData | null>(null);
@@ -28,6 +25,10 @@ export default function ParentClasses() {
     () => (data && student ? data.classes.filter((c) => c.student_id === student.id) : []),
     [data, student]
   );
+  const pays = useMemo(
+    () => (data && student ? data.payments.filter((p) => p.student_id === student.id) : []),
+    [data, student]
+  );
   const switcher = data
     ? <FamilySwitcher students={data.students} selectedId={student?.id ?? null} onSelect={select} onAdded={reload} />
     : null;
@@ -37,52 +38,24 @@ export default function ParentClasses() {
       {err && <div className="mb-4 rounded-xl border border-red-300 bg-red-50 p-3 text-sm text-red-700">{err}</div>}
       {!data ? <Loading /> : data.students.length === 0 ? (
         <EmptyState title="No student linked yet" hint="Message us on WhatsApp to link your child's profile." />
+      ) : classes.length === 0 ? (
+        <EmptyState title="No classes logged yet" hint="Every class update your teacher writes will appear here." />
       ) : (
-        <div className="space-y-3">
-          {classes.length === 0 ? (
-            <EmptyState title="No classes logged yet" hint="Every class update your teacher writes will appear here." />
-          ) : classes.map((c, i) => (
-            <div key={c.id} className="rounded-2xl border border-hairline bg-white p-4">
-              <div className="flex items-center justify-between">
-                <p className="text-sm font-semibold text-ink">{pretty(c.class_date)}</p>
-                <div className="flex items-center gap-2">
-                  {c.class_number != null && <span className="rounded-full bg-mist px-2 py-0.5 text-[11px] font-medium text-ink/60">Class {c.class_number}</span>}
-                  <span className={cn("rounded-full px-2 py-0.5 text-[11px] font-semibold",
-                    c.class_status === "Completed" ? "bg-feature-green/10 text-feature-green" : "bg-gold/15 text-[#7A5E0F]")}>{c.class_status}</span>
-                </div>
-              </div>
-              <div className="mt-2 space-y-1.5">
-                {c.taught && <Row k="Taught">{c.taught}</Row>}
-                {typeof c.accuracy_percent === "number" && (() => {
-                  const m = accuracyMeta(c.accuracy_percent!);
-                  return (
-                    <div className="flex items-center gap-2 py-0.5">
-                      <span className="text-sm font-semibold text-ink">Accuracy:</span>
-                      <span className="h-2 w-24 overflow-hidden rounded-full bg-ink/[0.07]">
-                        <span className={cn("block h-full rounded-full", m.bar)} style={{ width: `${Math.max(0, Math.min(100, c.accuracy_percent!))}%` }} />
-                      </span>
-                      <span className={cn("text-sm font-bold", m.tone)}>{c.accuracy_percent}% · {m.label}</span>
-                    </div>
-                  );
-                })()}
-                {c.error_areas && <Row k="Struggled with">{c.error_areas}</Row>}
-                {(() => { const p = practiceLevel(c.practice_level); return p ? <Row k="Practice">{p.label} · {p.hint}</Row> : null; })()}
-                {c.homework && <Row k="Homework">{c.homework}</Row>}
-                {c.student_response && <Row k="How it went">{c.student_response}</Row>}
-                {c.parent_feedback && <Row k="Your note">{c.parent_feedback}</Row>}
-                {c.teacher_notes && <Row k="Teacher note">{c.teacher_notes}</Row>}
-                {c.next_class_date && <Row k="Next class">{pretty(c.next_class_date)}</Row>}
-                {!c.taught && !c.homework && !c.student_response && !c.teacher_notes && c.accuracy_percent == null && !c.error_areas && <p className="text-sm text-ink/45">Class {c.class_status.toLowerCase()}.</p>}
-              </div>
-              {i === 0 && <p className="mt-2 text-[11px] font-medium uppercase tracking-wide text-[#7A5E0F]">Most recent</p>}
-            </div>
-          ))}
+        <div className="space-y-4">
+          <p className="text-xs text-ink/60">
+            Classes are grouped by the payment that paid for them, so you can see each cycle&apos;s payment, how many
+            classes happened, and when. Tap a cycle to open it.
+          </p>
+          {student && (
+            <ParentClassCycles
+              classes={classes}
+              payments={pays}
+              feeQuoted={student.fee_quoted}
+              classesPerMonth={student.classes_per_month}
+            />
+          )}
         </div>
       )}
     </PortalShell>
   );
-}
-
-function Row({ k, children }: { k: string; children: React.ReactNode }) {
-  return <p className="text-sm leading-relaxed text-ink/80"><span className="font-semibold text-ink">{k}:</span> {children}</p>;
 }
