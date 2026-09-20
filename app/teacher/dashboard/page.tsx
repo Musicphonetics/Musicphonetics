@@ -11,6 +11,7 @@ import { getSupabase, isSupabaseConfigured } from "@/lib/supabase/client";
 import { loadTeacherMessage, type DirectorMessage } from "@/lib/supabase/director";
 import { loadRoster } from "@/lib/supabase/roster";
 import { computePending, PendingFeesModal, type PendingStudent } from "@/components/portal/PendingFeesModal";
+import { ReceivedModal, type ReceivedRow } from "@/components/portal/ReceivedModal";
 import { useAuth } from "@/lib/supabase/auth";
 import { cn } from "@/lib/utils";
 
@@ -35,6 +36,8 @@ export default function TeacherDashboard() {
   const [stats, setStats] = useState<{ students: number; week: number; received: number; pending: number } | null>(null);
   const [pending, setPending] = useState<PendingStudent[]>([]);
   const [pendingOpen, setPendingOpen] = useState(false);
+  const [received, setReceived] = useState<ReceivedRow[]>([]);
+  const [receivedOpen, setReceivedOpen] = useState(false);
   const [err, setErr] = useState<string | null>(null);
   const [directorMsg, setDirectorMsg] = useState<DirectorMessage | null>(null);
 
@@ -55,13 +58,27 @@ export default function TeacherDashboard() {
           loadRoster(),
           sb.from("class_updates").select("id", { count: "exact", head: true })
             .gte("class_date", mondayISO()).eq("class_status", "Completed"),
-          sb.from("payments").select("amount_paid").gte("payment_date", monthStartISO()),
+          sb.from("payments").select("id,student_id,amount_paid,payment_date,payment_status,payment_mode").gte("payment_date", monthStartISO()),
         ]);
         if (rosterRes.error) setErr(rosterRes.error);
         const activeCount = rosterRes.rows.filter((r) => r.status === "active").length;
-        const received = (payRes.data ?? []).reduce((s, r) => s + (r.amount_paid ?? 0), 0);
+        const nameOf = new Map(rosterRes.rows.map((r) => [r.student_id, { name: r.name, code: r.student_code ?? null }]));
+        // Only money actually received counts toward the tile + breakdown.
+        const receivedRows: ReceivedRow[] = (payRes.data ?? [])
+          .filter((r) => /received/i.test(r.payment_status ?? ""))
+          .map((r) => ({
+            id: r.id,
+            studentId: r.student_id,
+            name: nameOf.get(r.student_id)?.name ?? "Student",
+            code: nameOf.get(r.student_id)?.code ?? null,
+            date: r.payment_date,
+            amount: r.amount_paid ?? 0,
+            mode: r.payment_mode ?? null,
+          }));
+        const received = receivedRows.reduce((s, r) => s + r.amount, 0);
         const { list, total } = computePending(rosterRes.rows);
         setPending(list);
+        setReceived(receivedRows);
         setStats({
           students: activeCount,
           week: weekRes.count ?? 0,
@@ -93,7 +110,22 @@ export default function TeacherDashboard() {
         <div className="mt-5 grid grid-cols-2 gap-3 lg:grid-cols-4">
           <StatCard label="Students" value={`${stats.students}/20`} tone="gold" />
           <StatCard label="Classes this week" value={String(stats.week)} />
-          <StatCard label="Received this month" value={formatMoney(stats.received)} tone="green" />
+          {/* Received is clickable: it opens the payments behind the figure. */}
+          <button
+            onClick={() => received.length > 0 && setReceivedOpen(true)}
+            disabled={received.length === 0}
+            className="rounded-2xl border border-hairline bg-white p-4 text-left transition-colors enabled:hover:border-ink/30 disabled:cursor-default">
+            <p className="flex items-center gap-1 text-xs font-medium uppercase tracking-wide text-ink/60">
+              Received this month
+              {received.length > 0 && (
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" aria-hidden="true" className="text-ink/35"><path d="M9 6l6 6-6 6" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" /></svg>
+              )}
+            </p>
+            <p className="mt-1 font-display text-2xl font-semibold text-feature-green">{formatMoney(stats.received)}</p>
+            {received.length > 0 && (
+              <p className="mt-0.5 text-[11px] font-medium text-ink/50">{received.length} payment{received.length === 1 ? "" : "s"} · tap to see</p>
+            )}
+          </button>
           {/* Pending is clickable: it opens the exact list of students who owe. */}
           <button
             onClick={() => pending.length > 0 && setPendingOpen(true)}
@@ -123,6 +155,13 @@ export default function TeacherDashboard() {
           list={pending}
           total={stats?.pending ?? 0}
           onClose={() => setPendingOpen(false)}
+        />
+      )}
+      {receivedOpen && (
+        <ReceivedModal
+          rows={received}
+          total={stats?.received ?? 0}
+          onClose={() => setReceivedOpen(false)}
         />
       )}
 
