@@ -16,6 +16,7 @@ import { FoundationCard } from "@/components/portal/FoundationCard";
 import { MonthlyPlanEditor } from "@/components/teach/MonthlyPlanEditor";
 import { StudentDetailsForm } from "@/components/teach/StudentDetailsForm";
 import { WeeklyScheduleEditor } from "@/components/teach/WeeklyScheduleEditor";
+import { StudentClassCycles } from "@/components/teach/StudentClassCycles";
 import { cn } from "@/lib/utils";
 
 
@@ -87,172 +88,153 @@ export default function MyStudents() {
   );
 }
 
-const CINP = "rounded-lg border border-hairline bg-white px-2 py-1.5 text-xs focus-visible:outline-2 focus-visible:outline-gold focus:outline-none";
+type DetailTab = "overview" | "classes" | "payments" | "details";
+const DETAIL_TABS: { id: DetailTab; label: string }[] = [
+  { id: "overview", label: "Overview" },
+  { id: "classes", label: "Classes" },
+  { id: "payments", label: "Payments" },
+  { id: "details", label: "Details" },
+];
 
 function StudentDetail({ stat, onReport }: { stat: StudentStat; onReport: () => void }) {
   const [classes, setClasses] = useState<ClassUpdate[] | null>(null);
   const [payments, setPayments] = useState<Payment[] | null>(null);
-  const [showClasses, setShowClasses] = useState(false);
-  const [editId, setEditId] = useState<string | null>(null);
-  const [ev, setEv] = useState<{ class_date: string; class_status: string; taught: string }>({ class_date: "", class_status: "", taught: "" });
-  const [clsMsg, setClsMsg] = useState<string | null>(null);
-
-  function startEdit(c: ClassUpdate) {
-    setClsMsg(null);
-    setEditId(c.id);
-    setEv({ class_date: (c.class_date || "").slice(0, 10), class_status: c.class_status || "Completed", taught: c.taught || "" });
-  }
-  async function saveClass(id: string) {
-    const { error } = await getSupabase().from("class_updates")
-      .update({ class_date: ev.class_date, class_status: ev.class_status, taught: ev.taught || null }).eq("id", id);
-    if (error) { setClsMsg(error.message); return; }
-    setClasses((prev) => prev && prev
-      .map((c) => (c.id === id ? { ...c, class_date: ev.class_date, class_status: ev.class_status, taught: ev.taught } as ClassUpdate : c))
-      .sort((a, b) => (b.class_date || "").localeCompare(a.class_date || "")));
-    setEditId(null);
-  }
-  async function deleteClass(id: string) {
-    const { error } = await getSupabase().from("class_updates").delete().eq("id", id);
-    if (error) { setClsMsg(error.message); return; }
-    setClasses((prev) => prev && prev.filter((c) => c.id !== id));
-    setEditId(null);
-  }
+  const [tab, setTab] = useState<DetailTab>("overview");
 
   useEffect(() => {
     const sb = getSupabase();
-    sb.from("class_updates").select("*").eq("student_id", stat.student_id).order("class_date", { ascending: false }).limit(50)
+    sb.from("class_updates").select("*").eq("student_id", stat.student_id).order("class_date", { ascending: false }).limit(1000)
       .then(({ data }) => setClasses((data as ClassUpdate[]) ?? []));
-    sb.from("payments").select("*").eq("student_id", stat.student_id).order("payment_date", { ascending: false }).limit(8)
+    sb.from("payments").select("*").eq("student_id", stat.student_id).order("payment_date", { ascending: false }).limit(200)
       .then(({ data }) => setPayments((data as Payment[]) ?? []));
   }, [stat.student_id]);
 
   return (
     <div className="border-t border-hairline bg-paper p-4">
-      {(() => {
-        const sp = computeSetProgress(stat.classes_completed, stat.classes_per_month, stat.classes_purchased);
-        const advanceSets = Math.max(0, sp.paidSets - sp.currentSet);
-        const pct = Math.round((sp.currentDone / sp.perSet) * 100);
-        return (
-          <div className="rounded-2xl border border-hairline bg-white p-4 shadow-card">
-            {/* The ONE thing that matters: how far into the current set of 8 */}
-            <div className="flex items-center justify-between">
-              <div className="flex items-baseline gap-2">
-                <span className="font-display text-3xl font-bold leading-none text-ink">{sp.currentDone}<span className="text-xl text-ink/35">/{sp.perSet}</span></span>
-                <span className="text-sm text-ink/55">this set</span>
-              </div>
-              {sp.allComplete
-                ? <span className="rounded-full bg-gold px-3 py-1 text-[11px] font-semibold text-ink">Renewal due</span>
-                : sp.remainingInSet <= 2
-                  ? <span className="rounded-full bg-gold/20 px-3 py-1 text-[11px] font-semibold text-[#7A5E0F]">Renew soon</span>
-                  : <span className="rounded-full bg-emerald-500/12 px-3 py-1 text-[11px] font-semibold text-emerald-700">On track</span>}
-            </div>
-
-            <div className="mt-3 h-2.5 w-full overflow-hidden rounded-full bg-ink/[0.07]">
-              <div className="h-full rounded-full bg-gradient-to-r from-gold to-[#C6A02E] transition-all" style={{ width: `${pct}%` }} />
-            </div>
-            <p className="mt-2 text-xs text-ink/60">
-              {sp.allComplete
-                ? <>All paid classes complete, record a payment to start the next set.</>
-                : <><b className="text-ink">{sp.remainingInSet}</b> class{sp.remainingInSet === 1 ? "" : "es"} left in this set · {formatMoney(stat.total_paid)} paid</>}
-            </p>
-
-            {/* Advance: a whole set already paid but not started */}
-            {advanceSets > 0 && (
-              <p className="mt-2.5 rounded-lg bg-emerald-500/10 px-3 py-2 text-xs font-semibold text-emerald-700">
-                ✓ Advance paid, next {advanceSets * sp.perSet} classes already covered
-              </p>
-            )}
-
-            {/* Quiet history, no repeated "Set" labels */}
-            {sp.completedSets > 0 && (
-              <p className="mt-2.5 text-[11px] text-ink/45">{sp.completedSets} earlier set{sp.completedSets === 1 ? "" : "s"} of {sp.perSet} completed</p>
-            )}
-          </div>
-        );
-      })()}
-
-      <button onClick={onReport}
-        className="mt-3 flex w-full items-center justify-center gap-2 rounded-xl bg-ink px-4 py-2.5 text-sm font-semibold text-paper hover:bg-[#0f131c]">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M8 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2h-2M9 3h6M8 11h8M8 15h5" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" /></svg>
-        Progress report card
-      </button>
-
-      {/* Admission details, shows a saved summary with a small Edit button;
-          opens the full form only when adding or editing. */}
-      <StudentDetailsForm studentId={stat.student_id} />
-
-      {/* Recurring weekly schedule, fills the calendar and drives the planner. */}
-      <div className="mt-4">
-        <WeeklyScheduleEditor
-          studentId={stat.student_id}
-          initialSlots={stat.weekly_slots}
-          initialTarget={stat.weekly_target}
-        />
+      {/* Tabs: classes / details / payments kept separate for a cleaner read. */}
+      <div className="mb-4 flex gap-1 rounded-xl bg-ink/[0.05] p-1">
+        {DETAIL_TABS.map((t) => (
+          <button key={t.id} onClick={() => setTab(t.id)}
+            className={cn("flex-1 rounded-lg px-2 py-2 text-xs font-semibold transition-colors",
+              tab === t.id ? "bg-white text-ink shadow-card" : "text-ink/55 hover:text-ink")}>
+            {t.label}
+          </button>
+        ))}
       </div>
 
-      <GoalEditor studentId={stat.student_id} feeQuoted={stat.fee_quoted} studentName={stat.name} instrument={stat.instrument} level={stat.level} />
-
-      <FoundationTeacherPanel studentId={stat.student_id} instrument={stat.instrument} completed={stat.classes_completed} feeQuoted={stat.fee_quoted} />
-
-      <button onClick={() => setShowClasses((v) => !v)}
-        className="mt-4 flex w-full items-center justify-between rounded-xl border border-hairline bg-white px-4 py-2.5 text-sm font-semibold text-ink hover:border-ink/30">
-        <span>Past classes{classes ? ` · ${classes.length}` : ""} {showClasses ? "" : "· tap to view or fix"}</span>
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true" className={cn("text-ink/50 transition-transform", showClasses && "rotate-180")}><path d="M6 9l6 6 6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>
-      </button>
-      {showClasses && (<>
-      {clsMsg && <p className="mt-1 text-xs text-red-600">{clsMsg}</p>}
-      {!classes ? <p className="mt-1 text-xs text-ink/50">Loading…</p> :
-        classes.length === 0 ? <p className="mt-1 text-xs text-ink/50">No classes logged yet.</p> : (
-        <ul className="mt-2 space-y-1.5">
-          {classes.map((c) => (
-            <li key={c.id} className="rounded-lg border border-hairline bg-white p-2">
-              {editId === c.id ? (
-                <div className="space-y-1.5">
-                  <div className="grid grid-cols-2 gap-1.5">
-                    <input type="date" value={ev.class_date} onChange={(e) => setEv({ ...ev, class_date: e.target.value })} className={CINP} />
-                    <select value={ev.class_status} onChange={(e) => setEv({ ...ev, class_status: e.target.value })} className={CINP}>
-                      {["Completed", "Cancelled", "Absent", "Rescheduled"].map((s) => <option key={s} value={s}>{s}</option>)}
-                    </select>
-                  </div>
-                  <input value={ev.taught} onChange={(e) => setEv({ ...ev, taught: e.target.value })} placeholder="What was covered" className={CINP + " w-full"} />
-                  <div className="flex items-center gap-2">
-                    <button onClick={() => saveClass(c.id)} className="rounded-full bg-ink px-4 py-1.5 text-[11px] font-semibold text-paper">Save</button>
-                    <button onClick={() => setEditId(null)} className="rounded-full border border-hairline px-4 py-1.5 text-[11px] font-semibold text-ink/70">Cancel</button>
-                    <button onClick={() => deleteClass(c.id)} className="ml-auto text-[11px] font-semibold text-red-600">Delete</button>
-                  </div>
-                </div>
-              ) : (
-                <div className="flex items-center justify-between gap-2 text-xs">
-                  <div className="min-w-0">
-                    <span className="text-ink/75">{c.class_date} · {c.class_status}</span>
-                    {c.taught && <span className="ml-2 text-ink/50">{c.taught}</span>}
-                  </div>
-                  <button onClick={() => startEdit(c)} className="shrink-0 font-semibold text-[#7A5E0F]">Edit</button>
-                </div>
-              )}
-            </li>
-          ))}
-        </ul>
+      {tab === "overview" && (
+        <div>
+          <SetProgressCard stat={stat} />
+          <button onClick={onReport}
+            className="mt-3 flex w-full items-center justify-center gap-2 rounded-xl bg-ink px-4 py-2.5 text-sm font-semibold text-paper hover:bg-[#0f131c]">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M8 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2h-2M9 3h6M8 11h8M8 15h5" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" /></svg>
+            Progress report card
+          </button>
+          <GoalEditor studentId={stat.student_id} feeQuoted={stat.fee_quoted} studentName={stat.name} instrument={stat.instrument} level={stat.level} />
+          <FoundationTeacherPanel studentId={stat.student_id} instrument={stat.instrument} completed={stat.classes_completed} feeQuoted={stat.fee_quoted} />
+        </div>
       )}
-      </>)}
 
-      <p className="mt-4 text-xs font-semibold uppercase tracking-wide text-ink/60">Payments · each buys a set of {stat.classes_per_month ?? 8}</p>
-      {!payments ? <p className="mt-1 text-xs text-ink/50">Loading…</p> :
-        payments.length === 0 ? <p className="mt-1 text-xs text-ink/50">No payments yet.</p> : (
-        <ul className="mt-2 space-y-1.5">
-          {payments.map((p) => {
-            const per = (stat.fee_quoted ?? 0) > 0 ? Math.round((Number(p.amount_paid) / (stat.fee_quoted as number)) * (stat.classes_per_month ?? 8)) : null;
-            return (
-              <li key={p.id} className="flex items-center justify-between text-xs text-ink/75">
-                <span>{p.payment_date} · {p.payment_status}</span>
-                <span className="flex items-center gap-2">
-                  {per ? <span className="rounded-full bg-emerald-500/12 px-2 py-0.5 text-[10px] font-semibold text-emerald-700">+{per} classes</span> : null}
-                  <span className="font-semibold text-ink">{formatMoney(p.amount_paid)}</span>
-                </span>
-              </li>
-            );
-          })}
-        </ul>
+      {tab === "classes" && (
+        <div>
+          <div className="mb-3 flex items-baseline justify-between">
+            <p className="text-xs font-semibold uppercase tracking-wide text-ink/60">Classes by cycle</p>
+            <span className="text-[11px] text-ink/45">{classes ? `${classes.length} logged` : ""}</span>
+          </div>
+          {!classes || !payments ? <p className="text-xs text-ink/50">Loading…</p> : (
+            <StudentClassCycles
+              classes={classes}
+              setClasses={setClasses}
+              payments={payments}
+              feeQuoted={stat.fee_quoted}
+              classesPerMonth={stat.classes_per_month}
+            />
+          )}
+        </div>
+      )}
+
+      {tab === "payments" && (
+        <div>
+          <p className="text-xs font-semibold uppercase tracking-wide text-ink/60">Payments · each buys a set of {stat.classes_per_month ?? 8}</p>
+          {!payments ? <p className="mt-2 text-xs text-ink/50">Loading…</p> :
+            payments.length === 0 ? <p className="mt-2 text-xs text-ink/50">No payments yet.</p> : (
+            <>
+              <div className="mt-2 flex items-center justify-between rounded-xl border border-hairline bg-white px-3.5 py-3">
+                <span className="text-xs text-ink/60">Total received</span>
+                <span className="font-display text-lg font-bold text-ink">{formatMoney(stat.total_paid)}</span>
+              </div>
+              <ul className="mt-3 space-y-1.5">
+                {payments.map((p) => {
+                  const per = (stat.fee_quoted ?? 0) > 0 ? Math.round((Number(p.amount_paid) / (stat.fee_quoted as number)) * (stat.classes_per_month ?? 8)) : null;
+                  return (
+                    <li key={p.id} className="flex items-center justify-between rounded-lg border border-hairline bg-white px-3 py-2 text-xs text-ink/75">
+                      <span>{p.payment_date} · <span className={cn(p.payment_status === "Received" ? "text-emerald-600" : "text-ink/50")}>{p.payment_status}</span></span>
+                      <span className="flex items-center gap-2">
+                        {per ? <span className="rounded-full bg-emerald-500/12 px-2 py-0.5 text-[10px] font-semibold text-emerald-700">+{per} classes</span> : null}
+                        <span className="font-semibold text-ink">{formatMoney(p.amount_paid)}</span>
+                      </span>
+                    </li>
+                  );
+                })}
+              </ul>
+            </>
+          )}
+        </div>
+      )}
+
+      {tab === "details" && (
+        <div>
+          {/* Admission details, shows a saved summary with a small Edit button. */}
+          <StudentDetailsForm studentId={stat.student_id} />
+          {/* Recurring weekly schedule, fills the calendar and drives the planner. */}
+          <div className="mt-4">
+            <WeeklyScheduleEditor
+              studentId={stat.student_id}
+              initialSlots={stat.weekly_slots}
+              initialTarget={stat.weekly_target}
+            />
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// The set-progress summary card (how far into the current paid set of 8).
+function SetProgressCard({ stat }: { stat: StudentStat }) {
+  const sp = computeSetProgress(stat.classes_completed, stat.classes_per_month, stat.classes_purchased);
+  const advanceSets = Math.max(0, sp.paidSets - sp.currentSet);
+  const pct = Math.round((sp.currentDone / sp.perSet) * 100);
+  return (
+    <div className="rounded-2xl border border-hairline bg-white p-4 shadow-card">
+      <div className="flex items-center justify-between">
+        <div className="flex items-baseline gap-2">
+          <span className="font-display text-3xl font-bold leading-none text-ink">{sp.currentDone}<span className="text-xl text-ink/35">/{sp.perSet}</span></span>
+          <span className="text-sm text-ink/55">this set</span>
+        </div>
+        {sp.allComplete
+          ? <span className="rounded-full bg-gold px-3 py-1 text-[11px] font-semibold text-ink">Renewal due</span>
+          : sp.remainingInSet <= 2
+            ? <span className="rounded-full bg-gold/20 px-3 py-1 text-[11px] font-semibold text-[#7A5E0F]">Renew soon</span>
+            : <span className="rounded-full bg-emerald-500/12 px-3 py-1 text-[11px] font-semibold text-emerald-700">On track</span>}
+      </div>
+
+      <div className="mt-3 h-2.5 w-full overflow-hidden rounded-full bg-ink/[0.07]">
+        <div className="h-full rounded-full bg-gradient-to-r from-gold to-[#C6A02E] transition-all" style={{ width: `${pct}%` }} />
+      </div>
+      <p className="mt-2 text-xs text-ink/60">
+        {sp.allComplete
+          ? <>All paid classes complete, record a payment to start the next set.</>
+          : <><b className="text-ink">{sp.remainingInSet}</b> class{sp.remainingInSet === 1 ? "" : "es"} left in this set · {formatMoney(stat.total_paid)} paid</>}
+      </p>
+
+      {advanceSets > 0 && (
+        <p className="mt-2.5 rounded-lg bg-emerald-500/10 px-3 py-2 text-xs font-semibold text-emerald-700">
+          ✓ Advance paid, next {advanceSets * sp.perSet} classes already covered
+        </p>
+      )}
+      {sp.completedSets > 0 && (
+        <p className="mt-2.5 text-[11px] text-ink/45">{sp.completedSets} earlier set{sp.completedSets === 1 ? "" : "s"} of {sp.perSet} completed</p>
       )}
     </div>
   );

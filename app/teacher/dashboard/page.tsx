@@ -9,7 +9,10 @@ import { DirectorNote } from "@/components/portal/DirectorNote";
 import { TeacherOnboardingSelf } from "@/components/portal/OnboardingChecklist";
 import { getSupabase, isSupabaseConfigured } from "@/lib/supabase/client";
 import { loadTeacherMessage, type DirectorMessage } from "@/lib/supabase/director";
+import { loadRoster } from "@/lib/supabase/roster";
+import { computePending, PendingFeesModal, type PendingStudent } from "@/components/portal/PendingFeesModal";
 import { useAuth } from "@/lib/supabase/auth";
+import { cn } from "@/lib/utils";
 
 function greeting() {
   const h = new Date().getHours();
@@ -30,6 +33,8 @@ export default function TeacherDashboard() {
   const { profile } = useAuth();
   const first = (profile?.full_name || "").split(" ")[0] || "there";
   const [stats, setStats] = useState<{ students: number; week: number; received: number; pending: number } | null>(null);
+  const [pending, setPending] = useState<PendingStudent[]>([]);
+  const [pendingOpen, setPendingOpen] = useState(false);
   const [err, setErr] = useState<string | null>(null);
   const [directorMsg, setDirectorMsg] = useState<DirectorMessage | null>(null);
 
@@ -43,22 +48,25 @@ export default function TeacherDashboard() {
     const sb = getSupabase();
     (async () => {
       try {
-        // RLS scopes all of these to the signed-in teacher automatically.
-        const [studentsRes, weekRes, payRes] = await Promise.all([
-          sb.from("students").select("fee_quoted,status").eq("status", "active"),
+        // RLS scopes all of these to the signed-in teacher automatically. The
+        // roster gives per-student standing so "Pending" can name exactly which
+        // students owe (renewal due / unpaid) rather than a lump sum.
+        const [rosterRes, weekRes, payRes] = await Promise.all([
+          loadRoster(),
           sb.from("class_updates").select("id", { count: "exact", head: true })
             .gte("class_date", mondayISO()).eq("class_status", "Completed"),
           sb.from("payments").select("amount_paid").gte("payment_date", monthStartISO()),
         ]);
-        if (studentsRes.error) setErr(studentsRes.error.message);
-        const active = studentsRes.data ?? [];
-        const expected = active.reduce((s, r) => s + (r.fee_quoted ?? 0), 0);
+        if (rosterRes.error) setErr(rosterRes.error);
+        const activeCount = rosterRes.rows.filter((r) => r.status === "active").length;
         const received = (payRes.data ?? []).reduce((s, r) => s + (r.amount_paid ?? 0), 0);
+        const { list, total } = computePending(rosterRes.rows);
+        setPending(list);
         setStats({
-          students: active.length,
+          students: activeCount,
           week: weekRes.count ?? 0,
           received,
-          pending: Math.max(expected - received, 0),
+          pending: total,
         });
       } catch (e) {
         // Never leave the dashboard spinning, surface a bounded error instead.
@@ -86,8 +94,36 @@ export default function TeacherDashboard() {
           <StatCard label="Students" value={`${stats.students}/20`} tone="gold" />
           <StatCard label="Classes this week" value={String(stats.week)} />
           <StatCard label="Received this month" value={formatMoney(stats.received)} tone="green" />
-          <StatCard label="Pending" value={formatMoney(stats.pending)} tone={stats.pending > 0 ? "red" : "ink"} />
+          {/* Pending is clickable: it opens the exact list of students who owe. */}
+          <button
+            onClick={() => pending.length > 0 && setPendingOpen(true)}
+            disabled={pending.length === 0}
+            className="rounded-2xl border border-hairline bg-white p-4 text-left transition-colors enabled:hover:border-ink/30 disabled:cursor-default">
+            <p className="flex items-center gap-1 text-xs font-medium uppercase tracking-wide text-ink/60">
+              Pending
+              {pending.length > 0 && (
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" aria-hidden="true" className="text-ink/35"><path d="M9 6l6 6-6 6" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" /></svg>
+              )}
+            </p>
+            <p className={cn("mt-1 font-display text-2xl font-semibold", stats.pending > 0 ? "text-red-600" : "text-ink")}>{formatMoney(stats.pending)}</p>
+            {pending.length > 0 && (() => {
+              const due = pending.filter((p) => p.reason !== "renew_soon").length;
+              return (
+                <p className="mt-0.5 text-[11px] font-medium text-ink/50">
+                  {due > 0 ? `${due} to renew` : `${pending.length} renewing soon`} · tap to see who
+                </p>
+              );
+            })()}
+          </button>
         </div>
+      )}
+
+      {pendingOpen && (
+        <PendingFeesModal
+          list={pending}
+          total={stats?.pending ?? 0}
+          onClose={() => setPendingOpen(false)}
+        />
       )}
 
       <div className="mt-6 grid gap-3">
