@@ -10,6 +10,7 @@ import { loadRoster } from "@/lib/supabase/roster";
 import { isValidCompleted } from "@/lib/attendance";
 import type { StudentStat, ClassUpdate } from "@/lib/supabase/types";
 import { weekStartMonday, weekDatesISO, weekRangeLabel, slotsSummary, standing, STANDING_META, DOW } from "@/lib/planner";
+import { AttackPlanner } from "@/components/teach/AttackPlanner";
 import { cn } from "@/lib/utils";
 
 type Row = StudentStat & { doneThisWeek: number; target: number; stand: ReturnType<typeof standing> };
@@ -17,6 +18,7 @@ type Row = StudentStat & { doneThisWeek: number; target: number; stand: ReturnTy
 export default function TeacherPlanner() {
   const [rows, setRows] = useState<Row[] | null>(null);
   const [err, setErr] = useState<string | null>(null);
+  const [mode, setMode] = useState<"week" | "attack">("week");
   const start = useMemo(() => weekStartMonday(), []);
   const todayDow = new Date().getDay();
 
@@ -65,8 +67,20 @@ export default function TeacherPlanner() {
   const showAlert = todayDow === 0 || todayDow >= 3; // Wed..Sun
 
   return (
-    <PortalShell role="teacher" tabs={TEACHER_TABS} title="Weekly planner" subtitle={weekRangeLabel(start)}>
-      {rows === null ? <Loading /> : (
+    <PortalShell role="teacher" tabs={TEACHER_TABS} title="Planner" subtitle={mode === "week" ? weekRangeLabel(start) : "Finish a paid block on time"}>
+      {/* Two tools: the weekly board, and the attack plan for a paid block. */}
+      <div className="mb-4 flex gap-1 rounded-xl bg-ink/[0.05] p-1">
+        {([["week", "This week"], ["attack", "Attack plan"]] as ["week" | "attack", string][]).map(([m, label]) => (
+          <button key={m} onClick={() => setMode(m)}
+            className={cn("flex-1 rounded-lg px-3 py-2 text-sm font-semibold transition-colors", mode === m ? "bg-white text-ink shadow-card" : "text-ink/55 hover:text-ink")}>
+            {label}
+          </button>
+        ))}
+      </div>
+
+      {mode === "attack" ? (
+        rows === null ? <Loading /> : <AttackPlanner students={rows} />
+      ) : rows === null ? <Loading /> : (
         <>
           {/* summary */}
           <section className="grid grid-cols-3 gap-3">
