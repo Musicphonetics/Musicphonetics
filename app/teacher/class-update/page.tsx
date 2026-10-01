@@ -40,12 +40,16 @@ const addDays = (iso: string, n: number) => {
   return d.toISOString().slice(0, 10);
 };
 
-// Tap-to-pick durations, no typing. "55-60" stores 60.
+// Tap-to-pick durations, no typing. Classes run 45 min to 2 hours (never 30).
 const DURATIONS: { v: number; label: string }[] = [
-  { v: 30, label: "30 min" },
   { v: 45, label: "45 min" },
-  { v: 50, label: "50 min" },
-  { v: 60, label: "55-60 min" },
+  { v: 60, label: "1 hr" },
+  { v: 70, label: "1 hr 10" },
+  { v: 80, label: "1 hr 20" },
+  { v: 90, label: "1 hr 30" },
+  { v: 100, label: "1 hr 40" },
+  { v: 110, label: "1 hr 50" },
+  { v: 120, label: "2 hr" },
 ];
 
 function DurationChips({ value, onChange }: { value: number | null; onChange: (v: number) => void }) {
@@ -143,7 +147,7 @@ export default function ClassUpdatePage() {
 function QuickForm({ students }: { students: StudentStat[] }) {
   const [sid, setSid] = useState("");
   const [date, setDate] = useState(today());
-  const [duration, setDuration] = useState<number>(50);
+  const [duration, setDuration] = useState<number>(60);
   const [present, setPresent] = useState(true);
   const [taught, setTaught] = useState("");
   const [learning, setLearning] = useState<LearningNotes>(EMPTY_LEARNING);
@@ -250,7 +254,7 @@ function BackfillForm({ students }: { students: StudentStat[] }) {
     const out: BackRow[] = [];
     for (let i = 0; i < n; i++) {
       const off = n > 1 ? Math.round((i * span) / (n - 1)) : 0;
-      out.push({ id: nextId.n++, date: addDays(start, off), duration: 50, taught: "" });
+      out.push({ id: nextId.n++, date: addDays(start, off), duration: 60, taught: "" });
     }
     setRows(out);
   }
@@ -258,7 +262,7 @@ function BackfillForm({ students }: { students: StudentStat[] }) {
   function addRow() {
     const last = rows[rows.length - 1];
     const date = last ? addDays(last.date, 7) : start;
-    setRows((p) => [...p, { id: nextId.n++, date, duration: 50, taught: "" }]);
+    setRows((p) => [...p, { id: nextId.n++, date, duration: 60, taught: "" }]);
   }
 
   const upd = (id: number, patch: Partial<BackRow>) =>
@@ -334,13 +338,10 @@ function BackfillForm({ students }: { students: StudentStat[] }) {
               <div className="flex flex-wrap items-center gap-2">
                 <input type="date" value={r.date} onChange={(e) => upd(r.id, { date: e.target.value })}
                   className="rounded-xl border border-hairline bg-white px-3 py-2 text-sm focus-visible:outline-2 focus-visible:outline-gold focus:outline-none" />
-                {DURATIONS.map((d) => (
-                  <button key={d.v} type="button" onClick={() => upd(r.id, { duration: d.v })}
-                    className={cn("rounded-full border px-3 py-1.5 text-xs font-semibold transition",
-                      r.duration === d.v ? "border-gold bg-gold text-ink" : "border-hairline bg-white text-ink/60 hover:border-gold/50")}>
-                    {d.label}
-                  </button>
-                ))}
+                <select value={r.duration} onChange={(e) => upd(r.id, { duration: Number(e.target.value) })}
+                  className="rounded-xl border border-hairline bg-white px-3 py-2 text-sm font-semibold text-ink/80 focus-visible:outline-2 focus-visible:outline-gold focus:outline-none">
+                  {DURATIONS.map((d) => <option key={d.v} value={d.v}>{d.label}</option>)}
+                </select>
               </div>
               <input value={r.taught} onChange={(e) => upd(r.id, { taught: e.target.value })}
                 placeholder="What was taught in this class…"
