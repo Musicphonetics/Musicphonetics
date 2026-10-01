@@ -21,6 +21,7 @@ export default function ParentClasses() {
   }, []);
 
   const { student, select } = useSelectedStudent(data?.students);
+  const settledUntil = student?.settled_until ?? null;
   const classes = useMemo(
     () => (data && student ? data.classes.filter((c) => c.student_id === student.id) : []),
     [data, student]
@@ -29,6 +30,9 @@ export default function ParentClasses() {
     () => (data && student ? data.payments.filter((p) => p.student_id === student.id) : []),
     [data, student]
   );
+  const postClasses = useMemo(() => classes.filter((c) => !settledUntil || (c.class_date || "") > settledUntil), [classes, settledUntil]);
+  const postPays = useMemo(() => pays.filter((p) => !settledUntil || (p.payment_date || "") > settledUntil), [pays, settledUntil]);
+  const preCount = classes.length - postClasses.length;
   const switcher = data
     ? <FamilySwitcher students={data.students} selectedId={student?.id ?? null} onSelect={select} onAdded={reload} />
     : null;
@@ -46,10 +50,16 @@ export default function ParentClasses() {
             Classes are grouped by the payment that paid for them, so you can see each cycle&apos;s payment, how many
             classes happened, and when. Tap a cycle to open it.
           </p>
+          {settledUntil && (
+            <p className="rounded-xl border border-hairline bg-mist/40 px-3.5 py-2.5 text-xs text-ink/60">
+              An earlier chapter was settled up to {new Date(settledUntil + "T00:00:00").toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}
+              {preCount > 0 ? ` (${preCount} classes)` : ""}. The cycles below are the current arrangement.
+            </p>
+          )}
           {student && (
             <ParentClassCycles
-              classes={classes}
-              payments={pays}
+              classes={postClasses}
+              payments={postPays}
               feeQuoted={student.fee_quoted}
               classesPerMonth={student.classes_per_month}
             />

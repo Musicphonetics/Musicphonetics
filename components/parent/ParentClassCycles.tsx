@@ -105,6 +105,7 @@ function ClassCard({ c }: { c: ClassUpdate }) {
       <div className="flex items-center justify-between">
         <p className="text-sm font-semibold text-ink">{pretty(c.class_date)}</p>
         <div className="flex items-center gap-2">
+          {c.subject && <span className="rounded-full bg-gold/12 px-2 py-0.5 text-[11px] font-semibold text-[#7A5E0F]">{c.subject}</span>}
           {c.class_number != null && <span className="rounded-full bg-mist px-2 py-0.5 text-[11px] font-medium text-ink/60">Class {c.class_number}</span>}
           <span className={cn("rounded-full px-2 py-0.5 text-[11px] font-semibold",
             c.class_status === "Completed" ? "bg-feature-green/10 text-feature-green" : "bg-gold/15 text-[#7A5E0F]")}>{c.class_status}</span>

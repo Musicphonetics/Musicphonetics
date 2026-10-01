@@ -15,21 +15,31 @@ export async function loadRoster(): Promise<{ rows: StudentStat[]; error: string
 
   const [studentsRes, classesRes, paymentsRes] = await Promise.all([
     sb.from("students").select("*").order("name"),
-    sb.from("class_updates").select("student_id,class_status,attendance_status,counts_toward_cycle"),
-    sb.from("payments").select("student_id,amount_paid,teacher_share,payment_status"),
+    sb.from("class_updates").select("student_id,class_date,class_status,attendance_status,counts_toward_cycle"),
+    sb.from("payments").select("student_id,payment_date,amount_paid,teacher_share,payment_status"),
   ]);
 
   const err = studentsRes.error || classesRes.error || paymentsRes.error;
   if (studentsRes.error) return { rows: [], error: studentsRes.error.message };
 
+  // A student can settle a past chapter on a date: anything on/before it stays as
+  // history and is not counted in the current paid cycle. post() is that filter.
+  const settledUntil = new Map<string, string | null>();
+  for (const s of (studentsRes.data as Student[] ?? [])) settledUntil.set(s.id, s.settled_until ?? null);
+  const post = (sid: string, dateISO: string | null) => {
+    const cut = settledUntil.get(sid);
+    return !cut || (!!dateISO && dateISO > cut);
+  };
+
   const completed = new Map<string, number>();
   for (const c of classesRes.data ?? []) {
-    if (isValidCompleted(c)) completed.set(c.student_id, (completed.get(c.student_id) ?? 0) + 1);
+    if (isValidCompleted(c) && post(c.student_id, c.class_date)) completed.set(c.student_id, (completed.get(c.student_id) ?? 0) + 1);
   }
   const paid = new Map<string, number>();
   const share = new Map<string, number>();
   const payRows = new Map<string, FeePaymentLite[]>();
   for (const p of paymentsRes.data ?? []) {
+    if (!post(p.student_id, p.payment_date)) continue;
     paid.set(p.student_id, (paid.get(p.student_id) ?? 0) + (p.amount_paid ?? 0));
     share.set(p.student_id, (share.get(p.student_id) ?? 0) + (p.teacher_share ?? 0));
     const list = payRows.get(p.student_id) ?? [];
@@ -62,6 +72,8 @@ export async function loadRoster(): Promise<{ rows: StudentStat[]; error: string
       teacher_share_total: share.get(s.id) ?? 0,
       weekly_slots: (s.weekly_slots as StudentStat["weekly_slots"]) ?? [],
       weekly_target: s.weekly_target ?? null,
+      settled_until: s.settled_until ?? null,
+      settlement_note: s.settlement_note ?? null,
     };
   });
 

@@ -138,6 +138,7 @@ export function StudentClassCycles({
                               <div className="min-w-0">
                                 <span className="font-medium text-ink/80">{shortDate(c.class_date)}</span>
                                 <span className={cn("ml-1.5", c.class_status === "Completed" ? "text-emerald-600" : "text-ink/45")}>· {c.class_status}</span>
+                                {c.subject && <span className="ml-1.5 rounded-full bg-ink/[0.06] px-1.5 py-0.5 text-[9px] font-semibold text-ink/60">{c.subject}</span>}
                                 {c.taught && <p className="mt-0.5 truncate text-ink/55">{c.taught}</p>}
                               </div>
                             </div>

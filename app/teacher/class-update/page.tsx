@@ -98,6 +98,42 @@ function StudentPicker({ students, sid, onPick }: { students: StudentStat[]; sid
 
 type Mode = "quick" | "backfill" | "detailed";
 
+// Subject per class, so a student on more than one subject (e.g. Music +
+// History) has each class tagged. Quick-pick the usual ones, or type any.
+function SubjectField({ value, onChange, instrument }: { value: string; onChange: (v: string) => void; instrument: string | null }) {
+  const suggestions = Array.from(new Set([instrument?.trim() || "Music", "History"]));
+  return (
+    <div>
+      <span className="mb-1.5 block text-sm font-semibold text-ink">Subject</span>
+      <div className="mb-2 flex flex-wrap gap-2">
+        {suggestions.map((s) => (
+          <button key={s} type="button" onClick={() => onChange(s)}
+            className={cn("rounded-full border px-4 py-2 text-sm font-semibold transition",
+              value === s ? "border-gold bg-gold text-ink shadow-card" : "border-hairline bg-white text-ink/70 hover:border-gold/50")}>
+            {s}
+          </button>
+        ))}
+      </div>
+      <input value={value} onChange={(e) => onChange(e.target.value)} placeholder="e.g. Guitar, History"
+        className="w-full rounded-xl border border-hairline bg-white px-4 py-3 text-base focus-visible:outline-2 focus-visible:outline-gold focus:outline-none" />
+    </div>
+  );
+}
+
+// Insert class updates, but survive a portal that hasn't run the subject
+// migration yet: if the column is missing, drop `subject` and retry so class
+// logging never breaks. Returns whether the subject had to be dropped.
+async function insertClasses(rows: Record<string, unknown>[]): Promise<{ error: { message: string } | null; subjectDropped: boolean }> {
+  const sb = getSupabase();
+  const res = await sb.from("class_updates").insert(rows);
+  if (res.error && /subject/i.test(res.error.message) && /(column|does not exist|schema cache)/i.test(res.error.message)) {
+    const stripped = rows.map(({ subject, ...rest }) => rest);
+    const retry = await sb.from("class_updates").insert(stripped);
+    return { error: retry.error, subjectDropped: !retry.error };
+  }
+  return { error: res.error, subjectDropped: false };
+}
+
 export default function ClassUpdatePage() {
   const [students, setStudents] = useState<StudentStat[] | null>(null);
   const [mode, setMode] = useState<Mode>("quick");
@@ -148,11 +184,21 @@ function QuickForm({ students }: { students: StudentStat[] }) {
   const [sid, setSid] = useState("");
   const [date, setDate] = useState(today());
   const [duration, setDuration] = useState<number>(60);
+  const [subject, setSubject] = useState("");
   const [present, setPresent] = useState(true);
   const [taught, setTaught] = useState("");
   const [learning, setLearning] = useState<LearningNotes>(EMPTY_LEARNING);
   const [busy, setBusy] = useState(false);
   const [toast, setToast] = useState<{ kind: "success" | "error"; message: string } | null>(null);
+
+  // Default the subject to the student's instrument when one is picked.
+  useEffect(() => {
+    if (!sid) return;
+    const s = students.find((x) => x.student_id === sid);
+    setSubject(s?.instrument?.trim() || "Music");
+  }, [sid, students]);
+
+  const picked = students.find((s) => s.student_id === sid) || null;
 
   async function save() {
     if (!sid) { setToast({ kind: "error", message: "Pick a student." }); return; }
@@ -162,7 +208,7 @@ function QuickForm({ students }: { students: StudentStat[] }) {
     const uid = u.user?.id;
     if (!uid) { setBusy(false); setToast({ kind: "error", message: "Session expired." }); return; }
     const attendance: AttendanceStatus = present ? "present" : "absent";
-    const { error } = await getSupabase().from("class_updates").insert({
+    const { error, subjectDropped } = await insertClasses([{
       teacher_id: uid,
       student_id: sid,
       class_date: date,
@@ -172,17 +218,18 @@ function QuickForm({ students }: { students: StudentStat[] }) {
       makeup_required: false,
       makeup_completed: false,
       duration_min: duration,
+      subject: subject.trim() || null,
       taught: taught || null,
       accuracy_percent: present ? learning.accuracy : null,
       error_areas: present ? (learning.errors || null) : null,
       practice_level: present ? (learning.practice || null) : null,
       last_modified_by: uid,
-    });
+    }]);
     setBusy(false);
     if (error) { setToast({ kind: "error", message: error.message }); return; }
     logAudit({ action: AUDIT.CLASS_LOGGED, student_id: sid, teacher_id: uid, entity_type: "class_update",
-      summary: `Quick · ${date} · ${ATTENDANCE_LABEL[attendance]}`, meta: { attendance, duration_min: duration } });
-    setToast({ kind: "success", message: "Saved. Ready for the next one." });
+      summary: `Quick · ${date} · ${ATTENDANCE_LABEL[attendance]}`, meta: { attendance, duration_min: duration, subject } });
+    setToast({ kind: "success", message: subjectDropped ? "Saved — run supabase/class_subject_and_settlement.sql to keep the Subject." : "Saved. Ready for the next one." });
     // Keep the student selected for fast repeat entry; clear the rest.
     setTaught("");
     setLearning(EMPTY_LEARNING);
@@ -193,6 +240,8 @@ function QuickForm({ students }: { students: StudentStat[] }) {
     <div className="space-y-4">
       <StudentPicker students={students} sid={sid} onPick={setSid} />
       <Field label="Class date" req type="date" value={date} onChange={setDate} />
+
+      {sid && <SubjectField value={subject} onChange={setSubject} instrument={picked?.instrument ?? null} />}
 
       <div>
         <span className="mb-1.5 block text-sm font-semibold text-ink">Duration</span>
@@ -240,10 +289,19 @@ function BackfillForm({ students }: { students: StudentStat[] }) {
   const [start, setStart] = useState(addDays(today(), -56)); // ~2 months ago
   const [end, setEnd] = useState(today());
   const [count, setCount] = useState("8");
+  const [subject, setSubject] = useState("");
   const [rows, setRows] = useState<BackRow[]>([]);
   const [busy, setBusy] = useState(false);
   const [toast, setToast] = useState<{ kind: "success" | "error"; message: string } | null>(null);
   const nextId = useMemo(() => ({ n: 1 }), []);
+
+  useEffect(() => {
+    if (!sid) return;
+    const s = students.find((x) => x.student_id === sid);
+    setSubject(s?.instrument?.trim() || "Music");
+  }, [sid, students]);
+
+  const picked = students.find((s) => s.student_id === sid) || null;
 
   // Spread the classes evenly between the first and last date. Real schedules
   // are irregular (3 one week, 1 the next), this is only a starting guess; every
@@ -277,7 +335,6 @@ function BackfillForm({ students }: { students: StudentStat[] }) {
     const { data: u } = await getSupabase().auth.getUser();
     const uid = u.user?.id;
     if (!uid) { setBusy(false); setToast({ kind: "error", message: "Session expired." }); return; }
-    const picked = students.find((s) => s.student_id === sid);
     const base = (picked?.classes_completed ?? 0);
     // Save oldest first so class numbers read in order.
     const ordered = [...valid].sort((a, b) => a.date.localeCompare(b.date));
@@ -292,21 +349,26 @@ function BackfillForm({ students }: { students: StudentStat[] }) {
       makeup_completed: false,
       class_number: base + i + 1,
       duration_min: r.duration,
+      subject: subject.trim() || null,
       taught: r.taught || null,
       last_modified_by: uid,
     }));
-    const { error } = await getSupabase().from("class_updates").insert(inserts);
+    const { error, subjectDropped } = await insertClasses(inserts);
     setBusy(false);
     if (error) { setToast({ kind: "error", message: error.message }); return; }
     logAudit({ action: AUDIT.CLASS_LOGGED, student_id: sid, teacher_id: uid, entity_type: "class_update",
-      summary: `Backfilled ${inserts.length} classes`, meta: { count: inserts.length } });
-    setToast({ kind: "success", message: `Added ${inserts.length} classes to ${picked?.name ?? "the student"}.` });
+      summary: `Backfilled ${inserts.length} classes`, meta: { count: inserts.length, subject } });
+    setToast({ kind: "success", message: subjectDropped
+      ? `Added ${inserts.length} classes — run supabase/class_subject_and_settlement.sql to keep the Subject.`
+      : `Added ${inserts.length} classes to ${picked?.name ?? "the student"}.` });
     setRows([]);
   }
 
   return (
     <div className="space-y-4">
       <StudentPicker students={students} sid={sid} onPick={setSid} />
+
+      {sid && <SubjectField value={subject} onChange={setSubject} instrument={picked?.instrument ?? null} />}
 
       {/* Generator */}
       <div className="space-y-3 rounded-2xl border border-hairline bg-white p-4 shadow-card">
@@ -382,7 +444,10 @@ function DetailedForm({ students }: { students: StudentStat[] }) {
   const picked = useMemo(() => students.find((s) => s.student_id === sid) || null, [students, sid]);
 
   useEffect(() => {
-    if (picked) set("class_number", String((picked.classes_completed ?? 0) + 1));
+    if (picked) {
+      set("class_number", String((picked.classes_completed ?? 0) + 1));
+      set("subject", picked.instrument?.trim() || "Music");
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sid]);
 
@@ -400,7 +465,7 @@ function DetailedForm({ students }: { students: StudentStat[] }) {
     const { data: u } = await getSupabase().auth.getUser();
     const uid = u.user?.id;
     if (!uid) { setBusy(false); setToast({ kind: "error", message: "Session expired." }); return; }
-    const { error } = await getSupabase().from("class_updates").insert({
+    const { error, subjectDropped } = await insertClasses([{
       teacher_id: uid,
       student_id: sid,
       class_date: f.class_date,
@@ -412,6 +477,7 @@ function DetailedForm({ students }: { students: StudentStat[] }) {
       rescheduled_to: attendance === "rescheduled" && f.rescheduled_to ? f.rescheduled_to : null,
       class_number: f.class_number ? Number(f.class_number) : null,
       duration_min: f.duration_min ? Number(f.duration_min) : null,
+      subject: f.subject?.trim() || null,
       taught: f.taught || null,
       homework: f.homework || null,
       accuracy_percent: attendance === "present" ? learning.accuracy : null,
@@ -423,12 +489,12 @@ function DetailedForm({ students }: { students: StudentStat[] }) {
       next_class_date: f.next_class_date || null,
       teacher_notes: f.teacher_notes || null,
       last_modified_by: uid,
-    });
+    }]);
     setBusy(false);
     if (error) { setToast({ kind: "error", message: error.message }); return; }
     logAudit({ action: AUDIT.CLASS_LOGGED, student_id: sid, teacher_id: uid, entity_type: "class_update",
       summary: `Class ${f.class_date} · ${ATTENDANCE_LABEL[attendance]}`, meta: { attendance, counts_toward_cycle: counts, makeup } });
-    setToast({ kind: "success", message: "Class update saved." });
+    setToast({ kind: "success", message: subjectDropped ? "Saved — run supabase/class_subject_and_settlement.sql to keep the Subject." : "Class update saved." });
     setTimeout(() => router.push("/teacher/dashboard"), 700);
   }
 
@@ -449,6 +515,8 @@ function DetailedForm({ students }: { students: StudentStat[] }) {
       {attendance === "rescheduled" && (
         <Field label="Rescheduled to" type="date" value={f.rescheduled_to || ""} onChange={(v) => set("rescheduled_to", v)} />
       )}
+
+      {sid && <SubjectField value={f.subject || ""} onChange={(v) => set("subject", v)} instrument={picked?.instrument ?? null} />}
 
       <div className="flex flex-col gap-2 rounded-xl border border-hairline bg-white p-3.5">
         <label className="flex items-center gap-2.5 text-sm text-ink/80">

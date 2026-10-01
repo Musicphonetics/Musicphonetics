@@ -65,12 +65,15 @@ export interface StudentView {
 }
 
 export function studentView(d: ParentData, student: Student): StudentView {
-  const cls = d.classes.filter((c) => c.student_id === student.id);
+  // A settled chapter (settled_until) is history: count only the current chapter.
+  const cut = student.settled_until ?? null;
+  const inChapter = (dateISO: string | null) => !cut || (!!dateISO && dateISO > cut);
+  const cls = d.classes.filter((c) => c.student_id === student.id && inChapter(c.class_date));
   const completed = cls.filter(isValidCompleted).length;
   const perMonth = (student.classes_per_month ?? 0) > 0 ? (student.classes_per_month as number) : 8;
   const latest = cls[0] ?? null; // already sorted desc
   const nextClassDate = cls.map((c) => c.next_class_date).find(Boolean) ?? null;
-  const pays = d.payments.filter((p) => p.student_id === student.id);
+  const pays = d.payments.filter((p) => p.student_id === student.id && inChapter(p.payment_date));
   const paymentStatus = pays[0]?.payment_status ?? "Not recorded";
   // Classes are bought by payments: each monthly fee buys one cycle (perMonth
   // classes); two payments = two cycles. Renewal is due only once every paid
@@ -87,7 +90,9 @@ export function studentView(d: ParentData, student: Student): StudentView {
 
 // Total completed classes for the student (for the Foundation Journey count).
 export function completedCount(d: ParentData, studentId: string): number {
-  return d.classes.filter((c) => c.student_id === studentId && isValidCompleted(c)).length;
+  const student = d.students.find((s) => s.id === studentId);
+  const cut = student?.settled_until ?? null;
+  return d.classes.filter((c) => c.student_id === studentId && isValidCompleted(c) && (!cut || (!!c.class_date && c.class_date > cut))).length;
 }
 
 // Anonymised community headlines the owner publishes (community_updates). Falls

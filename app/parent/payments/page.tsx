@@ -36,11 +36,14 @@ export default function ParentPayments() {
   const { student, select } = useSelectedStudent(data?.students);
   const view = useMemo(() => (data && student ? studentView(data, student) : null), [data, student]);
   const pays = useMemo(() => (data && student ? data.payments.filter((p) => p.student_id === student.id) : []), [data, student]);
+  // The fee/renewal maths follows the current chapter only (post-settlement).
+  const cut = student?.settled_until ?? null;
+  const postPays = useMemo(() => pays.filter((p) => !cut || (p.payment_date || "") > cut), [pays, cut]);
   const completedDates = useMemo(
     () => (data && student
-      ? data.classes.filter((c) => c.student_id === student.id && isValidCompleted(c)).map((c) => c.class_date)
+      ? data.classes.filter((c) => c.student_id === student.id && isValidCompleted(c) && (!cut || (c.class_date || "") > cut)).map((c) => c.class_date)
       : []),
-    [data, student],
+    [data, student, cut],
   );
   const switcher = data
     ? <FamilySwitcher students={data.students} selectedId={student?.id ?? null} onSelect={select} onAdded={reload} />
@@ -71,7 +74,7 @@ export default function ParentPayments() {
           </div>
 
           {/* Classes & fees, progress bar of classes used vs paid-for */}
-          <AdvanceFeeCard student={student} payments={pays} completed={view.completed} completedDates={completedDates} />
+          <AdvanceFeeCard student={student} payments={postPays} completed={view.completed} completedDates={completedDates} />
 
           {/* Renew, pay the monthly fee on the official payment page */}
           <div className="rounded-3xl border border-hairline bg-white p-5 shadow-[0_12px_34px_-20px_rgba(22,27,38,0.2)]">

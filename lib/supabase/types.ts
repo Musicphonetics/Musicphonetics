@@ -130,6 +130,10 @@ export interface Student {
   // a per-student target; optional so pre-migration rows read undefined.
   weekly_slots?: WeeklySlot[] | null;
   weekly_target?: number | null;
+  // Settlement boundary (supabase/class_subject_and_settlement.sql). Classes &
+  // payments on/before settled_until are a closed chapter; cycles restart after.
+  settled_until?: string | null;
+  settlement_note?: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -169,6 +173,9 @@ export interface ClassUpdate {
   accuracy_percent?: number | null;
   error_areas?: string | null;
   practice_level?: string | null;
+  // Per-class subject (supabase/class_subject_and_settlement.sql). Lets a student
+  // run more than one subject (e.g. Music + History). Optional / pre-migration null.
+  subject?: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -400,6 +407,8 @@ export interface StudentStat {
   teacher_share_total: number;
   weekly_slots?: WeeklySlot[] | null;
   weekly_target?: number | null;
+  settled_until?: string | null;
+  settlement_note?: string | null;
 }
 
 export interface OwnerStats {
