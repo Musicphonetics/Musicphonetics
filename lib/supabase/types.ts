@@ -2,6 +2,14 @@
 
 export type Role = "owner" | "teacher" | "parent";
 
+// One closed settlement chapter stored on students.settlements (jsonb array).
+export interface SettledChapterJSON {
+  from: string | null;
+  to: string | null;
+  label: string;
+  note?: string | null;
+}
+
 export interface Profile {
   id: string;
   role: Role;
@@ -130,10 +138,11 @@ export interface Student {
   // a per-student target; optional so pre-migration rows read undefined.
   weekly_slots?: WeeklySlot[] | null;
   weekly_target?: number | null;
-  // Settlement boundary (supabase/class_subject_and_settlement.sql). Classes &
-  // payments on/before settled_until are a closed chapter; cycles restart after.
-  settled_until?: string | null;
-  settlement_note?: string | null;
+  // Settlement chapters (supabase/class_subject_and_settlement.sql). Labelled
+  // date-range chapters; classes/payments inside one are settled history.
+  settlements?: SettledChapterJSON[] | null;
+  settled_until?: string | null;   // legacy single-cutoff
+  settlement_note?: string | null; // legacy
   created_at: string;
   updated_at: string;
 }
@@ -407,6 +416,7 @@ export interface StudentStat {
   teacher_share_total: number;
   weekly_slots?: WeeklySlot[] | null;
   weekly_target?: number | null;
+  settlements?: SettledChapterJSON[] | null;
   settled_until?: string | null;
   settlement_note?: string | null;
 }

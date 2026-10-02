@@ -9,6 +9,7 @@ import { loadParentData, type ParentData } from "@/lib/supabase/parent";
 import { useSelectedStudent } from "@/lib/family";
 import { FamilySwitcher } from "@/components/parent/FamilySwitcher";
 import { ParentClassCycles } from "@/components/parent/ParentClassCycles";
+import { chaptersOf, isActiveDate, inChapter, chapterRange } from "@/lib/settlement";
 
 export default function ParentClasses() {
   const [data, setData] = useState<ParentData | null>(null);
@@ -21,7 +22,7 @@ export default function ParentClasses() {
   }, []);
 
   const { student, select } = useSelectedStudent(data?.students);
-  const settledUntil = student?.settled_until ?? null;
+  const chapters = useMemo(() => (student ? chaptersOf(student) : []), [student]);
   const classes = useMemo(
     () => (data && student ? data.classes.filter((c) => c.student_id === student.id) : []),
     [data, student]
@@ -30,9 +31,8 @@ export default function ParentClasses() {
     () => (data && student ? data.payments.filter((p) => p.student_id === student.id) : []),
     [data, student]
   );
-  const postClasses = useMemo(() => classes.filter((c) => !settledUntil || (c.class_date || "") > settledUntil), [classes, settledUntil]);
-  const postPays = useMemo(() => pays.filter((p) => !settledUntil || (p.payment_date || "") > settledUntil), [pays, settledUntil]);
-  const preCount = classes.length - postClasses.length;
+  const postClasses = useMemo(() => classes.filter((c) => isActiveDate(c.class_date, chapters)), [classes, chapters]);
+  const postPays = useMemo(() => pays.filter((p) => isActiveDate(p.payment_date, chapters)), [pays, chapters]);
   const switcher = data
     ? <FamilySwitcher students={data.students} selectedId={student?.id ?? null} onSelect={select} onAdded={reload} />
     : null;
@@ -50,12 +50,14 @@ export default function ParentClasses() {
             Classes are grouped by the payment that paid for them, so you can see each cycle&apos;s payment, how many
             classes happened, and when. Tap a cycle to open it.
           </p>
-          {settledUntil && (
-            <p className="rounded-xl border border-hairline bg-mist/40 px-3.5 py-2.5 text-xs text-ink/60">
-              An earlier chapter was settled up to {new Date(settledUntil + "T00:00:00").toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}
-              {preCount > 0 ? ` (${preCount} classes)` : ""}. The cycles below are the current arrangement.
-            </p>
-          )}
+          {chapters.map((ch, i) => {
+            const n = classes.filter((c) => inChapter(c.class_date, ch)).length;
+            return (
+              <p key={i} className="rounded-xl border border-hairline bg-mist/40 px-3.5 py-2.5 text-xs text-ink/60">
+                <b className="text-ink/75">{ch.label}</b> · {chapterRange(ch)}{n > 0 ? ` · ${n} classes` : ""} — accounted separately.
+              </p>
+            );
+          })}
           {student && (
             <ParentClassCycles
               classes={postClasses}

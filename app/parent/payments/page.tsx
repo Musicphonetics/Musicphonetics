@@ -14,6 +14,7 @@ import type { Payment } from "@/lib/supabase/types";
 import { useSelectedStudent } from "@/lib/family";
 import { FamilySwitcher } from "@/components/parent/FamilySwitcher";
 import { AdvanceFeeCard } from "@/components/parent/AdvanceFeeCard";
+import { chaptersOf, isActiveDate } from "@/lib/settlement";
 import { cn } from "@/lib/utils";
 
 const pretty = (iso: string) => new Date(iso + "T00:00:00").toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" });
@@ -36,14 +37,14 @@ export default function ParentPayments() {
   const { student, select } = useSelectedStudent(data?.students);
   const view = useMemo(() => (data && student ? studentView(data, student) : null), [data, student]);
   const pays = useMemo(() => (data && student ? data.payments.filter((p) => p.student_id === student.id) : []), [data, student]);
-  // The fee/renewal maths follows the current chapter only (post-settlement).
-  const cut = student?.settled_until ?? null;
-  const postPays = useMemo(() => pays.filter((p) => !cut || (p.payment_date || "") > cut), [pays, cut]);
+  // The fee/renewal maths follows the current account only (settled chapters excluded).
+  const chapters = useMemo(() => (student ? chaptersOf(student) : []), [student]);
+  const postPays = useMemo(() => pays.filter((p) => isActiveDate(p.payment_date, chapters)), [pays, chapters]);
   const completedDates = useMemo(
     () => (data && student
-      ? data.classes.filter((c) => c.student_id === student.id && isValidCompleted(c) && (!cut || (c.class_date || "") > cut)).map((c) => c.class_date)
+      ? data.classes.filter((c) => c.student_id === student.id && isValidCompleted(c) && isActiveDate(c.class_date, chapters)).map((c) => c.class_date)
       : []),
-    [data, student, cut],
+    [data, student, chapters],
   );
   const switcher = data
     ? <FamilySwitcher students={data.students} selectedId={student?.id ?? null} onSelect={select} onAdded={reload} />

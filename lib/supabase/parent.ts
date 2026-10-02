@@ -4,6 +4,7 @@ import { getSupabase } from "./client";
 import type { Student, ClassUpdate, Payment, Profile } from "./types";
 import { isValidCompleted } from "@/lib/attendance";
 import { purchasedClasses, type FeePaymentLite } from "@/lib/fees";
+import { chaptersOf, isActiveDate } from "@/lib/settlement";
 
 // Everything a parent may see about THEIR own child/children. RLS restricts the
 // rows to students where students.parent_id = auth.uid() (see the SQL). We read
@@ -65,9 +66,10 @@ export interface StudentView {
 }
 
 export function studentView(d: ParentData, student: Student): StudentView {
-  // A settled chapter (settled_until) is history: count only the current chapter.
-  const cut = student.settled_until ?? null;
-  const inChapter = (dateISO: string | null) => !cut || (!!dateISO && dateISO > cut);
+  // Settled chapters (e.g. a History stretch) are history: count only the
+  // current, active account.
+  const chapters = chaptersOf(student);
+  const inChapter = (dateISO: string | null) => isActiveDate(dateISO, chapters);
   const cls = d.classes.filter((c) => c.student_id === student.id && inChapter(c.class_date));
   const completed = cls.filter(isValidCompleted).length;
   const perMonth = (student.classes_per_month ?? 0) > 0 ? (student.classes_per_month as number) : 8;
@@ -91,8 +93,8 @@ export function studentView(d: ParentData, student: Student): StudentView {
 // Total completed classes for the student (for the Foundation Journey count).
 export function completedCount(d: ParentData, studentId: string): number {
   const student = d.students.find((s) => s.id === studentId);
-  const cut = student?.settled_until ?? null;
-  return d.classes.filter((c) => c.student_id === studentId && isValidCompleted(c) && (!cut || (!!c.class_date && c.class_date > cut))).length;
+  const chapters = student ? chaptersOf(student) : [];
+  return d.classes.filter((c) => c.student_id === studentId && isValidCompleted(c) && isActiveDate(c.class_date, chapters)).length;
 }
 
 // Anonymised community headlines the owner publishes (community_updates). Falls

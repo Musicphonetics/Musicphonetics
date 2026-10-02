@@ -8,9 +8,10 @@ import { Loading, EmptyState, formatMoney } from "@/components/portal/kit";
 import { ReportCardModal, type ReportStudent } from "@/components/portal/ReportCard";
 import { getSupabase, isSupabaseConfigured } from "@/lib/supabase/client";
 import { loadRoster } from "@/lib/supabase/roster";
-import type { StudentStat, ClassUpdate, Payment } from "@/lib/supabase/types";
+import type { StudentStat, ClassUpdate, Payment, SettledChapterJSON } from "@/lib/supabase/types";
 import { studentPlan, PLAN_LABEL, type Plan } from "@/lib/plan";
 import { computeSetProgress } from "@/lib/fees";
+import { chaptersOf, isActiveDate, inChapter, chapterRange } from "@/lib/settlement";
 import { computeFoundation } from "@/lib/foundation";
 import { FoundationCard } from "@/components/portal/FoundationCard";
 import { MonthlyPlanEditor } from "@/components/teach/MonthlyPlanEditor";
@@ -100,9 +101,8 @@ function StudentDetail({ stat, onReport }: { stat: StudentStat; onReport: () => 
   const [classes, setClasses] = useState<ClassUpdate[] | null>(null);
   const [payments, setPayments] = useState<Payment[] | null>(null);
   const [tab, setTab] = useState<DetailTab>("overview");
-  // Settlement boundary (local so the view updates the moment it's set).
-  const [settledUntil, setSettledUntil] = useState<string | null>(stat.settled_until ?? null);
-  const [settleNote, setSettleNote] = useState<string | null>(stat.settlement_note ?? null);
+  // Settled chapters (local so the view updates the moment they change).
+  const [chapters, setChapters] = useState<SettledChapterJSON[]>(() => chaptersOf(stat));
 
   useEffect(() => {
     const sb = getSupabase();
@@ -112,12 +112,12 @@ function StudentDetail({ stat, onReport }: { stat: StudentStat; onReport: () => 
       .then(({ data }) => setPayments((data as Payment[]) ?? []));
   }, [stat.student_id]);
 
-  // Split history (on/before the settlement date) from the current chapter.
-  const postClasses = (classes ?? []).filter((c) => !settledUntil || (c.class_date || "") > settledUntil);
-  const preClasses = (classes ?? []).filter((c) => settledUntil && (c.class_date || "") <= settledUntil);
-  const postPays = (payments ?? []).filter((p) => !settledUntil || (p.payment_date || "") > settledUntil);
-  const prePays = (payments ?? []).filter((p) => settledUntil && (p.payment_date || "") <= settledUntil);
-  const postPaidTotal = postPays.filter((p) => /received/i.test(p.payment_status)).reduce((a, p) => a + (p.amount_paid ?? 0), 0);
+  // Active = not inside any settled chapter. Each chapter also keeps its own
+  // classes & payments, so Guitar and History account separately.
+  const activeClasses = (classes ?? []).filter((c) => isActiveDate(c.class_date, chapters));
+  const activePays = (payments ?? []).filter((p) => isActiveDate(p.payment_date, chapters));
+  const activePaidTotal = activePays.filter((p) => /received/i.test(p.payment_status)).reduce((a, p) => a + (p.amount_paid ?? 0), 0);
+  const hasChapters = chapters.length > 0;
 
   return (
     <div className="border-t border-hairline bg-paper p-4">
@@ -135,7 +135,7 @@ function StudentDetail({ stat, onReport }: { stat: StudentStat; onReport: () => 
       {tab === "overview" && (
         <div>
           <SetProgressCard stat={stat} />
-          {settledUntil && <p className="mt-2 text-[11px] text-ink/50">Settled up to {shortDay(settledUntil)} · progress shown is for the current chapter.</p>}
+          {hasChapters && <p className="mt-2 text-[11px] text-ink/50">{chapters.length} settled chapter{chapters.length === 1 ? "" : "s"} set aside · progress shown is the current account.</p>}
           <button onClick={onReport}
             className="mt-3 flex w-full items-center justify-center gap-2 rounded-xl bg-ink px-4 py-2.5 text-sm font-semibold text-paper hover:bg-[#0f131c]">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M8 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2h-2M9 3h6M8 11h8M8 15h5" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" /></svg>
@@ -148,22 +148,25 @@ function StudentDetail({ stat, onReport }: { stat: StudentStat; onReport: () => 
 
       {tab === "classes" && (
         <div className="space-y-4">
-          <SettlePanel
-            studentId={stat.student_id} studentName={stat.name}
-            settledUntil={settledUntil} note={settleNote}
-            onChange={(d, n) => { setSettledUntil(d); setSettleNote(n); }}
-          />
-          {settledUntil && <SettledChapterCard classes={preClasses} payments={prePays} until={settledUntil} note={settleNote} />}
+          <ChaptersEditor studentId={stat.student_id} instrument={stat.instrument} chapters={chapters} onChange={setChapters} />
+          {chapters.map((ch, i) => (
+            <SettledChapterCard
+              key={`${ch.label}-${ch.from}-${ch.to}-${i}`}
+              chapter={ch}
+              classes={(classes ?? []).filter((c) => inChapter(c.class_date, ch))}
+              payments={(payments ?? []).filter((p) => inChapter(p.payment_date, ch))}
+            />
+          ))}
           <div>
             <div className="mb-3 flex items-baseline justify-between">
-              <p className="text-xs font-semibold uppercase tracking-wide text-ink/60">{settledUntil ? "Current chapter · by cycle" : "Classes by cycle"}</p>
-              <span className="text-[11px] text-ink/45">{classes ? `${postClasses.length} ${settledUntil ? "since" : "logged"}` : ""}</span>
+              <p className="text-xs font-semibold uppercase tracking-wide text-ink/60">{hasChapters ? "Current account · by cycle" : "Classes by cycle"}</p>
+              <span className="text-[11px] text-ink/45">{classes ? `${activeClasses.length} ${hasChapters ? "current" : "logged"}` : ""}</span>
             </div>
             {!classes || !payments ? <p className="text-xs text-ink/50">Loading…</p> : (
               <StudentClassCycles
-                classes={postClasses}
+                classes={activeClasses}
                 setClasses={setClasses}
-                payments={postPays}
+                payments={activePays}
                 feeQuoted={stat.fee_quoted}
                 classesPerMonth={stat.classes_per_month}
               />
@@ -179,11 +182,11 @@ function StudentDetail({ stat, onReport }: { stat: StudentStat; onReport: () => 
             payments.length === 0 ? <p className="mt-2 text-xs text-ink/50">No payments yet.</p> : (
             <>
               <div className="mt-2 flex items-center justify-between rounded-xl border border-hairline bg-white px-3.5 py-3">
-                <span className="text-xs text-ink/60">{settledUntil ? "Received since settlement" : "Total received"}</span>
-                <span className="font-display text-lg font-bold text-ink">{formatMoney(settledUntil ? postPaidTotal : stat.total_paid)}</span>
+                <span className="text-xs text-ink/60">{hasChapters ? "Received · current account" : "Total received"}</span>
+                <span className="font-display text-lg font-bold text-ink">{formatMoney(hasChapters ? activePaidTotal : stat.total_paid)}</span>
               </div>
               <ul className="mt-3 space-y-1.5">
-                {postPays.map((p) => {
+                {activePays.map((p) => {
                   const per = (stat.fee_quoted ?? 0) > 0 ? Math.round((Number(p.amount_paid) / (stat.fee_quoted as number)) * (stat.classes_per_month ?? 8)) : null;
                   return (
                     <li key={p.id} className="flex items-center justify-between rounded-lg border border-hairline bg-white px-3 py-2 text-xs text-ink/75">
@@ -196,19 +199,27 @@ function StudentDetail({ stat, onReport }: { stat: StudentStat; onReport: () => 
                   );
                 })}
               </ul>
-              {prePays.length > 0 && (
-                <div className="mt-4">
-                  <p className="text-[11px] font-semibold uppercase tracking-wide text-ink/45">Settled chapter (up to {shortDay(settledUntil!)})</p>
-                  <ul className="mt-2 space-y-1.5 opacity-70">
-                    {prePays.map((p) => (
-                      <li key={p.id} className="flex items-center justify-between rounded-lg border border-hairline bg-white px-3 py-2 text-xs text-ink/70">
-                        <span>{p.payment_date} · {p.payment_status}</span>
-                        <span className="font-semibold text-ink">{formatMoney(p.amount_paid)}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
+              {chapters.map((ch, i) => {
+                const chapPays = (payments ?? []).filter((p) => inChapter(p.payment_date, ch));
+                if (chapPays.length === 0) return null;
+                const total = chapPays.filter((p) => /received/i.test(p.payment_status)).reduce((a, p) => a + (p.amount_paid ?? 0), 0);
+                return (
+                  <div key={`p-${ch.label}-${i}`} className="mt-4">
+                    <p className="flex items-center justify-between text-[11px] font-semibold uppercase tracking-wide text-ink/45">
+                      <span>{ch.label} · {chapterRange(ch)}</span>
+                      <span>{formatMoney(total)}</span>
+                    </p>
+                    <ul className="mt-2 space-y-1.5 opacity-80">
+                      {chapPays.map((p) => (
+                        <li key={p.id} className="flex items-center justify-between rounded-lg border border-hairline bg-white px-3 py-2 text-xs text-ink/70">
+                          <span>{p.payment_date} · {p.payment_status}</span>
+                          <span className="font-semibold text-ink">{formatMoney(p.amount_paid)}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                );
+              })}
             </>
           )}
         </div>
@@ -272,90 +283,104 @@ function SetProgressCard({ stat }: { stat: StudentStat }) {
   );
 }
 
-const shortDay = (iso: string | null) =>
-  iso ? new Date(iso + "T00:00:00").toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" }) : "—";
-
-// Settle & start fresh: close a chapter on a date. Everything on/before it
-// becomes settled history; the paid-cycle tracking restarts after it. Used, for
-// example, when a student was taught a different subject on a different fee.
-function SettlePanel({ studentId, studentName, settledUntil, note, onChange }: {
-  studentId: string; studentName: string; settledUntil: string | null; note: string | null;
-  onChange: (settledUntil: string | null, note: string | null) => void;
+// Settled chapters editor: carve the timeline into labelled, dated chapters
+// (e.g. a History stretch between two Guitar stretches). Each chapter's classes
+// & payments account on their own; the rest is the current, active account.
+function ChaptersEditor({ studentId, instrument, chapters, onChange }: {
+  studentId: string; instrument: string | null; chapters: SettledChapterJSON[];
+  onChange: (next: SettledChapterJSON[]) => void;
 }) {
-  const [open, setOpen] = useState(false);
-  const [date, setDate] = useState(settledUntil ?? new Date().toISOString().slice(0, 10));
-  const [text, setText] = useState(note ?? "");
+  const [adding, setAdding] = useState(false);
+  const [label, setLabel] = useState("History");
+  const [from, setFrom] = useState("");
+  const [to, setTo] = useState("");
+  const [note, setNote] = useState("");
   const [busy, setBusy] = useState(false);
   const [msg, setMsg] = useState<string | null>(null);
 
-  const isMissing = (m: string) => /settled_until|settlement_note/i.test(m) && /(column|does not exist|schema cache)/i.test(m);
+  const isMissing = (m: string) => /settlements/i.test(m) && /(column|does not exist|schema cache)/i.test(m);
+  const suggestions = Array.from(new Set([instrument?.trim() || "Music", "History"]));
 
-  async function save(clear: boolean) {
+  async function persist(next: SettledChapterJSON[]) {
     setBusy(true); setMsg(null);
-    const payload = clear ? { settled_until: null, settlement_note: null } : { settled_until: date, settlement_note: text.trim() || null };
-    const { error } = await getSupabase().from("students").update(payload).eq("id", studentId);
+    const { error } = await getSupabase().from("students").update({ settlements: next }).eq("id", studentId);
     setBusy(false);
-    if (error) { setMsg(isMissing(error.message) ? "Run supabase/class_subject_and_settlement.sql once in Supabase to enable settlement." : error.message); return; }
-    onChange(clear ? null : date, clear ? null : (text.trim() || null));
-    setOpen(false);
+    if (error) { setMsg(isMissing(error.message) ? "Run supabase/class_subject_and_settlement.sql once in Supabase to enable settled chapters." : error.message); return false; }
+    onChange(next);
+    return true;
   }
 
-  if (settledUntil && !open) {
-    return (
-      <div className="rounded-2xl border border-hairline bg-white p-4">
-        <div className="flex items-center justify-between gap-2">
-          <div className="min-w-0">
-            <p className="text-sm font-semibold text-ink">Settled up to {shortDay(settledUntil)}</p>
-            {note && <p className="mt-0.5 text-xs text-ink/55">{note}</p>}
-            <p className="mt-0.5 text-[11px] text-ink/45">Cycles below count only from after this date.</p>
-          </div>
-          <div className="flex shrink-0 gap-2">
-            <button onClick={() => { setDate(settledUntil); setText(note ?? ""); setOpen(true); }} className="rounded-full border border-hairline px-3 py-1.5 text-xs font-semibold text-ink/70">Edit</button>
-            <button onClick={() => save(true)} disabled={busy} className="rounded-full border border-hairline px-3 py-1.5 text-xs font-semibold text-red-600">Undo</button>
-          </div>
-        </div>
-        {msg && <p className="mt-2 text-xs text-red-600">{msg}</p>}
-      </div>
-    );
+  async function add() {
+    if (!from && !to) { setMsg("Pick a start and/or finish date."); return; }
+    const next = [...chapters, { label: label.trim() || "Settled", from: from || null, to: to || null, note: note.trim() || null }]
+      .sort((a, b) => (a.from || a.to || "").localeCompare(b.from || b.to || ""));
+    if (await persist(next)) { setAdding(false); setFrom(""); setTo(""); setNote(""); setLabel("History"); }
+  }
+  async function remove(i: number) {
+    await persist(chapters.filter((_, idx) => idx !== i));
   }
 
-  if (!open) {
-    return (
-      <button onClick={() => setOpen(true)} className="flex w-full items-center justify-center gap-2 rounded-xl border border-dashed border-ink/20 py-3 text-sm font-semibold text-ink/70 hover:border-gold/50 hover:text-ink">
-        Settle &amp; start fresh
-      </button>
-    );
-  }
+  const cin = "w-full rounded-xl border border-hairline bg-white px-3 py-2.5 text-sm focus-visible:outline-2 focus-visible:outline-gold focus:outline-none";
 
   return (
-    <div className="space-y-3 rounded-2xl border border-gold/40 bg-white p-4 shadow-card">
-      <div>
-        <p className="text-sm font-semibold text-ink">Settle &amp; start fresh</p>
-        <p className="mt-0.5 text-xs text-ink/55">Close {studentName.split(" ")[0]}&apos;s chapter up to a date. Classes &amp; payments on/before it stay as settled history; new cycles start after.</p>
+    <div className="rounded-2xl border border-hairline bg-white p-4">
+      <div className="flex items-center justify-between">
+        <p className="text-sm font-semibold text-ink">Settled chapters</p>
+        {!adding && <button onClick={() => setAdding(true)} className="text-xs font-semibold text-[#7A5E0F]">+ Add a chapter</button>}
       </div>
-      <label className="block">
-        <span className="text-xs font-medium text-ink/60">Settle everything up to &amp; including</span>
-        <input type="date" value={date} onChange={(e) => setDate(e.target.value)}
-          className="mt-1 w-full rounded-xl border border-hairline bg-white px-3 py-2.5 text-sm focus-visible:outline-2 focus-visible:outline-gold focus:outline-none" />
-      </label>
-      <label className="block">
-        <span className="text-xs font-medium text-ink/60">Note (optional)</span>
-        <input value={text} onChange={(e) => setText(e.target.value)} placeholder="e.g. History chapter, different fee — settled in person"
-          className="mt-1 w-full rounded-xl border border-hairline bg-white px-3 py-2.5 text-sm focus-visible:outline-2 focus-visible:outline-gold focus:outline-none" />
-      </label>
-      {msg && <p className="text-xs text-red-600">{msg}</p>}
-      <div className="flex gap-2">
-        <button onClick={() => save(false)} disabled={busy || !date} className="flex-1 rounded-full bg-gold py-2.5 text-sm font-semibold text-ink hover:brightness-105 disabled:opacity-50">
-          {busy ? "Saving…" : "Settle up to this date"}
-        </button>
-        <button onClick={() => setOpen(false)} className="rounded-full border border-hairline px-4 py-2.5 text-sm font-semibold text-ink/70">Cancel</button>
-      </div>
+      <p className="mt-0.5 text-xs text-ink/55">Carve out a dated stretch on a different subject/fee (e.g. History). Its classes &amp; payments account on their own; the rest stays the current account.</p>
+
+      {chapters.length > 0 && (
+        <ul className="mt-3 space-y-2">
+          {chapters.map((ch, i) => (
+            <li key={`${ch.label}-${ch.from}-${ch.to}-${i}`} className="flex items-center justify-between gap-2 rounded-xl border border-hairline bg-mist/40 px-3 py-2.5">
+              <div className="min-w-0">
+                <p className="text-sm font-semibold text-ink">{ch.label} <span className="font-normal text-ink/55">· {chapterRange(ch)}</span></p>
+                {ch.note && <p className="mt-0.5 truncate text-xs text-ink/50">{ch.note}</p>}
+              </div>
+              <button onClick={() => remove(i)} disabled={busy} className="shrink-0 text-xs font-semibold text-red-600">Remove</button>
+            </li>
+          ))}
+        </ul>
+      )}
+
+      {adding && (
+        <div className="mt-3 space-y-3 rounded-xl border border-gold/40 bg-white p-3">
+          <div>
+            <span className="text-xs font-medium text-ink/60">Subject / label</span>
+            <div className="mt-1.5 mb-2 flex flex-wrap gap-2">
+              {suggestions.map((s) => (
+                <button key={s} type="button" onClick={() => setLabel(s)}
+                  className={cn("rounded-full border px-3 py-1.5 text-xs font-semibold transition",
+                    label === s ? "border-gold bg-gold text-ink" : "border-hairline bg-white text-ink/70 hover:border-gold/50")}>{s}</button>
+              ))}
+            </div>
+            <input value={label} onChange={(e) => setLabel(e.target.value)} placeholder="e.g. History" className={cin} />
+          </div>
+          <div className="grid grid-cols-2 gap-3">
+            <label className="block"><span className="text-xs font-medium text-ink/60">Started on</span>
+              <input type="date" value={from} onChange={(e) => setFrom(e.target.value)} className={cn(cin, "mt-1")} /></label>
+            <label className="block"><span className="text-xs font-medium text-ink/60">Finished on</span>
+              <input type="date" value={to} min={from || undefined} onChange={(e) => setTo(e.target.value)} className={cn(cin, "mt-1")} /></label>
+          </div>
+          <input value={note} onChange={(e) => setNote(e.target.value)} placeholder="Note (optional) — e.g. different fee, settled in person" className={cin} />
+          {msg && <p className="text-xs text-red-600">{msg}</p>}
+          <div className="flex gap-2">
+            <button onClick={add} disabled={busy} className="flex-1 rounded-full bg-gold py-2.5 text-sm font-semibold text-ink hover:brightness-105 disabled:opacity-50">{busy ? "Saving…" : "Add chapter"}</button>
+            <button onClick={() => { setAdding(false); setMsg(null); }} className="rounded-full border border-hairline px-4 py-2.5 text-sm font-semibold text-ink/70">Cancel</button>
+          </div>
+        </div>
+      )}
+      {!adding && msg && <p className="mt-2 text-xs text-red-600">{msg}</p>}
     </div>
   );
 }
 
-// A quiet, collapsible summary of the settled (history) chapter.
-function SettledChapterCard({ classes, payments, until, note }: { classes: ClassUpdate[]; payments: Payment[]; until: string; note: string | null }) {
+const shortDay = (iso: string | null) =>
+  iso ? new Date(iso + "T00:00:00").toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" }) : "—";
+
+// A quiet, collapsible summary of one settled chapter (its classes & payments).
+function SettledChapterCard({ chapter, classes, payments }: { chapter: SettledChapterJSON; classes: ClassUpdate[]; payments: Payment[] }) {
   const [open, setOpen] = useState(false);
   const done = classes.filter((c) => c.class_status === "Completed").length;
   const received = payments.filter((p) => /received/i.test(p.payment_status)).reduce((a, p) => a + (p.amount_paid ?? 0), 0);
@@ -364,8 +389,8 @@ function SettledChapterCard({ classes, payments, until, note }: { classes: Class
     <div className="overflow-hidden rounded-2xl border border-hairline bg-mist/40">
       <button onClick={() => setOpen((v) => !v)} className="flex w-full items-center justify-between gap-3 px-4 py-3 text-left">
         <div className="min-w-0">
-          <p className="text-sm font-semibold text-ink/80">Settled chapter · up to {shortDay(until)}</p>
-          <p className="mt-0.5 text-xs text-ink/55">{done} classes{received > 0 ? ` · ${formatMoney(received)} received` : ""}{note ? ` · ${note}` : ""}</p>
+          <p className="text-sm font-semibold text-ink/80">{chapter.label} · {chapterRange(chapter)}</p>
+          <p className="mt-0.5 text-xs text-ink/55">{done} classes{received > 0 ? ` · ${formatMoney(received)} received` : ""}{chapter.note ? ` · ${chapter.note}` : ""}</p>
         </div>
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true" className={cn("shrink-0 text-ink/40 transition-transform", open && "rotate-180")}><path d="M6 9l6 6 6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>
       </button>

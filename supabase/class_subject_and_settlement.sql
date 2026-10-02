@@ -14,7 +14,15 @@ alter table public.class_updates add column if not exists subject text;
 comment on column public.class_updates.subject is 'What was taught this class (e.g. Guitar, Music, History). Lets one student run more than one subject.';
 
 -- 2) Student settlement boundary -------------------------------------------
+-- Labelled, dated chapters (e.g. a History stretch between two Guitar stretches).
+-- Each element: {"from":"YYYY-MM-DD","to":"YYYY-MM-DD","label":"History","note":"..."}
+-- Classes & payments inside a chapter are accounted under it; everything outside
+-- all chapters is the current, active account tracked in paid cycles.
+alter table public.students add column if not exists settlements jsonb not null default '[]'::jsonb;
+comment on column public.students.settlements is 'Closed, labelled date-range chapters [{from,to,label,note}]. Classes/payments inside one are settled history; outside = current account.';
+
+-- Legacy single-cutoff (kept for back-compat; superseded by settlements).
 alter table public.students add column if not exists settled_until date;
 alter table public.students add column if not exists settlement_note text;
-comment on column public.students.settled_until is 'Classes & payments on or before this date are a closed, settled chapter; paid-cycle tracking restarts after it.';
-comment on column public.students.settlement_note is 'Optional note describing the settled chapter (old fee/arrangement).';
+comment on column public.students.settled_until is 'Legacy single cutoff; prefer settlements. Classes/payments on/before it were a closed chapter.';
+comment on column public.students.settlement_note is 'Legacy note for the single-cutoff settlement.';
