@@ -22,9 +22,13 @@ export function computePending(rows: StudentStat[]): { list: PendingStudent[]; t
     if (s.status !== "active") continue;
     const sp = computeSetProgress(s.classes_completed, s.classes_per_month, s.classes_purchased);
     const fee = s.fee_quoted ?? 0;
-    if (sp.allComplete) {
+    if ((s.total_paid ?? 0) <= 0 && s.classes_completed > 0) {
+      // Classes taught but no payment recorded for the current account → the
+      // set is unpaid, so the fee is due now (even before the set is used up).
+      list.push({ stat: s, reason: "unpaid", amount: fee, done: sp.currentDone, perSet: sp.perSet });
+    } else if (sp.allComplete) {
       // Every paid class used up — the next set is unpaid.
-      list.push({ stat: s, reason: s.total_paid > 0 ? "renewal" : "unpaid", amount: fee, done: sp.perSet, perSet: sp.perSet });
+      list.push({ stat: s, reason: "renewal", amount: fee, done: sp.perSet, perSet: sp.perSet });
     } else if (sp.remainingInSet <= 2) {
       list.push({ stat: s, reason: "renew_soon", amount: fee, done: sp.currentDone, perSet: sp.perSet });
     }
@@ -94,9 +98,9 @@ function Row({ p }: { p: PendingStudent }) {
         <p className="truncate text-sm font-semibold text-ink">{p.stat.name}</p>
         <p className="mt-0.5 text-xs text-ink/55">
           <span className="font-mono">{p.stat.student_code || "—"}</span> · {p.stat.instrument || "—"}
-          {p.reason === "renew_soon"
-            ? ` · ${p.done}/${p.perSet} done`
-            : ` · all ${p.perSet} done`}
+          {p.reason === "renewal"
+            ? ` · all ${p.perSet} done`
+            : ` · ${p.done}/${p.perSet} done`}
         </p>
       </div>
       <div className="flex shrink-0 flex-col items-end gap-1">

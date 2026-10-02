@@ -68,9 +68,11 @@ export default function ParentPayments() {
             <p className="mt-1 font-display text-3xl font-semibold text-ink">{student.fee_quoted ? formatMoney(student.fee_quoted) : "As confirmed"}<span className="text-base font-normal text-ink/70"> / month</span></p>
             <div className="mt-3 flex flex-wrap items-center gap-2">
               <span className="rounded-full bg-ink/[0.05] px-3 py-1 text-xs font-medium text-ink/75">Status: {view.paymentStatus}</span>
-              {view.renewalDue
-                ? <span className="rounded-full bg-gold px-3 py-1 text-xs font-semibold text-ink">Renewal due · {view.remaining} classes left</span>
-                : <span className="rounded-full bg-emerald-500/12 px-3 py-1 text-xs font-semibold text-emerald-700">Active</span>}
+              {view.unpaid
+                ? <span className="rounded-full bg-red-500/12 px-3 py-1 text-xs font-semibold text-red-600">Payment due · {view.completed} class{view.completed === 1 ? "" : "es"} taken</span>
+                : view.renewalDue
+                  ? <span className="rounded-full bg-gold px-3 py-1 text-xs font-semibold text-ink">Renewal due · {view.remaining} classes left</span>
+                  : <span className="rounded-full bg-emerald-500/12 px-3 py-1 text-xs font-semibold text-emerald-700">Active</span>}
             </div>
           </div>
 

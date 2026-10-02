@@ -63,6 +63,7 @@ export interface StudentView {
   latest: ClassUpdate | null;
   paymentStatus: string;
   renewalDue: boolean;
+  unpaid: boolean;      // classes taught but nothing paid for the current account
 }
 
 export function studentView(d: ParentData, student: Student): StudentView {
@@ -83,10 +84,12 @@ export function studentView(d: ParentData, student: Student): StudentView {
   // one cycle so a new student isn't shown as due.
   const purchased = purchasedClasses(pays as unknown as FeePaymentLite[], student.fee_quoted, perMonth);
   const remaining = Math.max(purchased - completed, 0);
+  const totalPaidActive = pays.filter((p) => /received|partial/i.test(p.payment_status)).reduce((a, p) => a + (p.amount_paid ?? 0), 0);
+  const unpaid = student.status === "active" && completed > 0 && totalPaidActive <= 0;
   const renewalDue = student.status === "active" && remaining === 0;
   return {
     student, teacherName: d.teachers[student.teacher_id] || "Your teacher",
-    completed, perMonth, remaining, nextClassDate, latest, paymentStatus, renewalDue,
+    completed, perMonth, remaining, nextClassDate, latest, paymentStatus, renewalDue, unpaid,
   };
 }
 

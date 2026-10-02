@@ -251,6 +251,9 @@ function SetProgressCard({ stat }: { stat: StudentStat }) {
   const sp = computeSetProgress(stat.classes_completed, stat.classes_per_month, stat.classes_purchased);
   const advanceSets = Math.max(0, sp.paidSets - sp.currentSet);
   const pct = Math.round((sp.currentDone / sp.perSet) * 100);
+  // Classes taught but nothing paid for the current account → fee due now.
+  const unpaid = stat.status === "active" && (stat.total_paid ?? 0) <= 0 && stat.classes_completed > 0;
+  const fee = stat.fee_quoted ?? 0;
   return (
     <div className="rounded-2xl border border-hairline bg-white p-4 shadow-card">
       <div className="flex items-center justify-between">
@@ -258,20 +261,24 @@ function SetProgressCard({ stat }: { stat: StudentStat }) {
           <span className="font-display text-3xl font-bold leading-none text-ink">{sp.currentDone}<span className="text-xl text-ink/35">/{sp.perSet}</span></span>
           <span className="text-sm text-ink/55">this set</span>
         </div>
-        {sp.allComplete
-          ? <span className="rounded-full bg-gold px-3 py-1 text-[11px] font-semibold text-ink">Renewal due</span>
-          : sp.remainingInSet <= 2
-            ? <span className="rounded-full bg-gold/20 px-3 py-1 text-[11px] font-semibold text-[#7A5E0F]">Renew soon</span>
-            : <span className="rounded-full bg-emerald-500/12 px-3 py-1 text-[11px] font-semibold text-emerald-700">On track</span>}
+        {unpaid
+          ? <span className="rounded-full bg-red-500/12 px-3 py-1 text-[11px] font-semibold text-red-600">Fee due</span>
+          : sp.allComplete
+            ? <span className="rounded-full bg-gold px-3 py-1 text-[11px] font-semibold text-ink">Renewal due</span>
+            : sp.remainingInSet <= 2
+              ? <span className="rounded-full bg-gold/20 px-3 py-1 text-[11px] font-semibold text-[#7A5E0F]">Renew soon</span>
+              : <span className="rounded-full bg-emerald-500/12 px-3 py-1 text-[11px] font-semibold text-emerald-700">On track</span>}
       </div>
 
       <div className="mt-3 h-2.5 w-full overflow-hidden rounded-full bg-ink/[0.07]">
         <div className="h-full rounded-full bg-gradient-to-r from-gold to-[#C6A02E] transition-all" style={{ width: `${pct}%` }} />
       </div>
       <p className="mt-2 text-xs text-ink/60">
-        {sp.allComplete
-          ? <>All paid classes complete, record a payment to start the next set.</>
-          : <><b className="text-ink">{sp.remainingInSet}</b> class{sp.remainingInSet === 1 ? "" : "es"} left in this set · {formatMoney(stat.total_paid)} paid</>}
+        {unpaid
+          ? <><b className="text-red-600">{fee > 0 ? `${formatMoney(fee)} due` : "Fee due"}</b> · {sp.currentDone} class{sp.currentDone === 1 ? "" : "es"} taught, no payment recorded yet. Record it when received.</>
+          : sp.allComplete
+            ? <>All paid classes complete, record a payment to start the next set.</>
+            : <><b className="text-ink">{sp.remainingInSet}</b> class{sp.remainingInSet === 1 ? "" : "es"} left in this set · {formatMoney(stat.total_paid)} paid</>}
       </p>
 
       {advanceSets > 0 && (
