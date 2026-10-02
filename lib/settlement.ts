@@ -10,6 +10,7 @@ export interface SettledChapter {
   from: string | null;   // YYYY-MM-DD, null = open start
   to: string | null;     // YYYY-MM-DD, null = open end
   label: string;         // e.g. "History", "Guitar"
+  amount?: number | null; // agreed settled total for this period (₹)
   note?: string | null;
 }
 
@@ -27,8 +28,9 @@ function toChapter(x: unknown): SettledChapter | null {
   const from = typeof o.from === "string" && o.from ? o.from : null;
   const to = typeof o.to === "string" && o.to ? o.to : null;
   if (!from && !to) return null; // a chapter needs at least one bound
+  const amount = typeof o.amount === "number" && isFinite(o.amount) ? o.amount : null;
   const note = typeof o.note === "string" ? o.note : null;
-  return { from, to, label, note };
+  return { from, to, label, amount, note };
 }
 
 // Every closed chapter for a student, oldest first. Falls back to the legacy

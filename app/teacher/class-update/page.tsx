@@ -40,7 +40,7 @@ const addDays = (iso: string, n: number) => {
   return d.toISOString().slice(0, 10);
 };
 
-// Tap-to-pick durations, no typing. Classes run 45 min to 2 hours (never 30).
+// Tap-to-pick durations, no typing. Classes run 45 min to 3 hours (never 30).
 const DURATIONS: { v: number; label: string }[] = [
   { v: 45, label: "45 min" },
   { v: 60, label: "1 hr" },
@@ -50,6 +50,8 @@ const DURATIONS: { v: number; label: string }[] = [
   { v: 100, label: "1 hr 40" },
   { v: 110, label: "1 hr 50" },
   { v: 120, label: "2 hr" },
+  { v: 150, label: "2 hr 30" },
+  { v: 180, label: "3 hr" },
 ];
 
 function DurationChips({ value, onChange }: { value: number | null; onChange: (v: number) => void }) {

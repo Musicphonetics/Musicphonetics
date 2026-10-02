@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { PortalShell } from "@/components/portal/PortalShell";
 import { PARENT_TABS } from "@/components/portal/tabs";
-import { Loading, EmptyState } from "@/components/portal/kit";
+import { Loading, EmptyState, formatMoney } from "@/components/portal/kit";
 import { isSupabaseConfigured } from "@/lib/supabase/client";
 import { loadParentData, type ParentData } from "@/lib/supabase/parent";
 import { useSelectedStudent } from "@/lib/family";
@@ -54,7 +54,7 @@ export default function ParentClasses() {
             const n = classes.filter((c) => inChapter(c.class_date, ch)).length;
             return (
               <p key={i} className="rounded-xl border border-hairline bg-mist/40 px-3.5 py-2.5 text-xs text-ink/60">
-                <b className="text-ink/75">{ch.label}</b> · {chapterRange(ch)}{n > 0 ? ` · ${n} classes` : ""} — accounted separately.
+                <b className="text-ink/75">{ch.label}</b> · {chapterRange(ch)}{ch.amount != null ? ` · ${formatMoney(ch.amount)} settled` : ""}{n > 0 ? ` · ${n} classes` : ""} — accounted separately.
               </p>
             );
           })}

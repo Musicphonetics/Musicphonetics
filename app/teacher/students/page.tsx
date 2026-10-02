@@ -201,22 +201,25 @@ function StudentDetail({ stat, onReport }: { stat: StudentStat; onReport: () => 
               </ul>
               {chapters.map((ch, i) => {
                 const chapPays = (payments ?? []).filter((p) => inChapter(p.payment_date, ch));
-                if (chapPays.length === 0) return null;
-                const total = chapPays.filter((p) => /received/i.test(p.payment_status)).reduce((a, p) => a + (p.amount_paid ?? 0), 0);
+                if (chapPays.length === 0 && ch.amount == null) return null;
+                const rows = chapPays.filter((p) => /received/i.test(p.payment_status)).reduce((a, p) => a + (p.amount_paid ?? 0), 0);
+                const total = ch.amount != null ? ch.amount : rows;
                 return (
                   <div key={`p-${ch.label}-${i}`} className="mt-4">
                     <p className="flex items-center justify-between text-[11px] font-semibold uppercase tracking-wide text-ink/45">
-                      <span>{ch.label} · {chapterRange(ch)}</span>
+                      <span>{ch.label} · {chapterRange(ch)} · settled</span>
                       <span>{formatMoney(total)}</span>
                     </p>
-                    <ul className="mt-2 space-y-1.5 opacity-80">
-                      {chapPays.map((p) => (
-                        <li key={p.id} className="flex items-center justify-between rounded-lg border border-hairline bg-white px-3 py-2 text-xs text-ink/70">
-                          <span>{p.payment_date} · {p.payment_status}</span>
-                          <span className="font-semibold text-ink">{formatMoney(p.amount_paid)}</span>
-                        </li>
-                      ))}
-                    </ul>
+                    {chapPays.length > 0 && (
+                      <ul className="mt-2 space-y-1.5 opacity-80">
+                        {chapPays.map((p) => (
+                          <li key={p.id} className="flex items-center justify-between rounded-lg border border-hairline bg-white px-3 py-2 text-xs text-ink/70">
+                            <span>{p.payment_date} · {p.payment_status}</span>
+                            <span className="font-semibold text-ink">{formatMoney(p.amount_paid)}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
                   </div>
                 );
               })}
@@ -294,6 +297,7 @@ function ChaptersEditor({ studentId, instrument, chapters, onChange }: {
   const [label, setLabel] = useState("History");
   const [from, setFrom] = useState("");
   const [to, setTo] = useState("");
+  const [amount, setAmount] = useState("");
   const [note, setNote] = useState("");
   const [busy, setBusy] = useState(false);
   const [msg, setMsg] = useState<string | null>(null);
@@ -312,9 +316,10 @@ function ChaptersEditor({ studentId, instrument, chapters, onChange }: {
 
   async function add() {
     if (!from && !to) { setMsg("Pick a start and/or finish date."); return; }
-    const next = [...chapters, { label: label.trim() || "Settled", from: from || null, to: to || null, note: note.trim() || null }]
+    const amt = amount ? Number(amount) : null;
+    const next = [...chapters, { label: label.trim() || "Settled", from: from || null, to: to || null, amount: amt, note: note.trim() || null }]
       .sort((a, b) => (a.from || a.to || "").localeCompare(b.from || b.to || ""));
-    if (await persist(next)) { setAdding(false); setFrom(""); setTo(""); setNote(""); setLabel("History"); }
+    if (await persist(next)) { setAdding(false); setFrom(""); setTo(""); setAmount(""); setNote(""); setLabel("History"); }
   }
   async function remove(i: number) {
     await persist(chapters.filter((_, idx) => idx !== i));
@@ -336,7 +341,7 @@ function ChaptersEditor({ studentId, instrument, chapters, onChange }: {
             <li key={`${ch.label}-${ch.from}-${ch.to}-${i}`} className="flex items-center justify-between gap-2 rounded-xl border border-hairline bg-mist/40 px-3 py-2.5">
               <div className="min-w-0">
                 <p className="text-sm font-semibold text-ink">{ch.label} <span className="font-normal text-ink/55">· {chapterRange(ch)}</span></p>
-                {ch.note && <p className="mt-0.5 truncate text-xs text-ink/50">{ch.note}</p>}
+                <p className="mt-0.5 text-xs text-ink/55">{ch.amount != null ? `${formatMoney(ch.amount)} settled` : "settled"}{ch.note ? ` · ${ch.note}` : ""}</p>
               </div>
               <button onClick={() => remove(i)} disabled={busy} className="shrink-0 text-xs font-semibold text-red-600">Remove</button>
             </li>
@@ -363,7 +368,9 @@ function ChaptersEditor({ studentId, instrument, chapters, onChange }: {
             <label className="block"><span className="text-xs font-medium text-ink/60">Finished on</span>
               <input type="date" value={to} min={from || undefined} onChange={(e) => setTo(e.target.value)} className={cn(cin, "mt-1")} /></label>
           </div>
-          <input value={note} onChange={(e) => setNote(e.target.value)} placeholder="Note (optional) — e.g. different fee, settled in person" className={cin} />
+          <label className="block"><span className="text-xs font-medium text-ink/60">Amount settled for this period (₹)</span>
+            <input inputMode="numeric" value={amount} onChange={(e) => setAmount(e.target.value.replace(/[^\d]/g, ""))} placeholder="e.g. 24000" className={cn(cin, "mt-1")} /></label>
+          <input value={note} onChange={(e) => setNote(e.target.value)} placeholder="Note (optional) — e.g. 8k + 16k, full SST prep, settled in person" className={cin} />
           {msg && <p className="text-xs text-red-600">{msg}</p>}
           <div className="flex gap-2">
             <button onClick={add} disabled={busy} className="flex-1 rounded-full bg-gold py-2.5 text-sm font-semibold text-ink hover:brightness-105 disabled:opacity-50">{busy ? "Saving…" : "Add chapter"}</button>
@@ -383,26 +390,41 @@ const shortDay = (iso: string | null) =>
 function SettledChapterCard({ chapter, classes, payments }: { chapter: SettledChapterJSON; classes: ClassUpdate[]; payments: Payment[] }) {
   const [open, setOpen] = useState(false);
   const done = classes.filter((c) => c.class_status === "Completed").length;
-  const received = payments.filter((p) => /received/i.test(p.payment_status)).reduce((a, p) => a + (p.amount_paid ?? 0), 0);
-  if (classes.length === 0 && payments.length === 0) return null;
+  const rowsReceived = payments.filter((p) => /received/i.test(p.payment_status)).reduce((a, p) => a + (p.amount_paid ?? 0), 0);
+  const settled = chapter.amount != null ? chapter.amount : rowsReceived;
+  if (classes.length === 0 && payments.length === 0 && chapter.amount == null) return null;
   return (
     <div className="overflow-hidden rounded-2xl border border-hairline bg-mist/40">
       <button onClick={() => setOpen((v) => !v)} className="flex w-full items-center justify-between gap-3 px-4 py-3 text-left">
         <div className="min-w-0">
           <p className="text-sm font-semibold text-ink/80">{chapter.label} · {chapterRange(chapter)}</p>
-          <p className="mt-0.5 text-xs text-ink/55">{done} classes{received > 0 ? ` · ${formatMoney(received)} received` : ""}{chapter.note ? ` · ${chapter.note}` : ""}</p>
+          <p className="mt-0.5 text-xs text-ink/55">{settled > 0 ? `${formatMoney(settled)} settled` : "settled"}{done > 0 ? ` · ${done} classes` : ""}{chapter.note ? ` · ${chapter.note}` : ""}</p>
         </div>
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true" className={cn("shrink-0 text-ink/40 transition-transform", open && "rotate-180")}><path d="M6 9l6 6 6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>
       </button>
-      {open && classes.length > 0 && (
-        <ul className="divide-y divide-hairline/60 border-t border-hairline bg-white/60">
-          {classes.map((c) => (
-            <li key={c.id} className="flex items-center justify-between gap-2 px-4 py-2 text-xs text-ink/70">
-              <span>{shortDay(c.class_date)} · {c.class_status}{c.subject ? ` · ${c.subject}` : ""}</span>
-              {c.taught && <span className="truncate text-ink/45">{c.taught}</span>}
-            </li>
-          ))}
-        </ul>
+      {open && (
+        <div className="border-t border-hairline bg-white/60">
+          {payments.length > 0 && (
+            <ul className="divide-y divide-hairline/60">
+              {payments.map((p) => (
+                <li key={p.id} className="flex items-center justify-between gap-2 px-4 py-2 text-xs text-ink/70">
+                  <span>Payment · {shortDay(p.payment_date)} · {p.payment_status}</span>
+                  <span className="font-semibold text-ink">{formatMoney(p.amount_paid)}</span>
+                </li>
+              ))}
+            </ul>
+          )}
+          {classes.length > 0 && (
+            <ul className="divide-y divide-hairline/60 border-t border-hairline/60">
+              {classes.map((c) => (
+                <li key={c.id} className="flex items-center justify-between gap-2 px-4 py-2 text-xs text-ink/70">
+                  <span>{shortDay(c.class_date)} · {c.class_status}{c.subject ? ` · ${c.subject}` : ""}</span>
+                  {c.taught && <span className="truncate text-ink/45">{c.taught}</span>}
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
       )}
     </div>
   );

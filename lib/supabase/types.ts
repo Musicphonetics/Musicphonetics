@@ -7,6 +7,7 @@ export interface SettledChapterJSON {
   from: string | null;
   to: string | null;
   label: string;
+  amount?: number | null;   // the agreed settled total for this period (₹)
   note?: string | null;
 }
 
