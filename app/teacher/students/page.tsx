@@ -300,7 +300,8 @@ function ChaptersEditor({ studentId, instrument, chapters, onChange }: {
   studentId: string; instrument: string | null; chapters: SettledChapterJSON[];
   onChange: (next: SettledChapterJSON[]) => void;
 }) {
-  const [adding, setAdding] = useState(false);
+  const [open, setOpen] = useState(false);
+  const [editIndex, setEditIndex] = useState<number | null>(null); // null = adding new
   const [label, setLabel] = useState("History");
   const [from, setFrom] = useState("");
   const [to, setTo] = useState("");
@@ -312,6 +313,15 @@ function ChaptersEditor({ studentId, instrument, chapters, onChange }: {
   const isMissing = (m: string) => /settlements/i.test(m) && /(column|does not exist|schema cache)/i.test(m);
   const suggestions = Array.from(new Set([instrument?.trim() || "Music", "History"]));
 
+  function openAdd() {
+    setEditIndex(null); setLabel("History"); setFrom(""); setTo(""); setAmount(""); setNote(""); setMsg(null); setOpen(true);
+  }
+  function openEdit(i: number) {
+    const ch = chapters[i];
+    setEditIndex(i); setLabel(ch.label || "History"); setFrom(ch.from || ""); setTo(ch.to || "");
+    setAmount(ch.amount != null ? String(ch.amount) : ""); setNote(ch.note || ""); setMsg(null); setOpen(true);
+  }
+
   async function persist(next: SettledChapterJSON[]) {
     setBusy(true); setMsg(null);
     const { error } = await getSupabase().from("students").update({ settlements: next }).eq("id", studentId);
@@ -321,12 +331,12 @@ function ChaptersEditor({ studentId, instrument, chapters, onChange }: {
     return true;
   }
 
-  async function add() {
+  async function save() {
     if (!from && !to) { setMsg("Pick a start and/or finish date."); return; }
-    const amt = amount ? Number(amount) : null;
-    const next = [...chapters, { label: label.trim() || "Settled", from: from || null, to: to || null, amount: amt, note: note.trim() || null }]
-      .sort((a, b) => (a.from || a.to || "").localeCompare(b.from || b.to || ""));
-    if (await persist(next)) { setAdding(false); setFrom(""); setTo(""); setAmount(""); setNote(""); setLabel("History"); }
+    const entry = { label: label.trim() || "Settled", from: from || null, to: to || null, amount: amount ? Number(amount) : null, note: note.trim() || null };
+    const base = editIndex != null ? chapters.map((c, idx) => (idx === editIndex ? entry : c)) : [...chapters, entry];
+    const next = base.sort((a, b) => (a.from || a.to || "").localeCompare(b.from || b.to || ""));
+    if (await persist(next)) setOpen(false);
   }
   async function remove(i: number) {
     await persist(chapters.filter((_, idx) => idx !== i));
@@ -338,9 +348,9 @@ function ChaptersEditor({ studentId, instrument, chapters, onChange }: {
     <div className="rounded-2xl border border-hairline bg-white p-4">
       <div className="flex items-center justify-between">
         <p className="text-sm font-semibold text-ink">Settled chapters</p>
-        {!adding && <button onClick={() => setAdding(true)} className="text-xs font-semibold text-[#7A5E0F]">+ Add a chapter</button>}
+        {!open && <button onClick={openAdd} className="text-xs font-semibold text-[#7A5E0F]">+ Add a chapter</button>}
       </div>
-      <p className="mt-0.5 text-xs text-ink/55">Carve out a dated stretch on a different subject/fee (e.g. History). Its classes &amp; payments account on their own; the rest stays the current account.</p>
+      <p className="mt-0.5 text-xs text-ink/55">Carve out a dated stretch on a different subject/fee (e.g. History). Give it a <b className="text-ink/70">start</b> and <b className="text-ink/70">finish</b> date so only that period&apos;s classes &amp; payments fall in it — everything else stays in the current account.</p>
 
       {chapters.length > 0 && (
         <ul className="mt-3 space-y-2">
@@ -350,14 +360,18 @@ function ChaptersEditor({ studentId, instrument, chapters, onChange }: {
                 <p className="text-sm font-semibold text-ink">{ch.label} <span className="font-normal text-ink/55">· {chapterRange(ch)}</span></p>
                 <p className="mt-0.5 text-xs text-ink/55">{ch.amount != null ? `${formatMoney(ch.amount)} settled` : "settled"}{ch.note ? ` · ${ch.note}` : ""}</p>
               </div>
-              <button onClick={() => remove(i)} disabled={busy} className="shrink-0 text-xs font-semibold text-red-600">Remove</button>
+              <div className="flex shrink-0 gap-3">
+                <button onClick={() => openEdit(i)} disabled={busy} className="text-xs font-semibold text-[#7A5E0F]">Edit</button>
+                <button onClick={() => remove(i)} disabled={busy} className="text-xs font-semibold text-red-600">Remove</button>
+              </div>
             </li>
           ))}
         </ul>
       )}
 
-      {adding && (
+      {open && (
         <div className="mt-3 space-y-3 rounded-xl border border-gold/40 bg-white p-3">
+          <p className="text-xs font-semibold text-ink">{editIndex != null ? "Edit chapter" : "New settled chapter"}</p>
           <div>
             <span className="text-xs font-medium text-ink/60">Subject / label</span>
             <div className="mt-1.5 mb-2 flex flex-wrap gap-2">
@@ -375,17 +389,18 @@ function ChaptersEditor({ studentId, instrument, chapters, onChange }: {
             <label className="block"><span className="text-xs font-medium text-ink/60">Finished on</span>
               <input type="date" value={to} min={from || undefined} onChange={(e) => setTo(e.target.value)} className={cn(cin, "mt-1")} /></label>
           </div>
+          <p className="-mt-1 text-[11px] text-ink/45">Set the start date so this chapter holds only its own classes. Leave it blank only to settle from the very first class.</p>
           <label className="block"><span className="text-xs font-medium text-ink/60">Amount settled for this period (₹)</span>
             <input inputMode="numeric" value={amount} onChange={(e) => setAmount(e.target.value.replace(/[^\d]/g, ""))} placeholder="e.g. 24000" className={cn(cin, "mt-1")} /></label>
           <input value={note} onChange={(e) => setNote(e.target.value)} placeholder="Note (optional) — e.g. 8k + 16k, full SST prep, settled in person" className={cin} />
           {msg && <p className="text-xs text-red-600">{msg}</p>}
           <div className="flex gap-2">
-            <button onClick={add} disabled={busy} className="flex-1 rounded-full bg-gold py-2.5 text-sm font-semibold text-ink hover:brightness-105 disabled:opacity-50">{busy ? "Saving…" : "Add chapter"}</button>
-            <button onClick={() => { setAdding(false); setMsg(null); }} className="rounded-full border border-hairline px-4 py-2.5 text-sm font-semibold text-ink/70">Cancel</button>
+            <button onClick={save} disabled={busy} className="flex-1 rounded-full bg-gold py-2.5 text-sm font-semibold text-ink hover:brightness-105 disabled:opacity-50">{busy ? "Saving…" : editIndex != null ? "Save chapter" : "Add chapter"}</button>
+            <button onClick={() => { setOpen(false); setMsg(null); }} className="rounded-full border border-hairline px-4 py-2.5 text-sm font-semibold text-ink/70">Cancel</button>
           </div>
         </div>
       )}
-      {!adding && msg && <p className="mt-2 text-xs text-red-600">{msg}</p>}
+      {!open && msg && <p className="mt-2 text-xs text-red-600">{msg}</p>}
     </div>
   );
 }
