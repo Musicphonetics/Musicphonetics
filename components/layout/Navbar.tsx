@@ -15,8 +15,9 @@ const TRIAL = "/studio";
 export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
-  // Transparent only over the light home hero; solid charcoal elsewhere / on scroll.
-  const light = usePathname() === "/" && !scrolled && !open;
+  // The home hero is dark, so the nav is always light-on-dark; only the
+  // background goes from transparent (over the hero) to solid charcoal on scroll.
+  const atTop = usePathname() === "/" && !scrolled && !open;
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 12);
@@ -37,18 +38,18 @@ export function Navbar() {
     <header
       className={cn(
         "site-nav fixed inset-x-0 top-0 z-50 transition-all duration-300",
-        light
+        atTop
           ? "border-b border-transparent bg-transparent"
           : "border-b border-white/10 bg-charcoal/95 backdrop-blur-md"
       )}
     >
       <nav className="container-mp flex h-16 items-center justify-between gap-4">
-        <Logo invert={!light} />
+        <Logo invert />
 
         <ul className="hidden items-center gap-8 lg:flex">
           {NAV_LINKS.map((link) => (
             <li key={link.href}>
-              <Link href={link.href} className={cn("text-sm transition-colors hover:text-gold", light ? "text-ink/70" : "text-ivory/75")}>
+              <Link href={link.href} className="text-sm text-ivory/75 transition-colors hover:text-gold">
                 {link.label}
               </Link>
             </li>
@@ -56,9 +57,9 @@ export function Navbar() {
         </ul>
 
         <div className="hidden items-center gap-5 lg:flex">
-          <Link href="/parent/login" className={cn("text-sm transition-colors hover:text-gold", light ? "text-ink/70" : "text-ivory/75")}>Parent login</Link>
+          <Link href="/parent/login" className="text-sm text-ivory/75 transition-colors hover:text-gold">Parent login</Link>
           <Link href={TRIAL}
-            className="rounded-full bg-charcoal px-5 py-2.5 text-sm font-medium text-cream transition hover:brightness-125">
+            className="rounded-full bg-gold px-5 py-2.5 text-sm font-semibold text-charcoal transition hover:brightness-105">
             Book a free trial
           </Link>
         </div>
@@ -66,10 +67,7 @@ export function Navbar() {
         {/* Mobile hamburger */}
         <button
           type="button"
-          className={cn(
-            "inline-flex h-10 w-10 items-center justify-center rounded-full transition-colors lg:hidden",
-            light ? "bg-charcoal text-cream" : "border border-white/20 text-ivory"
-          )}
+          className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/20 text-ivory transition-colors lg:hidden"
           aria-label={open ? "Close menu" : "Open menu"}
           aria-expanded={open}
           onClick={() => setOpen((v) => !v)}
