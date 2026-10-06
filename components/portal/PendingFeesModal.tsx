@@ -2,35 +2,32 @@
 
 import Link from "next/link";
 import { formatMoney } from "@/components/portal/kit";
-import { computeSetProgress } from "@/lib/fees";
 import type { StudentStat } from "@/lib/supabase/types";
 
 export interface PendingStudent {
   stat: StudentStat;
   reason: "renewal" | "unpaid" | "renew_soon";
-  amount: number;      // fee owed to renew (0 if fee not recorded)
-  done: number;        // classes done in the current set
-  perSet: number;
+  amount: number;      // fee owed (0 if fee not recorded)
 }
 
 // Works out exactly which students the "Pending" figure comes from, so tapping
-// the home tile answers "where is the money owed?" A student owes the moment
-// their paid classes run out (renewal due); "renew soon" flags the ones about to.
+// the home tile answers "where is the money owed?" Driven by paid classes vs
+// classes taught: unpaid = taught but nothing paid; renewal = all paid classes
+// used; renew-soon = 1–2 paid classes left.
 export function computePending(rows: StudentStat[]): { list: PendingStudent[]; total: number } {
   const list: PendingStudent[] = [];
   for (const s of rows) {
     if (s.status !== "active") continue;
-    const sp = computeSetProgress(s.classes_completed, s.classes_per_month, s.classes_purchased);
     const fee = s.fee_quoted ?? 0;
-    if ((s.total_paid ?? 0) <= 0 && s.classes_completed > 0) {
-      // Classes taught but no payment recorded for the current account → the
-      // set is unpaid, so the fee is due now (even before the set is used up).
-      list.push({ stat: s, reason: "unpaid", amount: fee, done: sp.currentDone, perSet: sp.perSet });
-    } else if (sp.allComplete) {
-      // Every paid class used up — the next set is unpaid.
-      list.push({ stat: s, reason: "renewal", amount: fee, done: sp.perSet, perSet: sp.perSet });
-    } else if (sp.remainingInSet <= 2) {
-      list.push({ stat: s, reason: "renew_soon", amount: fee, done: sp.currentDone, perSet: sp.perSet });
+    const completed = s.classes_completed;
+    const remaining = s.classes_remaining;
+    const purchased = s.classes_purchased;
+    if ((s.total_paid ?? 0) <= 0 && completed > 0) {
+      list.push({ stat: s, reason: "unpaid", amount: fee });
+    } else if (purchased > 0 && remaining === 0 && completed > 0) {
+      list.push({ stat: s, reason: "renewal", amount: fee });
+    } else if (remaining > 0 && remaining <= 2) {
+      list.push({ stat: s, reason: "renew_soon", amount: fee });
     }
   }
   // Owed-now first (renewal / unpaid), then renew-soon; bigger amounts first.
@@ -92,15 +89,18 @@ export function PendingFeesModal({ list, total, onClose }: { list: PendingStuden
 
 function Row({ p }: { p: PendingStudent }) {
   const r = REASON[p.reason];
+  const s = p.stat;
+  const detail = p.reason === "unpaid"
+    ? `${s.classes_completed} class${s.classes_completed === 1 ? "" : "es"} taught · unpaid`
+    : p.reason === "renewal"
+      ? `all ${s.classes_purchased} paid classes used`
+      : `${s.classes_remaining} class${s.classes_remaining === 1 ? "" : "es"} left`;
   return (
     <li className="flex items-center justify-between gap-3 rounded-xl border border-hairline bg-white px-3.5 py-3">
       <div className="min-w-0">
-        <p className="truncate text-sm font-semibold text-ink">{p.stat.name}</p>
+        <p className="truncate text-sm font-semibold text-ink">{s.name}</p>
         <p className="mt-0.5 text-xs text-ink/55">
-          <span className="font-mono">{p.stat.student_code || "—"}</span> · {p.stat.instrument || "—"}
-          {p.reason === "renewal"
-            ? ` · all ${p.perSet} done`
-            : ` · ${p.done}/${p.perSet} done`}
+          <span className="font-mono">{s.student_code || "—"}</span> · {s.instrument || "—"} · {detail}
         </p>
       </div>
       <div className="flex shrink-0 flex-col items-end gap-1">

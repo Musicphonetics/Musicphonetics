@@ -1,9 +1,10 @@
 // ============================================================================
-// Class cycles. Fees buy classes in SETS (one set = classes_per_month classes,
-// default 8). This groups a student's real class history into those sets so the
-// teacher never scrolls through 104 classes at once: they see "Cycle 1 · paid on
-// 4 Aug · 8 classes", tap it, and only those 8 open up. A payment that buys 16
-// classes simply funds two cycles of 8. Everything is derived from real data.
+// Payment-driven class cycles. Each payment a student makes automatically buys
+// a number of classes — from an explicit "classes this covers" figure, or from
+// amount ÷ per-class rate — and those classes are consumed in date order. So
+// "₹8k then ₹16k" shows up as two cycles that map onto the real classes: the 8k
+// covers the first block, the 16k the next, and anything taught beyond what's
+// paid falls into an "unpaid" cycle (fee due). Everything is derived from data.
 // ============================================================================
 
 import type { ClassUpdate, Payment } from "./supabase/types";
@@ -11,19 +12,25 @@ import { isValidCompleted } from "./attendance";
 
 export interface ClassCycle {
   number: number;              // 1-based cycle number (Cycle 1, Cycle 2 …)
-  size: number;                // classes in a full cycle (classes_per_month)
+  size: number;                // classes this cycle covers
   paidOn: string | null;       // date of the payment that funded this cycle
-  amount: number | null;       // fee for this set (or the payment amount if fee unknown)
-  paymentMode: string | null;  // how it was paid (funding payment)
+  amount: number | null;       // the payment amount (what was received)
+  paymentMode: string | null;  // how it was paid
   paid: boolean;               // a recorded payment funds this cycle
   classes: ClassUpdate[];      // every class entry in this cycle, oldest → newest
   doneCount: number;           // valid completed classes within this cycle
   status: "done" | "active" | "upcoming" | "unpaid";
 }
 
-// Expand a payment into the per-set blocks it funds. ₹24,000 at a ₹12,000 set
-// fee = two sets; if the fee isn't recorded yet, one set per payment.
-interface FundedSet { paidOn: string; amount: number; mode: string | null; }
+// How many classes a single payment buys: an explicit count if recorded,
+// otherwise amount ÷ (fee ÷ classes-per-set). Falls back to one set.
+export function classesForPayment(p: Payment, feeQuoted: number | null | undefined, classesPerMonth: number | null | undefined): number {
+  const cpm = Number(classesPerMonth) > 0 ? Number(classesPerMonth) : 8;
+  if (p.classes_included != null && Number(p.classes_included) > 0) return Math.round(Number(p.classes_included));
+  const fee = Number(feeQuoted) || 0;
+  if (fee > 0) return Math.max(1, Math.round(((Number(p.amount_paid) || 0) / fee) * cpm));
+  return cpm;
+}
 
 export function groupIntoCycles(
   classes: ClassUpdate[],
@@ -32,60 +39,50 @@ export function groupIntoCycles(
   classesPerMonth: number | null | undefined,
 ): ClassCycle[] {
   const cpm = Number(classesPerMonth) > 0 ? Number(classesPerMonth) : 8;
-  const fee = Number(feeQuoted) || 0;
 
-  // 1. Funded sets, in the order they were paid for.
-  const funded: FundedSet[] = [];
-  payments
+  // 1. Each payment, oldest first, with the number of classes it buys.
+  const blocks = payments
     .filter((p) => p.payment_status === "Received" || p.payment_status === "Partial")
     .slice()
     .sort((a, b) => (a.payment_date || "").localeCompare(b.payment_date || ""))
-    .forEach((p) => {
-      const sets = fee > 0 ? Math.max(1, Math.round((Number(p.amount_paid) || 0) / fee)) : 1;
-      for (let k = 0; k < sets; k++) {
-        funded.push({
-          paidOn: p.payment_date,
-          amount: fee > 0 ? fee : Number(p.amount_paid) || 0,
-          mode: p.payment_mode ?? null,
-        });
-      }
-    });
+    .map((p) => ({
+      paidOn: p.payment_date,
+      amount: Number(p.amount_paid) || 0,
+      mode: p.payment_mode ?? null,
+      size: classesForPayment(p, feeQuoted, classesPerMonth),
+    }));
 
-  // 2. Walk the classes oldest→newest, filling cpm valid-completed per cycle.
-  //    Non-completed entries (cancelled, rescheduled) ride along in whatever
-  //    cycle is currently filling, so they show in context but never consume a
-  //    paid slot.
+  // 2. Walk the classes oldest→newest, filling each payment's block with its
+  //    `size` valid-completed classes. Non-completed entries (cancelled,
+  //    rescheduled) ride along in the current block but never consume a slot.
   const sorted = classes.slice().sort((a, b) => (a.class_date || "").localeCompare(b.class_date || ""));
-  const buckets: ClassUpdate[][] = [];
-  let done = 0;
+  const buckets: ClassUpdate[][] = blocks.map(() => []);
+  const unpaid: ClassUpdate[] = [];
+  let bi = 0;        // current payment block
+  let filled = 0;    // completed classes placed in the current block
   for (const c of sorted) {
-    const idx = Math.floor(done / cpm);
-    (buckets[idx] ||= []).push(c);
-    if (isValidCompleted(c)) done++;
+    while (bi < blocks.length && filled >= blocks[bi].size) { bi++; filled = 0; }
+    if (bi < blocks.length) {
+      buckets[bi].push(c);
+      if (isValidCompleted(c)) filled++;
+    } else {
+      unpaid.push(c); // taught beyond everything paid for
+    }
   }
-
-  // 3. Enough cycles to cover both what was paid for and what was actually taught.
-  const cycleCount = Math.max(funded.length, buckets.length, 1);
 
   const out: ClassCycle[] = [];
-  for (let i = 0; i < cycleCount; i++) {
-    const rows = buckets[i] ?? [];
+  blocks.forEach((b, i) => {
+    const rows = buckets[i];
     const doneCount = rows.reduce((n, c) => n + (isValidCompleted(c) ? 1 : 0), 0);
-    const f = funded[i];
-    const paid = !!f;
-    const full = doneCount >= cpm;
-    const status: ClassCycle["status"] = !paid ? "unpaid" : full ? "done" : doneCount > 0 ? "active" : "upcoming";
-    out.push({
-      number: i + 1,
-      size: cpm,
-      paidOn: f?.paidOn ?? null,
-      amount: f?.amount ?? null,
-      paymentMode: f?.mode ?? null,
-      paid,
-      classes: rows,
-      doneCount,
-      status,
-    });
+    const status: ClassCycle["status"] = doneCount >= b.size ? "done" : doneCount > 0 ? "active" : "upcoming";
+    out.push({ number: i + 1, size: b.size, paidOn: b.paidOn, amount: b.amount, paymentMode: b.mode, paid: true, classes: rows, doneCount, status });
+  });
+
+  // Classes taught with no payment left to cover them → fee due.
+  if (unpaid.length > 0) {
+    const doneCount = unpaid.reduce((n, c) => n + (isValidCompleted(c) ? 1 : 0), 0);
+    out.push({ number: out.length + 1, size: Math.max(cpm, doneCount), paidOn: null, amount: null, paymentMode: null, paid: false, classes: unpaid, doneCount, status: "unpaid" });
   }
+
   return out;
 }

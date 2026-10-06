@@ -30,6 +30,11 @@ export default function PaymentsPage() {
 
   const picked = useMemo(() => students?.find((s) => s.student_id === sid) || null, [students, sid]);
   const amount = Number(f.amount_paid || 0);
+  // Auto class count: amount ÷ per-class rate (fee ÷ classes-per-set).
+  const cpm = picked?.classes_per_month && picked.classes_per_month > 0 ? picked.classes_per_month : 8;
+  const suggestedClasses = picked?.fee_quoted && picked.fee_quoted > 0 && amount > 0
+    ? Math.max(1, Math.round((amount / picked.fee_quoted) * cpm)) : 0;
+  const classesCovered = f.classes_included ? Number(f.classes_included) : suggestedClasses;
 
   async function save() {
     if (!sid) { setToast({ kind: "error", message: "Pick a student." }); return; }
@@ -42,13 +47,15 @@ export default function PaymentsPage() {
     const uid = u.user?.id;
     if (!uid) { setBusy(false); setToast({ kind: "error", message: "Session expired." }); return; }
     // teacher_share / company_share are DB-generated - we never send them.
-    const { error } = await getSupabase().from("payments").insert({
+    const row = {
       teacher_id: uid,
       student_id: sid,
       payment_date: f.payment_date,
       billing_cycle: f.billing_cycle || null,
       fee_quoted: picked?.fee_quoted ?? null,
       amount_paid: amount,
+      // How many classes this payment buys — auto from the rate, editable above.
+      classes_included: classesCovered > 0 ? classesCovered : null,
       // Price breakdown so reports stay meaningful even when a discount applied.
       list_price: picked?.fee_quoted ?? null,
       final_amount: amount,
@@ -58,7 +65,14 @@ export default function PaymentsPage() {
       cashfree_bill_no: f.cashfree_bill_no || null,
       txn_reference: f.txn_reference || null,
       notes: f.notes || null,
-    });
+    };
+    const sb = getSupabase();
+    let { error } = await sb.from("payments").insert(row);
+    // Survive a portal that hasn't the classes_included column yet.
+    if (error && /classes_included/i.test(error.message) && /(column|does not exist|schema cache)/i.test(error.message)) {
+      const { classes_included: _omit, ...rest } = row;
+      ({ error } = await sb.from("payments").insert(rest));
+    }
     setBusy(false);
     if (error) { setToast({ kind: "error", message: error.message }); return; }
     setToast({ kind: "success", message: "Payment recorded." });
@@ -89,6 +103,17 @@ export default function PaymentsPage() {
           <Field label="Payment date" req type="date" value={f.payment_date || ""} onChange={(v) => set("payment_date", v)} />
           <Select label="Billing cycle" value={f.billing_cycle || "-"} onChange={(v) => set("billing_cycle", v)} options={CYCLES} />
           <MoneyField label="Amount paid" req value={f.amount_paid || ""} onChange={(v) => set("amount_paid", v)} />
+
+          <div>
+            <Field label="Classes this payment covers" inputMode="numeric"
+              value={f.classes_included ?? (suggestedClasses ? String(suggestedClasses) : "")}
+              onChange={(v) => set("classes_included", v.replace(/[^\d]/g, ""))} />
+            <p className="mt-1 text-xs text-ink/55">
+              {amount > 0 && picked?.fee_quoted
+                ? <>Auto-filled from the amount at {formatMoney(picked.fee_quoted)}/{cpm} classes. Change it for a different rate (e.g. a longer-session package).</>
+                : <>How many classes this payment buys. Set the student&apos;s fee to auto-fill this.</>}
+            </p>
+          </div>
 
           <Select label="Payment status" value={f.payment_status || "Received"} onChange={(v) => set("payment_status", v)} options={PAY_STATUS} />
           <Select label="Payment mode" value={f.payment_mode || "Secure gateway"} onChange={(v) => set("payment_mode", v)} options={MODES} />

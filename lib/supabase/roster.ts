@@ -1,10 +1,10 @@
 "use client";
 
 import { getSupabase } from "./client";
-import type { Student, StudentStat } from "./types";
+import type { Student, StudentStat, Payment } from "./types";
 import { isValidCompleted } from "@/lib/attendance";
-import { purchasedClasses, type FeePaymentLite } from "@/lib/fees";
 import { chaptersOf, isActiveDate, type SettledChapter } from "@/lib/settlement";
+import { classesForPayment } from "@/lib/cycles";
 
 // Loads the signed-in teacher's roster with computed stats, reading the BASE
 // tables (students, class_updates, payments) rather than the student_stats
@@ -14,11 +14,15 @@ import { chaptersOf, isActiveDate, type SettledChapter } from "@/lib/settlement"
 export async function loadRoster(): Promise<{ rows: StudentStat[]; error: string | null }> {
   const sb = getSupabase();
 
-  const [studentsRes, classesRes, paymentsRes] = await Promise.all([
+  const [studentsRes, classesRes] = await Promise.all([
     sb.from("students").select("*").order("name"),
     sb.from("class_updates").select("student_id,class_date,class_status,attendance_status,counts_toward_cycle"),
-    sb.from("payments").select("student_id,payment_date,amount_paid,teacher_share,payment_status"),
   ]);
+  // classes_included may not exist on older portals — fall back without it.
+  let paymentsRes = await sb.from("payments").select("student_id,payment_date,amount_paid,classes_included,teacher_share,payment_status");
+  if (paymentsRes.error && /classes_included/i.test(paymentsRes.error.message)) {
+    paymentsRes = await sb.from("payments").select("student_id,payment_date,amount_paid,teacher_share,payment_status");
+  }
 
   const err = studentsRes.error || classesRes.error || paymentsRes.error;
   if (studentsRes.error) return { rows: [], error: studentsRes.error.message };
@@ -27,7 +31,13 @@ export async function loadRoster(): Promise<{ rows: StudentStat[]; error: string
   // stretch). Classes/payments inside one are settled history and don't count
   // toward the current account. active() is that filter.
   const chapters = new Map<string, SettledChapter[]>();
-  for (const s of (studentsRes.data as Student[] ?? [])) chapters.set(s.id, chaptersOf(s));
+  const feeOf = new Map<string, number | null>();
+  const cpmOf = new Map<string, number | null>();
+  for (const s of (studentsRes.data as Student[] ?? [])) {
+    chapters.set(s.id, chaptersOf(s));
+    feeOf.set(s.id, s.fee_quoted ?? null);
+    cpmOf.set(s.id, s.classes_per_month ?? null);
+  }
   const active = (sid: string, dateISO: string | null) => isActiveDate(dateISO, chapters.get(sid) ?? []);
 
   const completed = new Map<string, number>();
@@ -36,23 +46,20 @@ export async function loadRoster(): Promise<{ rows: StudentStat[]; error: string
   }
   const paid = new Map<string, number>();
   const share = new Map<string, number>();
-  const payRows = new Map<string, FeePaymentLite[]>();
+  // Paid classes = sum of what each payment covers (auto from the rate, or the
+  // explicit "classes this covers"), so variable-value payments total correctly.
+  const purchasedCount = new Map<string, number>();
   for (const p of paymentsRes.data ?? []) {
     if (!active(p.student_id, p.payment_date)) continue;
     paid.set(p.student_id, (paid.get(p.student_id) ?? 0) + (p.amount_paid ?? 0));
     share.set(p.student_id, (share.get(p.student_id) ?? 0) + (p.teacher_share ?? 0));
-    const list = payRows.get(p.student_id) ?? [];
-    list.push({ amount_paid: p.amount_paid ?? 0, payment_status: p.payment_status ?? "Received" });
-    payRows.set(p.student_id, list);
+    purchasedCount.set(p.student_id, (purchasedCount.get(p.student_id) ?? 0) + classesForPayment(p as Payment, feeOf.get(p.student_id), cpmOf.get(p.student_id)));
   }
 
   const rows: StudentStat[] = (studentsRes.data as Student[] ?? []).map((s) => {
     const done = completed.get(s.id) ?? 0;
     const totalPaid = paid.get(s.id) ?? 0;
-    // Each payment received = one set of classes (a bigger payment = more sets).
-    // Works even when fee_quoted isn't set, so recording a payment always adds a
-    // set. Before any payment we assume one set so a new student isn't shown due.
-    const purchased = purchasedClasses(payRows.get(s.id) ?? [], s.fee_quoted, s.classes_per_month);
+    const purchased = purchasedCount.get(s.id) ?? 0;
     return {
       student_id: s.id,
       student_code: s.student_code ?? null,

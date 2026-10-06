@@ -12,6 +12,7 @@ import type { StudentStat, ClassUpdate, Payment, SettledChapterJSON } from "@/li
 import { studentPlan, PLAN_LABEL, type Plan } from "@/lib/plan";
 import { computeSetProgress } from "@/lib/fees";
 import { chaptersOf, isActiveDate, inChapter, chapterRange } from "@/lib/settlement";
+import { classesForPayment } from "@/lib/cycles";
 import { computeFoundation } from "@/lib/foundation";
 import { FoundationCard } from "@/components/portal/FoundationCard";
 import { MonthlyPlanEditor } from "@/components/teach/MonthlyPlanEditor";
@@ -177,7 +178,7 @@ function StudentDetail({ stat, onReport }: { stat: StudentStat; onReport: () => 
 
       {tab === "payments" && (
         <div>
-          <p className="text-xs font-semibold uppercase tracking-wide text-ink/60">Payments · each buys a set of {stat.classes_per_month ?? 8}</p>
+          <p className="text-xs font-semibold uppercase tracking-wide text-ink/60">Payments · each covers the classes it bought</p>
           {!payments ? <p className="mt-2 text-xs text-ink/50">Loading…</p> :
             payments.length === 0 ? <p className="mt-2 text-xs text-ink/50">No payments yet.</p> : (
             <>
@@ -186,18 +187,9 @@ function StudentDetail({ stat, onReport }: { stat: StudentStat; onReport: () => 
                 <span className="font-display text-lg font-bold text-ink">{formatMoney(hasChapters ? activePaidTotal : stat.total_paid)}</span>
               </div>
               <ul className="mt-3 space-y-1.5">
-                {activePays.map((p) => {
-                  const per = (stat.fee_quoted ?? 0) > 0 ? Math.round((Number(p.amount_paid) / (stat.fee_quoted as number)) * (stat.classes_per_month ?? 8)) : null;
-                  return (
-                    <li key={p.id} className="flex items-center justify-between rounded-lg border border-hairline bg-white px-3 py-2 text-xs text-ink/75">
-                      <span>{p.payment_date} · <span className={cn(p.payment_status === "Received" ? "text-emerald-600" : "text-ink/50")}>{p.payment_status}</span></span>
-                      <span className="flex items-center gap-2">
-                        {per ? <span className="rounded-full bg-emerald-500/12 px-2 py-0.5 text-[10px] font-semibold text-emerald-700">+{per} classes</span> : null}
-                        <span className="font-semibold text-ink">{formatMoney(p.amount_paid)}</span>
-                      </span>
-                    </li>
-                  );
-                })}
+                {activePays.map((p) => (
+                  <ActivePaymentRow key={p.id} p={p} feeQuoted={stat.fee_quoted} classesPerMonth={stat.classes_per_month} setPayments={setPayments} />
+                ))}
               </ul>
               {chapters.map((ch, i) => {
                 const chapPays = (payments ?? []).filter((p) => inChapter(p.payment_date, ch));
@@ -246,49 +238,46 @@ function StudentDetail({ stat, onReport }: { stat: StudentStat; onReport: () => 
   );
 }
 
-// The set-progress summary card (how far into the current paid set of 8).
+// Summary card: classes paid for vs classes used, and what's due.
 function SetProgressCard({ stat }: { stat: StudentStat }) {
-  const sp = computeSetProgress(stat.classes_completed, stat.classes_per_month, stat.classes_purchased);
-  const advanceSets = Math.max(0, sp.paidSets - sp.currentSet);
-  const pct = Math.round((sp.currentDone / sp.perSet) * 100);
-  // Classes taught but nothing paid for the current account → fee due now.
-  const unpaid = stat.status === "active" && (stat.total_paid ?? 0) <= 0 && stat.classes_completed > 0;
+  const completed = stat.classes_completed;
+  const purchased = stat.classes_purchased;        // paid classes (sum of payments)
+  const remaining = stat.classes_remaining;         // purchased − completed
+  const paid = stat.total_paid;
   const fee = stat.fee_quoted ?? 0;
+  const active = stat.status === "active";
+  const unpaid = active && paid <= 0 && completed > 0;
+  const renewalDue = !unpaid && purchased > 0 && remaining === 0;
+  const renewSoon = !unpaid && !renewalDue && remaining > 0 && remaining <= 2;
+  const pct = purchased > 0 ? Math.min(100, Math.round((Math.min(completed, purchased) / purchased) * 100)) : (unpaid ? 100 : 0);
   return (
     <div className="rounded-2xl border border-hairline bg-white p-4 shadow-card">
       <div className="flex items-center justify-between">
         <div className="flex items-baseline gap-2">
-          <span className="font-display text-3xl font-bold leading-none text-ink">{sp.currentDone}<span className="text-xl text-ink/35">/{sp.perSet}</span></span>
-          <span className="text-sm text-ink/55">this set</span>
+          <span className="font-display text-3xl font-bold leading-none text-ink">{completed}<span className="text-xl text-ink/35">/{purchased || "—"}</span></span>
+          <span className="text-sm text-ink/55">paid classes used</span>
         </div>
         {unpaid
           ? <span className="rounded-full bg-red-500/12 px-3 py-1 text-[11px] font-semibold text-red-600">Fee due</span>
-          : sp.allComplete
+          : renewalDue
             ? <span className="rounded-full bg-gold px-3 py-1 text-[11px] font-semibold text-ink">Renewal due</span>
-            : sp.remainingInSet <= 2
+            : renewSoon
               ? <span className="rounded-full bg-gold/20 px-3 py-1 text-[11px] font-semibold text-[#7A5E0F]">Renew soon</span>
               : <span className="rounded-full bg-emerald-500/12 px-3 py-1 text-[11px] font-semibold text-emerald-700">On track</span>}
       </div>
 
       <div className="mt-3 h-2.5 w-full overflow-hidden rounded-full bg-ink/[0.07]">
-        <div className="h-full rounded-full bg-gradient-to-r from-gold to-[#C6A02E] transition-all" style={{ width: `${pct}%` }} />
+        <div className={cn("h-full rounded-full transition-all", unpaid ? "bg-red-400" : "bg-gradient-to-r from-gold to-[#C6A02E]")} style={{ width: `${pct}%` }} />
       </div>
       <p className="mt-2 text-xs text-ink/60">
         {unpaid
-          ? <><b className="text-red-600">{fee > 0 ? `${formatMoney(fee)} due` : "Fee due"}</b> · {sp.currentDone} class{sp.currentDone === 1 ? "" : "es"} taught, no payment recorded yet. Record it when received.</>
-          : sp.allComplete
-            ? <>All paid classes complete, record a payment to start the next set.</>
-            : <><b className="text-ink">{sp.remainingInSet}</b> class{sp.remainingInSet === 1 ? "" : "es"} left in this set · {formatMoney(stat.total_paid)} paid</>}
+          ? <><b className="text-red-600">{fee > 0 ? `${formatMoney(fee)} due` : "Fee due"}</b> · {completed} class{completed === 1 ? "" : "es"} taught, no payment recorded yet.</>
+          : renewalDue
+            ? <>All <b className="text-ink">{purchased}</b> paid classes used · {formatMoney(paid)} paid. Record the next payment.</>
+            : purchased > 0
+              ? <><b className="text-ink">{remaining}</b> class{remaining === 1 ? "" : "es"} left · {formatMoney(paid)} paid for {purchased}</>
+              : <>No payment recorded yet.</>}
       </p>
-
-      {advanceSets > 0 && (
-        <p className="mt-2.5 rounded-lg bg-emerald-500/10 px-3 py-2 text-xs font-semibold text-emerald-700">
-          ✓ Advance paid, next {advanceSets * sp.perSet} classes already covered
-        </p>
-      )}
-      {sp.completedSets > 0 && (
-        <p className="mt-2.5 text-[11px] text-ink/45">{sp.completedSets} earlier set{sp.completedSets === 1 ? "" : "s"} of {sp.perSet} completed</p>
-      )}
     </div>
   );
 }
@@ -407,6 +396,57 @@ function ChaptersEditor({ studentId, instrument, chapters, onChange }: {
 
 const shortDay = (iso: string | null) =>
   iso ? new Date(iso + "T00:00:00").toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" }) : "—";
+
+// One payment in the current account, showing how many classes it covers (auto
+// from the rate, or an explicit count) and letting the teacher adjust it — so a
+// non-standard payment (e.g. a longer-session package) maps to the right count.
+function ActivePaymentRow({ p, feeQuoted, classesPerMonth, setPayments }: {
+  p: Payment; feeQuoted: number | null; classesPerMonth: number | null;
+  setPayments: React.Dispatch<React.SetStateAction<Payment[] | null>>;
+}) {
+  const [editing, setEditing] = useState(false);
+  const [val, setVal] = useState("");
+  const [busy, setBusy] = useState(false);
+  const covers = classesForPayment(p, feeQuoted, classesPerMonth);
+  const explicit = p.classes_included != null && Number(p.classes_included) > 0;
+
+  async function save() {
+    const n = val ? Number(val) : null;
+    setBusy(true);
+    const { error } = await getSupabase().from("payments").update({ classes_included: n }).eq("id", p.id);
+    setBusy(false);
+    if (error) return; // column may be missing; silently keep the auto value
+    setPayments((prev) => prev && prev.map((x) => (x.id === p.id ? { ...x, classes_included: n } as Payment : x)));
+    setEditing(false);
+  }
+
+  return (
+    <li className="rounded-lg border border-hairline bg-white px-3 py-2 text-xs text-ink/75">
+      <div className="flex items-center justify-between">
+        <span>{p.payment_date} · <span className={cn(p.payment_status === "Received" ? "text-emerald-600" : "text-ink/50")}>{p.payment_status}</span></span>
+        <span className="flex items-center gap-2">
+          {covers > 0 && (
+            <button onClick={() => { setVal(explicit ? String(p.classes_included) : String(covers)); setEditing((v) => !v); }}
+              className={cn("rounded-full px-2 py-0.5 text-[10px] font-semibold", explicit ? "bg-gold/15 text-[#7A5E0F]" : "bg-emerald-500/12 text-emerald-700")}>
+              {covers} classes ✎
+            </button>
+          )}
+          <span className="font-semibold text-ink">{formatMoney(p.amount_paid)}</span>
+        </span>
+      </div>
+      {editing && (
+        <div className="mt-2 flex items-center gap-2">
+          <span className="text-[11px] text-ink/55">Covers</span>
+          <input inputMode="numeric" value={val} onChange={(e) => setVal(e.target.value.replace(/[^\d]/g, ""))}
+            className="w-16 rounded-lg border border-hairline bg-white px-2 py-1 text-xs focus-visible:outline-2 focus-visible:outline-gold focus:outline-none" />
+          <span className="text-[11px] text-ink/55">classes</span>
+          <button onClick={save} disabled={busy} className="rounded-full bg-ink px-3 py-1 text-[11px] font-semibold text-paper">Save</button>
+          <button onClick={() => setEditing(false)} className="text-[11px] font-semibold text-ink/60">Cancel</button>
+        </div>
+      )}
+    </li>
+  );
+}
 
 // A quiet, collapsible summary of one settled chapter (its classes & payments).
 function SettledChapterCard({ chapter, classes, payments }: { chapter: SettledChapterJSON; classes: ClassUpdate[]; payments: Payment[] }) {
