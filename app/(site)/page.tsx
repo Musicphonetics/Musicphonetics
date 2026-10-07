@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { VisionHero } from "@/components/home/vision/VisionHero";
-import { LearningLoop } from "@/components/home/vision/LearningLoop";
+import { LivingSystem } from "@/components/home/vision/LivingSystem";
 import { InfrastructureLayers } from "@/components/home/vision/InfrastructureLayers";
 import { MeasureAndBuild } from "@/components/home/vision/MeasureAndBuild";
 import { PortalShowcase } from "@/components/home/portal/PortalShowcase";
@@ -58,7 +58,7 @@ export default function HomePage() {
 
       {/* ── The vision: the first three scrolls reframe what Musicphonetics is ── */}
       <VisionHero />
-      <LearningLoop />
+      <LivingSystem />
       <InfrastructureLayers />
 
       {/* ── The evidence: the platform layer, already live ── */}
