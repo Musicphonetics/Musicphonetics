@@ -140,6 +140,10 @@ export default function OwnerStudents() {
     { key: "days", label: "Days" },
     { key: "parent", label: "Parent" },
     { key: "phone", label: "Phone" },
+    {
+      key: "email", label: "Login email",
+      render: (r) => <span className="select-all whitespace-nowrap font-mono text-xs">{r.email}</span>,
+    },
   ];
 
   return (
