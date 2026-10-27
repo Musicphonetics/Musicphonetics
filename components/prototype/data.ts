@@ -319,3 +319,45 @@ export const OWNER_METRICS = {
   // illustrative 8-week activity (lessons logged), purely synthetic
   activity: [34, 41, 38, 52, 49, 63, 58, 71],
 };
+
+// ----------------------------------------------- Student & parent (SAMPLE) ---
+export const STUDENT = { name: "Aarav Kapoor", first: "Aarav", instrument: "Guitar", code: "MP-2026-000004", teacher: "Rohan Mehta" };
+
+export const TODAY_PRACTICE = {
+  title: "B♭ barre — clean every string",
+  minutes: 15,
+  steps: [
+    "Warm up: spider walk 1-2-3-4 (2 min)",
+    "B♭ barre-and-release, check each string (6 min)",
+    "F ↔ B♭ change on beat 1, metronome 60 BPM (7 min)",
+  ],
+};
+
+export const GOAL = { title: "Play your first full song", sub: "Chapter 3 · Barre chords", pct: 62, step: "5 of 8 classes this cycle" };
+
+export const LAST_FEEDBACK = {
+  teacher: "Rohan Mehta",
+  when: "2 days ago",
+  text: "Great focus today. The B-string mutes on B♭ — we drilled it and it's already cleaner. Keep the change slow this week.",
+};
+
+export const LESSON_HISTORY = [
+  { date: "25 Oct", topic: "Barre chords — F & B♭", note: "Clean F; B♭ improving", done: true },
+  { date: "18 Oct", topic: "Power chords & palm muting", note: "Solid rhythm", done: true },
+  { date: "11 Oct", topic: "Open chords — G, C, D", note: "Smooth changes", done: true },
+  { date: "4 Oct", topic: "Reading rhythm & strumming", note: "Good timing", done: true },
+];
+
+export const MILESTONES = [
+  { label: "Open chords", done: true },
+  { label: "Strumming patterns", done: true },
+  { label: "Power chords", done: true },
+  { label: "Barre chords", done: false },
+  { label: "First full song", done: false },
+];
+
+export const PARENT_UPDATES = [
+  { kind: "Lesson update", who: "Rohan Mehta", when: "2 days ago", text: "Aarav — barre chords, focused session. Practice set for the week." },
+  { kind: "Monthly report", who: "Musicphonetics", when: "1 Oct", text: "September report for Aarav is ready to view." },
+  { kind: "Lesson update", who: "Rohan Mehta", when: "4 days ago", text: "Meera — note reading on piano, lovely progress." },
+];
