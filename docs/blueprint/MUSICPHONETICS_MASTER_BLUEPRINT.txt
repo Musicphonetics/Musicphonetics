@@ -1,0 +1,264 @@
+MUSICPHONETICS
+
+Master Product Wireframe, Application Architecture & Day-by-Day Build Blueprint
+
+Product vision: Build a premium music-learning and musician-services platform with the interface quality, operational depth, trust systems and technical discipline of a leading consumer service marketplace.
+
+Design principle: Musicphonetics must behave like a real application, not a long landing page.
+
+Build principle: Design the whole system first. Implement it in small, independently testable layers. Never confuse a functioning prototype with a completed production platform.
+
+====================================================================
+PART 1 — WHAT WE ARE ACTUALLY BUILDING
+====================================================================
+
+1.1 The product
+
+Musicphonetics will connect four primary user groups through one platform.
+
+1. Students: Learn, practise, submit recordings, track progress and communicate with their teacher.
+2. Parents: Discover teachers, manage their children's learning, follow progress, receive updates and manage payments.
+3. Teachers: Build a professional profile, manage students, conduct lessons, assign practice, communicate with parents and grow their business.
+4. Musicians: Showcase their work, receive enquiries, manage booking requests and build a professional presence.
+
+Behind these experiences will sit a separate administrative system that manages the platform itself.
+
+The platform will eventually include: music education and lesson management; teacher discovery and enrolment; musician discovery and booking; scheduling and availability; payments and subscriptions; student progress and practice tracking; music-learning AI; community, events and collaborations; reviews, trust, safety and dispute handling; customer support; notifications and communications; business analytics and platform operations.
+
+These are not separate websites. They are connected services operating on a shared foundation.
+
+1.2 The Urban Company benchmark
+
+Use Urban Company as a benchmark for product discipline, not as a template to copy. Service discovery -> discover lessons/teachers/musicians; service categories -> guitar, keyboard, piano, vocals, drums, theory etc.; professional profiles -> verified teacher/musician profiles; booking flow -> enquiry, availability, confirmation, reschedule, cancel; customer account -> student/parent account with history; professional workspace -> teacher/musician workspaces; payments -> lesson payments + platform subscriptions; reviews and trust -> verified reviews, credentials, reporting, moderation; customer support -> help centre, support requests, disputes; operations dashboard -> separate owner/admin control centre; personalised home screen -> a different home per account type; service quality -> progress, attendance, feedback, standards.
+
+Urban Company is an operational benchmark. Build Musicphonetics' own appropriate architecture rather than claim to reproduce its internal technology.
+
+1.3 The three experiences
+
+Experience A — Public discovery: people learn what Musicphonetics offers, explore teachers/musicians, understand pricing and decide to register.
+Experience B — The application: registered users interact through dashboards, navigation, forms, feeds, records, bookings, settings.
+Experience C — Platform operations: the owner and authorised staff manage users, subscriptions, enquiries, safety, bookings, support, quality, analytics.
+
+A visitor should never feel that the public website and the logged-in application are the same long page.
+
+====================================================================
+PART 2 — APPLICATION INFORMATION ARCHITECTURE
+====================================================================
+
+2.1 The full application map (destination, not a claim that all exists)
+
+MUSICPHONETICS
+  00. PUBLIC EXPERIENCE: Home, Explore lessons, Find a teacher, Discover musicians, How it works, Pricing, Community and events, About, Help and safety, Sign in, Create account
+  01. ACCOUNT AND ONBOARDING: Welcome, Create account, Verify email/phone, Select primary identity, Personal details, Preferences, Profile setup, Permissions and consent, First useful action
+  02. STUDENT APP: Home, My learning, Lessons, Practice, Recordings, Feedback, Progress, Teacher, Messages, Notifications, Profile and settings
+  03. PARENT APP: Home, My children, Child profile, Lessons and attendance, Learning updates, Practice and homework, Progress reports, Teacher communication, Payments and receipts, Discover teachers, Support, Family settings
+  04. TEACHER APP: Home, Students, Student details, Calendar, Lessons, Attendance, Lesson reports, Practice assignments, Student recordings, Messages, Enquiries, Public profile, Subscription, Earnings and payouts, Settings
+  05. MUSICIAN APP: Home, Public portfolio, Profile editor, Media and repertoire, Discover opportunities, Enquiries, Booking requests, Availability, Calendar, Messages, Subscription, Settings
+  06. MARKETPLACE: Search, Filters, Teacher listings, Musician listings, Profile details, Enquiry form, Booking flow, Booking status, Reviews, Favourites
+  07. COMMUNITY: Community home, Posts and discussions, Events, Workshops, Open mics, Auditions, Collaborations, Event details, Registration, Reporting and moderation, Community preferences
+  08. AI MUSIC LEARNING: Select assignment, Upload recording, Consent and privacy, Processing status, Feedback report, Timestamped observations, Practice recommendations, Teacher review, Feedback history
+  09. SHARED PLATFORM SERVICES: Notifications, Messaging, Payments, Subscriptions, Reviews, Support, Trust and safety, Search, Media storage, Audit logs
+  10. PRIVATE OWNER / ADMIN: Overview, User management, Teacher verification, Musician verification, Bookings and enquiries, Subscription management, Payments and refunds, Platform revenue, Community moderation, Support tickets, Content management, Analytics, System health, Permissions and audit history
+
+2.2 The application must have real navigation
+
+Use separate routes, persistent navigation and distinct page states. Proposed route patterns (inspect the existing router and adopt its conventions before changing routes):
+/  /explore  /teachers  /teachers/:teacherId  /musicians  /musicians/:musicianId  /pricing  /sign-in  /sign-up  /onboarding
+/app/student/home  /app/student/practice  /app/student/progress
+/app/parent/home  /app/parent/children  /app/parent/children/:childId
+/app/teacher/home  /app/teacher/students  /app/teacher/students/:studentId  /app/teacher/calendar  /app/teacher/lessons
+/app/musician/home  /app/musician/portfolio  /app/musician/enquiries
+/app/community  /app/events  /admin  /admin/users  /admin/bookings  /admin/finance
+
+Non-negotiable: Refreshing an application route must not unexpectedly return the user to the introduction page. Direct links, browser back/forward, authentication and route protection must work.
+
+====================================================================
+PART 3 — THE VISUAL SYSTEM
+====================================================================
+
+Musicphonetics should feel like a premium music brand that has built a serious consumer technology product: the ease of a well-designed consumer app, the clarity of a professional services marketplace, the warmth of music culture, the reliability of an education management system.
+
+Brand: Charcoal #161B26; Gold #C9A227; Fraunces for selected editorial headings; Hanken Grotesk for interface text. Gold is an accent, not a background for every component.
+
+Avoid: a giant sidebar containing every product category; one-page dashboards containing all functions; endless scrolling as the main navigation method; generic gradient-heavy AI-generated design; decorative glass effects that reduce readability; every feature as an identical card; fake charts/testimonials/activity; a public "Owner" role-selection option; empty buttons that look operational but do nothing.
+
+Application shell: a persistent structure surrounding the current screen. Desktop: a compact top bar and, where justified, a small role-specific navigation rail. Mobile: a dedicated app shell with bottom navigation and a separate screen per destination; secondary functions in contextual menus or settings. Do not force desktop navigation into a narrow mobile viewport.
+
+Shared interface components (reusable system, not per-screen styling):
+- Navigation: app header, bottom navigation, desktop rail, breadcrumbs, back button, account menu.
+- Data display: user avatar, teacher/musician preview, lesson row, booking status, attendance indicator, progress summary, empty state, loading skeleton, error state, success confirmation.
+- Actions: primary/secondary/destructive buttons, search field, filter panel, date/time picker, file upload, confirmation dialog, form validation, toast/inline feedback.
+- Trust: verification indicator, review summary, consent panel, report button, privacy notice, payment status, audit record.
+Every component needs defined behaviour, keyboard accessibility and responsive states.
+
+====================================================================
+PART 4 — PUBLIC EXPERIENCE AND REGISTRATION
+====================================================================
+
+Screen 1 Public home: a website, not the app. Helps visitors understand value and reach a useful destination. May scroll, but every section leads to a specific action/destination. Must not contain the complete authenticated application.
+Screen 2 Explore music lessons: a separate destination with instrument categories, goals, online/in-person, location, skill level, age-appropriate options, teacher results, clear empty/error states. Selecting a teacher opens their profile.
+Screen 3 Teacher profile: who the teacher is, instruments/levels, qualifications, approach, formats, fees (where disclosed), availability, supporting evidence, enquiry action. Labelled "verified" only when the verification process actually completed.
+Screen 4 Create account: short and focused — name, email/phone, password/auth method, terms, privacy, age/consent where applicable. Gather extra detail during onboarding, not at registration.
+Screen 5 Choose primary identity (a dedicated screen): Student / Parent-Guardian / Teacher / Musician. Rules: one primary identity; selection drives onboarding/navigation/default dashboard; public registration does NOT offer owner/admin; a parent may manage multiple children; a teacher/musician cannot access another role's private workspace by changing a URL; additional capabilities later only via a deliberate authorised process (not a casual role switcher); any role change needs a defined migration/support process so records/permissions are not silently broken.
+Screen 6 Personal onboarding (varies by identity):
+  Student: instrument, skill level, goals, assigned teacher if known, first practice action.
+  Parent: parent/guardian details, add a child, child age/preferences with safeguards, link/find a teacher, view child's learning space.
+  Teacher: professional details, instruments/genres, experience, format, qualifications/evidence, profile completeness, subscription when appropriate.
+  Musician: professional name, instruments/services, genres, location/service area, portfolio/media, enquiry preferences, subscription when appropriate.
+Each step: progress indicator, back action, save-and-resume where appropriate. At the end the user enters the actual application.
+
+====================================================================
+PART 5 — STUDENT APPLICATION
+====================================================================
+
+5.1 Student home answers: what should I do next; when is my next lesson; what did my teacher ask me to practise; am I improving. Data must come from the signed-in student's authorised records. No fake appointments; show useful empty states.
+5.2 My learning: current instrument/programme, assigned teacher, goals, upcoming lessons, recent summaries, current assignments, history. Selecting a lesson opens its details.
+5.3 Lesson details: date/time, teacher, status, attendance, summary, skills, errors/areas, practice instructions, homework, teacher notes visible to the student, related recordings where permitted. Private internal teacher notes must never leak to student/parent.
+5.4 Practice (a working tool): view assigned exercises, instructions, target duration/frequency, mark complete, upload/record when supported, view previous submissions, review feedback, know what's next. Distinguish student self-report from teacher verification.
+5.5 Recordings and feedback: title, submission date, related assignment, processing/review status, teacher feedback, timestamped observations if available, recommendations, resubmission. If AI feedback is not implemented, clearly identify sample/demonstration feedback — never pretend a real analysis occurred.
+5.6 Progress: lessons completed, attendance, assignments completed, practice submissions, teacher-defined goals, historical feedback. Do not invent grades/percentages without a valid measurement method.
+
+====================================================================
+PART 6 — PARENT APPLICATION
+====================================================================
+
+6.1 Parent home organised around the family: children list, upcoming lessons, recent teacher updates, practice and progress (child selector), payments.
+6.2 Children: each child has a separate record; parent views only authorised children; profile includes instrument/programme, assigned teacher, lesson history, attendance, assignments, updates, progress, recordings/feedback subject to permissions. Support multiple children without mixing records.
+6.3 Teacher updates: structured (lesson date, skills covered, what went well, what needs work, practice for coming week, next goal, optional attachment). Parents open a full update, review older ones, get notified of new ones.
+6.4 Family payments: lesson charges, subscription status, payment history, receipts, failed/pending, support/dispute. The ₹499 family subscription is a proposed platform plan, not the fee an individual teacher charges.
+
+====================================================================
+PART 7 — TEACHER APPLICATION
+====================================================================
+
+7.1 Teacher home: today's lessons + attendance to record; my students (active, new enquiries, follow-ups); needs attention (incomplete reports, assignments awaiting feedback, unanswered enquiries); this week calendar preview; profile performance (completeness, enquiry activity). Use only actual, permission-appropriate data.
+7.2 Students list: search own students; filter by instrument/status/group; open a student; next lesson; incomplete records; outstanding reviews; add via authorised workflow. Loading/empty/error/pagination states.
+7.3 Student details tabs: Overview, Lessons, Practice, Progress, Communication. A teacher must not open another teacher's student by guessing an ID.
+7.4 Calendar (eventually): day/week views, upcoming lessons, available slots, confirmed bookings, reschedule, cancellation, conflict detection, time zones, availability. Start with minimum reliable behaviour; no complex recurring bookings until TZ/conflicts/cancellation rules are defined.
+7.5 Lesson workflow lifecycle: Scheduled -> Confirmed -> Completed/Cancelled/Rescheduled/No-show -> Attendance recorded -> Lesson report completed -> Practice assigned -> Student/parent notified. Map current statuses before rewriting them.
+7.6 Lesson report form: date, instrument, attendance, topics, skills, accuracy/progress measure if defined, error areas, focus areas, practice instructions, homework, notes visible to student/parent, private internal notes with strict permissions. Save-draft and submit; confirmation; update the student record.
+7.7 Practice assignments: create, select student, instructions, due date/frequency, attach permitted media, publish, review submissions, feedback, mark review complete. Keep history.
+7.8 Public profile editor: name/image, intro, instruments, genres, levels, approach, qualifications, experience, format, service area, media, rates, enquiry preferences, preview. Separate draft from published if supported. Verification based on a real review process.
+7.9 Teacher subscriptions (proposed): Starter ₹499, Professional ₹999, Studio ₹1,999. Define exact entitlements before implementation. Plan page shows current plan, features, limits, renewal, upgrade/downgrade, payment status, cancellation, support. No upgrade button unless the workflow exists.
+
+====================================================================
+PART 8 — MUSICIAN APPLICATION
+====================================================================
+
+8.1 Musician home: profile status, new enquiries, pending booking requests, upcoming confirmed engagements, availability, portfolio completeness, subscription status.
+8.2 Musician portfolio: professional name, instruments/services, genres, bio, location/service area, experience, portfolio links, approved audio/video, repertoire/formats, rates/packages, availability preferences, enquiry action. Only authorised media; reporting/takedown workflows.
+8.3 Enquiry workflow: event/service type, date, location/format, duration, budget range, requirements, contact details. Musician reviews and responds.
+8.4 Booking lifecycle: Enquiry submitted -> Musician reviews -> Clarification/proposal -> Availability confirmed -> Booking offered -> Client confirmation -> Payment if applicable -> Booking confirmed -> Service delivered -> Completion/review/support. Every transition has explicit rules. An enquiry is not a confirmed booking; a convincing test-payment screen is not a successful payment.
+8.5 Musician subscriptions (proposed): Musician Starter ₹499, Musician Plus ₹999. Define exact entitlements/limits before enforcing.
+
+====================================================================
+PART 9 — DISCOVERY, SEARCH AND BOOKINGS
+====================================================================
+
+9.1 Search: a real capability (categories, instruments/services, skill level, location/area, online/in-person, availability, budget, qualifications, sorting, pagination). Filters reflect data that actually exists.
+9.2 Search results: enough info to decide. Teachers: name, instruments, format, experience, verification if applicable, price where available, short description, profile action. Musicians: name, service category, genre, service area, portfolio material, verification if applicable, enquiry action.
+9.3 Enquiry management: unique id, requester, recipient, details, created date, status, communication history, next action, access restrictions. Track status changes and notify without exposing private info to unrelated users.
+
+====================================================================
+PART 10 — COMMUNITY AND EVENTS
+====================================================================
+
+Introduce community as a real module after accounts, moderation and permissions are reliable.
+10.1 Community home: discussions, challenges, workshops, open mics, auditions, collaborations, local events. Do not let community dominate primary navigation before it has content and moderation capacity.
+10.2 Events: title/description, organiser, date/time, location/online, eligibility, registration status, capacity, accessibility, cancellation policy, contact/support.
+10.3 Safety: community guidelines, report/block, moderation queues, content removal, privacy controls, age-appropriate access, guardian consent, restrictions on inappropriate adult-to-minor contact, safe communication defaults. Do not launch DMs or public social interactions involving minors until safeguards and operational procedures are ready.
+
+====================================================================
+PART 11 — AI MUSIC-LEARNING MODULE
+====================================================================
+
+A distinct feature with a clear workflow and honest capability labels.
+Screen 1 Choose assignment. Screen 2 Upload recording (formats, max size, progress, consent/privacy, cancel/retry). Screen 3 Processing (real backend status; if sample, identify it as a demonstration). Screen 4 Feedback report (overall observations; timing/rhythm; technique; finger placement when reliably supported; areas to practise; timestamped observations; next steps; teacher review). Do not claim the system detected a musical error unless a real analysis produced it. Screen 5 Teacher review (view recording, review suggestions, correct, comment, publish). Clearly distinguish machine suggestions from teacher-approved feedback.
+
+====================================================================
+PART 12 — OWNER AND ADMIN CONTROL CENTRE
+====================================================================
+
+A private operational interface, separate from the public website and user workspaces.
+12.1 Overview metrics (each with a defined data source and calculation): users by role, active teachers, enquiries, bookings by status, subscription status, platform payment activity, support tickets, moderation queue, system health.
+12.2 User management: search users, view status, review verification, investigate support cases, suspend via controlled workflow, review access/audit history. Sensitive actions require permissions and create audit records.
+12.3 Financial operations distinguish: platform subscription revenue; teacher lesson payments; musician booking payments; platform commissions if introduced; refunds; provider fees; outstanding payouts. Do not combine into a single misleading "revenue" figure.
+12.4 Moderation and support: separate queues for reported profiles, reported content, safety incidents, booking disputes, payment issues, account access. Each case has status, owner, notes, resolution history.
+12.5 Security: no public admin registration; no client-side role selection granting admin; server-side permission checks; restricted admin routes; audit logging; least privilege; session security; tested recovery and suspension.
+
+====================================================================
+PART 13 — TECHNICAL ARCHITECTURE
+====================================================================
+
+Inspect the current repository before proposing a new implementation. Existing stack: Cloudflare Pages, Supabase, GitHub, Claude Code, Resend. Preserve working infrastructure unless a documented technical reason justifies change.
+
+13.1 Layers: Public website + authenticated application -> Routing and UI -> Authentication and sessions -> Server-side authorisation -> Application services -> (Supabase database / File storage and media / Notifications and email) -> Auditing, monitoring and reporting. Conceptual; follow the repo's framework and deployment model.
+
+13.2 Database principles: inspect the current schema before adding tables/migrations. Reuse existing structures. Potential entities: user profiles, role assignments, student profiles, parent-child relationships, teacher profiles, musician profiles, lessons, attendance, lesson reports, practice assignments, recording submissions, feedback, enquiries, booking requests, bookings, availability, subscription records, payment-provider references, notifications, community posts, events, support tickets, audit events. These are conceptual, not an instruction to duplicate tables.
+
+13.3 Permissions: for each table document who can read/create/update/delete, which relationships establish access, which operations require server-side checks, whether an audit record is required. Test access with separate accounts per role. A user must never access another person's private records by manipulating an identifier or request.
+
+13.4 Payments: use the provider's supported test mode for the prototype. Separate product pricing, subscription entitlements, payment initiation, provider callbacks/webhooks, payment status, refund handling, invoice/receipt generation. Do not trust the browser to declare a payment successful; verify server-side. Production billing requires a separate readiness check (configuration, webhook verification, refund rules, legal terms, reconciliation).
+
+13.5 Media and recordings: explicit storage and access rules. Private student recordings not publicly accessible; upload permissions checked; file types/sizes validated; signed links expire; consent/retention documented; media not on public profiles without explicit permission.
+
+13.6 Notifications generated by real events (lesson confirmed, rescheduled, assignment published, feedback available, enquiry received, booking status changed, subscription payment failed). Email, in-app and messaging are separate capabilities; do not claim one works because another does.
+
+====================================================================
+PART 14 — WHAT MUST BE BUILT FIRST (phase summary)
+====================================================================
+
+Phase 0 Repository audit (deliverable: audit report + agreed plan; no major redesign/destructive migration before the audit).
+Phase 1 Application shell (separate public/authenticated layouts, real routes, login/logout, session persistence, protected routes, role-specific navigation, responsive, loading/error, not-found).
+Phase 2 Account and role onboarding.
+Phase 3 First complete learning workflow (teacher -> lesson -> practice -> student -> review -> parent update; preserve record history).
+Phase 4 Teacher professional workspace.
+Phase 5 Parent and student experience.
+Phase 6 Discovery and enquiries.
+Phase 7 Musician marketplace.
+Phase 8 Subscriptions and payments (test mode).
+Phase 9 Community and events.
+Phase 10 AI learning prototype (label sample analysis honestly).
+Phase 11 Operations, scale and release readiness.
+(Phases are dependencies, not calendar promises.)
+
+====================================================================
+PART 15 — THE FIRST 14 WORKING DAYS (cadence)
+====================================================================
+
+Day 1 Full audit and baseline. Day 2 Product architecture and screen specification. Day 3 Application shell. Day 4 Registration and onboarding. Day 5 Permissions and account isolation. Day 6 Teacher workspace. Day 7 Lesson workflow. Day 8 Practice assignments. Day 9 Student workspace. Day 10 Parent workspace. Day 11 Profiles and discovery. Day 12 Musician discovery and enquiries. Day 13 Subscription prototype. Day 14 Regression and release review. If a day fails its exit condition, fix the underlying issue before moving on.
+
+====================================================================
+PART 16 — DAILY CLAUDE CODE WORKFLOW
+====================================================================
+
+Start every session by reading the relevant existing code and the previous notes. Each task identifies: intended user outcome; screens/services in scope; existing code to reuse; files/db likely affected; acceptance criteria; tests required; explicitly excluded work. Work one meaningful vertical slice at a time (interface + backend + database). A feature is finished only when the authorised user can complete it, input validates, the record is saved and associated correctly, the right user can retrieve it, unauthorised users cannot, the UI reflects the result, errors are handled, tests pass and existing functionality remains intact. Git/db discipline: check status, preserve unrelated changes, feature branches, focused commits, review diffs, additive reversible migrations, never reset/overwrite production data, never change production secrets/deployment/billing without a specific authorised reason. End each session with a completion report (what changed, what works, what was reused, tests run/passed/failed, migrations, risks, limitations, files/routes affected, next task).
+
+====================================================================
+PART 17 — THE FIRST PROMPT (audit assignment)
+====================================================================
+
+Perform a product and repository audit before implementation. Do not generate a new homepage, replace the application or rewrite the codebase. Inspect the actual repository and report the current state (framework/entry points/router/layouts/components/styling/deployment; authentication and sessions; route and screen inventory with status; Supabase schema/relationships/migrations/RLS; existing student/parent/teacher/lesson/attendance/assignment/progress functionality; integrations incl. email/media/payments/notifications; run the app and tests and report actual results; duplicated screens/giant single-page components/dead links/non-functional buttons/placeholders/broken navigation; data-loss/access-control/migration risks; reusable components/workflows).
+Required deliverables before coding: PRODUCT_AUDIT.md, ROUTE_INVENTORY.md, PRODUCT_ARCHITECTURE.md, DATA_AND_PERMISSIONS_AUDIT.md, IMPLEMENTATION_ROADMAP.md, DECISIONS_AND_RISKS.md (adapt filenames to existing conventions). After the audit, present the smallest safe first implementation (a real app shell with independent routes, role-specific navigation, preserved authentication). Stop before major implementation; show findings, proposed first change, files likely affected and acceptance tests.
+
+====================================================================
+PART 18 — THE SECOND PROMPT (application shell)
+====================================================================
+
+Only after audit approval: implement Phase 1 — the genuine multi-screen application foundation. Use the existing framework/auth/deployment/components. Separate public from authenticated layouts. Independent routes for the first student/parent/teacher/musician screens. Role-specific navigation (not one universal sidebar). Protected routes using existing auth with backend/db permission enforcement. Correct direct navigation/refresh/back-forward/loading/errors/not-found. Responsive. Musicphonetics identity, no generic AI dashboard patterns. Don't build every future feature now; unimplemented destinations must not masquerade as working. Preserve existing lesson/student workflows. Add/update tests for routing/auth/role boundaries. Report every changed file, migration, test result and limitation.
+
+====================================================================
+PART 19 — DEFINITION OF DONE
+====================================================================
+
+Every module must pass five tests: 1) User test — the intended user can complete the task unaided. 2) Data test — information saved, retrieved and updated correctly. 3) Permission test — another user/role cannot access what they should not. 4) Failure test — network failure, invalid input, failed payment, missing record handled. 5) Regression test — previously working functionality preserved. A visually finished screen is not a completed feature.
+
+====================================================================
+PART 20 — THE LONG-TERM PLATFORM
+====================================================================
+
+Once the core app is stable, grow through carefully defined integrations (payments; video/audio infra; calendar; transactional email; messaging/notifications; exam/certification bodies; schools/academies; event organisers/venues; equipment/instrument retailers; learning/assessment tech). Each integration requires a specific commercial and technical evaluation; a partnership is not displayed as established until it exists. Design sensible module boundaries and data ownership now; load-test and expand infrastructure as usage grows; do not build enterprise complexity before there is demonstrated need.
+
+Final product principle: Musicphonetics should not feel like four dashboards attached to a website. It should feel like one coherent music platform with four carefully designed user experiences, shared services and a reliable operational backbone. The next action is to audit the existing application, establish the route architecture, build the real application shell, then complete the first end-to-end learning workflow.
+
+[Stored copy. Source: owner-provided Master Blueprint, read into this repository for persistent reference. The Build Sequence file is authoritative for implementation ORDER.]

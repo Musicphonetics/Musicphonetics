@@ -1,0 +1,585 @@
+MUSICPHONETICS — BUILD SEQUENCE & CLAUDE MEMORY
+Version: 1.0
+Purpose: Control the implementation order for the complete Musicphonetics Master Blueprint.
+
+======================================================================
+1. AUTHORITY: HOW TO USE THE TWO FILES
+======================================================================
+
+You must read and follow both project files:
+
+1. MUSICPHONETICS_MASTER_BLUEPRINT.txt
+   - This is the source of truth for the product vision, screen wireframes,
+     user experiences, technical principles and long-term scope.
+   - Do not silently replace, contradict, or simplify it.
+
+2. MUSICPHONETICS_BUILD_SEQUENCE.txt
+   - This file controls the order of implementation, session workflow,
+     checkpoints, approval gates and progress tracking.
+   - Follow the sequence below unless a genuine dependency or safety issue
+     requires a documented adjustment.
+
+If the files appear to conflict:
+- Do not guess silently.
+- Identify the exact conflict.
+- Explain its impact.
+- Recommend a resolution.
+- Wait for the owner's decision if it changes product behaviour, data,
+  permissions, billing, security, or the agreed build sequence.
+
+The full blueprint describes the destination. This file determines the
+implementation order. Neither file authorises implementing every feature
+at once.
+
+======================================================================
+2. YOUR ROLE
+======================================================================
+
+Act as the long-term engineering partner for the existing Musicphonetics
+codebase. Work as a product-minded software architect, full-stack engineer,
+QA engineer and documentation owner.
+
+The goal is to turn the existing project into a genuine multi-screen,
+multi-role music platform—not a one-page scrolling introduction or a
+visual mockup with non-functional controls.
+
+Use the existing repository, framework, authentication, database, routes,
+integrations and working features wherever appropriate. Audit before
+changing them. Do not assume the blueprint describes what is already
+implemented.
+
+Do not rebuild the entire project merely because a clean rewrite seems
+easier. Preserve working functionality and existing data.
+
+======================================================================
+3. NON-NEGOTIABLE WORK RULES
+======================================================================
+
+A. One phase at a time
+- Work only on the current approved phase and its defined tasks.
+- You may consider later phases when making architecture decisions, but do
+  not implement them early without approval.
+- Do not jump to a later part because it is visually exciting or easier.
+- If a prerequisite is incomplete, stop and report it.
+
+B. Complete workflows, not just screens
+A feature is not done because its page looks finished. Verify the complete
+journey, including data persistence, permissions, error states and tests.
+
+C. Preserve data and functionality
+- Never reset, overwrite, or fabricate production data to simplify a demo.
+- Never casually drop tables, columns, policies, routes or integrations.
+- Use focused, reversible changes and migrations.
+- Before risky or irreversible changes, explain the risk and request approval.
+
+D. Truthful status
+Label features as:
+- COMPLETE — acceptance criteria passed and evidence recorded.
+- IN PROGRESS — implementation is underway.
+- BLOCKED — a dependency or issue prevents safe progress.
+- PLANNED — not implemented.
+- NEEDS VERIFICATION — code exists but has not been adequately tested.
+Never claim a feature, integration, payment, partnership or test works unless
+that has actually been verified.
+
+E. Security
+- Authentication is not the same as authorisation.
+- Enforce access on the server and database, including Supabase Row Level
+  Security where applicable.
+- Do not rely only on hiding buttons or frontend routes.
+- Do not expose private student records, parent-child data, recordings,
+  secrets, payment data or admin functions.
+- Do not enable public admin registration.
+- Treat minors' safety and recording privacy as important requirements.
+
+F. Testing
+Before marking a task complete:
+- Run the relevant tests.
+- Test the real user journey.
+- Test invalid input and failure/empty states.
+- Test access permissions where relevant.
+- Check for regressions.
+- Review the actual code diff.
+- State which tests were not possible to run.
+
+G. Design
+- Follow the Musicphonetics brand and the Master Blueprint.
+- Build a real app with independent routes, persistent navigation and
+  role-specific workspaces.
+- Do not revert to a universal sidebar containing every module.
+- Do not put the whole authenticated application on one scrollable page.
+- Do not create fake charts, fake activity, or decorative non-functional
+  controls to make the product look complete.
+- Make the experience responsive for mobile and desktop.
+
+H. Scope discipline
+Prefer one tested end-to-end workflow over many incomplete modules.
+Do not add unrequested dependencies or unnecessary architecture.
+Document material decisions and unresolved questions.
+
+======================================================================
+4. REQUIRED REPOSITORY MEMORY
+======================================================================
+
+Use existing documentation conventions if the repository already has them.
+Avoid creating duplicate files that contradict existing documentation.
+
+Maintain the equivalent of these records:
+
+1. PRODUCT_BLUEPRINT_REFERENCE
+   Reference the complete master blueprint file. Do not copy it into several
+   competing documents.
+
+2. IMPLEMENTATION_STATUS.md
+   - Current phase and task.
+   - Status of every phase.
+   - Completed acceptance criteria.
+   - Tests and results.
+   - Known defects.
+   - Current blockers.
+   - Next approved task.
+
+3. DECISIONS_AND_RISKS.md
+   - Material architecture/product decisions.
+   - Reasoning and consequences.
+   - Open questions.
+   - Risks and mitigations.
+
+4. DATA_AND_PERMISSIONS.md
+   - Relevant tables and relationships.
+   - Access rules and Row Level Security.
+   - Permission test results.
+   - Data migration notes.
+
+5. TESTING_AND_DEPLOYMENT.md
+   - How to run the app and tests.
+   - Environment assumptions, without exposing secrets.
+   - Deployment workflow.
+   - Safe rollback/recovery guidance where available.
+
+If equivalent files already exist, update them instead of creating duplicate
+sources of truth. Keep the active status concise, accurate and current.
+
+======================================================================
+5. REQUIRED SESSION PROTOCOL
+======================================================================
+
+At the start of every coding session:
+
+1. Read this build-sequence file.
+2. Read the Master Blueprint or the relevant parts of it.
+3. Read the current implementation status and relevant decision records.
+4. Inspect the actual code related to the active task.
+5. State the active phase and task.
+6. State what is already working and what remains.
+7. State the intended outcome, files/areas likely to change, dependencies,
+   acceptance criteria and risks.
+8. Do not repeat an already completed audit unless new evidence requires it.
+
+During the session:
+- Work on the active task only.
+- Make small, reviewable changes.
+- Preserve unrelated changes.
+- Run relevant tests as you go.
+- If blocked, stop and report the blocker instead of disguising it.
+
+At the end of every session, report:
+- Task and phase.
+- Changes made.
+- User-visible behaviour now working.
+- Files/routes/services affected.
+- Database migrations or policy changes.
+- Tests actually run and results.
+- Security/data considerations.
+- Known limitations and outstanding issues.
+- Whether acceptance criteria passed.
+- Exact next task in the sequence.
+
+Update IMPLEMENTATION_STATUS.md and relevant records before finishing.
+
+======================================================================
+6. MASTER IMPLEMENTATION ORDER
+======================================================================
+
+The numbers below refer to sections in MUSICPHONETICS_MASTER_BLUEPRINT.txt.
+The order is intentional and is not the same as the numerical order in that
+file. Some parts describe the final product, while other parts describe how
+to build it.
+
+PHASE 0 — DISCOVERY, AUDIT AND BASELINE
+Blueprint references: Part 17, Part 18 (read only), Part 19, Part 16.
+
+Task 0.1 — Audit the existing repository.
+- Inspect the framework, routes, components, styling and deployment.
+- Inspect authentication and session handling.
+- Inspect Supabase schema, migrations and Row Level Security.
+- Inventory existing student, parent, teacher, lesson, assignment and
+  progress functionality.
+- Inspect integrations and tests.
+- Run the existing app and tests if safe.
+- Identify broken routes, placeholders, duplicate logic and data risks.
+- Do not undertake a major redesign or destructive migration.
+
+Task 0.2 — Produce or update the audit records.
+- Current functionality inventory.
+- Route inventory.
+- Data and permissions audit.
+- Known defects and risks.
+- Baseline test results.
+- Reusable existing components and workflows.
+
+Task 0.3 — Map the target architecture.
+Read Part 2, Part 3, Part 13 and the relevant role sections of the Master
+Blueprint. Map target routes and modules to the existing codebase. Record
+which proposed screens already exist and which are new.
+
+EXIT GATE 0:
+The owner can review the actual baseline, key risks, proposed first change
+and acceptance tests. No major implementation should begin until the audit
+and first-phase plan have been presented.
+
+PHASE 1 — APPLICATION SHELL AND REAL NAVIGATION
+Blueprint references: Part 2, Part 3, Part 18.
+
+Task 1.1 — Establish separate public and authenticated layouts.
+Task 1.2 — Establish genuine independent routes.
+Task 1.3 — Add or stabilise protected-route behaviour.
+Task 1.4 — Implement role-appropriate navigation structures.
+Task 1.5 — Implement loading, empty, error and not-found states.
+Task 1.6 — Test direct route navigation, refresh, browser back/forward,
+           sign-in, sign-out and session persistence.
+Task 1.7 — Verify responsive mobile and desktop layouts.
+
+Do not implement all the future modules. Use only the minimum set of route
+destinations needed to prove the app shell works. Unbuilt destinations must
+be clearly labelled or omitted, not presented as operational features.
+
+EXIT GATE 1:
+The app is no longer one long scrollable page. Routes and navigation work,
+the authenticated shell is separate from the public website, and existing
+working functionality remains accessible.
+
+PHASE 2 — ACCOUNT IDENTITY, ONBOARDING AND PERMISSIONS
+Blueprint references: Part 4, Part 13, Part 16.
+
+Task 2.1 — Stabilise the existing registration and login flow.
+Task 2.2 — Implement one primary identity selection: student, parent/guardian,
+           teacher or musician.
+Task 2.3 — Keep owner/admin out of public registration.
+Task 2.4 — Implement role-specific onboarding and post-onboarding routing.
+Task 2.5 — Preserve existing user records and handle existing users safely.
+Task 2.6 — Enforce role and record permissions on the server/database.
+Task 2.7 — Test cross-role and cross-user access attempts.
+
+Do not create a casual universal role switcher. Any future additional role
+must use a deliberate, authorised process.
+
+EXIT GATE 2:
+New and existing users reach the correct workspace. Role boundaries are
+enforced beyond the frontend. Existing records are not lost or misassigned.
+
+PHASE 3 — FIRST COMPLETE EDUCATION WORKFLOW
+Blueprint references: Part 5, Part 6, Part 7, Part 13, Part 19.
+
+This phase is the first major end-to-end vertical slice. Reuse the existing
+portal wherever possible.
+
+Task 3.1 — Teacher opens their authorised student list.
+Task 3.2 — Teacher opens a student record.
+Task 3.3 — Teacher records lesson details and attendance.
+Task 3.4 — Teacher submits a lesson report with appropriate validation.
+Task 3.5 — Teacher creates and publishes a practice assignment.
+Task 3.6 — Student sees the assigned practice.
+Task 3.7 — Student records completion or submits work, according to the
+           supported implementation.
+Task 3.8 — Teacher reviews the submission and provides feedback.
+Task 3.9 — Parent sees the appropriate authorised learning update.
+Task 3.10 — Verify record history, notifications where implemented,
+            access controls, errors and regression behaviour.
+
+Do not start marketplace, community or AI work before this core workflow
+passes its acceptance tests unless the owner approves a documented exception.
+
+EXIT GATE 3:
+A real lesson-to-practice-to-feedback journey works with persisted data and
+correct permissions. This is not satisfied by static mockups.
+
+PHASE 4 — COMPLETE THE CORE STUDENT AND PARENT EXPERIENCES
+Blueprint references: Part 5 and Part 6.
+
+Task 4.1 — Student home, learning, lessons, practice and progress.
+Task 4.2 — Recording/feedback history only to the extent supported.
+Task 4.3 — Parent family overview and authorised child selection.
+Task 4.4 — Child-specific lesson history and teacher updates.
+Task 4.5 — Multi-child isolation and permission tests.
+Task 4.6 — Empty states and useful first-run experience.
+
+EXIT GATE 4:
+Students and parents can reliably use the core learning records without
+crossing account boundaries or seeing invented information.
+
+PHASE 5 — TEACHER PROFESSIONAL WORKSPACE
+Blueprint references: Part 7 and relevant shared-service sections.
+
+Task 5.1 — Teacher home and action list.
+Task 5.2 — Student management and search.
+Task 5.3 — Lesson/calendar workflows supported by the current architecture.
+Task 5.4 — Lesson reports and practice management.
+Task 5.5 — Public profile editor and preview.
+Task 5.6 — Enquiry management.
+Task 5.7 — Subscription plan interface, initially without claiming live billing.
+Task 5.8 — Permission and regression tests.
+
+EXIT GATE 5:
+The teacher workspace provides a coherent, working professional workflow.
+Do not mark calendar, payments or subscriptions complete if only their
+visual interface exists.
+
+PHASE 6 — PUBLIC DISCOVERY AND ENQUIRIES
+Blueprint references: Part 4 and Part 9.
+
+Task 6.1 — Public teacher discovery and search.
+Task 6.2 — Search filters based only on supported data.
+Task 6.3 — Teacher profile details.
+Task 6.4 — Enquiry submission and validation.
+Task 6.5 — Enquiry storage, status and recipient access.
+Task 6.6 — Notifications where implemented.
+Task 6.7 — Test the visitor-to-enquiry journey.
+
+EXIT GATE 6:
+A visitor can discover a teacher and submit an enquiry that reaches the
+correct workflow. Fake profiles and fabricated verification must not be used.
+
+PHASE 7 — MUSICIAN MARKETPLACE AND BOOKING PROTOTYPE
+Blueprint references: Part 8, Part 9 and relevant parts of Part 13.
+
+Task 7.1 — Musician profile and portfolio.
+Task 7.2 — Discovery and supported filters.
+Task 7.3 — Enquiry creation and management.
+Task 7.4 — Availability and booking request model.
+Task 7.5 — Explicit booking status lifecycle.
+Task 7.6 — Notifications and communication where supported.
+Task 7.7 — Test status transitions, duplicate requests and permissions.
+
+EXIT GATE 7:
+Musicians can manage enquiries and the booking prototype has clear,
+testable statuses. Do not represent an enquiry as a confirmed booking.
+
+PHASE 8 — SUBSCRIPTIONS AND PAYMENT TEST MODE
+Blueprint references: Part 7, Part 8, Part 12 and Part 13.
+
+Task 8.1 — Define plan entitlements before enforcing them.
+Task 8.2 — Implement plan display for teacher and musician plans.
+Task 8.3 — Implement the parent/family plan according to the blueprint.
+Task 8.4 — Integrate supported payment-provider test mode if credentials and
+           configuration are available.
+Task 8.5 — Implement provider-side payment verification/webhooks correctly.
+Task 8.6 — Handle pending, failed, cancelled and successful test transactions.
+Task 8.7 — Test subscription status and entitlements.
+Task 8.8 — Document production billing requirements separately.
+
+EXIT GATE 8:
+The demo clearly identifies test mode; payment state is not trusted from the
+browser alone. Production billing remains disabled until separately approved
+and verified.
+
+PHASE 9 — OWNER/ADMIN OPERATIONS
+Blueprint references: Part 12 and Part 13.
+
+Task 9.1 — Define admin permissions and audit requirements.
+Task 9.2 — User and professional verification workflows.
+Task 9.3 — Booking/enquiry oversight.
+Task 9.4 — Support and moderation queues as their dependencies become ready.
+Task 9.5 — Financial reporting with distinct revenue categories.
+Task 9.6 — Test admin access and sensitive actions.
+
+EXIT GATE 9:
+Admin functions are private, authorised and auditable. Do not build admin
+screens that expose secrets or grant privileges through frontend state.
+
+PHASE 10 — COMMUNITY AND EVENTS
+Blueprint references: Part 10 and Part 13.
+
+Task 10.1 — Define community data and access rules.
+Task 10.2 — Build events and event details.
+Task 10.3 — Build registration and status handling.
+Task 10.4 — Implement reporting, moderation and content controls.
+Task 10.5 — Review child/minor safety and communication restrictions.
+Task 10.6 — Test abuse reports, removal and access controls.
+
+EXIT GATE 10:
+Do not open community features broadly until the relevant moderation, privacy
+and safety controls exist and have been tested.
+
+PHASE 11 — AI MUSIC-LEARNING PROTOTYPE
+Blueprint references: Part 11 and Part 13.
+
+Task 11.1 — Define supported recording types, consent and storage rules.
+Task 11.2 — Implement upload and progress states.
+Task 11.3 — Implement the feedback-report interface.
+Task 11.4 — If using sample data, label it unmistakably as sample/demo data.
+Task 11.5 — Implement teacher review only if supported by the workflow.
+Task 11.6 — Test access permissions, failed uploads and private media access.
+Task 11.7 — Document what is genuine analysis versus a prototype.
+
+EXIT GATE 11:
+The application never pretends sample feedback is a real analysis. Private
+recordings remain protected.
+
+PHASE 12 — HARDENING, RELEASE READINESS AND SCALE
+Blueprint references: Part 13, Part 16 and Part 19.
+
+Task 12.1 — Full regression testing.
+Task 12.2 — Security and permission review.
+Task 12.3 — Performance and responsive UI review.
+Task 12.4 — Error logging and monitoring review.
+Task 12.5 — Backup/recovery and migration review.
+Task 12.6 — Accessibility and usability checks.
+Task 12.7 — Deployment and rollback documentation.
+Task 12.8 — Final status report with remaining risks.
+
+EXIT GATE 12:
+The release candidate has documented test results, known limitations,
+deployment steps and a clear separation between production-ready and
+prototype capabilities.
+
+======================================================================
+7. HOW TO HANDLE THE BLUEPRINT'S NUMBERED PARTS
+======================================================================
+
+Do not interpret the Master Blueprint's part numbers as the build sequence.
+The parts describe different kinds of information:
+
+- Product vision and wireframes explain what the final product should do.
+- Architecture sections explain system boundaries and technical principles.
+- Build-process sections explain how work must be executed.
+- Testing sections define completion criteria.
+
+Use the following reading order for planning:
+1. Part 17 — initial audit assignment.
+2. Part 18 — initial application-shell task, only after audit approval.
+3. Part 2 and Part 3 — target navigation and visual system.
+4. Part 13 — technical architecture.
+5. Part 16 and Part 19 — working method and definition of done.
+6. Part 4 — account and onboarding.
+7. Parts 5, 6 and 7 — education workflows.
+8. Part 9 — discovery and enquiries.
+9. Part 8 — musician marketplace.
+10. Part 12 — admin operations when required by dependencies.
+11. Part 13 payment/integration details as relevant.
+12. Part 10 — community and events.
+13. Part 11 — AI music-learning.
+14. Part 20 — long-term platform integrations and growth.
+
+This is a reading/planning guide, not permission to skip the phase gates above.
+The phase sequence in Section 6 is authoritative.
+
+======================================================================
+8. OWNER CHECKPOINTS AND APPROVAL GATES
+======================================================================
+
+The owner wants to check that work follows the agreed sequence. Therefore:
+
+- At the start of each new phase, present a short plan and acceptance criteria.
+- At the end of each phase, provide evidence of completion.
+- Do not silently start the next phase if the current phase has failed its
+  acceptance criteria.
+- If the owner explicitly approves a phase transition, proceed.
+- For low-risk tasks within an approved phase, make reasonable decisions
+  without asking about every small detail.
+- Always request approval before destructive data changes, production billing
+  activation, significant permission changes, production infrastructure
+  changes or material deviations from the product blueprint.
+
+Evidence may include:
+- Routes and files changed.
+- Test output.
+- Screenshots or a short walkthrough where available.
+- Reproducible steps to verify a workflow.
+- Database migration/policy details.
+- Known limitations.
+
+Do not claim to have visually inspected a screen if no visual inspection was
+performed.
+
+======================================================================
+9. HOW THE OWNER CAN CHECK PROGRESS
+======================================================================
+
+The owner should be able to open IMPLEMENTATION_STATUS.md and immediately
+see:
+
+- Current phase.
+- Current task.
+- Last completed task.
+- Acceptance criteria passed.
+- Acceptance criteria not passed.
+- Tests run.
+- Known blockers.
+- Next task.
+- Whether owner approval is required.
+
+Keep the status file concise. Detailed implementation notes belong in the
+appropriate technical documents.
+
+Use this phase status format:
+
+PHASE 0 — AUDIT: [PLANNED / IN PROGRESS / BLOCKED / COMPLETE]
+PHASE 1 — APP SHELL: [PLANNED / IN PROGRESS / BLOCKED / COMPLETE]
+PHASE 2 — IDENTITY: [PLANNED / IN PROGRESS / BLOCKED / COMPLETE]
+PHASE 3 — CORE LEARNING WORKFLOW: [PLANNED / IN PROGRESS / BLOCKED / COMPLETE]
+PHASE 4 — STUDENT/PARENT: [PLANNED / IN PROGRESS / BLOCKED / COMPLETE]
+PHASE 5 — TEACHER WORKSPACE: [PLANNED / IN PROGRESS / BLOCKED / COMPLETE]
+PHASE 6 — DISCOVERY: [PLANNED / IN PROGRESS / BLOCKED / COMPLETE]
+PHASE 7 — MUSICIAN/BOOKING: [PLANNED / IN PROGRESS / BLOCKED / COMPLETE]
+PHASE 8 — SUBSCRIPTIONS: [PLANNED / IN PROGRESS / BLOCKED / COMPLETE]
+PHASE 9 — ADMIN: [PLANNED / IN PROGRESS / BLOCKED / COMPLETE]
+PHASE 10 — COMMUNITY: [PLANNED / IN PROGRESS / BLOCKED / COMPLETE]
+PHASE 11 — AI PROTOTYPE: [PLANNED / IN PROGRESS / BLOCKED / COMPLETE]
+PHASE 12 — HARDENING: [PLANNED / IN PROGRESS / BLOCKED / COMPLETE]
+
+A phase is COMPLETE only when its exit gate passes. A partially working phase
+must remain IN PROGRESS or BLOCKED.
+
+======================================================================
+10. WHAT TO DO WHEN A SESSION ENDS MID-TASK
+======================================================================
+
+If a task cannot be completed in the current session:
+- Do not mark it complete.
+- Record what has been implemented.
+- Record the exact remaining work.
+- Record failing tests and blockers.
+- Record any schema changes or migration state.
+- Record safe commands to resume where useful.
+- Keep the current phase active.
+- Resume from the last verified state next time.
+
+Never repeat the whole project audit every day. Reinspect the relevant files
+and status, then continue from the last verified checkpoint.
+
+======================================================================
+11. FIRST INSTRUCTION AFTER READING BOTH FILES
+======================================================================
+
+Your first assignment is PHASE 0 only.
+
+Read MUSICPHONETICS_MASTER_BLUEPRINT.txt and this file. Audit the existing
+repository and create/update the necessary project records.
+
+Do not implement the application shell yet. Do not redesign the homepage.
+Do not begin the student, parent, teacher, musician, community, AI or payment
+modules.
+
+At the end, report:
+1. What the current application actually contains.
+2. What works and what does not.
+3. What must be preserved.
+4. The highest-priority risks.
+5. The proposed Phase 1 scope.
+6. Phase 1 acceptance criteria and tests.
+7. Any decisions requiring the owner's approval.
+
+Stop after the audit and wait for the owner to approve Phase 1.
+
+END OF FILE
