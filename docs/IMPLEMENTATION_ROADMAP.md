@@ -83,6 +83,24 @@ Phase 3b writes **real** lesson records (same as the classic portal does today) 
 ### Acceptance (Exit Gate 3)
 Teacher sees only their students → opens one → (3b) records a lesson that persists → family sees it for the right child and only their children; cross-teacher / cross-family access blocked (RLS); history preserved; empty/error states; no regression; tsc/lint/build/e2e clean. **Real persistence + RLS boundaries verified on deploy** (local has no Supabase env).
 
+## EXECUTION MODEL v2 (owner, 2026-10-28) — batched, autonomous
+
+Work in large coherent batches, continue autonomously through the roadmap, report at milestones/blockers (not per-file). Security/ preservation rules unchanged. Student & musician accounts stay out of scope until a later, authorised role-design batch. No broad production writes / destructive changes / live-billing changes without a safe, documented, tested procedure; if a test student can't be isolated, use a local/test env rather than writing to a real student's history. **Hard environment limit:** this build container has no Supabase session, so authenticated data flows & writes are *deploy-verified by the owner*; everything visual/structural is verified here.
+
+### Dependency-ordered batches
+- **B1 — /app premium design system + UX overhaul (NOW).** Shared UI kit (buttons, inputs, cards, skeletons, toasts, empty/error/unauthorized, headers, badges, metric tiles, avatars), premium shell (header + nav + account menu), responsive + a11y + reduced-motion, applied across shell, sign-in and all 3a screens. Fully locally verifiable. Foundation for all later screens.
+- **B2 — Education loop writes (deploy-verified).** Lesson recording, attendance, homework/practice assignment, progress — reusing the secure `class_updates` client insert (RLS `with check` = teacher owns student) + audit. Completes teacher→family loop. No new tables.
+- **B3 — In-app identity, account & notifications.** Onboarding/orientation for existing teacher/parent accounts, account/profile/settings, password, and in-app notifications (read + mark-read via existing `mp_*` functions). No new roles.
+- **B4 — Teacher discovery & enquiries.** Public teacher profiles (reuse `teacher_public_profiles`) + search + enquiry (reuse `leads`/`mp_intake_lead`). Public reads; secure enquiry write.
+- **B5 — Subscriptions & payments (TEST MODE only).** Plan catalogue + entitlement layer; reuse Razorpay Functions in test mode; **no live-billing change** (needs owner authorisation).
+- **B6 — Owner operations.** Surface/extend owner analytics & moderation (reuse owner data paths); keep admin private.
+- **B7 — Community & events.** NEW additive schema + RLS + moderation; owner-broadcast model. (New tables — documented justification.)
+- **B8 — Musician discovery/booking + Student accounts.** NEW roles + tables → **requires the deferred role-design authorisation** (minors/safeguarding). Gated.
+- **B9 — AI-assisted learning.** Media storage + consent + model integration → **requires credentials/authorisation**. Gated; build secure scaffolding, document blocker.
+- **B10 — Hardening & release.** a11y/perf audit, notifications email, moderation, regression, deploy/rollback.
+
+Gated items (B5 live billing, B7 new tables, B8 roles, B9 AI creds) are flagged; I implement the secure, independent parts and document the blocker rather than stopping.
+
 ## Later phases — one-line acceptance (to be expanded on approval)
 - **P2:** a new user self-registers, picks one identity, lands in the right workspace; role boundaries enforced server+DB; existing users unaffected.
 - **P3:** a real lesson→practice→feedback→parent-update journey persists with correct permissions (reusing existing schema).
