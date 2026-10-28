@@ -54,6 +54,35 @@ _Phase order is authoritative per `docs/blueprint/MUSICPHONETICS_BUILD_SEQUENCE.
 
 ---
 
+## PHASE 3 — First complete education workflow (PROPOSED — awaiting approval)
+
+**Adapted to this codebase:** there is no student login (the family's view is the parent "Student Portal"), and recordings/AI are later (Phase 11). So the real, complete, data-backed loop here is:
+
+> **Teacher records a lesson (topics, attendance, accuracy, where they struggled, practice/homework, next step) → the family sees that update + homework + progress in their parent view.**
+
+Built **inside `/app`**, reusing the existing education schema + data paths. Recommended as two safe increments:
+
+### Phase 3a — read-only (no write risk)
+- `/app/teacher/students` — real list via `lib/supabase/roster.loadRoster()` (RLS: only the teacher's students) + search/empty/loading/error.
+- `/app/teacher/students/[id]` — student details + recent lesson history (read `class_updates`).
+- `/app/parent` home/updates/children — show the latest lesson updates, homework and progress via `lib/supabase/parent.loadParentData()/studentView()` (RLS: only the parent's children).
+- Pure reads of existing data; **no writes, no schema, no permission change.** Verifies the end-to-end "see the real data in the new app" path.
+
+### Phase 3b — recording (adds writes, after 3a verified)
+- A "Record a lesson" form in `/app/teacher` that writes a `class_updates` row via the **same** path the classic `/teacher/class-update` uses (`sb.from("class_updates").insert(...)` with the subject-column fallback), with validation + confirmation. The record then appears for the family in `/app/parent` **and** in the classic portals (same data).
+
+### Explicitly OUT of scope
+Student login; student-submitted recordings/uploads; AI feedback; marketplace/community/subscriptions. No schema/column changes, no new RLS/roles, no changes to the classic portals.
+
+### Reuse (not rebuild)
+`lib/supabase/{roster,parent,stats,types}`, the `class_updates` insert path, `AppShell`, `components/app/states`.
+
+### Data-safety note
+Phase 3b writes **real** lesson records (same as the classic portal does today) through the existing RLS-protected path — inserts only, reversible by normal record management. Optionally pointed at a designated test student first. **Needs owner go-ahead** (writing production data from `/app`).
+
+### Acceptance (Exit Gate 3)
+Teacher sees only their students → opens one → (3b) records a lesson that persists → family sees it for the right child and only their children; cross-teacher / cross-family access blocked (RLS); history preserved; empty/error states; no regression; tsc/lint/build/e2e clean. **Real persistence + RLS boundaries verified on deploy** (local has no Supabase env).
+
 ## Later phases — one-line acceptance (to be expanded on approval)
 - **P2:** a new user self-registers, picks one identity, lands in the right workspace; role boundaries enforced server+DB; existing users unaffected.
 - **P3:** a real lesson→practice→feedback→parent-update journey persists with correct permissions (reusing existing schema).

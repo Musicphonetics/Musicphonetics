@@ -7,9 +7,9 @@ _Single source of truth for progress across sessions. Keep concise. Updated: 202
 | Phase | Name | Status |
 |------|------|--------|
 | 0 | Discovery, audit & baseline | **COMPLETE** |
-| 1 | Application shell & real navigation | **COMPLETE** (built + tested; baseline tagged intent `phase1-baseline` @ e91edca) |
-| 2 | Account identity, onboarding & permissions | **NEEDS VERIFICATION** (sign-in + routing built/tested; signed-in routing + RLS to confirm on deploy) |
-| 3 | First complete education workflow | PLANNED |
+| 1 | Application shell & real navigation | **COMPLETE** (baseline @ e91edca) |
+| 2 | Account identity, onboarding & permissions | **COMPLETE** (owner-approved 2026-10-28; no public sign-up; `/app` real sign-in + role routing) |
+| 3 | First complete education workflow | **PLANNING** — plan presented, awaiting owner approval before any code |
 | 4 | Student/parent experience | PLANNED |
 | 5 | Teacher professional workspace | PLANNED |
 | 6 | Public discovery & enquiries | PLANNED |
@@ -22,10 +22,10 @@ _Single source of truth for progress across sessions. Keep concise. Updated: 202
 
 ## Current
 
-- **Active phase:** Phase 2 — Account identity, onboarding & permissions.
-- **Owner decision (2026-10-28):** **No public sign-up** — keep the provisioned/application model. So Phase 2 = make `/app` sign-in real + route users into the new app; NO account creation, NO new permissions, NO schema.
-- **Last completed:** `/app` is now a real sign-in (existing Supabase auth) that routes signed-in teacher→`/app/teacher/home`, parent→`/app/parent/home`, owner→`/owner/dashboard`. Classic logins unchanged. e2e 8/8.
-- **Next task:** Owner verifies signed-in sign-in + routing on the **deployed** site (needs live Supabase env), then Exit Gate 2 → Phase 3. **Do not start Phase 3 without approval.**
+- **Active phase:** Phase 3 — First complete education workflow (**PLANNING**).
+- **Phase 2 closed:** owner approved Exit Gate 2 on 2026-10-28. `/app` real sign-in + role routing shipped; provisioned/application account model unchanged.
+- **Next task:** present Phase 3 plan → **await owner approval before writing any Phase 3 code.**
+- **Phase 3 intent:** wire the *first real, data-backed workflow* into `/app`, reusing the existing education schema + data paths: teacher records a lesson/observation + homework → the family (parent "Student Portal") sees it. No student login, no recordings/AI, no schema/permission changes, classic portals untouched. (Full plan in `docs/IMPLEMENTATION_ROADMAP.md`.)
 
 ## Phase 2 — scope & evidence (given "no public sign-up")
 
