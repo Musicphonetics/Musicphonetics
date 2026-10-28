@@ -9,7 +9,7 @@ _Single source of truth for progress across sessions. Keep concise. Updated: 202
 | 0 | Discovery, audit & baseline | **COMPLETE** |
 | 1 | Application shell & real navigation | **COMPLETE** (baseline @ e91edca) |
 | 2 | Account identity, onboarding & permissions | **COMPLETE** (owner-approved 2026-10-28; no public sign-up; `/app` real sign-in + role routing) |
-| 3 | First complete education workflow | **PLANNING** — plan presented, awaiting owner approval before any code |
+| 3 | First complete education workflow | **3a DONE (read-only)** — built + structurally tested; data/RLS to verify on deploy. 3b (recording) NOT started — needs separate approval |
 | 4 | Student/parent experience | PLANNED |
 | 5 | Teacher professional workspace | PLANNED |
 | 6 | Public discovery & enquiries | PLANNED |
@@ -22,10 +22,26 @@ _Single source of truth for progress across sessions. Keep concise. Updated: 202
 
 ## Current
 
-- **Active phase:** Phase 3 — First complete education workflow (**PLANNING**).
-- **Phase 2 closed:** owner approved Exit Gate 2 on 2026-10-28. `/app` real sign-in + role routing shipped; provisioned/application account model unchanged.
-- **Next task:** present Phase 3 plan → **await owner approval before writing any Phase 3 code.**
-- **Phase 3 intent:** wire the *first real, data-backed workflow* into `/app`, reusing the existing education schema + data paths: teacher records a lesson/observation + homework → the family (parent "Student Portal") sees it. No student login, no recordings/AI, no schema/permission changes, classic portals untouched. (Full plan in `docs/IMPLEMENTATION_ROADMAP.md`.)
+- **Active phase:** Phase 3 — First complete education workflow. **3a (read-only) implemented**; **3b (recording) NOT started** (needs separate owner approval).
+- **Last completed:** read-only education views wired into `/app`, reusing existing RLS-gated data paths. No writes, no schema, no permission changes, classic portals untouched.
+- **Next task:** owner verifies the real data views on the **deployed** site (needs live session) → approve Exit Gate 3a. **Do not start Phase 3b (writes) without separate approval.**
+
+## Phase 3a — what was built (read-only)
+
+- **Teacher** (`/app/teacher`): `home` (real student count + recent lessons via `loadRoster` + `loadRecentLessons`), `students` (roster via `loadRoster`, RLS-scoped; search; student detail via `?id` using new read-only `loadTeacherStudent` with a defensive `teacher_id === uid` ownership check + lesson history from `class_updates`). Teacher view shows the teacher's own private notes.
+- **Parent** (`/app/parent`): `home` (each child via `loadParentData`+`studentView`), `children` (list + per-child lesson history via `?id`, scoped to the family), `updates` (newest-first lesson feed). **Parent views never render `teacher_notes`** (privacy boundary preserved).
+- **Reused:** `loadRoster`, `loadParentData`, `studentView`, `class_updates` reads, `AppShell`, `components/app/states`. **New (reads only):** `lib/supabase/lessons.ts`, `components/app/data.tsx`.
+- **States:** loading, empty, error, and unauthorized implemented on every view. No fabricated records/metrics.
+- Untouched: `/app/teacher/{lessons,calendar,enquiries,profile}` and `/app/parent/{teachers,profile}` remain honest "in development" placeholders (later phases).
+
+### Evidence
+- tsc exit 0 · lint 0 errors · build ✓ (routes export with real sizes) · **e2e 10/10**.
+- Screenshots: new routes integrate into the role shell (desktop + mobile). **The populated data views cannot be shown locally** (no Supabase session) and I deliberately do **not** render real students' (minors') records in dev screenshots → **production check** below.
+
+### Production verification (owner, on deploy — needs real accounts)
+1. Sign in at `/app` as a **teacher** → `/app/teacher/students` lists **only your** students; open one → lesson history shows; visiting `/app/teacher/students?id=<another teacher's student id>` shows **"Not available"** (RLS + ownership check).
+2. Sign in as a **parent** → `/app/parent/home` + `/children` show **only your** children; `/app/parent/children?id=<another family's id>` shows **"Not available"**; confirm **no `teacher_notes`** appear anywhere in the parent view.
+3. Confirm the classic `/teacher/*` and `/parent/*` portals are unchanged.
 
 ## Phase 2 — scope & evidence (given "no public sign-up")
 

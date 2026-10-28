@@ -34,6 +34,10 @@ _Phase 0. Schema source: `supabase/*.sql` (hand-applied, no CLI migration chain)
 5. **IDOR checks:** before shipping any new "open by id" screen (student/teacher/musician details, enquiries), test that a user cannot read another's records by changing the id — at the **database** layer, not just the UI.
 6. **No automated permission tests** today → Phase 1/2 should add at least a manual permission-test checklist, ideally an automated smoke (owner decision).
 
+## 4b. Phase 3a note — teacher student-detail authorisation
+
+The only SELECT policy on `students` present in the repo SQL is the parent one (`parent_id = auth.uid()`); the **teacher/owner SELECT policies exist in the live DB but are not in the repo files** (schema drift — hand-applied). `loadRoster`/`loadParentData` already rely on them. For the new read-only teacher student-detail (`lib/supabase/lessons.ts::loadTeacherStudent`), RLS is the primary gate **and** we add a defensive JS check `student.teacher_id === auth.uid()` (mirroring `loadParentData`'s `parent_id` re-filter), so a direct `?id=` link to another teacher's student can never surface it even if a policy were broader than expected. The parent detail reuses `loadParentData` (already parent-scoped). **To confirm:** export the live teacher SELECT policy on `students` and add it to the repo SQL (closes the drift). Real cross-user checks are a production step (see IMPLEMENTATION_STATUS.md).
+
 ## 5. Migration discipline (agreed)
 
 - New schema goes in **new** `supabase/*.sql` files, additive only, with grants + RLS in the same file.

@@ -60,6 +60,28 @@ test("deep-link to an app screen loads directly (refresh-safe)", async ({ page }
   await expect(page.locator('[data-app-shell="parent"]')).toBeVisible();
 });
 
+// Phase 3a data routes: they must exist, load inside the correct role shell and
+// not crash. (The real roster/lesson/family DATA requires an authenticated
+// Supabase session, so it is a production check — see TESTING_AND_DEPLOYMENT.md.)
+test("phase 3a data routes load within their role shell", async ({ page }) => {
+  for (const [route, role] of [
+    ["/app/teacher/students", "teacher"],
+    ["/app/parent/children", "parent"],
+    ["/app/parent/updates", "parent"],
+  ] as const) {
+    const res = await page.goto(route);
+    expect(res?.status(), route).toBe(200);
+    await expect(page.locator(`[data-app-shell="${role}"]`), route).toBeVisible();
+  }
+});
+
+test("a selected student deep-links with its id (refresh-safe)", async ({ page }) => {
+  const res = await page.goto("/app/teacher/students?id=demo-id");
+  expect(res?.status()).toBe(200);
+  await expect(page.locator('[data-app-shell="teacher"]')).toBeVisible();
+  await expect(page).toHaveURL(/\/app\/teacher\/students\?id=demo-id$/);
+});
+
 test("unknown /app route returns the 404 page", async ({ page }) => {
   const res = await page.goto("/app/teacher/does-not-exist");
   expect(res?.status()).toBe(404);
