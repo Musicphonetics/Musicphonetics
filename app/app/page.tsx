@@ -6,16 +6,14 @@ import { useRouter } from "next/navigation";
 import { useAuth, sendPasswordReset } from "@/lib/supabase/auth";
 import { getSupabaseSafe, isSupabaseConfigured } from "@/lib/supabase/client";
 import { Logo } from "@/components/layout/Logo";
-import { Icon, Loading } from "@/components/app/states";
+import { Loading } from "@/components/app/states";
+import { Icon, Button, inputCls, BrandWave } from "@/components/app/ui";
 
 // /app — the front door of the new application. Existing users sign in here with
 // the SAME Supabase auth the classic portals use; on success they are routed to
 // their /app workspace. No public sign-up is offered (owner decision): accounts
 // are still provisioned by the owner / teacher application as before. The classic
 // logins (/teacher/login, /parent/login, …) keep working unchanged.
-
-const input =
-  "w-full rounded-xl border border-hairline bg-white px-4 py-3.5 text-base text-ink outline-none transition focus:border-gold focus-visible:outline-2 focus-visible:outline-gold";
 
 // Portals that keep their own dedicated sign-in (not part of the /app shell yet).
 const OTHER_PORTALS = [
@@ -90,8 +88,12 @@ export default function AppSignIn() {
   }
 
   return (
-    <div className="grid min-h-[100svh] place-items-center bg-paper px-5 py-10 text-ink">
-      <div className="w-full max-w-sm">
+    <div className="relative grid min-h-[100svh] place-items-center overflow-hidden bg-paper px-5 py-10 text-ink">
+      {/* soft brand ambience */}
+      <div aria-hidden className="pointer-events-none absolute -top-24 left-1/2 h-72 w-[42rem] -translate-x-1/2 rounded-full bg-gradient-to-b from-gold/12 to-transparent blur-2xl" />
+      <BrandWave className="pointer-events-none absolute inset-x-0 bottom-0 h-24 w-full opacity-70" />
+
+      <div className="relative w-full max-w-sm">
         <div className="flex justify-center"><Logo /></div>
         <div className="mt-6 text-center">
           <span className="rounded-full border border-gold/40 bg-gold/10 px-2.5 py-0.5 text-[0.6rem] font-bold uppercase tracking-[0.14em] text-[#7A5E0F]">New app · preview</span>
@@ -107,15 +109,14 @@ export default function AppSignIn() {
 
         <form className="mt-6 space-y-3 rounded-2xl border border-hairline bg-white p-5 shadow-card"
           onSubmit={(e) => { e.preventDefault(); login(); }}>
-          <input className={input} type="email" inputMode="email" autoComplete="email"
+          <input className={inputCls} type="email" inputMode="email" autoComplete="email"
             placeholder="Email" aria-label="Email" value={email} onChange={(e) => setEmail(e.target.value)} />
-          <input className={input} type="password" autoComplete="current-password"
+          <input className={inputCls} type="password" autoComplete="current-password"
             placeholder="Password" aria-label="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
-          <button type="submit" disabled={busy}
-            className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-ink py-3.5 text-base font-semibold text-paper transition hover:brightness-110 disabled:opacity-50">
+          <Button type="submit" full size="lg" loading={busy}>
             {busy ? "Signing in…" : <>Sign in <Icon n="arrow" s={16} /></>}
-          </button>
-          {msg && <p className="text-center text-sm text-ink/70">{msg}</p>}
+          </Button>
+          {msg && <p className="text-center text-sm text-ink/70" role="status">{msg}</p>}
           <button type="button" onClick={forgot} className="w-full text-center text-xs font-medium text-ink/55 hover:text-ink">
             Forgot password?
           </button>
