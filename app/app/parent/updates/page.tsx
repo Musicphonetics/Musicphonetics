@@ -2,8 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { loadParentData, type ParentData } from "@/lib/supabase/parent";
-import { Loading } from "@/components/app/states";
 import { Empty, ErrorBox, LessonItem } from "@/components/app/data";
+import { PageHeader, SkeletonList } from "@/components/app/ui";
 
 export default function ParentUpdates() {
   const [state, setState] = useState<{ loading: boolean; data: ParentData | null }>({ loading: true, data: null });
@@ -14,7 +14,14 @@ export default function ParentUpdates() {
     return () => { active = false; };
   }, []);
 
-  if (state.loading) return <Loading />;
+  if (state.loading) {
+    return (
+      <div className="mx-auto max-w-2xl">
+        <PageHeader title="Updates" subtitle="Lesson updates from your teacher, newest first." />
+        <SkeletonList rows={5} />
+      </div>
+    );
+  }
   const d = state.data!;
   if (d.error && d.classes.length === 0) return <ErrorBox msg={d.error} />;
 
@@ -23,8 +30,7 @@ export default function ParentUpdates() {
 
   return (
     <div className="mx-auto max-w-2xl">
-      <h1 className="font-display text-[1.7rem] font-semibold text-ink">Updates</h1>
-      <p className="mt-1 text-[0.9rem] text-ink/55">Lesson updates from your teacher, newest first.</p>
+      <PageHeader title="Updates" subtitle="Lesson updates from your teacher, newest first." />
 
       {d.classes.length === 0 ? (
         <Empty icon="bell" title="No updates yet" hint="After each class, your teacher’s update will appear here." />
