@@ -9,7 +9,8 @@ _Phase 0. Open decisions block or shape Phase 1+. Risks carry mitigations._
 3. **Experiments → removed:** `/prototype-1` + old consumer `/app` deleted after verifying they were self-contained (no production imports/links). `/app` is now the new app.
 4. **Testing → add minimal Playwright harness** (done in Phase 1).
 
-> Note: Decisions #5 (self-serve registration) and #6 (student as a login identity) below remain open — they are **Phase 2** questions and are not needed to proceed through Phase 1's exit gate.
+5. **Registration model → NO public sign-up (owner, Phase 2 start).** Keep the current provisioned/application model: owner provisions accounts; teachers apply → owner approves; role set server-side; owner/admin never public. Phase 2 therefore only makes `/app` sign-in real (existing auth) and routes users into the app — no account creation, no identity-selection UI, no permission change. Self-serve sign-up may be revisited later as its own approved step.
+6. **Student as a login identity → still deferred** (consistent with decision #2: existing roles only). Not built.
 
 ## A. Decisions still open (Phase 2+)
 

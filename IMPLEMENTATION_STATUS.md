@@ -7,8 +7,8 @@ _Single source of truth for progress across sessions. Keep concise. Updated: 202
 | Phase | Name | Status |
 |------|------|--------|
 | 0 | Discovery, audit & baseline | **COMPLETE** |
-| 1 | Application shell & real navigation | **NEEDS VERIFICATION** (built + tested locally; signed-in flows to confirm on deploy) |
-| 2 | Account identity, onboarding & permissions | PLANNED |
+| 1 | Application shell & real navigation | **COMPLETE** (built + tested; baseline tagged intent `phase1-baseline` @ e91edca) |
+| 2 | Account identity, onboarding & permissions | **NEEDS VERIFICATION** (sign-in + routing built/tested; signed-in routing + RLS to confirm on deploy) |
 | 3 | First complete education workflow | PLANNED |
 | 4 | Student/parent experience | PLANNED |
 | 5 | Teacher professional workspace | PLANNED |
@@ -22,10 +22,21 @@ _Single source of truth for progress across sessions. Keep concise. Updated: 202
 
 ## Current
 
-- **Active phase:** Phase 1 — Application shell (Option B: new app under `/app/*`).
-- **Last completed:** Phase 0 audit (docs in `docs/`). Phase 1 shell implemented + local verification.
-- **Next task:** Owner review at **Exit Gate 1**, then Phase 2 (identity/onboarding) — **do not start Phase 2 without approval.**
-- **Owner approval required:** confirm Phase 1 on the deployed site (signed-in redirects need live Supabase env) before marking COMPLETE and starting Phase 2.
+- **Active phase:** Phase 2 — Account identity, onboarding & permissions.
+- **Owner decision (2026-10-28):** **No public sign-up** — keep the provisioned/application model. So Phase 2 = make `/app` sign-in real + route users into the new app; NO account creation, NO new permissions, NO schema.
+- **Last completed:** `/app` is now a real sign-in (existing Supabase auth) that routes signed-in teacher→`/app/teacher/home`, parent→`/app/parent/home`, owner→`/owner/dashboard`. Classic logins unchanged. e2e 8/8.
+- **Next task:** Owner verifies signed-in sign-in + routing on the **deployed** site (needs live Supabase env), then Exit Gate 2 → Phase 3. **Do not start Phase 3 without approval.**
+
+## Phase 2 — scope & evidence (given "no public sign-up")
+
+- 2.1 Stabilise login → **DONE**: `/app` sign-in via existing `signInWithPassword`; classic `/teacher/login`, `/parent/login`, … untouched.
+- 2.2 Identity selection → **N/A** (owner declined self-serve; role is fixed at provisioning — no selection UI built, by design).
+- 2.3 Owner/admin out of public registration → **Satisfied** (there is no public registration at all).
+- 2.4 Post-login routing → **DONE** (role-based redirect into `/app`).
+- 2.5 Preserve existing users/records → **Preserved** (no account/schema/permission changes).
+- 2.6 Server/RLS permission enforcement → **Unchanged** (already enforced; `/app` adds client-side role gating on top).
+- 2.7 Cross-role/cross-user tests → **PARTIAL**: `/app` client role-gating in place; real RLS cross-user tests need live env + accounts → **NEEDS VERIFICATION on deploy**.
+- Verification: tsc exit 0; lint 0 errors; build ✓; **e2e 8/8**; screenshots captured. Signed-in routing requires live Supabase env (not present locally).
 
 ## Owner's decisions applied (this phase)
 

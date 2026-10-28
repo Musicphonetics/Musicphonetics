@@ -13,14 +13,19 @@ test("public home is the marketing site, not the app shell", async ({ page }) =>
   await expect(page).toHaveTitle(/Musicphonetics/i);
 });
 
-test("/app gate shows the sign-in chooser with role options", async ({ page }) => {
+test("/app is a real sign-in form (no public sign-up)", async ({ page }) => {
   await page.goto("/app");
-  await expect(page.getByText("Welcome to the Musicphonetics app")).toBeVisible();
-  await expect(page.locator('a[href="/teacher/login"]')).toBeVisible();
-  await expect(page.locator('a[href="/parent/login"]')).toBeVisible();
-  await expect(page.locator('a[href="/owner/login"]')).toBeVisible();
-  // app shell chrome must NOT be on the gate (no role yet)
+  await expect(page.getByRole("heading", { name: "Sign in to Musicphonetics" })).toBeVisible();
+  await expect(page.getByLabel("Email")).toBeVisible();
+  await expect(page.getByLabel("Password")).toBeVisible();
+  await expect(page.getByRole("button", { name: /Sign in/ })).toBeVisible();
+  await expect(page.getByRole("button", { name: /Forgot password/ })).toBeVisible();
+  // the gate must not expose the app shell (no role yet) and must not offer sign-up
   await expect(page.locator("[data-app-shell]")).toHaveCount(0);
+  await expect(page.getByText(/Accounts are set up by Musicphonetics/)).toBeVisible();
+  // other portals are reachable but tucked away
+  await page.getByRole("button", { name: /Use a different portal/ }).click();
+  await expect(page.locator('a[href="/owner/login"]')).toBeVisible();
 });
 
 test("teacher app shell renders with teacher navigation", async ({ page }) => {

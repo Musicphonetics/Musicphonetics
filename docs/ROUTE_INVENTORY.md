@@ -18,7 +18,7 @@ _Deployment: static export, so every listed route is a prerendered page; auth is
 `app/delhi-cantt` · `app/start` · `app/studio` · `app/experience`
 
 ## New authenticated application — `app/app/*` (Phase 1 shell, Option B) — LIVE (shell)
-`/app` (sign-in gate/router) · `/app/teacher/{home,students,lessons,calendar,enquiries,profile}` · `/app/parent/{home,children,updates,teachers,profile}`. `noindex`. Coexists with the classic portals; screens are honest "in development" placeholders that link to the live classic portal. Role-gated client-side (`useAuth`) + server authz + RLS.
+`/app` (**real sign-in** via existing Supabase auth → routes by role; no public sign-up) · `/app/teacher/{home,students,lessons,calendar,enquiries,profile}` · `/app/parent/{home,children,updates,teachers,profile}`. `noindex`. Coexists with the classic portals; screens are honest "in development" placeholders that link to the live classic portal. Role-gated client-side (`useAuth`) + server authz + RLS.
 
 ## Experimental (REMOVED in Phase 1)
 - `app/prototype-1` and the old consumer `app/app` were removed (verified self-contained: no production imports, no nav/sitemap/route references). The `/app` namespace is now the new application above.
