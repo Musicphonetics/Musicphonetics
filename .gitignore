@@ -35,3 +35,8 @@ next-env.d.ts
 
 # wrangler local function secrets
 .dev.vars
+
+# Playwright
+/test-results/
+/playwright-report/
+/playwright/.cache/

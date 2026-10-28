@@ -14,6 +14,8 @@ The blueprint describes an authenticated app under `/app/{role}/*` with student,
 
 This choice sets every later phase's routing. **Please pick one before Phase 1.**
 
+> **DECIDED (owner, 2026-10-28): Option B** — build the new authenticated application under `/app/*`, coexisting with (not replacing) the existing portals. Phase 1 shell implemented accordingly.
+
 ## 2. Module-by-module mapping
 
 | Blueprint module | Exists today? | Reuse / action |

@@ -2,7 +2,16 @@
 
 _Phase 0. Open decisions block or shape Phase 1+. Risks carry mitigations._
 
-## A. Decisions requiring the owner's approval (before Phase 1 implementation)
+## RESOLVED (owner, 2026-10-28)
+
+1. **Architecture → Option B:** new authenticated app under `/app/*`, coexisting with existing portals (does not replace them).
+2. **Roles → existing only:** owner/teacher/parent/sales/trial preserved; student/musician remain out of scope (later phases).
+3. **Experiments → removed:** `/prototype-1` + old consumer `/app` deleted after verifying they were self-contained (no production imports/links). `/app` is now the new app.
+4. **Testing → add minimal Playwright harness** (done in Phase 1).
+
+> Note: Decisions #5 (self-serve registration) and #6 (student as a login identity) below remain open — they are **Phase 2** questions and are not needed to proceed through Phase 1's exit gate.
+
+## A. Decisions still open (Phase 2+)
 
 1. **App architecture (Option A/B/C in `PRODUCT_ARCHITECTURE.md`).**
    Recommendation: **Option A — evolve the existing `/teacher` + `/parent` (+ `/owner`) portals** into the blueprint app and add new experiences as new route groups. Impact: sets routing for every later phase.

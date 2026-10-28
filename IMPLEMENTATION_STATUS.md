@@ -6,8 +6,8 @@ _Single source of truth for progress across sessions. Keep concise. Updated: 202
 
 | Phase | Name | Status |
 |------|------|--------|
-| 0 | Discovery, audit & baseline | **IN PROGRESS → awaiting owner review** |
-| 1 | Application shell & real navigation | PLANNED (scope proposed, needs approval) |
+| 0 | Discovery, audit & baseline | **COMPLETE** |
+| 1 | Application shell & real navigation | **NEEDS VERIFICATION** (built + tested locally; signed-in flows to confirm on deploy) |
 | 2 | Account identity, onboarding & permissions | PLANNED |
 | 3 | First complete education workflow | PLANNED |
 | 4 | Student/parent experience | PLANNED |
@@ -22,39 +22,45 @@ _Single source of truth for progress across sessions. Keep concise. Updated: 202
 
 ## Current
 
-- **Active phase:** Phase 0 — Audit.
-- **Active task:** 0.1–0.3 complete (audit, records, target-architecture mapping). Deliverables written.
-- **Last completed:** Audit records created in `docs/` (see below).
-- **Next task:** Phase 1 (Application shell) — **BLOCKED on owner approval** at Exit Gate 0.
-- **Owner approval required:** YES — see "Decisions requiring approval" in `docs/DECISIONS_AND_RISKS.md` and the Phase 1 plan in `docs/IMPLEMENTATION_ROADMAP.md`.
+- **Active phase:** Phase 1 — Application shell (Option B: new app under `/app/*`).
+- **Last completed:** Phase 0 audit (docs in `docs/`). Phase 1 shell implemented + local verification.
+- **Next task:** Owner review at **Exit Gate 1**, then Phase 2 (identity/onboarding) — **do not start Phase 2 without approval.**
+- **Owner approval required:** confirm Phase 1 on the deployed site (signed-in redirects need live Supabase env) before marking COMPLETE and starting Phase 2.
 
-## Audit deliverables (this phase)
+## Owner's decisions applied (this phase)
 
-- `docs/PRODUCT_AUDIT.md` — what exists, what works, defects.
-- `docs/ROUTE_INVENTORY.md` — every route + status.
-- `docs/DATA_AND_PERMISSIONS.md` — schema, RLS, access risks.
-- `docs/PRODUCT_ARCHITECTURE.md` — blueprint target ↔ existing mapping (gap analysis).
-- `docs/IMPLEMENTATION_ROADMAP.md` — phase plan + Phase 1 scope & acceptance criteria.
-- `docs/DECISIONS_AND_RISKS.md` — open decisions + risks.
-- `docs/TESTING_AND_DEPLOYMENT.md` — how to run/build/verify/deploy/rollback.
-- `docs/blueprint/` — stored copies of the Master Blueprint and Build Sequence.
+1. Architecture = **Option B** — new authenticated app under `/app/*`, coexisting with existing portals.
+2. Roles = existing only (owner/teacher/parent/sales/trial preserved). No student/musician.
+3. Experiments `/prototype-1` and the old experimental `/app` **removed** (verified self-contained; see commit).
+4. **Minimal Playwright harness added.**
 
-## Baseline (verified 2026-10-28)
+## Phase 1 — what was built
 
-- `git` tree clean before this audit (audit adds docs only; no app code touched).
-- `next build` passes (static export, ~130 routes). `tsc --noEmit` clean. `next lint` clean (pre-existing `<img>` warnings only).
-- **No automated test suite exists** (build + lint + manual only). See `docs/TESTING_AND_DEPLOYMENT.md`.
+- New routes: `/app` (sign-in gate/router) + `/app/teacher/{home,students,lessons,calendar,enquiries,profile}` + `/app/parent/{home,children,updates,teachers,profile}`.
+- New components: `components/app/{AppShell.tsx, nav.ts, states.tsx}` — role-aware shell (top bar + account menu, desktop rail + mobile bottom nav), auth-gated content, loading/error/sign-in/wrong-workspace/not-configured states, and honest "in development" module pages that link to the live classic portal.
+- Reuses existing `useAuth`/`signOut`, logins, server authz + RLS. **No** schema, `functions/`, `next.config`, env, or existing-portal changes.
+- Playwright: `playwright.config.ts`, `tests/e2e/app-shell.spec.ts`, `tests/static-server.mjs`; `npm run test:e2e`.
 
-## Acceptance criteria — Phase 0 (this phase)
+## Phase 1 acceptance criteria — evidence
 
-- [x] Framework, routing, layouts, styling, deployment identified.
-- [x] Auth/session model documented.
-- [x] Full route/screen inventory with status.
-- [x] Supabase schema, RLS and access risks documented.
-- [x] Existing student/parent/teacher/lesson/assignment/progress functionality mapped.
-- [x] Integrations (payments, email, AI, media, notifications) identified.
-- [x] Build/lint/type baseline recorded; absence of tests noted.
-- [x] Risks (data, access, migration) listed.
-- [x] Reusable components/workflows identified.
-- [x] Phase 1 scope, acceptance criteria and owner decisions prepared.
-- [ ] **Owner review & approval of Phase 1 scope** ← we are here.
+| Criterion | Result |
+|---|---|
+| Public vs authenticated separation | PASS (home has no app shell; `/app/*` has shell) — Playwright |
+| Role-specific nav, no universal sidebar | PASS — teacher 6-item + parent 5-item rails; owner not publicly selectable |
+| Deep-link loads directly / refresh-safe | PASS — `/app/parent/children` returns 200 with shell — Playwright |
+| Client navigation between screens | PASS — rail link navigates — Playwright |
+| 404 for unknown `/app/*` | PASS — returns 404 + not-found page — Playwright |
+| Responsive (mobile bottom nav) | PASS — bottom nav at 390px — Playwright |
+| `tsc` / `lint` / `build` | PASS — tsc exit 0; lint 0 errors; build ✓ 138 static pages |
+| Playwright smoke | **8/8 passed** |
+| Signed-in redirects (teacher→/app/teacher/home, parent→…, owner→/owner) | **NOT RUN locally** — needs Supabase env; verify on deploy |
+| No regression to 5 portals | PASS (build) — all portal routes still generate; no portal code changed |
+
+## Baseline → final
+
+- Baseline (pre-Phase-1): tsc exit 0, lint 0 errors / 39 `<img>` warnings, build ✓ 128 pages.
+- Final: tsc exit 0, lint 0 errors (same pre-existing warnings), build ✓ **138 pages** (−2 experimental routes, +13 `/app` routes), **8/8 e2e**.
+
+## Rollback
+
+- Revert the Phase 1 commit; Cloudflare redeploys the previous state. No data/schema touched, so rollback is code-only and clean.

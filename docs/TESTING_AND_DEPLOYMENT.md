@@ -13,10 +13,12 @@ _Phase 0. How to run, verify, deploy and roll back. No secrets are stored here._
 
 ## Tests
 
-- **There is no automated test framework** in the repo today (no vitest/jest/playwright/cypress in `package.json`).
-- Current verification = **build + lint + typecheck + manual walkthrough** (+ ad-hoc Playwright screenshots via `playwright-core` with the preinstalled Chromium at `/opt/pw-browsers/...`).
-- **Proposed (owner decision #4):** add a minimal **Playwright smoke** for routing, auth redirects, role boundaries and responsive layout, to satisfy the blueprint's Definition of Done in later phases.
-- Per-phase, until a harness exists: keep a **manual acceptance checklist** in `IMPLEMENTATION_STATUS.md` and record actual results (never claim a test passed that wasn't run).
+- **Playwright smoke harness (added Phase 1):** `npm run test:e2e` runs `playwright test`.
+  - Config: `playwright.config.ts` (pinned `@playwright/test@1.63.0` to match the container's `playwright-core`; `launchOptions.executablePath` points at the preinstalled Chromium `/opt/pw-browsers/chromium-1194/chrome-linux/chrome`, overridable via `PLAYWRIGHT_CHROMIUM_PATH`).
+  - It builds nothing itself — **run `npm run build` first**, then `npm run test:e2e`. The config's `webServer` starts `tests/static-server.mjs`, which serves `out/` resolving clean URLs the way Cloudflare Pages does (`<path>.html`, `<path>/index.html`, `404.html`).
+  - Specs: `tests/e2e/app-shell.spec.ts` — public/app separation, `/app` gate, teacher & parent shells + nav, client navigation, deep-link/refresh, 404, mobile bottom nav. **8/8 pass.**
+  - **Known limit:** the local export has no Supabase env, so signed-in-session flows (role redirects, authed content) are **not** exercised locally; verify those on the deployed site (env set in Cloudflare) or by running the build with env vars.
+- Still also run **build + lint + typecheck + manual walkthrough**. Never claim a test passed that wasn't run.
 
 ## Environment (names only — set in Cloudflare Pages dashboard, never committed)
 

@@ -22,4 +22,4 @@
 `docs/IMPLEMENTATION_ROADMAP.md`, `docs/DECISIONS_AND_RISKS.md`,
 `docs/TESTING_AND_DEPLOYMENT.md`.
 
-**Note on `/prototype-1` and `/app`:** these are earlier *experimental* builds (investor demo + standalone consumer app, synthetic/local data). They are **not** the production product and must not be extended as if they were, unless a decision in `DECISIONS_AND_RISKS.md` says otherwise.
+**`/app/*` is the new authenticated application** (Phase 1 shell, Option B) — it coexists with the live portals (`/owner`, `/teacher`, `/parent`, `/sales`, `/trial`) and does not replace them. The earlier experimental builds (`/prototype-1` and the old consumer `/app`) were **removed** in Phase 1. Shell code: `components/app/*`; routes: `app/app/*`. E2E: `npm run test:e2e` (Playwright, pinned to the container's Chromium).
