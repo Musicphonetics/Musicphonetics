@@ -2,6 +2,39 @@
 
 _Single source of truth for progress across sessions. Keep concise. Updated: 2026-10-28._
 
+## Execution model
+
+As of 2026-10-28 the owner moved to **Execution Model v2** (batched, autonomous — see `docs/IMPLEMENTATION_ROADMAP.md`). Work proceeds in large coherent batches (B1–B10), continuing through the roadmap and reporting at milestones/blockers. Security + data-preservation rules unchanged; student/musician accounts stay gated. **Hard environment limit:** this container has no Supabase session, so authenticated data flows + writes are **deploy-verified by the owner**; everything visual/structural is verified here.
+
+## Batch board (v2)
+
+| Batch | Name | Status |
+|------|------|--------|
+| B1 | /app premium design system + UX overhaul | **DONE (local verify)** — shared ui kit, premium shell/sign-in, applied across all 3a screens; tsc/lint/build/e2e green, screenshots captured |
+| B2 | Education loop writes (record a lesson) | NEXT — deploy-verified; reuses secure `class_updates` insert |
+| B3 | In-app identity, account & notifications | PLANNED |
+| B4 | Teacher discovery & enquiries | PLANNED |
+| B5 | Subscriptions & payments (test mode) | PLANNED (gated: live billing) |
+| B6 | Owner operations | PLANNED |
+| B7 | Community & events | PLANNED (gated: new tables) |
+| B8 | Musician/student accounts | PLANNED (gated: role design) |
+| B9 | AI-assisted learning | PLANNED (gated: creds) |
+| B10 | Hardening & release | PLANNED |
+
+### B1 — what was built (premium design system)
+
+- **New shared UI kit** `components/app/ui.tsx`: `Icon` (expanded set), `Button` (primary/accent/ghost/soft/danger, loading, href), `Field`/`inputCls`, `Card` (interactive), `PageHeader`, `SectionLabel`, `Badge`, `Chip`, `Avatar`, `Metric`, `Spinner`, `Skeleton`/`SkeletonList`, `EmptyState`, `BrandWave`, `ToastProvider`/`useToast`, `fmtDate`, `StatusPill`. Visible focus rings throughout; motion respects `prefers-reduced-motion`.
+- **Refactored onto the kit** (export names/signatures preserved so no page broke): `components/app/states.tsx` (re-exports `Icon`; premium panels + honest in-dev `ModulePage`), `components/app/data.tsx` (re-exports `fmtDate`/`StatusPill`/`Metric`; `Empty`/`Unauthorized`/`ErrorBox`/`LessonItem` on the kit).
+- **Upgraded shell** `components/app/AppShell.tsx`: premium header (logo badge + role pill), `Avatar` account menu, nav rail with active states, mobile bottom nav with gold active pill, content wrapped in `ToastProvider`.
+- **Upgraded sign-in** `app/app/page.tsx`: brand-wave + gold ambience, kit `Button`/`inputCls` (all e2e hooks preserved — no public sign-up).
+- **Applied across 3a screens** (teacher home/students, parent home/children/updates): `PageHeader`, `SkeletonList` loading, `Avatar`, `Card`, `SectionLabel` — consistent hierarchy + responsive.
+
+### B1 evidence (local)
+- tsc exit 0 · lint 0 errors (only pre-existing `<img>` warnings, none in `/app`) · build ✓ (all `/app` routes export) · **e2e 10/10**.
+- Screenshots captured: sign-in (desktop + mobile), teacher shell (desktop + mobile), parent shell (mobile), in-dev module route. Populated data views remain a **deploy check** (no Supabase session locally; minors' records never rendered in dev).
+- No schema / `functions/*` / classic-portal changes. Reversible (code-only).
+
+
 ## Phase board
 
 | Phase | Name | Status |
@@ -22,9 +55,10 @@ _Single source of truth for progress across sessions. Keep concise. Updated: 202
 
 ## Current
 
-- **Active phase:** Phase 3 — First complete education workflow. **3a (read-only) implemented**; **3b (recording) NOT started** (needs separate owner approval).
-- **Last completed:** read-only education views wired into `/app`, reusing existing RLS-gated data paths. No writes, no schema, no permission changes, classic portals untouched.
-- **Next task:** owner verifies the real data views on the **deployed** site (needs live session) → approve Exit Gate 3a. **Do not start Phase 3b (writes) without separate approval.**
+- **Active model:** Execution Model v2 (batched). **B1 (premium design system) DONE** and locally verified; **B2 (education loop writes) is next.**
+- **Last completed:** B1 — shared `components/app/ui.tsx` kit; premium shell + sign-in; applied consistently across every `/app` screen (teacher + parent). tsc/lint/build/e2e all green; screenshots captured. No schema / functions / classic-portal changes.
+- **Carried forward (deploy checks, unchanged):** Phase 3a real-data views + RLS boundaries still to be production-verified by owner on deploy (teacher sees only own students; parent sees only own children + no `teacher_notes`; classic portals unchanged). B1 did not alter any data path, so these checks stand.
+- **Next task:** B2 — add a "Record a lesson" flow in `/app/teacher` via the existing secure `class_updates` insert path (RLS `with check` = teacher owns student). Writes real data → **deploy-verified**; isolate to a designated test student or local/test env before any real student's history.
 
 ## Phase 3a — what was built (read-only)
 
