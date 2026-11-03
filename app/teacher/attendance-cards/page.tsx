@@ -1,13 +1,13 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { createPortal } from "react-dom";
 import { PortalShell } from "@/components/portal/PortalShell";
 import { TEACHER_TABS } from "@/components/portal/tabs";
 import { Loading, EmptyState } from "@/components/portal/kit";
 import { getSupabase, isSupabaseConfigured } from "@/lib/supabase/client";
 import type { Student, ClassUpdate, Payment } from "@/lib/supabase/types";
 import { groupIntoCycles, type ClassCycle } from "@/lib/cycles";
-import { printDoc } from "@/lib/print";
 
 // Attendance Card — a small, print-ready sheet a teacher shares with a parent
 // before the next month's payment. It shows ONLY the current fee cycle's classes
@@ -48,6 +48,22 @@ export default function AttendanceCards() {
   const [err, setErr] = useState<string | null>(null);
   const [q, setQ] = useState("");
   const [sel, setSel] = useState<string | null>(null);
+  const [mounted, setMounted] = useState(false);
+  const [printSet, setPrintSet] = useState<Family[] | null>(null);
+
+  useEffect(() => { setMounted(true); }, []);
+
+  // Print in THIS window (reliable on mobile + desktop): render the chosen
+  // card(s) into a body-level portal that CSS reveals only when printing, then
+  // call print once it's painted.
+  useEffect(() => {
+    if (!printSet) return;
+    const t = setTimeout(() => {
+      window.print();
+      setPrintSet(null);
+    }, 120);
+    return () => clearTimeout(t);
+  }, [printSet]);
 
   useEffect(() => {
     if (!isSupabaseConfigured()) { setStudents([]); return; }
@@ -118,7 +134,7 @@ export default function AttendanceCards() {
             className="min-w-0 flex-1 rounded-lg border border-hairline bg-white px-3 py-2 text-sm outline-none focus:border-gold"
             aria-label="Search families" />
           {families.length > 0 && (
-            <button onClick={() => printDoc("attn-all")}
+            <button onClick={() => setPrintSet(families)}
               className="rounded-lg bg-ink px-4 py-2 text-sm font-semibold text-paper hover:brightness-110">
               Print all ({families.length})
             </button>
@@ -148,29 +164,38 @@ export default function AttendanceCards() {
           <div className="mt-6">
             <div className="mb-3 flex items-center justify-between">
               <h2 className="font-display text-lg font-semibold">Preview — {selected.parent}</h2>
-              <button onClick={() => printDoc("attn-one")}
+              <button onClick={() => setPrintSet([selected])}
                 className="rounded-lg bg-gold px-4 py-2 text-sm font-semibold text-ink hover:brightness-105">
                 Print / Save PDF
               </button>
             </div>
             <div className="overflow-x-auto rounded-xl border border-hairline bg-white p-2">
-              <div id="attn-one"><Card family={selected} /></div>
+              <Card family={selected} />
             </div>
           </div>
         )}
-
-        {/* Off-screen (not display:none, so its HTML prints clean) container used
-            only by "Print all" — one family per page. */}
-        <div aria-hidden style={{ position: "absolute", left: -99999, top: 0, width: 1, height: 1, overflow: "hidden" }}>
-          <div id="attn-all">
-            {families.map((f, i) => (
-              <div key={f.key} style={{ breakAfter: i < families.length - 1 ? "page" : "auto" }}>
-                <Card family={f} />
-              </div>
-            ))}
-          </div>
-        </div>
       </div>
+
+      {/* Same-window print: a body-level portal that only shows when printing.
+          Reliable on phones (native Save as PDF) — no pop-up window. */}
+      <style>{`
+        @page { size: A4; margin: 12mm; }
+        #mp-print-portal { display: none; }
+        @media print {
+          body > * { display: none !important; }
+          #mp-print-portal { display: block !important; background: #fff; }
+        }
+      `}</style>
+      {mounted && printSet && createPortal(
+        <div id="mp-print-portal">
+          {printSet.map((f, i) => (
+            <div key={f.key} style={{ breakAfter: i < printSet.length - 1 ? "page" : "auto" }}>
+              <Card family={f} />
+            </div>
+          ))}
+        </div>,
+        document.body
+      )}
     </PortalShell>
   );
 }
