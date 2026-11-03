@@ -14,6 +14,7 @@ export const TEACHER_TABS: Tab[] = [
   { href: "/teacher/planner", label: "Plan", icon: I("M3.5 5h17v15h-17zM3.5 9.5h17M8 3v4M16 3v4M8 13l2.5 2.5L16 11") },
   { href: "/teacher/calendar", label: "Calendar", icon: I("M3.5 5h17v15h-17zM3.5 9.5h17M8 3v4M16 3v4") },
   { href: "/teacher/class-update", label: "Class", icon: I("M4 6h16M4 12h16M4 18h10") },
+  { href: "/teacher/attendance-cards", label: "Cards", icon: I("M4 5h16v14H4zM4 9h16M8 13h5M8 16h8") },
   { href: "/teacher/profile", label: "Profile", icon: I("M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8ZM5 20a7 7 0 0 1 14 0") },
 ];
 
